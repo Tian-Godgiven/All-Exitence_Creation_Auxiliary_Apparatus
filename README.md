@@ -1,0 +1,2 @@
+# All-Exitence_Creation_Auxiliary_Apparatus
+一款用于辅助创作者对世界观，人物，事件等常见的创作元素进行管理，并提供了文本创作辅助功能等内容的移动端App。
