@@ -1,4 +1,4 @@
-# 万物构造辅助装置 All-Exitence Creation Auxiliary Apparatus
+# 万物构造辅助装置 <br>All-Exitence Creation Auxiliary Apparatus
 
 一款提供【辅助创作者进行内容创作和管理】与【文本编辑】功能的移动端app
 
@@ -29,7 +29,7 @@
 [原型设计](文档/开发流程/2.原形设计.md)   
 [详细设计 ](/文档/开发流程/3.详细设计)   
 ∟UI设计　  
-　∟界面　←在这里！  
+　∟[界面](/文档/开发流程/3.详细设计/UI设计/界面.md)　←在这里！  
 　∟组件  
 　∟美术风格  
 　∟交互逻辑  
