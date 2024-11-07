@@ -1,23 +1,38 @@
 <template>
 	<view class="rightPage" 
-		:style="{
-			width:maxWidth+'px', 
-			right:(showWidth - maxWidth < 0? showWidth-maxWidth:0) +'px'
-		}"
-	>
-		999
+		:style="{right:showWidth-maxWidth +'px'}">
+		<view class="rightPageButton" v-for="(ability,index) in abilities" :key="index">
+			<view>{{ability}}</view>
+		</view>
 	</view>
 </template>
 
-<script setup lang="ts" name="">
+<script setup lang="ts" name="RightPage">
+import { rpxToPx } from '../../api/rpxToPx';
+import { rightMaxWidth } from '@/hooks/pageChange';
 	// 由于右侧页面是从右往左的，因此实际设定的是该页面的right属性
-	let {showWidth,maxWidth} = defineProps(["showWidth","maxWidth"])
+	let {showWidth} = defineProps(["showWidth","maxWidth"])
+	const maxWidth = rightMaxWidth
+	
+	let abilities = ["1","2","3"]
+	// 功能按键的数量
+	let rightPageHeight = uni.getSystemInfoSync().screenHeight - rpxToPx(550)
+	let rightPageButtonNum = rightPageHeight / 150
+	
 </script>
 
 <style lang="scss">
+	@import "@/static/style/rightPage.scss";
+	
 	.rightPage{
+		height:calc(100% - 550rpx);
+		top:350rpx;
+		width:$rightPageWidth;
+		background-color: transparent;
 		position: absolute;
-		height: 100vh;
-		background-color: red;
+		z-index: 1;
+	}
+	.rightPageButton{
+		@include rightPageButton;
 	}
 </style>
