@@ -4,7 +4,7 @@
 	<!-- 首页顶部 -->
 	<view class="titleBar">
 		<view class="title">
-			<button @click="showLeft()">左侧按键</button>
+			<view @click="showLeft()">左侧按键</view>
 			<view>文件名</view>
 		</view>
 	</view>

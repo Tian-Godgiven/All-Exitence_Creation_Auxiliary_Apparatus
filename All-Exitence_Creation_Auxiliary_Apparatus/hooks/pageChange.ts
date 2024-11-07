@@ -25,6 +25,8 @@ export function switchRight(){
 // 显示左侧页面
 export function showLeft(){
 	showPage("left")
+	leftPageMask()
+	showMask()
 }
 
 const rpxShow = rpxToPx(200) // 滑动显示阈值
