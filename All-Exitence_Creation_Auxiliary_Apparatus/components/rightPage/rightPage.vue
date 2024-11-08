@@ -21,7 +21,7 @@ import { rightMaxWidth } from '@/hooks/pageChange';
 	
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 	@import "@/static/style/rightPage.scss";
 	
 	.rightPage{

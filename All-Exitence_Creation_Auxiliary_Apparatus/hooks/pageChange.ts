@@ -1,7 +1,6 @@
 import { ref } from 'vue';
 import { rpxToPx } from "../api/rpxToPx"
-import rightPageVue from '../components/rightPage/rightPage.vue';
-import { changeMaskAlpha, hideMask, maskAlphaMax, showMask } from './mask';
+import { changeMaskAlpha, hideMask, ifMask, maskAlphaMax, showMask } from './mask';
 
 // 控制左侧页面显示
 export let leftShowWidth = ref(0) //左侧显示的宽度，页面本身的宽度固定
@@ -26,7 +25,6 @@ export function switchRight(){
 export function showLeft(){
 	showPage("left")
 	leftPageMask()
-	showMask()
 }
 
 const rpxShow = rpxToPx(200) // 滑动显示阈值
@@ -36,21 +34,48 @@ const rpxSpeed = rpxToPx(2) // 滑动速度阈值
 // 监听滑动事件
 let touchStartTime = 0
 let startX:number
+let startY:number
 let moveStartX:number
+let moveStartY:number
 let distantX:number
-let ifShowMask = false
+let distantY:number
+// 判断是否为竖向滑动
+let ifVertical = false
+let ifHorizontal = false
 
 export function touchStart(e){
 	startX = e.touches[0].clientX
+	startY = e.touches[0].clientY
 	moveStartX = startX
 	touchStartTime = Date.now()
 }
 // 逐渐显示or逐渐隐藏
 export function touchMove(e){
+	// 若为竖直滑动，则不会显示页面
+	if(ifVertical){
+		return false 
+	}
+	// 否则禁止上下滑动
+	e.preventDefault()
+	
+	
 	// 移动距离
 	let movingX = moveStartX - e.touches[0].clientX
 	moveStartX = e.touches[0].clientX
+	moveStartY = e.touches[0].clientY
 	distantX = startX - moveStartX
+	distantY = startY - moveStartY
+	
+	const angle = getLineAngle(startX,startY,moveStartX,moveStartY)
+	// 滑动角度在30~150,210~330为竖直方向滑动
+	if(!ifHorizontal && ((angle > 20 && angle < 160) || (angle > 200 && angle < 340))){
+		ifVertical = true
+		return false
+	}
+	else{
+		ifHorizontal = true
+	}
+
 	// [向左滑] aka [右滑]
 	if(distantX > 0){
 		// 如果此时左侧界面已显示，逐渐隐藏左侧页面
@@ -70,25 +95,25 @@ export function touchMove(e){
 			leftShowWidth.value = Math.min(leftShowWidth.value - movingX, leftMaxWidth)
 			//逐渐显示遮罩层
 			leftPageMask()
-			if(!ifShowMask){
-				showMask()
-				ifShowMask = true
-			}
 		}
 	}
 }
 
 export function touchEnd(e){
+	
 	let touchEndTime = Date.now()
 	let moveDistant = distantX
 	let moveTime = touchEndTime - touchStartTime
 	
+	// 数据初始化
 	startX = 0
 	distantX = 0
-
+	ifVertical = false
+	ifHorizontal = false
+	
 	let slideSpeed = Math.abs(moveDistant) / moveTime
 	// [向左滑] aka [右滑]
-	if(moveDistant > 10){
+	if(moveDistant > 0){
 		//如果左侧界面显示，
 		if(leftShowing){
 			// 并且滑动距离达到阈值 或 滑动速度达到阈值，则令左侧界面隐藏
@@ -114,7 +139,7 @@ export function touchEnd(e){
 		}
 	}
 	// [向右滑] aka [左滑]
-	else if(moveDistant < -10){
+	else if(moveDistant < 0){
 		// 如果左侧页面未显示 并且 (滑动幅度大于100rpx 或 滑动速度大于10px/ms)
 		if(!leftShowing && (Math.abs(moveDistant) > rpxShow || slideSpeed > rpxSpeed)){
 			//则令左侧页面显示
@@ -130,38 +155,47 @@ export function touchEnd(e){
 // 隐藏动画
 const hideAnimateTime = 15
 const showAnimateTime = 10 //动画持续时间（单位帧）
-export function hidePage(pageName:string) {
+export function hidePage(pageName:'left'|'right') {
 	const showWidth = pageName=="left"? leftShowWidth:rightShowWidth
 	const maxWidth = pageName=="left"? leftMaxWidth:rightMaxWidth
 	// 动画运行速度
 	const speed = Math.abs(maxWidth) / hideAnimateTime
 	const reduce = () => {
+		// 动画执行条件
 		if (showWidth.value > 0) {
+			// 结束动画
 			if(showWidth.value - speed <= 0){
 				showWidth.value = 0
 				if(pageName == "left"){
-					leftPageMask()
+					leftShowing = false
+					hideMask()
+				}
+				else{
+					rightShowing = false
 				}
 			}
+			// 继续动画
 			else{
 				showWidth.value -= speed; // 控制时间在10帧内
+				if(pageName == "left"){
+					leftPageMask()
+				}
 				requestAnimationFrame(reduce); // 请求下一帧
 			}	
 		}
 	};
 	reduce();
 	
-	if(pageName == "left"){
-		leftShowing = false
-		hideMask()
-		ifShowMask = false   
-	}
-	else{
-		rightShowing = false
-	}
+	
 }
 // 显示动画
-export function showPage(pageName:string) {
+export function showPage(pageName:'left'|'right') {
+	if(pageName == "left"){
+		leftShowing = true
+	}
+	else{
+		rightShowing = true
+	}
 	const showWidth = pageName=="left"? leftShowWidth:rightShowWidth
 	const maxWidth = pageName=="left"? leftMaxWidth:rightMaxWidth
 	const speed = maxWidth / showAnimateTime
@@ -169,30 +203,44 @@ export function showPage(pageName:string) {
 		if (showWidth.value < maxWidth) {
 			if(showWidth.value + speed >= maxWidth){
 				showWidth.value = maxWidth
-				if(pageName == "left"){
-					leftPageMask()
-				}
 			}
 			else{
 				showWidth.value += speed; // 控制时间在10帧内
+				if(pageName == "left"){
+					leftPageMask()
+				}
 				requestAnimationFrame(reduce); // 请求下一帧
 			}
 			
 		}
 	};
 	reduce();
-	
-	if(pageName == "left"){
-		leftShowing = true
-	}
-	else{
-		rightShowing = true
-	}
 }
 
+// 左侧页面的遮罩层
 function leftPageMask(){
+	if(!ifMask.value){
+		showMask(()=>{
+			// 点击遮罩层隐藏左侧页面
+			hidePage('left')
+		})
+	}
+	
 	const maskAlpha = maskAlphaMax * (leftShowWidth.value/leftMaxWidth)
 	//同时逐渐改变遮罩层透明度
 	changeMaskAlpha(maskAlpha)
+}
+
+
+
+ /* 获取滑动直线与水平线的夹角 */
+function getLineAngle(x1, y1, x2, y2) {
+    var x = x1 - x2,
+    y = y1 - y2;
+    if (!x && !y) {
+        return 0;
+    }
+    var angle = (180 + Math.atan2(-y, -x) * 180 / Math.PI + 360) % 360;
+    return 360 - angle;
 }
 

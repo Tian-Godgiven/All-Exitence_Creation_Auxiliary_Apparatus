@@ -1,3 +1,90 @@
 // 页面尺寸
-$leftPageWidth: 650rpx;
+@import "@/static/style/global.scss";
 
+$leftPageWidth: 650rpx;
+$leftPageBgColor: $bgColor;
+
+// 通用标题框
+@mixin titleBar {
+	width:100%;
+	display: flex;
+	.titleName{
+		display: flex;
+		align-items: center;
+	}
+	.titleButtons{
+		display: flex;
+		flex-direction: row-reverse;
+	}
+}
+
+// 用于【万物】和【文本】两个大型标题框
+@mixin leftPageBigTitleBar {
+	background-color: $bgColor90;
+	height: 80rpx;
+	@include titleBar;
+	.titleName{
+		font-weight: 600;
+		width: 150rpx;
+		height: 75rpx;
+		font-size: $bigFontSize;
+	}
+	.titleButtons{
+		width: 500rpx;
+	}
+}
+
+// 用于[分类]和[章节]两个中型标题框
+@mixin leftPageMidTitleBar{
+	background-color: $bgColor80;
+	height: 70rpx;
+	@include titleBar;
+	.titleName{
+		width: 350rpx;
+		height: 65rpx;
+		font-size: $midFontSize;
+	}
+	.titleButtons{
+		width: 300rpx;
+	}
+}
+
+// 用于分组
+@mixin leftPageGroup{
+	border: $antiBgColor 5rpx solid;
+	.titleBar{
+		background-color: $bgColor70;
+		height: 60rpx;
+		@include titleBar;
+		.titleName{
+			width: 100%;
+			height: 55rpx;
+			font-style: italic;
+			font-size: $smallFontSize;
+		}
+	}
+}
+
+// 用于事物对象
+.leftPageExitence{
+	background-color: $bgColor;
+	min-height: 100rpx;
+	padding: 10rpx;
+	.name{
+		font-size: $midFontSize;
+	}
+	.tags{
+		display: flex;
+		view{
+			padding-right: 5rpx;
+		}
+	}
+}
+
+
+// 左侧页面通用分割线
+@mixin leftPageSeparator{
+	height: 0.5rpx;
+	background-color: $bgColor70;
+	margin: 5rpx 20rpx;
+}
