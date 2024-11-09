@@ -1,7 +1,9 @@
 <template>
 	<view class="mask" 
 		v-show="ifMask" 
-		:style="{backgroundColor: `rgba(0, 0, 0, ${maskAlpha})`}"
+		:style="{
+			zIndex:4+zIndex,
+			backgroundColor: `rgba(0, 0, 0, ${maskAlpha})`}"
 		@click="clickMask"
 	>
 		
@@ -9,7 +11,18 @@
 </template>
 
 <script setup lang="ts" name="mask">
+import { ref } from 'vue';
 import { ifMask,maskAlpha,clickMask } from '../../hooks/mask';
+import { popUpList } from '../../hooks/popUp';
+
+	let zIndex = ref(0)
+	if(popUpList.value.length > 0){
+		zIndex.value = popUpList.value.length + 1
+	}
+	else{
+		zIndex.value = 0
+	}
+	
 </script>
 
 <style lang="scss" scoped>
@@ -19,6 +32,5 @@ import { ifMask,maskAlpha,clickMask } from '../../hooks/mask';
 		left:0;
 		height: 100%;
 		width: 100%;
-		z-index: 4;
 	}
 </style>

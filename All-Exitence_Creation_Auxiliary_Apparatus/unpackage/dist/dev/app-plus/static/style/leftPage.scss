@@ -68,7 +68,7 @@ $leftPageBgColor: $bgColor;
 // 用于事物对象
 .leftPageExitence{
 	background-color: $bgColor;
-	max-height: 110rpx;
+	min-height: 100rpx;
 	padding: 10rpx;
 	.name{
 		font-size: $midFontSize;
@@ -87,7 +87,7 @@ $leftPageBgColor: $bgColor;
 	min-height: 100rpx;
 	box-sizing: border-box;
 	padding: 10rpx 20rpx; 
-	.title{
+	.name{
 		font-size: $midFontSize;
 	}
 	.preview{

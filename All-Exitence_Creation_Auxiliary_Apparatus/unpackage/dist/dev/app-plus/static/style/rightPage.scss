@@ -1,5 +1,5 @@
 // 右侧页面按键通用样式
-.rightPageButton {
+@mixin rightPageButton {
 	height: min(100px,120rpx);
 	width: min(100px,120rpx);
 	border-radius: 50%;

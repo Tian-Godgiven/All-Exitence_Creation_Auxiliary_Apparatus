@@ -1,29 +1,41 @@
 <template>
 	<view class="group">
-		<view class="titleBar">
-			<view class="titleName">分组名</view>
+		<view class="titleBar" @click="expending = !expending">
+			<view class="titleName">{{name}}</view>
 		</view>
-		<view class="inner">
-			<view v-for="(exitence,index) in group">
+		<view class="inner" v-show="expending">
+			<view v-for="(exitence,index) in groupExitence">
 				<exitenceVue :exitence="exitence"></exitenceVue>
-				<view class="separator" v-if="index < group.length-1"></view>
+				<view class="separator" v-if="index < groupExitence.length-1"></view>
 			</view>
 		</view>
 	</view>
 </template>
 
 <script setup lang="ts" name=""> 
+import { ref } from 'vue';
 import exitenceVue from './exitence.vue';
-
-let group = ["1","2","3"]
+	
+	let expending = ref(true)
+	let {group} = defineProps(["group"]) 
+	let name = ref(group.name)
+	let groupExitence = [{
+		name:"测试分组",
+		status:{},
+		setting:{}
+	},{
+		name:"测试分组",
+		status:{},
+		setting:{}
+	}]
 </script>
 
 <style lang="scss" scoped>
 @import "@/static/style/leftPage.scss";
 	.group{
-		@include leftPageGroup;
+		@extend .leftPageGroup;
 	}
 	.separator{
-		@include leftPageSeparator;
+		@extend .leftPageSeparator;
 	}
 </style>

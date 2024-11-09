@@ -1,15 +1,17 @@
 <template>
 	<view class="exitence">
-		<view class="name">事物名</view>
+		<view class="name">{{name}}</view>
 		<view class="tags">
-			<view>[标签A]</view>
-			<view>[标签B]</view>
+			<view v-for="(tag,index) in tags">[{{tag}}]</view>
 		</view>
 	</view>
 </template>
 
-<script setup lang="ts" name=""> 
-
+<script setup lang="ts" name="">
+import { ref } from 'vue'; 
+	let {exitence} = defineProps(["exitence"])
+	let name = ref(exitence.name)
+	let tags = ref(exitence.status.tags)
 </script>
 
 <style lang="scss" scoped>

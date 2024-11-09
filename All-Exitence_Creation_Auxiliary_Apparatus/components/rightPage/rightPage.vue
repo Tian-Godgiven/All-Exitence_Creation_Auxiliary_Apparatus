@@ -1,7 +1,7 @@
 <template>
 	<view class="rightPage" 
 		:style="{right:showWidth-maxWidth +'px'}">
-		<view class="rightPageButton" v-for="(ability,index) in abilities" :key="index">
+		<view class="button" v-for="(ability,index) in abilities" :key="index">
 			<view>{{ability}}</view>
 		</view>
 	</view>
@@ -32,7 +32,7 @@ import { rightMaxWidth } from '@/hooks/pageChange';
 		position: absolute;
 		z-index: 1;
 	}
-	.rightPageButton{
-		@include rightPageButton;
+	.button{
+		@extend .rightPageButton;
 	}
 </style>
