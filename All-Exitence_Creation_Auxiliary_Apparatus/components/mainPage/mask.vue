@@ -11,17 +11,20 @@
 </template>
 
 <script setup lang="ts" name="mask">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { ifMask,maskAlpha,clickMask } from '../../hooks/mask';
 import { popUpList } from '../../hooks/popUp';
 
 	let zIndex = ref(0)
-	if(popUpList.value.length > 0){
-		zIndex.value = popUpList.value.length + 1
-	}
-	else{
-		zIndex.value = 0
-	}
+	watch(popUpList,()=>{
+		if(popUpList.length > 0){
+			zIndex.value = popUpList.length + 1
+		}
+		else{
+			zIndex.value = 0
+		}
+	})
+	
 	
 </script>
 

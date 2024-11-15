@@ -1,6 +1,6 @@
 import { ref } from 'vue';
 import { rpxToPx } from "../api/rpxToPx"
-import { changeMaskAlpha, hideMask, ifMask, maskAlphaMax, showMask } from './mask';
+import { changeMaskAlpha, hideMask, ifMask, maskAlphaMax, showMask } from './leftPageMask';
 
 // 控制左侧页面显示
 export let leftShowWidth = ref(0) //左侧显示的宽度，页面本身的宽度固定

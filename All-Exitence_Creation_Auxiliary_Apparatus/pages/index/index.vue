@@ -95,7 +95,18 @@ import { popUpList, showPopUp } from '../../hooks/popUp';
 				showPopUp({
 					name:"任务列表",
 					buttons:[],
-					inner:"任务ABCD",
+					vueName:"questionList",
+					mask:true,
+				})
+			}
+		},
+		{
+			name:"创作日历",
+			click:()=>{
+				showPopUp({
+					name:"创作日历",
+					buttons:[],
+					vueName:"createCanlendar",
 					mask:true,
 				})
 			}

@@ -1,13 +1,13 @@
 import { reactive, ref } from "vue"
 import { changeMaskAlpha, hideMask, showMask } from "./mask"
 
-export let popUpList = ref([])
-export let popUpIndex = ref(0)
+export let popUpList = reactive([])
+let maskIndex = 0
 
 export interface PopUp{
 	name:string,
 	buttons:Button[],
-	inner:string,
+	vueName:string,
 	mask:boolean,
 	index?:number,
 }
@@ -20,35 +20,34 @@ interface Button{
 
 // 显示弹窗
 export function showPopUp(popUp:PopUp){
-	changeMaskAlpha(0.6)
 	showMask(()=>{
 		closePopUp(popUp)
 	})
-	let index = popUpList.value.length
+	let index = popUpList.length
 	popUp["index"] = index
-	popUpList.value.push(popUp)
+	popUpList.push(popUp)
 	//弹窗显示mask
 	if(popUp.mask){
-		popUpIndex.value += 1
+		showMask()
+		maskIndex += 1
 	}
 }
 
 // 关闭弹窗
 export function closePopUp(popUp?:PopUp){
+	// 未指定弹窗时，关闭最外层弹窗
 	if(!popUp){
-		popUpIndex.value -= 1
-		popUpList.value.pop()
+		popUp = popUpList.pop()
 	}
 	else{
-		if(popUp.mask){
-			popUpIndex.value -= 1
-		}
 		const index = popUp.index
-		popUpList.value.splice(index,1)
+		popUpList.splice(index,1)
 	}
 	
-	// 隐藏Mask
-	if(popUpIndex.value == 0){
-		hideMask()
+	if(popUp.mask){
+		maskIndex -= 1
+		if(maskIndex == 0){
+			hideMask()
+		}
 	}
 }

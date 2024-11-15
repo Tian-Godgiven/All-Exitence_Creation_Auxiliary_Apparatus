@@ -1,19 +1,14 @@
 <template>
 	<view class="articles">
-		<view class="titleBar" @click="expending = !expending">
-			<view class="titleName">文本</view>
+		<view v-for="(article,index) in articles">
+			<articleVue :article="article"></articleVue>
+			<view class="separator" v-if="index < articles.length-1"></view>
 		</view>
-		<view class="inner" v-show="expending">
-			<view v-for="(article,index) in articles">
-				<articleVue :article="article"></articleVue>
-				<view class="separator" v-if="index < articles.length-1"></view>
-			</view>
-			
-			<chapterVue v-for="(chapter,index) in chapters" 
-				:chapter="chapter"
-			>
-			</chapterVue>
-		</view>
+		
+		<chapterVue v-for="(chapter,index) in chapters" 
+			:chapter="chapter"
+		>
+		</chapterVue>
 	</view>
 </template>
 
@@ -26,7 +21,6 @@ import allArticlesJSON from "@/data/projects/项目1/all-articles.json"
 // import { readFileToJSON } from '../../../hooks/dataFile';
 	let chapters = ref([])
 	let articles = ref([])
-	let expending = ref(true)
 
 	const filePath = "/projects/项目1/all-articles.json"
 	
@@ -46,12 +40,8 @@ import allArticlesJSON from "@/data/projects/项目1/all-articles.json"
 
 <style lang="scss" scoped>
 	@import "@/static/style/leftPage.scss";
-	
 	.article{
 		width: 100%;
-	}
-	.titleBar{
-		@extend .leftPageBigTitleBar;
 	}
 	.separator{
 		@extend .leftPageSeparator;
