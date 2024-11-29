@@ -1,8 +1,25 @@
 {
-  "hash": "f5e75675",
+  "hash": "8b1b3e84",
   "configHash": "b7a5d161",
-  "lockfileHash": "e3b0c442",
-  "browserHash": "5094d8a8",
-  "optimized": {},
-  "chunks": {}
+  "lockfileHash": "17c814b1",
+  "browserHash": "09455be5",
+  "optimized": {
+    "element-plus": {
+      "src": "../../../../../node_modules/element-plus/es/index.mjs",
+      "file": "element-plus.js",
+      "fileHash": "3078fa0d",
+      "needsInterop": false
+    },
+    "vuedraggable": {
+      "src": "../../../../../node_modules/vuedraggable/dist/vuedraggable.umd.js",
+      "file": "vuedraggable.js",
+      "fileHash": "03df47a2",
+      "needsInterop": true
+    }
+  },
+  "chunks": {
+    "chunk-6MT7EBHR": {
+      "file": "chunk-6MT7EBHR.js"
+    }
+  }
 }

@@ -1,5 +1,9 @@
 <template>
-<view class="mainPage" @touchstart="touchStart" @touchmove="touchMove" @touchend="touchEnd">
+	<!-- 弹窗影响滑动事件 -->
+<view class="mainPage" 
+	@touchstart="touchStart" 
+	@touchmove="touchMove" 
+	@touchend="touchEnd">
 		
 	<!-- 首页顶部 -->
 	<view class="titleBar">
@@ -62,11 +66,12 @@
 	<!-- 创作辅助栏 -->
 	<inputSupportVue v-show="inputSupportShowing"></inputSupportVue>
 	
-	<!-- 遮罩层 -->
-	<maskVue></maskVue>
+	
 	
 	<!-- 弹窗 -->
 	<view class="popUpContainer" >
+		<!-- 遮罩层 -->
+		<maskVue></maskVue>
 		<popUpVue v-for="popUp in popUpList" :popUp="popUp"></popUpVue>
 	</view>
 	
@@ -86,7 +91,6 @@ import { hideInputSupport, inputSupportShowing, showInputSupport } from '../../h
 import inputSupportVue from '../../components/mainPage/inputSupport.vue';
 import popUpVue from '../../components/mainPage/popUp.vue';
 import { popUpList, showPopUp } from '../../hooks/popUp';
-
 // 功能按键
 	const buttons = [
 		{

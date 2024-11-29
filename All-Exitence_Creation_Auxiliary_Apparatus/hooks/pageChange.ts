@@ -43,7 +43,19 @@ let distantY:number
 let ifVertical = false
 let ifHorizontal = false
 
-export function touchStart(e){
+// 是否允许滑动事件，在弹窗出现时阻止滑动事件
+export let changePage = ref(true)
+export function enableChangePage(){
+	changePage.value = true
+}
+export function disableChangePage(){
+	changePage.value = false
+}
+// 滑动事件本身
+export const touchStart = (e)=>{
+	if(!changePage.value){
+		return false
+	}
 	startX = e.touches[0].clientX
 	startY = e.touches[0].clientY
 	moveStartX = startX
@@ -51,6 +63,9 @@ export function touchStart(e){
 }
 // 逐渐显示or逐渐隐藏
 export function touchMove(e){
+	if(!changePage.value){
+		return false
+	}
 	// 若为竖直滑动，则不会显示页面
 	if(ifVertical){
 		return false 
@@ -100,6 +115,9 @@ export function touchMove(e){
 }
 
 export function touchEnd(e){
+	if(!changePage.value){
+		return false
+	}
 	
 	let touchEndTime = Date.now()
 	let moveDistant = distantX

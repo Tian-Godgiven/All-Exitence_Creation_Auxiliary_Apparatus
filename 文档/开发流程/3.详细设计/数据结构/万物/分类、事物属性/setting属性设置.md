@@ -1,21 +1,20 @@
 [toc]
 
-# 属性设置
+# 属性设置 statusSetting
 
-保存为一个对象，对象内容为：`{name:value}`
-其中name包括如下，请注意不得重名：
+一个对象，对象内容包括如下，请注意不得重名：
 
-~~~
-{
-	chooseNum:[min,max],该属性的可选数量的最大最小值
-	choice:[{value,*default}]该属性valueType为choose时的选项数组，若default为true则该选为默认选项
-	range:该属性valueType为range时的范围数组：[min,max,step],
-}
-~~~
-
+| 键        | 值                 | valueType       | 含义                         |
+| --------- | ------------------ | --------------- | ---------------------------- |
+| chooseNum | num[min,max]       | choose / select | 该属性的可选数量的最大最小值 |
+| choices   | string[]           | choose / select | 选项文本数组                 |
+| range     | num[min,max,step]  | range           | 范围数组                     |
+| switch    | string[left,right] | swicth          | 分别是左侧和右侧的文本       |
+| radio     | sting              | radio           | 显示在灯开关左侧的文本       |
 
 
-# 属性值设置项
+
+# 属性值设置项 settingOption
 
 `data/list/settingBoxOptions.ts`
 
@@ -42,7 +41,7 @@
 若需要渲染该设置项，则在对应的条件后返回true，否则均不会渲染该设置项  
 若不设置此项，则该设置项在任何条件下**均会渲染**
 
-### check:function(value) 函数
+### `check:function(value)` 函数
 
 在用户点击确定时，调用该函数，若返回值为true，则判断该设置正确  
 参数统一为value，但其中的值和结构由设置项type决定，参见下方[设置项类型表]  
@@ -110,31 +109,10 @@ type类型：input2
 aaabbb[小明]cccddd和aaabbb[小王]cccddd是好朋友！
 ~~~
 
-### exitenceSeparator 事物间隔
-
-type类型：input1  
-值类型与默认值：sting:","  
-条件：valueType为exitence，并且showType为vertical
-
-事物对象在横向连续显示时，相互之间的间隙内容。  
-例如：
-
-~~~
-"，abc"
-~~~
-
-~~~
-参与人：[小明]，abc[小王]，abc[小李]
-~~~
-
 ### 单位 unit
 
-|                   |        |                             |                     |                                                              |
-| ----------------- | ------ | --------------------------- | ------------------- | ------------------------------------------------------------ |
-|                   |        |                             |                     |                                                              |
-|                   |        |                             |                     |                                                              |
-|                   |        |                             |                     |                                                              |
-|                   |        |                             |                     |                                                              |
-| possibleChoiceNum | input2 | {max:num:1,<br />min:num:1} | valueType == choose | 可选数量，包括最大数量和最小数量，其中num可以为max表示总选项数 |
-|                   |        |                             |                     |                                                              |
+### choose使用radio
 
+### 选项排列方向
+
+使用非名称作为属性名

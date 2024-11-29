@@ -1,0 +1,12 @@
+.buttons{
+	margin-top: 20rpx;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	.button{
+		margin: 10rpx;
+		padding: 5rpx 15rpx;
+		border: 3rpx solid black;
+	}
+}

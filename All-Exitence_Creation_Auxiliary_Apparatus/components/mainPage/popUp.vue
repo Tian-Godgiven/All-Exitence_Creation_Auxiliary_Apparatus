@@ -1,78 +1,99 @@
 <template>
 	<view class="popUp" :style="{
 		zIndex:index,
+		height:height,
+		width:width
 	}">
-		<view class="titleBar">
-			<view class="titleName">{{ name }}</view>
-			<view class="titleButtons" >
-				<view v-for="(button,index) in buttons" 
-					class="button" 
-					:name="button.name" 
-					@click="button.click"
-				>
-					<image v-if="button.icon" :src="button.icon" mode="aspectFill"></image>
-					<text v-else>{{button.name}}</text>
-				</view>
+		<!-- 标题 -->
+		<view class="titleName" v-if="name">{{ name }}</view>
+		<!-- 按键 -->
+		<view class="titleButtons" >
+			<view v-for="(button,index) in buttons" 
+				class="button" 
+				:name="button.name" 
+				@click="button.click"
+			>
+				<image v-if="button.icon" :src="button.icon" mode="aspectFill"></image>
+				<text v-else>{{button.name}}</text>
 			</view>
 		</view>
 		<view class="inner">
-			<component :is="innerVue"></component>
+			<component :is="innerVue" 
+				:popUp="popUp" 
+				:returnValue="popUp?.returnValue"
+				:props='popUp.props'>
+			</component>
 		</view>
 	</view>
 </template>
 
 <script setup lang="ts" name="">
-import { ref, shallowRef } from 'vue';
-import { closePopUp,PopUp } from '../../hooks/popUp'; 
+import { ref, shallowReactive, shallowRef } from 'vue';
+import { PopUp } from '../../hooks/popUp'; 
 import { popUpVueList } from '../../data/list/popUpVueList';
 	let tmp = defineProps(["popUp"])
 	let popUp:PopUp = tmp.popUp
 	let {name,buttons,vueName,index} = popUp
-	let innerVue = shallowRef(popUpVueList[vueName])
-	// 默认具备关闭按键
-	buttons.push({
-		name:"关闭",
-		click:()=>{
-			closePopUp()
+	let innerVue = shallowRef()
+	if(popUp.vue){
+		innerVue = popUp.vue
+	}
+	else{
+		innerVue = popUpVueList[vueName]
+	}
+	//尺寸
+	let width = ref("650rpx")
+	let height = ref("80%")
+	if(popUp.size){
+		if(popUp.size.width){
+			width.value = popUp.size.width
 		}
-	})
-
+		if(popUp.size.height){
+			height.value = popUp.size.height
+		}
+	}
+	console.log(popUp)
 </script>
 
 <style lang="scss" scoped>
 	@import "@/static/style/global.scss";
 	.popUp{
 		background-color: $bgColor;
-		width: 650rpx;
-		height: 80%;
+		max-width: 650rpx;
+		max-height: 80%;
 		box-shadow: black 0rpx 0rpx 50rpx;
-		position: relative;
-		left:50rpx;
-		top:10%;
+		position: absolute;
+		left:50%;
+		top:50%;
+		transform: translate(-50%, -50%);
+		padding: 50rpx 20rpx;
+		box-sizing: border-box;
 		border-radius: 2%;
 		pointer-events: auto;
-		.titleBar{
-			height: 90rpx;
-			width: 100%;
-			display: flex;
+		overflow:auto;
 			.titleName{
+				position: relative;
+				height: 70rpx;
+				top: 0rpx;
 				width: 300rpx;
 				font-size: 60rpx;
 				display: flex;
 				align-items: center;
-				padding: 0 20rpx;
 			}
 			.titleButtons{
+				height: 50rpx;
+				position: absolute;
+				right:0;
+				top:0;
 				width: 350rpx;
 				display: flex;
 				flex-direction: row-reverse;
 			}
-		}
+		
 		.inner{
 			height: calc(100% - 90rpx);
 			width: 100%;
 			box-sizing: border-box;
-			padding: 10rpx 20rpx;
 		}
 	}
 </style>
