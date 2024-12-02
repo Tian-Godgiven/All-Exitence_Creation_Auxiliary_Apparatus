@@ -2,7 +2,6 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-require('../../utils/index.js');
 var select = require('./src/select2.js');
 var option = require('./src/option.js');
 var optionGroup = require('./src/option-group.js');

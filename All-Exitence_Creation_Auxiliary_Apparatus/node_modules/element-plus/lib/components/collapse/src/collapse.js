@@ -2,12 +2,10 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-require('../../../utils/index.js');
-require('../../../constants/index.js');
-var types = require('../../../utils/types.js');
-var shared = require('@vue/shared');
 var runtime = require('../../../utils/vue/props/runtime.js');
 var typescript = require('../../../utils/typescript.js');
+var types = require('../../../utils/types.js');
+var shared = require('@vue/shared');
 var event = require('../../../constants/event.js');
 
 const emitChangeFn = (value) => types.isNumber(value) || shared.isString(value) || shared.isArray(value);

@@ -2,7 +2,6 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-require('../../utils/index.js');
 var segmented$1 = require('./src/segmented2.js');
 var segmented = require('./src/segmented.js');
 var install = require('../../utils/vue/install.js');

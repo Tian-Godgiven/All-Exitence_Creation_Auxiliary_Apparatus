@@ -1,0 +1,31 @@
+~~~
+/class:类型文件
+/interface:接口文件
+
+/components:组件,按页面位置分类
+	/leftPage
+	/rightPage
+	/mainPage
+	/popUps:在弹窗中使用到的组件，通常按照弹窗功能进行分类
+		/all-exitence:万物类型的弹窗中使用的组件
+			/status：万物属性相关
+	/other:多个页面中使用到的组件
+/popUps:弹窗vue，通常是弹窗的入口vue，按照相关功能进行分类
+	/all-exitence
+	/article
+	/support
+	/expresson:表达式相关的输入弹窗
+	/other
+/page:页面vue，包括主页面，左右页面，弹窗本体
+
+/data:数据
+/api:与项目内容关联度较低的，可复用的应用组件
+/hooks:各类钩子函数和方法，通常是与vue强相关的
+
+/static
+	/icon：图标
+	/style：scss样式
+	/img：图片
+
+~~~
+

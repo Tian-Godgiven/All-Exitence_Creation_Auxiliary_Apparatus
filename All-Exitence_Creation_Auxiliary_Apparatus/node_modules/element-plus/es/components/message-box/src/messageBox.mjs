@@ -1,10 +1,9 @@
-import { createVNode, isVNode, render } from 'vue';
-import '../../../utils/index.mjs';
+import { isVNode, render, createVNode } from 'vue';
 import MessageBoxConstructor from './index.mjs';
-import { isString, isFunction, hasOwn, isObject } from '@vue/shared';
-import { isElement, isUndefined } from '../../../utils/types.mjs';
-import { debugWarn } from '../../../utils/error.mjs';
 import { isClient } from '@vueuse/core';
+import { isString, isObject, hasOwn, isFunction } from '@vue/shared';
+import { isUndefined, isElement } from '../../../utils/types.mjs';
+import { debugWarn } from '../../../utils/error.mjs';
 
 const messageInstance = /* @__PURE__ */ new Map();
 const getAppendToElement = (props) => {
@@ -101,7 +100,6 @@ const MESSAGE_BOX_DEFAULT_OPTS = {
   prompt: { showCancelButton: true, showInput: true }
 };
 MESSAGE_BOX_VARIANTS.forEach((boxType) => {
-  ;
   MessageBox[boxType] = messageBoxFactory(boxType);
 });
 function messageBoxFactory(boxType) {

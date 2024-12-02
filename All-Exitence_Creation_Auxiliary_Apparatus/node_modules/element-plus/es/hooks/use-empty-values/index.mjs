@@ -1,5 +1,4 @@
 import { getCurrentInstance, inject, ref, computed } from 'vue';
-import '../../utils/index.mjs';
 import { buildProps } from '../../utils/vue/props/runtime.mjs';
 import { isFunction } from '@vue/shared';
 import { debugWarn } from '../../utils/error.mjs';

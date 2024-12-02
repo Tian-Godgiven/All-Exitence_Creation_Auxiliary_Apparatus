@@ -2,8 +2,6 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-require('../../../utils/index.js');
-require('../../../constants/index.js');
 var content = require('./content.js');
 var runtime = require('../../../utils/vue/props/runtime.js');
 var icon = require('../../../utils/vue/icon.js');

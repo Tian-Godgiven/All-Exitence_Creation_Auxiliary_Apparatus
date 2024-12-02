@@ -1,7 +1,5 @@
 import { computed } from 'vue';
 import { TinyColor } from '@ctrl/tinycolor';
-import '../../../hooks/index.mjs';
-import '../../form/index.mjs';
 import { useFormDisabled } from '../../form/src/hooks/use-form-common-props.mjs';
 import { useNamespace } from '../../../hooks/use-namespace/index.mjs';
 

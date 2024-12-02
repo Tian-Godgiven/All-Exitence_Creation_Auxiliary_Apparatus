@@ -3,12 +3,11 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 
 var vue = require('vue');
-require('../../../utils/index.js');
 var index = require('./index.js');
+var core = require('@vueuse/core');
 var shared = require('@vue/shared');
 var types = require('../../../utils/types.js');
 var error = require('../../../utils/error.js');
-var core = require('@vueuse/core');
 
 const messageInstance = /* @__PURE__ */ new Map();
 const getAppendToElement = (props) => {
@@ -105,7 +104,6 @@ const MESSAGE_BOX_DEFAULT_OPTS = {
   prompt: { showCancelButton: true, showInput: true }
 };
 MESSAGE_BOX_VARIANTS.forEach((boxType) => {
-  ;
   MessageBox[boxType] = messageBoxFactory(boxType);
 });
 function messageBoxFactory(boxType) {

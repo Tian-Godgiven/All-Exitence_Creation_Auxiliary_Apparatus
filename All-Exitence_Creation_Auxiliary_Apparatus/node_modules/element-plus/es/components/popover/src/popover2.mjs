@@ -1,7 +1,5 @@
 import { defineComponent, computed, ref, unref, openBlock, createBlock, mergeProps, withCtx, createElementBlock, normalizeClass, toDisplayString, createCommentVNode, renderSlot, createTextVNode } from 'vue';
 import { ElTooltip } from '../../tooltip/index.mjs';
-import '../../../utils/index.mjs';
-import '../../../hooks/index.mjs';
 import { popoverProps, popoverEmits } from './popover.mjs';
 import _export_sfc from '../../../_virtual/plugin-vue_export-helper.mjs';
 import { useNamespace } from '../../../hooks/use-namespace/index.mjs';

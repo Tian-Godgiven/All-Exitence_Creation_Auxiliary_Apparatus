@@ -1,6 +1,5 @@
 import { inject, ref, computed, unref, watch, onMounted } from 'vue';
 import { isUndefined } from 'lodash-unified';
-import '../../../../hooks/index.mjs';
 import { POPPER_INJECTION_KEY } from '../constants.mjs';
 import { buildPopperOptions, unwrapMeasurableEl } from '../utils.mjs';
 import { usePopper } from '../../../../hooks/use-popper/index.mjs';

@@ -1,0 +1,6 @@
+/src/main/java/com/all_exitence_creation_auxiliary_apparatus/app/generated
+/src/main/jniLibs/**/*.so
+/src/main/assets/tauri.conf.json
+/tauri.build.gradle.kts
+/proguard-tauri.pro
+/tauri.properties

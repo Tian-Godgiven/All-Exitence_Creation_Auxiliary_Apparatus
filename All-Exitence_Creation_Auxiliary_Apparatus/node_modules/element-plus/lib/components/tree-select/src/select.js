@@ -5,8 +5,6 @@ Object.defineProperty(exports, '__esModule', { value: true });
 var vue = require('vue');
 var lodashUnified = require('lodash-unified');
 var index$1 = require('../../select/index.js');
-require('../../../hooks/index.js');
-require('../../../constants/index.js');
 var index = require('../../../hooks/use-namespace/index.js');
 var event = require('../../../constants/event.js');
 

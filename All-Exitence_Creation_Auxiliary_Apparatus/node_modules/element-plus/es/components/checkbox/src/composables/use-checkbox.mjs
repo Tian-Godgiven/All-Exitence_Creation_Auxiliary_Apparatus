@@ -1,15 +1,12 @@
 import { computed } from 'vue';
-import '../../../form/index.mjs';
-import '../../../../utils/index.mjs';
-import '../../../../hooks/index.mjs';
 import { useCheckboxDisabled } from './use-checkbox-disabled.mjs';
 import { useCheckboxEvent } from './use-checkbox-event.mjs';
 import { useCheckboxModel } from './use-checkbox-model.mjs';
 import { useCheckboxStatus } from './use-checkbox-status.mjs';
 import { useFormItem, useFormItemInputId } from '../../../form/src/hooks/use-form-item.mjs';
-import { isArray } from '@vue/shared';
 import { useDeprecated } from '../../../../hooks/use-deprecated/index.mjs';
 import { isPropAbsent } from '../../../../utils/types.mjs';
+import { isArray } from '@vue/shared';
 
 const useCheckbox = (props, slots) => {
   const { formItem: elFormItem } = useFormItem();

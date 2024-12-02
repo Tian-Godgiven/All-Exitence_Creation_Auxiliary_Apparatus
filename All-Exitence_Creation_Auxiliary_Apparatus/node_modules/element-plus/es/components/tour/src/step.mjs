@@ -1,4 +1,3 @@
-import '../../../utils/index.mjs';
 import { tourContentProps } from './content.mjs';
 import { buildProps, definePropType } from '../../../utils/vue/props/runtime.mjs';
 import { iconPropType } from '../../../utils/vue/icon.mjs';

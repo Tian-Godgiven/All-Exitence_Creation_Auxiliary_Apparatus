@@ -2,10 +2,8 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-require('../../../utils/index.js');
-require('../../collection/index.js');
-var runtime = require('../../../utils/vue/props/runtime.js');
 var collection = require('../../collection/src/collection.js');
+var runtime = require('../../../utils/vue/props/runtime.js');
 
 const rovingFocusGroupProps = runtime.buildProps({
   style: { type: runtime.definePropType([String, Array, Object]) },

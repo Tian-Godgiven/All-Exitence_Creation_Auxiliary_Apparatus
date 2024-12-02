@@ -1,8 +1,6 @@
 import { watch, nextTick, toRefs, computed } from 'vue';
 import { pick } from 'lodash-unified';
 import { ElSelect } from '../../select/index.mjs';
-import '../../../hooks/index.mjs';
-import '../../../constants/index.mjs';
 import { useNamespace } from '../../../hooks/use-namespace/index.mjs';
 import { UPDATE_MODEL_EVENT } from '../../../constants/event.mjs';
 

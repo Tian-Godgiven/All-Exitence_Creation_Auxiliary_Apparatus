@@ -3,7 +3,6 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 
 var collection = require('./src/collection.js');
-require('./src/tokens.js');
 
 
 

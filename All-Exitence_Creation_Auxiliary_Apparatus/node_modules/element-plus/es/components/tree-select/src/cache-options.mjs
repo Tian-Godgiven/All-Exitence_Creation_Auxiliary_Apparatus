@@ -1,6 +1,4 @@
 import { defineComponent, inject, watch } from 'vue';
-import '../../select/index.mjs';
-import '../../../utils/index.mjs';
 import { selectKey } from '../../select/src/token.mjs';
 import { isClient } from '@vueuse/core';
 

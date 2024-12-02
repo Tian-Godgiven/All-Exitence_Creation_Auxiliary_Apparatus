@@ -2,7 +2,6 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-require('../../utils/index.js');
 var backtop$1 = require('./src/backtop2.js');
 var backtop = require('./src/backtop.js');
 var install = require('../../utils/vue/install.js');

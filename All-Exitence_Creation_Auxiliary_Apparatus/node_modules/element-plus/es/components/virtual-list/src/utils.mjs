@@ -1,4 +1,4 @@
-import { FORWARD, BACKWARD, LTR, RTL, HORIZONTAL, RTL_OFFSET_POS_DESC, RTL_OFFSET_NAG, RTL_OFFSET_POS_ASC, PageKey } from './defaults.mjs';
+import { LTR, RTL, HORIZONTAL, FORWARD, BACKWARD, PageKey, RTL_OFFSET_POS_DESC, RTL_OFFSET_NAG, RTL_OFFSET_POS_ASC } from './defaults.mjs';
 
 const getScrollDir = (prev, cur) => prev < cur ? FORWARD : BACKWARD;
 const isHorizontal = (dir) => dir === LTR || dir === RTL || dir === HORIZONTAL;

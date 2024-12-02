@@ -1,7 +1,5 @@
 import { defineComponent, ref, getCurrentInstance, provide, reactive, toRefs, computed, onMounted, withDirectives, openBlock, createElementBlock, normalizeClass, createElementVNode, toDisplayString, renderSlot, vShow } from 'vue';
 import { useMutationObserver } from '@vueuse/core';
-import '../../../utils/index.mjs';
-import '../../../hooks/index.mjs';
 import { selectGroupKey } from './token.mjs';
 import _export_sfc from '../../../_virtual/plugin-vue_export-helper.mjs';
 import { useNamespace } from '../../../hooks/use-namespace/index.mjs';

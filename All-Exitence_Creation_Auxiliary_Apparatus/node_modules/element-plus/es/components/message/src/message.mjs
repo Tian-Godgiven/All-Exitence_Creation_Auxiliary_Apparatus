@@ -1,8 +1,7 @@
-import '../../../utils/index.mjs';
-import { mutable } from '../../../utils/typescript.mjs';
-import { isClient } from '@vueuse/core';
 import { buildProps, definePropType } from '../../../utils/vue/props/runtime.mjs';
 import { iconPropType } from '../../../utils/vue/icon.mjs';
+import { mutable } from '../../../utils/typescript.mjs';
+import { isClient } from '@vueuse/core';
 
 const messageTypes = ["success", "info", "warning", "error"];
 const messageDefaults = mutable({

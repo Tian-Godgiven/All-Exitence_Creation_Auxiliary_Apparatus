@@ -4,7 +4,6 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 var vue = require('vue');
 var lodashUnified = require('lodash-unified');
-require('../../../../hooks/index.js');
 var constants = require('../constants.js');
 var utils = require('../utils.js');
 var index = require('../../../../hooks/use-popper/index.js');

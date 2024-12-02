@@ -1,4 +1,3 @@
-import '../../utils/index.mjs';
 import Popconfirm from './src/popconfirm2.mjs';
 export { popconfirmEmits, popconfirmProps } from './src/popconfirm.mjs';
 import { withInstall } from '../../utils/vue/install.mjs';

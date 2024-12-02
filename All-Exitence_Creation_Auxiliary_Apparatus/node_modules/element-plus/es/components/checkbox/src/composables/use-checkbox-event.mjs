@@ -1,6 +1,4 @@
-import { inject, getCurrentInstance, nextTick, computed, watch } from 'vue';
-import '../../../form/index.mjs';
-import '../../../../utils/index.mjs';
+import { inject, getCurrentInstance, computed, watch, nextTick } from 'vue';
 import { checkboxGroupContextKey } from '../constants.mjs';
 import { useFormItem } from '../../../form/src/hooks/use-form-item.mjs';
 import { debugWarn } from '../../../../utils/error.mjs';

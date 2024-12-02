@@ -1,0 +1,137 @@
+// 页面尺寸
+@use "@/static/style/global.scss" as global;
+
+.leftPage{
+	top:0; 
+	height: 100%;
+	width: 650px;
+	background-color: global.$bgColor;
+	overflow: auto;
+	position: absolute;
+	z-index: 5;
+	> .titleBar{
+		@extend .leftPageBigTitleBar;
+		.titleButtons{
+			.button{
+				width: 100px;
+				height: 100%;
+				box-sizing: border-box;
+			}
+		}
+	}
+	> .inner{
+		height: calc(100% - 110px);
+		scroll-p{
+			height: 100%;
+			.scrollBottom{
+				height: 30%;
+			}
+		}
+	}
+}
+// 通用标题框
+.titleBar {
+	width:100%;
+	display: flex;
+	.titleName{
+		display: flex;
+		align-items: center;
+	}
+	.titleButtons{
+		height: 100%;
+		display: flex;
+		flex-direction: row-reverse;
+	}
+}
+
+// 用于【万物】和【文本】两个大型标题框
+.leftPageBigTitleBar {
+	background-color: global.$bgColor90;
+	height: 110px;
+	@extend .titleBar;
+	.titleName{
+		font-weight: 600;
+		width: 250px;
+		height: 100%;
+		font-size: global.$bigFontSize;
+	}
+	.titleButtons{
+		width: 400px;
+	}
+}
+
+// 用于[分类]和[章节]两个中型标题框
+.leftPageMidTitleBar{
+	background-color: global.$bgColor80;
+	height: 70px;
+	@extend .titleBar;
+	.titleName{
+		width: 350px;
+		height: 65px;
+		font-size: global.$midFontSize;
+	}
+	.titleButtons{
+		width: 300px;
+	}
+}
+
+// 用于分组
+.leftPageGroup{
+	border: global.$antiBgColor 5px solid;
+	.titleBar{
+		background-color: global.$bgColor70;
+		height: 60px;
+		@extend .titleBar;
+		.titleName{
+			width: 100%;
+			height: 55px;
+			font-style: italic;
+			font-size: global.$smallFontSize;
+		}
+	}
+}
+
+// 用于事物对象
+.leftPageExitence{
+	background-color: global.$bgColor;
+	max-height: 110px;
+	padding: 10px;
+	.name{
+		font-size: global.$midFontSize;
+	}
+	.tags{
+		display: flex;
+		view{
+			padding-right: 5px;
+		}
+	}
+}
+// 用于文章对象
+.leftPageArticle{
+	background-color: global.$bgColor;
+	width: 100%;
+	min-height: 100px;
+	box-sizing: border-box;
+	padding: 10px 20px; 
+	.title{
+		font-size: global.$midFontSize;
+	}
+	.preview{
+		width: 100%;
+		max-height: 120px;
+		font-size: global.$smallFontSize;
+		display: -webkit-box;              /* 使用弹性盒子布局 */
+		-webkit-box-orient: vertical;      /* 设置为纵向排列 */
+		line-clamp: 3;
+		-webkit-line-clamp: 3;             /* 限制显示 3 行文本 */
+		overflow: hidden;                  /* 隐藏超出部分 */
+		text-overflow: ellipsis;           /* 显示省略号 */
+	}
+}
+
+// 左侧页面通用分割线
+.leftPageSeparator{
+	height: 0.5px;
+	background-color: global.$bgColor70;
+	margin: 5px 20px;
+}

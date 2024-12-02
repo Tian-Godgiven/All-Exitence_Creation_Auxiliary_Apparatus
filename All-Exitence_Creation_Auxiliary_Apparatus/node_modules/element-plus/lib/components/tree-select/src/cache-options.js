@@ -3,8 +3,6 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 
 var vue = require('vue');
-require('../../select/index.js');
-require('../../../utils/index.js');
 var token = require('../../select/src/token.js');
 var core = require('@vueuse/core');
 

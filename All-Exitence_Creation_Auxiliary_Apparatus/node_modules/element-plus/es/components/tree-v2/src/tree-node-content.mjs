@@ -1,5 +1,4 @@
 import { defineComponent, inject, h } from 'vue';
-import '../../../hooks/index.mjs';
 import { treeNodeContentProps, ROOT_TREE_INJECTION_KEY } from './virtual-tree.mjs';
 import { useNamespace } from '../../../hooks/use-namespace/index.mjs';
 

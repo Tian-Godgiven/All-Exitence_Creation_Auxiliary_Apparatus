@@ -1,7 +1,5 @@
-import { defineComponent, inject, ref, nextTick, onMounted, onBeforeUnmount, onUpdated, watch, computed, createVNode, Fragment } from 'vue';
+import { defineComponent, inject, ref, onMounted, onBeforeUnmount, onUpdated, watch, computed, createVNode, Fragment, nextTick } from 'vue';
 import { useResizeObserver } from '@vueuse/core';
-import '../../../utils/index.mjs';
-import '../../../hooks/index.mjs';
 import { formContextKey, formItemContextKey } from './constants.mjs';
 import { throwError } from '../../../utils/error.mjs';
 import { useNamespace } from '../../../hooks/use-namespace/index.mjs';

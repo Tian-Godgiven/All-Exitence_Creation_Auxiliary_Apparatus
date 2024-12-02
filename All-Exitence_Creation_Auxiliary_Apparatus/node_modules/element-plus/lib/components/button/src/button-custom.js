@@ -4,8 +4,6 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 var vue = require('vue');
 var tinycolor = require('@ctrl/tinycolor');
-require('../../../hooks/index.js');
-require('../../form/index.js');
 var useFormCommonProps = require('../../form/src/hooks/use-form-common-props.js');
 var index = require('../../../hooks/use-namespace/index.js');
 

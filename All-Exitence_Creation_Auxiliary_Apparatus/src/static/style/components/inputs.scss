@@ -1,0 +1,17 @@
+.downLine{
+	border:none;
+	border-bottom: 3px solid black;
+	height: 100%;
+}
+
+// 用于同时包含文字和输入框，且需要限定两者大小为容器一半的情况
+.halfInput{
+	display: flex;
+	white-space: nowrap;
+	width: 45%;
+	padding:0 2.5%;
+	input{
+		width: 100%;
+		text-align: right;
+	}
+}

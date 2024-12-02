@@ -2,7 +2,6 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-require('../../utils/index.js');
 var popconfirm$1 = require('./src/popconfirm2.js');
 var popconfirm = require('./src/popconfirm.js');
 var install = require('../../utils/vue/install.js');

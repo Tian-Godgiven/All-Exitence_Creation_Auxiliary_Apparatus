@@ -1,4 +1,3 @@
-import '../../utils/index.mjs';
 import Skeleton from './src/skeleton2.mjs';
 import SkeletonItem from './src/skeleton-item2.mjs';
 export { skeletonProps } from './src/skeleton.mjs';

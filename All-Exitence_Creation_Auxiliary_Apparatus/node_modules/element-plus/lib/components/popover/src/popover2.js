@@ -4,8 +4,6 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 var vue = require('vue');
 var index$1 = require('../../tooltip/index.js');
-require('../../../utils/index.js');
-require('../../../hooks/index.js');
 var popover = require('./popover.js');
 var pluginVue_exportHelper = require('../../../_virtual/plugin-vue_export-helper.js');
 var index = require('../../../hooks/use-namespace/index.js');

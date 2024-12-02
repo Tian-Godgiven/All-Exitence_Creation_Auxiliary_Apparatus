@@ -1,5 +1,4 @@
-import { ref, inject, computed, unref } from 'vue';
-import '../../../../hooks/index.mjs';
+import { computed, unref, ref, inject } from 'vue';
 import { formContextKey, formItemContextKey } from '../constants.mjs';
 import { useProp } from '../../../../hooks/use-prop/index.mjs';
 import { useGlobalSize } from '../../../../hooks/use-size/index.mjs';

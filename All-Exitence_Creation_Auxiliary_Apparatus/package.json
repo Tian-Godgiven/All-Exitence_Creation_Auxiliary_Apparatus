@@ -1,17 +1,32 @@
 {
-  "name": "All-Exitence_Creation_Auxiliary_Apparatus",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "all-exitence_creation_auxiliary_apparatus",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vite dev",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "tauri": "tauri"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "element-plus": "^2.8.8",
-    "sortablejs": "^1.15.4",
-    "vuedraggable": "next"
+    "@tauri-apps/api": "^2",
+    "@tauri-apps/plugin-shell": "^2",
+    "element-plus": "^2.9.0",
+    "lodash": "^4.17.21",
+    "postcss-plugin-px2rem": "^0.8.1",
+    "sortable": "^2.0.0",
+    "vue": "^3.3.4",
+    "vuedraggable": "^4.1.0"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2",
+    "@types/node": "^22.10.1",
+    "@vitejs/plugin-vue": "^5.0.5",
+    "postcss-px-to-viewport": "^1.1.1",
+    "sass": "^1.81.0",
+    "typescript": "^5.2.2",
+    "vite": "^5.3.1",
+    "vue-tsc": "^2.1.10"
   }
 }

@@ -3,8 +3,6 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 
 var vue = require('vue');
-require('../../../form/index.js');
-require('../../../../utils/index.js');
 var constants = require('../constants.js');
 var useFormItem = require('../../../form/src/hooks/use-form-item.js');
 var error = require('../../../../utils/error.js');

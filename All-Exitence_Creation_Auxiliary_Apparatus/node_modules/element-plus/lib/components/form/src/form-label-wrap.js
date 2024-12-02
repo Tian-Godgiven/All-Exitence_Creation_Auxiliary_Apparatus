@@ -4,8 +4,6 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 var vue = require('vue');
 var core = require('@vueuse/core');
-require('../../../utils/index.js');
-require('../../../hooks/index.js');
 var constants = require('./constants.js');
 var error = require('../../../utils/error.js');
 var index = require('../../../hooks/use-namespace/index.js');
