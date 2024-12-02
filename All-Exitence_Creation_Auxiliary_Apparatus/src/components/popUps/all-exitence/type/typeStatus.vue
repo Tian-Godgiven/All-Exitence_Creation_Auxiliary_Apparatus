@@ -2,12 +2,12 @@
 	<div  class="status">
 		<!-- 属性名 -->
 		<div class="name">
-			<midTextAreaVue
+			<textAreaVue
 				v-model="status['name']"
 				placeholder="属性名">
-			</midTextAreaVue>
-			<div>：</div>
+			</textAreaVue>
 		</div>
+		<div class="separator">：</div>
 		<!-- 属性值 -->
 		<statusValueVue class="value"></statusValueVue>
 		<div class="buttons">
@@ -21,11 +21,10 @@
 <script setup lang="ts" name="typeStatus">
 import { provide } from 'vue';
 import statusValueVue from '../status/statusValue/statusValue.vue';
-import midTextAreaVue from '../../../other/midTextArea.vue';
-	let model = defineModel()
+import textAreaVue from '@/components/other/textArea/textArea.vue';
+	let status = defineModel<any>()
 	let emits = defineEmits(["deleteStatus"])
-	let status = model.value
-	provide("status",status)
+	provide("status",status.value)
 	function deleteStatus(){
 		emits('deleteStatus')
 	}
@@ -36,17 +35,19 @@ import midTextAreaVue from '../../../other/midTextArea.vue';
 		display: flex;
 		.name{
 			display: flex; 
-			width: 200px;
+			width:calc(150px - 1rem);
 			box-sizing: border-box;
+		}
+		.separator{
+			min-width: 1rem;
 		}
 		.value{
 			width: calc(100% - 200px);
 		}
 		.buttons{
 			.button{
-				height: 30px;
-				width: 30px;
-				padding:5px;
+				height: 50px;
+				width: 50px;
 				overflow: hidden;
 			}
 		}

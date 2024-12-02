@@ -23,27 +23,20 @@
 	<div class="inner">
 		<div class="container">
 			<div class="innerTitle" >
-				<div
-					contenteditable="true"
+				<textAreaVue
+					placeholder="输入标题"
+					v-model="textTitle"
 					@focus="showInputSupport" 
-					@blur="hideInputSupport" 
-					auto-height 
-					:value="textTitle" 
-					maxlength="-1" 
-					hold-keyboard>
-				</div>
+					@blur="hideInputSupport" >
+				</textAreaVue>
 			</div>
 			<div class="innerText">
-				<div
-					contenteditable="true"
-					@focus="showInputSupport" 
-					@blur="hideInputSupport" 
+				<textAreaVue 
 					v-if="innerType == 'article'" 
-					auto-height 
-					:value="textInner" 
-					maxlength="-1" 
-					hold-keyboard>
-				</div>
+					v-model="textInner"
+					@focus="showInputSupport" 
+					@blur="hideInputSupport" >
+				</textAreaVue>
 				<exitenceInnerVue v-if="innerType == 'exitence'" :exitence='textInner'></exitenceInnerVue>
 			</div>
 		</div>
@@ -77,12 +70,12 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { popUpList, showPopUp } from '@/hooks/popUp.ts'
-
 import { rightShowWidth,leftShowWidth,touchStart,touchMove,touchEnd,showLeft} from '@/hooks/pageChange';
 import leftPageVue from '@/pages/leftPage.vue';
 import rightPageVue from '@/pages/rightPage.vue';
 import exitenceInnerVue from '@/components/mainPage/exitenceInner.vue';
 import maskVue from '@/components/mainPage/mask.vue';
+import textAreaVue from '@/components/other/textArea/textArea.vue';
 import { hideInputSupport, inputSupportShowing, showInputSupport } from '@/hooks/inputSupport';
 import inputSupportVue from '@/components/mainPage/inputSupport.vue';
 import popUpVue from './popUp.vue';

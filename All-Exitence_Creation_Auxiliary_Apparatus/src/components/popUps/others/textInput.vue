@@ -1,7 +1,10 @@
 <template>
 	<div class="textInput">
 		<div class="input">
-			<midTextAreaVue v-model="inputText" placeholder="请输入文本内容"></midTextAreaVue>
+			<textAreaVue
+				v-model="inputText"
+				placeholder="请输入文本内容">
+			</textAreaVue>
 		</div>
 		<div class="buttons">
 			<div class="button" @click="confirm()">确认</div>
@@ -12,7 +15,7 @@
 
 <script setup lang="ts" name=""> 
 	import { ref } from 'vue';
-	import midTextAreaVue from '../../other/midTextArea.vue';
+	import textAreaVue from '@/components/other/textArea/textArea.vue';
 	import { closePopUp } from '../../../hooks/popUp';
 	const inputText = ref("")
 	const {returnValue,popUp} = defineProps(["returnValue","popUp"])

@@ -3,10 +3,9 @@
 		<div class="statusInfo">
 			<!-- 属性名 -->
 			<div class="statusName">
-				<midTextAreaVue
+				<textAreaVue
 					v-model="newStatus.name"
-					placeholder="属性名">
-				</midTextAreaVue>
+					placeholder="属性名"/>
 				<div>：</div>
 			</div>
 
@@ -14,10 +13,12 @@
 			<statusValueVue class="statusValue"></statusValueVue>
 		</div>
 		
-		<!-- 选择属性值类型 -->
+		<!-- 属性设置 -->
 		<div class="statusSet">
+			<!-- 选择属性值类型 -->
 			<ElSelect
-				class="valueType" 
+				@change="changeValueType"
+				class="selectValueType" 
 				v-model="newStatus.valueType"
 				placeholder="Select">
 				<ElOption
@@ -32,6 +33,7 @@
 		</div>
 		<!-- 额外输入栏 -->
 		<component :is="statusBonusInputList[newStatus.valueType]"></component>
+
 		<!-- 属性设置栏 -->
 		<div class="settingBox" :class="setNewStatus? 'settingBox-show':''">
 			<settingBoxOptionVue 
@@ -52,7 +54,7 @@
 	import settingBoxOptionVue from '../status/settingBoxOption.vue';
 	import statusValueVue from '../status/statusValue/statusValue.vue';
 	import { statusBonusInputList } from '@/data/list/statusBonusInputList';
-	import midTextAreaVue from '../../../other/midTextArea.vue';
+	import textAreaVue from '@/components/other/textArea/textArea.vue';
 	import Status from '@/interfaces/exitenceStatus';
 	import { showQuickInfo } from '@/api/showQuickInfo';
 	import { ElOption, ElSelect } from 'element-plus';
@@ -73,9 +75,6 @@
 		newStatus.setting = {}
 		newStatus.value = null
 	}
-	watch(()=> newStatus.valueType ,()=>{
-		changeValueType()
-	})
 	// 新增属性的设置
 	// 切换属性Box的显示
 	let setNewStatus = ref(false)
@@ -85,7 +84,7 @@
 	// 属性box的选项内容
 	let setOptions = reactive<any[]>([])
 	// 选项子组件
-	const optionRefs = setOptions.map((_, index) => ref(null));
+	const optionRefs = setOptions.map((_,) => ref(null));
 	watch(()=> newStatus.valueType ,()=>{
 		setOptions = statusSettingList.reduce((acc,option)=>{
 			//满足select需求
@@ -151,9 +150,8 @@
 			display: flex;
 			align-items: center;
 			height: 80px;
-			.valueType{
+			.selectValueType{
 				width: calc(100% - 200px);
-				height: 80px;
 			}
 			.button{
 				box-sizing: border-box;

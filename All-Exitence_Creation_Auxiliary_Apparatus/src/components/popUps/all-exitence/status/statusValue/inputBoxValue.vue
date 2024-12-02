@@ -1,11 +1,16 @@
 <template>
 	<div class="inputBox">
-		<textarea auto-height v-model="newValue" @blur="changeStatusValue(newValue)"> </textarea>
+		<textAreaVue 
+			class="input"
+			v-model="newValue"
+			@blur="changeStatusValue(newValue)">
+		</textAreaVue>
 	</div>
 </template>
 
 <script setup lang="ts" name="">
 import { inject, ref } from 'vue'; 
+import textAreaVue from '@/components/other/textArea/textArea.vue';
 	const {value} = defineProps(["value"])
 	const changeStatusValue = inject("changeStatusValue")
 	const newValue = ref(value)
@@ -14,11 +19,8 @@ import { inject, ref } from 'vue';
 <style lang="scss" scoped>
 	.inputBox{
 		width: 100%;
-		textarea{
-			overflow: auto;
-			width: 100%;
-			max-height: 300px;
-			border:1px solid black
-		}
+		height: 100%;
+		overflow: auto;
+		border:3px solid black;
 	}
 </style>
