@@ -3,14 +3,23 @@
 	<div class="range">
 		<div class="top">
 			<div class="halfInput">下限值:
-				<input @input="adjustRange" v-model.number="rangeMin" type="number"/>
+				<downLineInputVue
+					@input="adjustRange" 
+					v-model.number="rangeMin" 
+					type="number"/>
 			</div>
 			<div class="halfInput">上限值:
-				<input @input="adjustRange" v-model.number="rangeMax" type="number"/>
+				<downLineInputVue
+					@input="adjustRange" 
+					v-model.number="rangeMax" 
+					type="number"/>
 			</div>
 		</div>
 		<div class="halfInput" >单位值:
-			<input @input="adjustStep" v-model.number="rangeStep" type="number"/>
+			<downLineInputVue
+				@input="adjustStep" 
+				v-model.number="rangeStep" 
+				type="number"/>
 		</div>
 	</div>
 </template>
@@ -19,7 +28,8 @@
 import { inject, ref} from 'vue';
 import { showQuickInfo } from '@/api/showQuickInfo';
 import Status from '@/interfaces/exitenceStatus';
-	const status = inject<Status>('status'); 
+import downLineInputVue from '@/components/other/input/downLineInput.vue';
+	const status = inject<Status>('status',<any>{}); 
 	if(!status){
 		alert("没有属性传入")
 	}

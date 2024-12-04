@@ -1,16 +1,19 @@
 <template>
 	<div class="switch">
 		<div class="textInput">左侧：
-			<input @input="setStatus" v-model="leftText"/>
+			<downLineInputVue 
+				@input="setStatus" v-model="leftText"/>
 		</div>
 		<div class="textInput">右侧：
-			<input @input="setStatus" v-model="rightText"/>
+			<downLineInputVue 
+				@input="setStatus" v-model="rightText"/>
 		</div>
 	</div>
 </template>
 
 <script setup lang="ts" name=""> 
 import { inject, ref } from 'vue'; 
+import downLineInputVue from '@/components/other/input/downLineInput.vue';
 	const status = inject<any>("status",{})
 	let leftText = ref("")
 	let rightText = ref("")

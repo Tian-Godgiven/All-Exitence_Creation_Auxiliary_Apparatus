@@ -2,8 +2,18 @@
 	<!-- 选项栏 -->
 	<div class="choose">
 		<div class="chooseNum">
-			<div class="halfInput">最少选择:<input @blur="setChooseNum" v-model.number="chooseMin"/></div>
-			<div class="halfInput">最多选择:<input @blur="setChooseNum" v-model.number="chooseMax"/></div>
+			<div class="halfInput">最少选择:
+				<inputVue 
+					type="number"
+					@blur="setChooseNum"
+					v-model.number="chooseMin"/>
+			</div>
+			<div class="halfInput">最多选择:
+				<inputVue 
+					type="number"
+					@blur="setChooseNum"
+					v-model.number="chooseMax"/>
+			</div>
 		</div>
 		<!-- 已有选项 -->
 		<div class="choices">
@@ -15,7 +25,10 @@
 		
 		<!-- 新增选项输入 -->
 		<div class="newChoice">
-			<input v-model="newChoice" placeholder="新增选项"/>
+			<inputVue
+				class="input"
+				v-model="newChoice" 
+				placeholder="新增选项"/>
 			<div class="button" @click="addChoice">新增</div>
 		</div>
 	</div>
@@ -25,8 +38,9 @@
 <script setup lang="ts" name="">
 import { inject, reactive, ref, toRaw, watch } from 'vue'; 
 import { showQuickInfo } from '@/api/showQuickInfo';
+import inputVue from '@/components/other/input/downLineInput.vue';
 	const status = inject<any>('status',{});
-// 选择数量输入栏
+	// 选择数量输入栏
 	let chooseMin = ref(0)
 	let chooseMax = ref(0)
 	// 最少选择数量不小于0
@@ -66,7 +80,6 @@ import { showQuickInfo } from '@/api/showQuickInfo';
 	}
 	// 删除选项
 	function deleteChoice(index:number){
-		
 		//如果选项在value中，则删除
 		const choice = choices[index]
 		const tmp = toRaw(status["value"])
@@ -101,6 +114,16 @@ import { showQuickInfo } from '@/api/showQuickInfo';
 		
 		.newChoice{
 			display: flex;
+			width: 100%;
+			.input{
+				font-size: 1rem;
+				width: calc(100% - 80px);
+				padding: 5px;
+				box-sizing: border-box;
+			}
+			.button{
+				width: 80px;
+			}
 		}
 	}
 	.halfInput{

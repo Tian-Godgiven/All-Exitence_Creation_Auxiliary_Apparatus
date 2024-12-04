@@ -10,7 +10,8 @@
 				<div class="part">
 					<div class="value">{{showPartValue(part,index)}}</div>
 					<div class="key">
-						<input v-model="part.__key" @blur="checkPartKey(part)"/>
+						<inputVue
+							v-model="part.__key" @blur="checkPartKey(part)"/>
 					</div>
 					<div class="quotePart" @click="quotePart(part)">引</div>
 					<div class="delete" @click="deletePart(index)">删</div>
@@ -40,8 +41,8 @@ import { showQuickInfo } from '@/api/showQuickInfo';
 import inputStatusValueVue from '@/popUps/all-exitence/inputStatusValue.vue';
 import multiStatusExpressionVue from '@/popUps/expression/multiStatusExpression.vue';
 import chooseFromListVue from '@/components/popUps/others/chooseFromList.vue';
-
-	//用于显示弹窗内容
+import inputVue from '@/components/other/input/downLineInput.vue'
+	//不同按键对应的各个弹窗对象
 	const multiBonusPopUpList = {
 		"text":shallowRef(textInputVue),
 		"quoteStatus":shallowRef(chooseFromListVue),
@@ -56,7 +57,7 @@ import chooseFromListVue from '@/components/popUps/others/chooseFromList.vue';
 	}
 	const status = inject<any>("status")
 	const typeStatus = inject<any>("typeStatus")
-	// 总的复合属性值，依次保存各个复合属性对象
+	// 当前复合属性的值，数组内依次保存各个复合属性对象
 	const multiValue = ref(status.value ? status.value : [])
 	// 将属性值同步到属性上
 	function changeStatusValue(){
@@ -219,6 +220,9 @@ import chooseFromListVue from '@/components/popUps/others/chooseFromList.vue';
 				}
 				.key{
 					width: 150px;
+					input{
+						width: 100%;
+					}
 				}
 				.type{
 					width: 100px;

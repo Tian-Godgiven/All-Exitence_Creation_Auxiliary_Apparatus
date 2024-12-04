@@ -1,11 +1,15 @@
 <template>
 	<div class="radio">
-		<div class="textInput">文本：<input @input="setStatus" v-model="text"/></div>
+		<div class="textInput">文本：
+			<downLineInputVue
+				@input="setStatus" v-model="text"/>
+		</div>
 	</div>
 </template>
 
 <script setup lang="ts" name=""> 
 import { inject, ref } from 'vue'; 
+import downLineInputVue from '@/components/other/input/downLineInput.vue';
 	const status = inject<any>("status")
 	const text = ref("")
 	function setStatus(){

@@ -3,7 +3,9 @@
 	<div class="choose">
 		<div class="chooseNum">
 			<div class="halfInput">最多选择:
-				<input @blur="setChooseNum" v-model.number="chooseMax"/>
+				<downLineInputVue
+					@blur="setChooseNum" v-model.number="chooseMax"
+					type="number"/>
 			</div>
 		</div>
 		<!-- 已有选项 -->
@@ -16,7 +18,10 @@
 		
 		<!-- 新增选项输入 -->
 		<div class="newChoice">
-			<input v-model="newChoice" placeholder="新增选项"/>
+			<downLineInputVue
+				class="input"
+				v-model="newChoice" 
+				placeholder="新增选项"/>
 			<div class="button" @click="addChoice">新增</div>
 		</div>
 	</div>
@@ -26,6 +31,7 @@
 <script setup lang="ts" name="">
 import { inject, reactive, ref, toRaw } from 'vue'; 
 import { showQuickInfo } from '@/api/showQuickInfo';
+import downLineInputVue from '@/components/other/input/downLineInput.vue';
 
 	const status = inject<any>('status',{});
 // 选择数量输入栏,不可以设定最小选择数量
@@ -94,6 +100,16 @@ import { showQuickInfo } from '@/api/showQuickInfo';
 		
 		.newChoice{
 			display: flex;
+			width: 100%;
+			.input{
+				font-size: 1rem;
+				width: calc(100% - 80px);
+				padding: 5px;
+				box-sizing: border-box;
+			}
+			.button{
+				width: 80px;
+			}
 		}
 	}
 	.halfInput{

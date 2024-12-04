@@ -1,7 +1,9 @@
 <template>
 	<div>
 		<div class="top">
-			<input class="typeName downLine" placeholder="输入分类名称"/>
+			<downLineInputVue 
+				class="typeName"
+				placeholder="输入分类名称"/>
 			<div class="button" @click="extendStatus">继承属性</div>
 		</div>
 		<!-- 分类属性 -->
@@ -25,8 +27,10 @@
 
 <script setup lang="ts" name="">
 import { provide, ref } from 'vue'; 
+import downLineInputVue from '@/components/other/input/downLineInput.vue';
 import typeStatusVue from '@/components/popUps/all-exitence/type/typeStatus.vue';
 import newTypeStatusVue from '@/components/popUps/all-exitence/type/newTypeStatus.vue';
+
 	let typeStatus = ref<any>([])
 	provide("typeStatus",typeStatus)
 	
@@ -58,10 +62,15 @@ import newTypeStatusVue from '@/components/popUps/all-exitence/type/newTypeStatu
 @use "@/static/style/components/inputs.scss";
 	.top{
 		display: flex;
+		height: 100%;
+		position: relative;
 		.typeName{
-			@extend .downLine;
+			position: relative;
+			top:-20px;
+			margin-top:auto;
+			font-size: 1.4rem;
 			width: 550px;
-			height: 80px;
+			height: 60px;
 		}
 		.button{
 			height: 80px;

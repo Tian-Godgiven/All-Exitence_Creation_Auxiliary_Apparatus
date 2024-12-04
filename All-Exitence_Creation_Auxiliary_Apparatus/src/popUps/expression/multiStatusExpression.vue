@@ -1,52 +1,56 @@
 <template>
 	<div>
 		<!-- 显示区 -->
-		<div class="divArea">
-			<div v-for="(item) in items" :class="item.type">
-				{{itemValue(item)}}
-			</div>
-		</div>
+		<textAreaVue 
+			class="showArea"
+			:inputSupport="true"/>
 		<!-- 输入区 -->
 		<div class="inputArea">
-				<div class="input">
-					<input class="inputValue" v-model="inputValue" />
-					<div @click = "inputConfirm">确认</div>
-				</div>
+			<div class="buttons">
+				<div @click="quoteStatus">引用属性</div>
+				<div @click="quotePart">引用部分</div>
+			</div>
+			<div class="keyBoard">
 				<div @click="clickButton('+')">+</div>
 				<div @click="clickButton('-')">-</div>
 				<div @click="clickButton('backSpace')" class="backSpace">退格</div>
 				
-				<div @click="quoteStatus">引用属性</div>
 				<div @click="clickButton('*')">*</div>
 				<div @click="clickButton('/')">/</div>
 				
-				
-				<div @click="quotePart">引用部分</div>
 				<div @click="clickButton('%')">%</div>
 				<div @click="clickButton('^')">次方</div>
 				<div @click="clickButton('^^')">开方</div>
+			</div>
 		</div>
+		
+		
 		<div>报错</div>
+
+		<div class="buttons">
+			<div>确认</div>
+			<div>返回</div>
+		</div>
 	</div>
 </template>
 
 <script setup lang="ts" name="">
-import { ref, shallowRef } from 'vue'; 
-import { showPopUp } from '@/hooks/popUp';
-import chooseFromListVue from '@/components/popUps/others/chooseFromList.vue';
+	import { ref, shallowRef } from 'vue'; 
+	import { showPopUp } from '@/hooks/popUp';
+	import chooseFromListVue from '@/components/popUps/others/chooseFromList.vue';
+	import textAreaVue from '@/components/other/textArea/textArea.vue';
 
 	const {props,popUp,returnValue} = defineProps(["props","popUp","returnValue"])
 	const {parts,typeStatus} = props
-	const items = ref<any[]>([])
-	
-	// 添加元素
-	function addItem(value,type){
-		items.value.push({value,type})
-		checkExpression()
+
+	interface item{
+		value:any,
+		valueType:string
 	}
-	// 元素显示的内容
-	function itemValue(item){
-		return item.value
+	// 添加对象
+	function addItem(value,type){
+		//特殊类型的对象需要
+		checkExpression()
 	}
 	// 检查表达式:item之间的排列是否符合规范
 	function checkExpression(){
@@ -65,12 +69,6 @@ import chooseFromListVue from '@/components/popUps/others/chooseFromList.vue';
 				}
 			}
 		})
-	}
-	// 输入框
-	const inputValue = ref()
-	function inputConfirm(){
-		addItem(inputValue.value,"text")
-		inputValue.value = ""
 	}
 	// 弹出选择引用属性页面
 	function quoteStatus(){
@@ -150,18 +148,20 @@ import chooseFromListVue from '@/components/popUps/others/chooseFromList.vue';
 </script>
 
 <style lang="scss" scoped>
-	.divArea{
+	.showArea{
 		width: 100%;
 		height: 120px;
-		border: 5px dashed black;
+		border: 3px solid black;
+		padding: 5px;
 		border-radius: 10px;
 		margin-bottom: 30px;
-		display: flex;
-		// 输入的文本内容显示
+		outline: none;
+		overflow: auto;
+		// 输入的文本内容
 		.text{
 			
 		}
-		// 输入的引用属性显示
+		// 输入的引用属性
 		.quoteStatus{
 			
 		}
@@ -170,22 +170,32 @@ import chooseFromListVue from '@/components/popUps/others/chooseFromList.vue';
 		}
 	}
 	.inputArea{
-		display: grid;
-		grid-template-columns: 3fr 1fr 1fr 1fr; /* 三列，分别是 1fr, 2fr 和 1fr */
-		grid-template-rows: 30% 30% 30%; /* 三行，第一行 100px 高，第二行自适应，第三行 50px 高 */
-		gap: 10px;
-		.backSpace{
-			grid-column: 4;
-			grid-row: span 2
+		display: flex;
+		width: 100%;
+		.buttons{
+			width: 250px;
+			margin-right: 5px;
+			> div{
+				text-align: center;
+				padding: 5px;
+				margin-bottom: 5px;
+				border: 4px solid black;
+			}
 		}
-		.input{
-			display: flex;
-			border:3px solid black;
-			border-radius: 10px;
-			padding: 0 10px;
-			.inputValue{
-				height: 100%;
+		.keyBoard{
+			width: calc(100% - 250px);
+			display: grid;
+			grid-template-columns: 1fr 1fr 1fr; /* 三列，分别是 1fr, 2fr 和 1fr */
+			grid-template-rows: 1fr 1fr 1fr; /* 三行，第一行 100px 高，第二行自适应，第三行 50px 高 */
+			border: 1px solid black;
+			> div{
+				border: 1px solid black;
+			}
+			.backSpace{
+				grid-column: 3;
+				grid-row: span 2;
 			}
 		}
 	}
+	
 </style>

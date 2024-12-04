@@ -26,16 +26,15 @@
 				<textAreaVue
 					placeholder="输入标题"
 					v-model="textTitle"
-					@focus="showInputSupport" 
-					@blur="hideInputSupport" >
+					:inputSupport="true">
 				</textAreaVue>
 			</div>
 			<div class="innerText">
 				<textAreaVue 
+					:checkList="keyWordList"
 					v-if="innerType == 'article'" 
 					v-model="textInner"
-					@focus="showInputSupport" 
-					@blur="hideInputSupport" >
+					:inputSupport="true"> 
 				</textAreaVue>
 				<exitenceInnerVue v-if="innerType == 'exitence'" :exitence='textInner'></exitenceInnerVue>
 			</div>
@@ -51,10 +50,8 @@
 	<rightPageVue :showWidth="rightShowWidth" >
 	</rightPageVue>
 	
-	<!-- 创作辅助栏 -->
-	<inputSupportVue v-show="inputSupportShowing"></inputSupportVue>
-	
-	
+	<!-- 输入辅助栏 -->
+	<inputSupportVue></inputSupportVue>
 	
 	<!-- 弹窗 -->
 	<div class="popUpContainer" >
@@ -62,7 +59,6 @@
 		<maskVue></maskVue>
 		<popUpVue v-for="popUp in popUpList" :popUp="popUp"></popUpVue>
 	</div>
-	
 
 </div>
 </template>
@@ -76,10 +72,9 @@ import rightPageVue from '@/pages/rightPage.vue';
 import exitenceInnerVue from '@/components/mainPage/exitenceInner.vue';
 import maskVue from '@/components/mainPage/mask.vue';
 import textAreaVue from '@/components/other/textArea/textArea.vue';
-import { hideInputSupport, inputSupportShowing, showInputSupport } from '@/hooks/inputSupport';
 import inputSupportVue from '@/components/mainPage/inputSupport.vue';
 import popUpVue from './popUp.vue';
-
+import { keyWordList } from '@/data/list/checkList/keyWorkList';
 // 功能按键
 	const buttons = [
 		{
@@ -109,7 +104,7 @@ import popUpVue from './popUp.vue';
 // 内容栏的内容
 	let textTitle = ref("标题测试")
 	const 大量内容测试 = '内容'.repeat(1000);
-	let textInner = ref(大量内容测试)
+	let textInner = ref("")
 
 	// 内容栏字符数量
 	let textNum = ref(0)

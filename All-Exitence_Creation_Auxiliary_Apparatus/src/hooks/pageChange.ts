@@ -1,6 +1,7 @@
 import { ref } from 'vue';
 import managePx from "../api/managePx"
 import { changeMaskAlpha, hideMask, ifMask, maskAlphaMax, showMask } from './leftPageMask';
+import { hideInputSupport } from './inputSupport';
 
 // 控制左侧页面显示
 export let leftShowWidth = ref(0) //左侧显示的宽度，页面本身的宽度固定
@@ -42,6 +43,8 @@ let distantX:number
 // 判断是否为竖向滑动
 let ifVertical = false
 let ifHorizontal = false
+// 判断是否开始滑动/滑动全程只执行一次
+let startMove = true
 
 // 是否允许滑动事件，在弹窗出现时阻止滑动事件
 export let changePage = ref(true)
@@ -73,6 +76,10 @@ export function touchMove(e:any){
 	// 否则禁止上下滑动
 	e.preventDefault()
 	
+	if(startMove){
+		hideInputSupport()
+		startMove = false
+	}
 	
 	// 移动距离
 	let movingX = moveStartX - e.touches[0].clientX
@@ -118,6 +125,7 @@ export function touchEnd(){
 		return false
 	}
 	
+	startMove = true
 	let touchEndTime = Date.now()
 	let moveDistant = distantX
 	let moveTime = touchEndTime - touchStartTime
