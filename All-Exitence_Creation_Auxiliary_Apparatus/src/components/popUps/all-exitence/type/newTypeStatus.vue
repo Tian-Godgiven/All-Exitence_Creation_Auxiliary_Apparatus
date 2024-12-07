@@ -6,8 +6,8 @@
 				<textAreaVue
 					v-model="newStatus.name"
 					placeholder="属性名"/>
-				<div>：</div>
 			</div>
+			<div class="separator">：</div>
 
 			<!-- 属性值 -->
 			<statusValueVue class="statusValue"></statusValueVue>
@@ -138,12 +138,14 @@
 			min-height: 40px;
 			width: 100%;
 			.statusName{
-				display: flex;
-				width: 180px;
+				width: calc(150px - 1rem);
 				box-sizing: border-box;
 			}
+			.separator{
+				min-width: 1rem;
+			}
 			.statusValue{
-				width: calc(100% - 190px);
+				width: calc(100% - 150px);
 			}
 		}
 		.statusSet{

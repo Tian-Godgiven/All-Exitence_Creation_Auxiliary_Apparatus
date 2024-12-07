@@ -87,7 +87,7 @@ multi属性值中的part的valueType
 | quotePart   | 引用部分，值为：该部分的key索引<br />需要选择该multi属性下的另一个部分，引用其值并显示在该部分，引用时使用这个part的key |
 | enterLine   | 换行，该部分part作为占位符，使得下一个部分显示在下一行       |
 | expression  | 特殊表达式，在弹窗中输入相应的multiStatus表达式并显示该表达式返回的值，支持对其他属性、其他部分的基础运算：加减乘除取余次方开方，详见[multi复合属性表达式]([../../../../../功能设计\特殊表达式\multi复合属性表达式.md) |
-| 见上方      | 其他的非multi或status的属性valueType，需要注意value会随之改变 |
+| statusValue | 属性值，即新增的非复合非嵌套属性，这个属性的属性名会作为key，并且value是这一整个属性对象，作为值显示在复合属性中 |
 
 ## 嵌套属性 status 
 

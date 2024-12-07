@@ -66,7 +66,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { popUpList, showPopUp } from '@/hooks/popUp.ts'
 import { rightShowWidth,leftShowWidth,touchStart,touchMove,touchEnd,showLeft} from '@/hooks/pageChange';
 import leftPageVue from '@/pages/leftPage.vue';
@@ -110,9 +110,9 @@ import inputSuggestionVue from '@/components/other/inputSuggestion.vue';
 	let textInner = ref(大量内容测试)
 
 	// 内容栏字符数量
-	let textNum = ref(0)
-	
-	textNum.value = textInner.value.length
+	let textNum = computed(()=>{
+		return textInner.value.length
+	})
 
 	let innerType = 'article'
 </script>

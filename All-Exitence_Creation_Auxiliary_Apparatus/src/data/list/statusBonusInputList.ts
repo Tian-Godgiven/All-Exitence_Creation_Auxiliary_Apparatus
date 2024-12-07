@@ -6,7 +6,7 @@ import childStatusBonusVue from "../../components/popUps/all-exitence/status/sta
 import selectBonusVue from "../../components/popUps/all-exitence/status/statusBonusInput/selectBonus.vue";
 import chooseBonusVue from "../../components/popUps/all-exitence/status/statusBonusInput/chooseBonus.vue";
 
-export let statusBonusInputList = {
+export let statusBonusInputList:{[key:string]:any} = {
 	"range":rangeBonusVue,
 	"select":selectBonusVue,
 	"choose":chooseBonusVue,

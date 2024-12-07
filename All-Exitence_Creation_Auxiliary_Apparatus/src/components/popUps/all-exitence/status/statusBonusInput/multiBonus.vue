@@ -11,7 +11,9 @@
 					<div class="value">{{showPartValue(part,index)}}</div>
 					<div class="key">
 						<inputVue
-							v-model="part.__key" @blur="checkPartKey(part)"/>
+							v-model="part.__key" 
+							@blur="checkPartKey(part)"
+						/>
 					</div>
 					<div class="quotePart" @click="quotePart(part)">引</div>
 					<div class="delete" @click="deletePart(index)">删</div>
@@ -33,7 +35,7 @@
 </template>
 
 <script setup lang="ts" name="">
-import { inject, ref, shallowRef } from 'vue'; 
+import { inject, ref, shallowRef, toRaw } from 'vue'; 
 import draggableListVue from '@/components/other/draggableList/draggableList.vue';
 import { showPopUp } from '@/hooks/popUp';
 import textInputVue from "@/components/popUps/others/textInput.vue";
@@ -42,6 +44,7 @@ import inputStatusValueVue from '@/popUps/all-exitence/inputStatusValue.vue';
 import multiStatusExpressionVue from '@/popUps/expression/multiStatusExpression.vue';
 import chooseFromListVue from '@/components/popUps/others/chooseFromList.vue';
 import inputVue from '@/components/other/input/downLineInput.vue'
+import { statusValueTypeList } from '@/data/list/statusValueList';
 	//不同按键对应的各个弹窗对象
 	const multiBonusPopUpList:{[key:string]:any} = {
 		"text":shallowRef(textInputVue),
@@ -59,31 +62,38 @@ import inputVue from '@/components/other/input/downLineInput.vue'
 	const typeStatus = inject<any>("typeStatus")
 	// 当前复合属性的值，数组内依次保存各个复合属性对象
 	const multiValue = ref(status.value ? status.value : [])
-	// 将属性值同步到属性上
+	// 将值同步回属性上
 	function changeStatusValue(){
 		status.value = multiValue.value
-		console.log(multiValue.value)
 	}
-	// 创建新的part并push进去
+	// 创建并添加新的part
 	function createNewPart(value:any,type:string){
 		if(!value || value==""){
 			return false
+		}
+		let key = ""
+		if(type == "statusValue"){
+			key = value.name
 		}
 		// 新的part
 		const newPart:multiStatusPart = {
 			value : value,
 			valueType : type,
-			__key : ""
+			__key : key
 		}
 		multiValue.value.push(newPart)
+
+		checkPartKey(newPart)
 		changeStatusValue()
 	}
 	// 检查part的关键字是否重复
 	function checkPartKey(part:any){
 		const key = part.__key
-		const ifRepeated = multiValue.value.find((thePart:multiStatusPart)=>
-			key!="" && key == thePart.__key && part != thePart
-		)
+		let ifRepeated = false
+		multiValue.value.forEach((thePart:multiStatusPart) => {
+			thePart = toRaw(thePart)
+			ifRepeated = (key!="" && key == thePart.__key && part != thePart)
+		})
 		if(ifRepeated){
 			showQuickInfo("部分的关键字不得重复.")
 			part.__key = ""
@@ -99,8 +109,15 @@ import inputVue from '@/components/other/input/downLineInput.vue'
 	}
 	//在页面上显示part的值
 	function showPartValue(part:multiStatusPart,index:number){
+		//属性
 		if(part.valueType == "statusValue"){
-			return "属性值:" + part.value.name
+			//显示这个属性的类型名称（中文）
+			const tmp = statusValueTypeList.find((tmp)=>{
+				if(tmp.value == part.value.valueType){
+					return tmp
+				}
+			})
+			return tmp?.text + "属性"
 		}
 		else if(part.valueType == "quoteStatus"){
 			const theStatus = typeStatus["value"].find((status:any)=>status.__key == part.value)
@@ -124,6 +141,9 @@ import inputVue from '@/components/other/input/downLineInput.vue'
 				deletePart(index)
 				return false
 			}
+		}
+		else if(part.valueType == "expression"){
+			return "属性表达式"
 		}
 		else{
 			return part.value
@@ -216,7 +236,7 @@ import inputVue from '@/components/other/input/downLineInput.vue'
 				display: flex;
 				padding: 10px 0;
 				.value{
-					width: 200px;
+					width: 270px;
 				}
 				.key{
 					width: 150px;
@@ -224,8 +244,8 @@ import inputVue from '@/components/other/input/downLineInput.vue'
 						width: 100%;
 					}
 				}
-				.type{
-					width: 100px;
+				.quotePart{
+					width: 50px;
 				}
 				.delete{
 					width: 50px;

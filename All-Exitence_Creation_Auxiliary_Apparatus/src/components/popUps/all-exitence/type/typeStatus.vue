@@ -34,7 +34,6 @@ import textAreaVue from '@/components/other/textArea/textArea.vue';
 	.status{
 		display: flex;
 		.name{
-			display: flex; 
 			width:calc(150px - 1rem);
 			box-sizing: border-box;
 		}
