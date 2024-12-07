@@ -43,14 +43,14 @@ import multiStatusExpressionVue from '@/popUps/expression/multiStatusExpression.
 import chooseFromListVue from '@/components/popUps/others/chooseFromList.vue';
 import inputVue from '@/components/other/input/downLineInput.vue'
 	//不同按键对应的各个弹窗对象
-	const multiBonusPopUpList = {
+	const multiBonusPopUpList:{[key:string]:any} = {
 		"text":shallowRef(textInputVue),
 		"quoteStatus":shallowRef(chooseFromListVue),
 		"statusValue":shallowRef(inputStatusValueVue),
 		"expression":shallowRef(multiStatusExpressionVue)
 	}
 
-	interface Part{
+	export interface multiStatusPart{
 		value:any,
 		valueType:string,
 		__key:string
@@ -70,7 +70,7 @@ import inputVue from '@/components/other/input/downLineInput.vue'
 			return false
 		}
 		// 新的part
-		const newPart:Part = {
+		const newPart:multiStatusPart = {
 			value : value,
 			valueType : type,
 			__key : ""
@@ -81,7 +81,7 @@ import inputVue from '@/components/other/input/downLineInput.vue'
 	// 检查part的关键字是否重复
 	function checkPartKey(part:any){
 		const key = part.__key
-		const ifRepeated = multiValue.value.find((thePart:Part)=>
+		const ifRepeated = multiValue.value.find((thePart:multiStatusPart)=>
 			key!="" && key == thePart.__key && part != thePart
 		)
 		if(ifRepeated){
@@ -90,7 +90,7 @@ import inputVue from '@/components/other/input/downLineInput.vue'
 		}
 	}
 	// 引用相应part
-	function quotePart(part:Part){
+	function quotePart(part:multiStatusPart){
 		if(!part.__key){
 			showQuickInfo("需要为相应的部分设置关键字")
 			return false
@@ -98,7 +98,7 @@ import inputVue from '@/components/other/input/downLineInput.vue'
 		createNewPart(part.__key,"quotePart")
 	}
 	//在页面上显示part的值
-	function showPartValue(part:Part,index:number){
+	function showPartValue(part:multiStatusPart,index:number){
 		if(part.valueType == "statusValue"){
 			return "属性值:" + part.value.name
 		}
@@ -114,7 +114,7 @@ import inputVue from '@/components/other/input/downLineInput.vue'
 			}
 		}
 		else if(part.valueType == "quotePart"){
-			const targetPart = multiValue.value.find((parts:Part)=>parts.__key == part.value)
+			const targetPart = multiValue.value.find((parts:multiStatusPart)=>parts.__key == part.value)
 			if(targetPart){
 				part.value = targetPart.__key
 				return "引用部分:" + part.value
@@ -186,7 +186,7 @@ import inputVue from '@/components/other/input/downLineInput.vue'
 			}
 		})
 	}
-	// 这个弹窗的尺寸和参数不一样
+	// 显示属性输入弹窗，这个弹窗的尺寸和参数不一样
 	function showStatusValueInput(){
 		showPopUp({
 			vue:multiBonusPopUpList["statusValue"],

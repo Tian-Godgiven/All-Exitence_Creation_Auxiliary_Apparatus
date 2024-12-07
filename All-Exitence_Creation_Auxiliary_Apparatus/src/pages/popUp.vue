@@ -69,7 +69,8 @@ import { popUpVueList } from '../data/list/popUpVueList';
 		box-sizing: border-box;
 		border-radius: 2%;
 		pointer-events: auto;
-		overflow:auto;
+		overflow-x: visible;
+		overflow-y:auto;
 			.titleName{
 				position: relative;
 				height: 70px;

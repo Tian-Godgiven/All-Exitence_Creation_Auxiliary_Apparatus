@@ -31,7 +31,7 @@
 			</div>
 			<div class="innerText">
 				<textAreaVue 
-					:checkList="keyWordList"
+					:inputSuggestionList="keyWordList"
 					v-if="innerType == 'article'" 
 					v-model="textInner"
 					:inputSupport="true"> 
@@ -52,6 +52,8 @@
 	
 	<!-- 输入辅助栏 -->
 	<inputSupportVue></inputSupportVue>
+	<!-- 输入提示组件 -->
+	<inputSuggestionVue/>
 	
 	<!-- 弹窗 -->
 	<div class="popUpContainer" >
@@ -74,7 +76,8 @@ import maskVue from '@/components/mainPage/mask.vue';
 import textAreaVue from '@/components/other/textArea/textArea.vue';
 import inputSupportVue from '@/components/mainPage/inputSupport.vue';
 import popUpVue from './popUp.vue';
-import { keyWordList } from '@/data/list/checkList/keyWorkList';
+import { keyWordList } from '@/data/list/inputSuggestionList/keyWorkList';
+import inputSuggestionVue from '@/components/other/inputSuggestion.vue';
 // 功能按键
 	const buttons = [
 		{
@@ -104,7 +107,7 @@ import { keyWordList } from '@/data/list/checkList/keyWorkList';
 // 内容栏的内容
 	let textTitle = ref("标题测试")
 	const 大量内容测试 = '内容'.repeat(1000);
-	let textInner = ref("")
+	let textInner = ref(大量内容测试)
 
 	// 内容栏字符数量
 	let textNum = ref(0)

@@ -28,9 +28,20 @@ v-model : 双向绑定的内容值，会在输入时更新
 
 ## 方法
 
-~~~
-blur : 在输入栏失去焦点时触发，若此时无内容则会显示placeholder
-focus : 在输入栏获得焦点时触发，若此时显示placeholder则会清除placeholder并重新聚焦一次
-input: 会在输入栏中进行输入时触发，此时还会判断是否进行输入补全提示
-~~~
+### 失焦事件 blur(content:string)
+
+在输入栏失去焦点时触发  
+若此时无内容则会显示placeholder  
+参数为输入的当前内容
+
+### 聚焦事件 focus(content:string)
+
+在输入栏获得焦点时触发   
+若此时已经显示placeholder则会清除placeholder并重新聚焦一次
+
+### 输入事件 input(content:string , newInput:string)
+
+在输入栏中进行输入时触发  
+随后判断是否进行输入补全提示  
+第二个参数为当前光标的前一个字符，注意是前1个字符
 

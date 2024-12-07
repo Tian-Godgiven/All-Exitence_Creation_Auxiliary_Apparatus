@@ -14,7 +14,6 @@
             @focus="onFocus">
             {{ showText }}
         </div>
-        <inputSuggestionVue v-if="checkList"/>
     </div>
 </template>
 
@@ -22,17 +21,28 @@
 import { focusOnEnd } from '@/api/focusOnEnd';
 import { showInputSupport } from '@/hooks/inputSupport';
 import { ref } from 'vue';
-import inputSuggestionVue from '../inputSuggestion.vue';
 import { checkInputSuggestion, hideInputSuggestion, showInputSuggestion } from '@/hooks/inputSuggestion';
-import { getInputLast } from '@/api/getInputPosition';
+import { addInputLast, addInputLastDiv, deleteInputLast, getInputLast } from '@/api/cursorAbility';
+import { findTargetDivs } from '@/hooks/findTargetDiv';
 
-    const {placeholder,inputSupport,checkList} = defineProps(["placeholder","inputSupport","checkList"])
-    const content = defineModel<string>()
-    const emits = defineEmits(["input","blur","focus"])
     const showText = ref("")
     const textArea = ref()
     let showPlaceholder = false //当前是否显示placeholder
     let effectInput = "" //有效输入
+    let selectionRange:any //记录光标上一次聚焦的位置
+
+    const {placeholder,inputSupport,inputSuggestionList} = defineProps(["placeholder","inputSupport","inputSuggestionList"])
+    const content = defineModel<string>()
+    const emits = defineEmits(["input","blur","focus"])
+    //允许通过父组件访问textArea
+    defineExpose({
+        "focusOnEnd":()=>focusOnEnd(textArea),
+        "addDom":addDom,
+        "addContent":addContent,
+        "getContentDom":getContentDom,
+        "deleteContent":deleteContent
+    })
+    
     // 未传入内容显示placeholder
     if(content.value == "" || !content.value){
         showText.value = placeholder
@@ -44,14 +54,16 @@ import { getInputLast } from '@/api/getInputPosition';
     }
     //同步输入，判断输入补全提示
     function onInput(event:any){
-        //获取新输入的内容
+        const selection = window.getSelection();
+        if(selection) selectionRange = selection.getRangeAt(0);
+        //获取输入的内容
         const text = event.target.textContent
         content.value = text
-        emits("input",content.value)
+        const newInput = getInputLast()
+        emits("input",[content.value,newInput])
         //如果需要输入建议，则check内容
-        if(checkList){
+        if(inputSuggestionList){
             // 将新的输入内容添加到有效输入
-            const newInput = getInputLast()
             if(newInput){
                 effectInput += newInput
             }
@@ -59,14 +71,14 @@ import { getInputLast } from '@/api/getInputPosition';
                 return false
             }
             
-            const content = checkInputSuggestion(checkList,effectInput)
+            const content = checkInputSuggestion(inputSuggestionList,effectInput)
             // 有输入建议：显示输入补全框
             if(content){
                 showInputSuggestion(effectInput,content)
             }
             // 整体不行，则再单独判断新输入
             else{
-                const content2 = checkInputSuggestion(checkList,newInput)
+                const content2 = checkInputSuggestion(inputSuggestionList,newInput)
                 //可行则更新有效输入
                 if(content2){
                     effectInput = newInput
@@ -82,12 +94,13 @@ import { getInputLast } from '@/api/getInputPosition';
             }
         }
     }
-    //移动光标到其他位置时清空有效输入
+    //移动光标到其他位置时清空有效输入,同时记录当前光标位置
     let oldPosition:any
     function clickEvent(){
         const selection = window.getSelection();
         if(selection){
-            const range = selection.getRangeAt(0);  // 获取当前光标的范围
+            const range = selection.getRangeAt(0);  // 获取当前光标的范围并记录
+            selectionRange = range
             // 获取光标位置的文本节点和偏移量
             const newPosition = range.startOffset;
             //位置发生改变则清空有效输入
@@ -125,6 +138,38 @@ import { getInputLast } from '@/api/getInputPosition';
         effectInput = ""
         emits("focus",content.value)
     }
+    //向该输入区中添加一个dom元素
+    function addDom(domHTML:string){
+        //如果还没有聚焦过，则默认为末尾的位置
+        if(!selectionRange){
+            focusOnEnd(textArea.value)
+        }
+        //添加相应class的div并更新selectionRange
+		selectionRange = addInputLastDiv(domHTML,selectionRange)
+    }
+    //向该输入区中添加一段文本
+    function addContent(text:string){
+        //如果还没有聚焦过，则默认为末尾的位置
+        if(!selectionRange){
+            focusOnEnd(textArea.value)
+        }
+        selectionRange = addInputLast(text,selectionRange)
+    }
+    //删除输入区的前n个内容
+    function deleteContent(length:number){
+        //如果还没有聚焦过，则默认为末尾的位置
+        if(!selectionRange){
+            focusOnEnd(textArea.value)
+        }
+        deleteInputLast(length,selectionRange)
+    }
+    //获取输入区中的内容，包括其中存在特殊div的情况
+    function getContentDom(domClass:string,getRule:()=>{}){
+        const contentDom = findTargetDivs(textArea.value,[],domClass,getRule)
+        return contentDom
+    }
+    
+    
     
 </script>
 

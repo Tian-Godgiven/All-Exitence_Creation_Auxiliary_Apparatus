@@ -13,8 +13,7 @@
 
 <script setup lang='ts'>
     import managePx from '@/api/managePx';
-    import { suggestionItem } from '@/data/list/checkList/keyWorkList';
-    import { ifShow,content,positionCSS, hideInputSuggestion, inputText } from '@/hooks/inputSuggestion';
+    import { ifShow,content,positionCSS, hideInputSuggestion, inputText, suggestionItem } from '@/hooks/inputSuggestion';
     import { computed, onMounted, onUnmounted, ref } from 'vue';
     const css = computed(()=>{
         //如果left会使其超出，则左移这个差值
@@ -66,9 +65,8 @@ vue
         position: fixed;
         width: 350px;
         max-height: 700px;
-        z-index: 2;
+        z-index: 200;
         overflow: auto;
-        
         .suggestionItem{
             width: 100%;
             max-height: 200px;

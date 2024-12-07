@@ -24,10 +24,9 @@ import { closePopUp } from '../../../hooks/popUp';
 	const {props,returnValue,popUp} = defineProps(["props","returnValue","popUp"])
 	const {list,emptyInfo,info,chooseNum,selectRule,showValue,chooseValue} = props
 	//允许显示的项
-	console.log(list)
 	let showList
 	if(selectRule){
-		const tmp = list.reduce((acc,cur)=>{
+		const tmp = list.reduce((acc:any[],cur:any)=>{
 			// 需要满足selectRule
 			if(selectRule(cur)){
 				acc.push(cur)
@@ -43,20 +42,24 @@ import { closePopUp } from '../../../hooks/popUp';
 	
 	
 	//已选择的属性对象
-	const chosenOption = ref([])
-	const chosenIndex = ref([])
+	const chosenOption = ref<any>([])
+	const chosenIndex = ref<number[]>([])
 	// 选择指定的属性对象
-	function chooseOption(option,index){
-		//若已经选中则删除，否则添加
+	function chooseOption(option:any,index:number){
+		console.log(option)
+		//若已经选中则删除
 		if(chosenIndex.value.includes(index)){
 			const idx = chosenIndex.value.indexOf(index)
 			chosenOption.value.splice(idx,1)
 			chosenIndex.value.splice(idx,1)
 		}
+		//否则添加这个选项
 		else{
+			//如果定义了选项值的要求，则对选项进行处理，填装处理后的值
 			if(chooseValue){
 				chosenOption.value.push(chooseValue(option))
 			}
+			//否则直接填装选项本身
 			else{
 				chosenOption.value.push(option)
 			}
