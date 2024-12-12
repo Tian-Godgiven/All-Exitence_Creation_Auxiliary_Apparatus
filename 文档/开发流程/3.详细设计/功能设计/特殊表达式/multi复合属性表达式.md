@@ -16,7 +16,8 @@
 ~~~
 {
 	type:"quotePart" ||　"quoteStatus",
-	value:该属性or部分的__key
+	name:该属性的名称，用于在属性表达式中更便捷地显示
+	key:该属性or部分的__key
 }
 ~~~
 

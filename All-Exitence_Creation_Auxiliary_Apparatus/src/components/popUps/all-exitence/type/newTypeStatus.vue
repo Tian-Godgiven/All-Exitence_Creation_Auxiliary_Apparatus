@@ -101,6 +101,11 @@
 	let emit = defineEmits(["createStatus"])
 	function createTypeStatus(){
 		let tmp = true
+		// 要求name不能为空
+		if(newStatus.name == ""){
+			showQuickInfo("属性名不能为空")
+			return false
+		}
 		//依次调用各个设置项的confirmValue函数，
 		optionRefs.forEach((childRef:{[key:string]:any}) => {
 			// 其中任一设置项返回false时，不创建该分类属性
@@ -109,11 +114,6 @@
 			} 
 		});
 		if(!tmp){
-			return false
-		}
-		// 要求name不能为空
-		if(newStatus.name == ""){
-			showQuickInfo("属性名不能为空")
 			return false
 		}
 		

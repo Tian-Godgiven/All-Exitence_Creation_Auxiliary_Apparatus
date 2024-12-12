@@ -25,16 +25,19 @@ import { checkInputSuggestion, hideInputSuggestion, showInputSuggestion } from '
 import { addInputLast, addInputLastDiv, deleteInputLast, getInputLast } from '@/api/cursorAbility';
 import { findTargetDivs } from '@/hooks/findTargetDiv';
 
-    const showText = ref("")
     const textArea = ref()
     let showPlaceholder = false //当前是否显示placeholder
     let effectInput = "" //有效输入
     let selectionRange:any //记录光标上一次聚焦的位置
 
-    const {placeholder,inputSupport,inputSuggestionList} = defineProps(["placeholder","inputSupport","inputSuggestionList"])
-    const content = defineModel<string>()
+    //是否启用修改，占位符，是否静态，是否启用输入辅助，输入建议列表
+    const {disabled,placeholder,inputSupport,inputSuggestionList} = defineProps(
+        ["disabled","placeholder","inputSupport","inputSuggestionList"])
+    //初始值
+    const content = defineModel<any>()
     const emits = defineEmits(["input","blur","focus"])
-    //允许通过父组件访问textArea
+
+    //允许通过父组件访问textArea的一些方法
     defineExpose({
         "focusOnEnd":()=>focusOnEnd(textArea),
         "addDom":addDom,
@@ -43,24 +46,35 @@ import { findTargetDivs } from '@/hooks/findTargetDiv';
         "deleteContent":deleteContent
     })
     
-    // 未传入内容显示placeholder
-    if(content.value == "" || !content.value){
-        showText.value = placeholder
-        showPlaceholder = true
+    //初始化值
+    let showText:any
+    //如果是禁用状态，则showText动态
+    if(disabled){
+        showText = content
     }
     else{
-        showText.value = content.value
-        showPlaceholder = false
+        showText = ref("")
+        // 未传入内容显示placeholder
+        if(content.value == "" || !content.value){
+            showPlaceholder = true
+            showText.value = placeholder
+        }
+        // 传入content则显示content的值
+        else{ 
+            showPlaceholder = false
+            showText.value = content.value
+        }
     }
+    
     //同步输入，判断输入补全提示
     function onInput(event:any){
         const selection = window.getSelection();
         if(selection) selectionRange = selection.getRangeAt(0);
         //获取输入的内容
         const text = event.target.textContent
-        content.value = text
         const newInput = getInputLast()
-        emits("input",[content.value,newInput])
+        content.value = text
+        emits("input",text,newInput)
         //如果需要输入建议，则check内容
         if(inputSuggestionList){
             // 将新的输入内容添加到有效输入
@@ -90,7 +104,6 @@ import { findTargetDivs } from '@/hooks/findTargetDiv';
                     hideInputSuggestion()
                     effectInput = ""
                 }
-                
             }
         }
     }
@@ -107,6 +120,7 @@ import { findTargetDivs } from '@/hooks/findTargetDiv';
             if(oldPosition != newPosition){
                 effectInput = ""
             }
+            oldPosition = newPosition
         }
     }
     //取消聚焦
@@ -165,6 +179,10 @@ import { findTargetDivs } from '@/hooks/findTargetDiv';
     }
     //获取输入区中的内容，包括其中存在特殊div的情况
     function getContentDom(domClass:string,getRule:()=>{}){
+        //如果此时内容为空
+        if(showPlaceholder){
+            return null;
+        }
         const contentDom = findTargetDivs(textArea.value,[],domClass,getRule)
         return contentDom
     }

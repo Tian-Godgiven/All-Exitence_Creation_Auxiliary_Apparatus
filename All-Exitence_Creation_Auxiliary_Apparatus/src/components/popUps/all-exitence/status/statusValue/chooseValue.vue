@@ -1,21 +1,23 @@
 <template>
 	<div class="value">
-		<ElCheckboxGroup :min="min" :max="max" v-model="chosenList" >
+		<ElCheckboxGroup :min="min" :max="max" v-model="status.value" >
 			<ElCheckbox
 				:value="choice"
 				v-for="(choice) in choiceList"
-				class="checkbox" 
-				@change="takeChoose">{{choice}}
+				class="checkbox">
+				{{choice}}
 			</ElCheckbox>
 		</ElCheckboxGroup>
 	</div>
 </template>
 
 <script setup lang="ts" name="">
-import { computed, inject, ref, toRaw } from 'vue'; 
+import { computed, inject } from 'vue'; 
 import { ElCheckboxGroup,ElCheckbox } from 'element-plus';
 	const status = inject<any>("status")
-	const changeStatusValue = inject<(value:any)=>any>('changeStatusValue',()=>{})
+	if(!Array.isArray(status.value)){
+		status.value = []
+	}
 	// 选项数组
 	const choiceList = computed(()=>{
 		return status["setting"]['choices']
@@ -27,14 +29,6 @@ import { ElCheckboxGroup,ElCheckbox } from 'element-plus';
 	const max = computed(()=>{
 		return status["setting"]['chooseNum'][1]
 	})
-	
-	
-	// 已选择选项数组
-	const chosenList = ref(status['value']?status['value']:[])
-	// 选择一个选项
-	const takeChoose = ()=>{
-		changeStatusValue(toRaw(chosenList.value))
-	}
 	
 </script>
 

@@ -1,20 +1,19 @@
 <template>
 	<div class="downLineValue">
 		<textAreaVue
+			:disabled="disabled"
 			class="textArea"
-			v-model="newValue"
+			v-model="status.value"
 			placeholder="输入默认值"
-			@blur="changeStatusValue" />
+			 />
 	</div>
 </template>
 
 <script setup lang="ts" name="">
-import { inject, ref } from 'vue'; 
+import { inject } from 'vue'; 
 import textAreaVue from '@/components/other/textArea/textArea.vue';
-
-	const {value} = defineProps(["value"])
-	const changeStatusValue = inject<()=>{}>("changeStatusValue")
-	const newValue = ref(value)
+	const status = inject<any>("status")
+	const {disabled} = defineProps(["disabled"])
 </script>
 
 <style lang="scss" scoped>

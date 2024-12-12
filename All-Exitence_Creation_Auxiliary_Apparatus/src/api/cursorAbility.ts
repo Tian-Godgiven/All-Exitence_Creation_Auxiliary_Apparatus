@@ -5,11 +5,25 @@ export function getInputPosition(){
     if (selection?.rangeCount){
         const range = selection.getRangeAt(0);
         const rect = range.getBoundingClientRect();
-        return {top:rect.top+rect.height,left:rect.left}
+        return {top:rect.bottom,left:rect.left}
     }
     else{
         return false
     }
+}
+
+//将光标移动到指定的range的末尾
+export function moveCursorTo(range:Range){
+    const selection = window.getSelection();
+    if(!selection) return false
+    if(!range) return false
+    // 取消当前选择的文本范围
+    selection.removeAllRanges();
+    // 创建一个新的 Range 对象，并设置其起始和结束位置
+    selection.addRange(range);
+    // 让光标移动到 range 的末尾
+    selection.collapseToEnd();
+    return selection.getRangeAt(0)
 }
 
 //获取当前屏幕上的光标的前一个字符

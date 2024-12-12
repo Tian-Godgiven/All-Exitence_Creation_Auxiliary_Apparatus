@@ -28,7 +28,7 @@
 			</div>
 		</div>
 		
-		
+		<!-- 待完成：写一个注意事项说清楚顺序执行，没有乘除优先 -->
 		<div class="errorArea">报错信息：
 			<div v-for="text in errorMsg" class="errorMsg">{{ text }}</div>
 		</div>
@@ -47,10 +47,9 @@
 	import textAreaVue from '@/components/other/textArea/textArea.vue';
 	import { showQuickInfo } from '@/api/showQuickInfo';
 	import { suggestionItem } from '@/hooks/inputSuggestion';
-import { multiStatusPart } from '@/components/popUps/all-exitence/status/statusBonusInput/multiBonus.vue';
 import Status from '@/interfaces/exitenceStatus';
 import { deleteInputLast } from '@/api/cursorAbility';
-
+import { explainExpression, multiStatusPart } from '@/hooks/expression/multiStatusValue';
 	const {props,popUp,returnValue} = defineProps(["props","popUp","returnValue"])
 	const {parts,typeStatus} = props
 	//输入区组件
@@ -61,7 +60,7 @@ import { deleteInputLast } from '@/api/cursorAbility';
 	// 报错信息
 	const errorMsg = ref<any[]>([])
 
-	// 生成提示信息
+	// 生成提示信息列表
 		//提示信息列表是这个类的属性与这个复合属性的part
 		const createSuggestionItem = (type:string,key:any,text: string, label: string) => ({
 			text,
@@ -87,6 +86,7 @@ import { deleteInputLast } from '@/api/cursorAbility';
 			const text = type=="quoteStatus" ? "引用属性":"引用部分"
 			const name = type=="quoteStatus" ? value.name:value.__key
 			const tmp = text + name
+			console.log(value,type,name,tmp)
 			const data = {
 				type,
 				name,
@@ -114,9 +114,13 @@ import { deleteInputLast } from '@/api/cursorAbility';
 		expressionValue = textArea.value.getContentDom("quoteDiv",(e:any)=>{
 			return e.dataset.quotedata
 		})
+		//为空
+		if(!expressionValue){
+			return false
+		}
 		let lastItem:any
 		//解析输入内容值
-		const tmp = explainExpression()
+		const tmp = explainExpression(expressionValue)
 		if(!tmp){
 			errorMsg.value.push("表达式无法解析，请检查是否存在错误输入对象")
 			noError = false
@@ -124,13 +128,23 @@ import { deleteInputLast } from '@/api/cursorAbility';
 		//规则：两个对象/字符串/数字之间必须存在计算符号
 		tmp.forEach((item)=>{
 			if(!lastItem){
+				if(isSimbol(item)){
+					noError = false
+					errorMsg.value.push(`不能以符号开头:[${item}]`)
+				}
 				lastItem = item
 			}
 			else{
 				//上一个是符号，这个也是符号
 				if(isSimbol(item) && isSimbol(lastItem)){
-					noError = false
-					errorMsg.value.push(`不得连续使用计算符号:[${lastItem}] 与 [${item}]`)
+					//除非是^^（开方运算符）或者"]" 和 "()"
+					if((item!="^" || lastItem != "^") //开方运算符
+						&&
+						(lastItem !="]" && lastItem != ")" && item != "("//闭括号
+					)){
+						noError = false
+						errorMsg.value.push(`不得连续使用计算符号:[${lastItem}] 与 [${item}]`)
+					}
 				}
 				//上一个不是符号，这个也不是符号
 				else if(!isSimbol(item) && !isSimbol(lastItem)){
@@ -144,7 +158,7 @@ import { deleteInputLast } from '@/api/cursorAbility';
 		})
 		
 		function isSimbol(item:any){
-			return ["+","-","*","/","%","^","^^"].includes(item)
+			return ["+","-","*","/","%","^","^^","[","]","(",")"].includes(item)
 		}
 		function getText(item:any){
 			if(typeof item == "object"){
@@ -170,32 +184,7 @@ import { deleteInputLast } from '@/api/cursorAbility';
 			}
 		})
 
-	//解释表达式，返回表达式的实际结果
-	function explainExpression(){
-		const regex = /([a-zA-Z]+|[0-9]+|[+\-*/%^()^])/g;
-		// 遍历数组，处理每个元素
-		return expressionValue.flatMap(item => {
-			// 如果是对象，将其作为一个单独的值处理
-			try{
-				const tmp = JSON.parse(item)
-				if(tmp.type){
-					return tmp
-				}
-				else{
-					return item.match(regex) || []; // 拆分字符串
-				}
-			}
-			catch{
-				// 如果是字符串，使用正则拆分
-				if (typeof item === 'string') {
-					return item.match(regex) || []; // 拆分字符串
-				}
-				// 对于其他类型的值，直接返回
-				return [item];
-			}
-		});
-
-	}
+	
 	// 弹出选择引用属性页面
 	function quoteStatus(){
 		showPopUp({
@@ -257,8 +246,11 @@ import { deleteInputLast } from '@/api/cursorAbility';
 			},
 			buttons : [],
 			mask : true,
-			returnValue : (value)=>{
-				addItem(value,"quotePart")
+			returnValue : (array)=>{
+				//遍历返回的数组
+				array.forEach((value)=>{
+					addItem(value,"quotePart")
+				})
 			},
 			size:{
 				width:"600px",
@@ -278,13 +270,18 @@ import { deleteInputLast } from '@/api/cursorAbility';
 	}
 	// 点击确定返回表达式
 	function onConfirm(){
+		//为空
+		if(!expressionValue){
+			closePopUp(popUp)
+		}
 		//再检查一次表达式
 		checkExpression()
 		if(noError){
-			returnValue(expressionValue)
+			//返回解释后的表达式
+			returnValue(explainExpression(expressionValue))
 			closePopUp(popUp)
 		}
-		else{
+		else if(!noError){
 			showQuickInfo("表达式包含错误内容")
 		}
 	}

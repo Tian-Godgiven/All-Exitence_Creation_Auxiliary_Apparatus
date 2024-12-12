@@ -1,10 +1,8 @@
 <template>
-	<div>
-		<ElSlider v-model="newValue" 
-			@change="changeStatusValue(newValue)"
+	<div class="rangeValue">
+		<ElSlider v-model="status.value" 
 			:max="max" :min="min" :step="step"
-			placement="bottom"
-			>
+			placement="bottom">
 		</ElSlider>
 	</div>
 </template>
@@ -13,9 +11,7 @@
 import { inject, ref, watch } from 'vue'; 
 import { ElSlider } from 'element-plus';
 
-	const {value} = defineProps(["value"])
 	const status = inject<any>("status")
-	const changeStatusValue = inject("changeStatusValue")
 	let min = ref(0)
 	let max = ref(100)
 	let step = ref(1)
@@ -25,9 +21,11 @@ import { ElSlider } from 'element-plus';
 		max.value = tmp[1] ? tmp[1]:100
 		step.value = tmp[2] ? tmp[2]:1
 	},{immediate:true})
-	const newValue = ref(value)
+	
 </script>
 
 <style lang="scss" scoped>
-
+	.rangeValue{
+		min-width: 200px;
+	}
 </style>

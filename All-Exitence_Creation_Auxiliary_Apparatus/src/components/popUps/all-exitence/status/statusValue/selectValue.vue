@@ -1,12 +1,11 @@
 <template>
-	<div>
+	<div class="selectValue">
 		<ElSelect
-		    v-model="chosenList"
+		    v-model="status.value"
 		    :multiple="ifMultiple"
 			:clearable="true"
 		    placeholder="请选择"
-			:multiple-limit="chooseNum"
-			@change="takeChoose()">
+			:multiple-limit="chooseNum">
 		    <ElOption
 		        v-for="item in choiceList"
 		        :key="item"
@@ -17,9 +16,11 @@
 
 <script setup lang="ts" name=""> 
 import { ElSelect,ElOption } from 'element-plus';
-import { computed, inject, ref, toRaw } from 'vue';
+import { computed, inject, ref } from 'vue';
 	const status = inject<any>("status")
-	const changeStatusValue = inject<(value:any)=>any>("changeStatusValue",()=>{})
+	if(!Array.isArray(status.value)){
+		status.value = []
+	}
 	// 是否为多选模式
 	const ifMultiple = ref(false)
 	// 选项数组
@@ -37,31 +38,11 @@ import { computed, inject, ref, toRaw } from 'vue';
 		}
 		return tmp
 	})
-	// 已选择选项数组
-	const chosenList = ref()
-	// 多选
-	if(ifMultiple.value){
-		chosenList.value = status['value']?status['value']:[]
-	}
-	// 单选
-	else{
-		chosenList.value = status['value']?status['value'][0]:null
-	}
-	
-	// 选择一个选项
-	const takeChoose = ()=>{
-		// 如果是多选模式
-		if(ifMultiple.value){
-			changeStatusValue(toRaw(chosenList.value))
-		}
-		// 否则返回数组
-		else{
-			changeStatusValue([chosenList.value])
-		}
-		
-	}
+
 </script>
 
 <style lang="scss" scoped>
-
+	.selectValue{
+		min-width: 200px;
+	}
 </style>

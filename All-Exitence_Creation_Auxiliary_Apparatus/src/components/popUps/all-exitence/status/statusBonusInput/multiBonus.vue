@@ -45,6 +45,7 @@ import multiStatusExpressionVue from '@/popUps/expression/multiStatusExpression.
 import chooseFromListVue from '@/components/popUps/others/chooseFromList.vue';
 import inputVue from '@/components/other/input/downLineInput.vue'
 import { statusValueTypeList } from '@/data/list/statusValueList';
+import { multiStatusPart } from '@/hooks/expression/multiStatusValue';
 	//不同按键对应的各个弹窗对象
 	const multiBonusPopUpList:{[key:string]:any} = {
 		"text":shallowRef(textInputVue),
@@ -52,23 +53,17 @@ import { statusValueTypeList } from '@/data/list/statusValueList';
 		"statusValue":shallowRef(inputStatusValueVue),
 		"expression":shallowRef(multiStatusExpressionVue)
 	}
-
-	export interface multiStatusPart{
-		value:any,
-		valueType:string,
-		__key:string
-	}
 	const status = inject<any>("status")
 	const typeStatus = inject<any>("typeStatus")
 	// 当前复合属性的值，数组内依次保存各个复合属性对象
 	const multiValue = ref(status.value ? status.value : [])
 	// 将值同步回属性上
 	function changeStatusValue(){
-		status.value = multiValue.value
+		status.value = toRaw(multiValue.value)
 	}
 	// 创建并添加新的part
 	function createNewPart(value:any,type:string){
-		if(!value || value==""){
+		if(value == null || value === ""){
 			return false
 		}
 		let key = ""
@@ -89,15 +84,12 @@ import { statusValueTypeList } from '@/data/list/statusValueList';
 	// 检查part的关键字是否重复
 	function checkPartKey(part:any){
 		const key = part.__key
-		let ifRepeated = false
 		multiValue.value.forEach((thePart:multiStatusPart) => {
-			thePart = toRaw(thePart)
-			ifRepeated = (key!="" && key == thePart.__key && part != thePart)
+			if(key!="" && key == thePart.__key && toRaw(part) != toRaw(thePart)){
+				showQuickInfo("部分的关键字不得重复.")
+				part.__key = ""
+			}
 		})
-		if(ifRepeated){
-			showQuickInfo("部分的关键字不得重复.")
-			part.__key = ""
-		}
 	}
 	// 引用相应part
 	function quotePart(part:multiStatusPart){
@@ -120,7 +112,7 @@ import { statusValueTypeList } from '@/data/list/statusValueList';
 			return tmp?.text + "属性"
 		}
 		else if(part.valueType == "quoteStatus"){
-			const theStatus = typeStatus["value"].find((status:any)=>status.__key == part.value)
+			const theStatus = typeStatus.find((status:any)=>status.__key == part.value)
 			if(theStatus){
 				return "引用属性:" + theStatus.name
 			}
@@ -173,7 +165,7 @@ import { statusValueTypeList } from '@/data/list/statusValueList';
 			}
 		})
 	}
-	// 显示属性选择弹窗
+	// 显示选择已有属性弹窗
 	function showQuoteStatusPopUp(){
 		showPopUp({
 			vue:multiBonusPopUpList["quoteStatus"],
@@ -197,8 +189,11 @@ import { statusValueTypeList } from '@/data/list/statusValueList';
 			},
 			buttons : [],
 			mask : true,
-			returnValue : (value)=>{
-				createNewPart(value,"quoteStatus")
+			returnValue : (array)=>{
+				array.forEach((value:any)=>{
+					console.log(value)
+					createNewPart(value,"quoteStatus")
+				})
 			},
 			size:{
 				width:"600px",

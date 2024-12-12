@@ -22,9 +22,10 @@
 import { provide } from 'vue';
 import statusValueVue from '../status/statusValue/statusValue.vue';
 import textAreaVue from '@/components/other/textArea/textArea.vue';
-	let status = defineModel<any>()
+	let {status} = defineProps(["status"])
+	console.log(status)
 	let emits = defineEmits(["deleteStatus"])
-	provide("status",status.value)
+	provide("status",status)
 	function deleteStatus(){
 		emits('deleteStatus')
 	}

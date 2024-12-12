@@ -1,19 +1,19 @@
 <template>
 	<div class="inputBox">
 		<textAreaVue 
+			:disabled="disabled"
 			class="input"
-			v-model="newValue"
-			@blur="changeStatusValue(newValue)">
+			v-model="status.value"
+			placeholder="输入默认值">
 		</textAreaVue>
 	</div>
 </template>
 
 <script setup lang="ts" name="">
-import { inject, ref } from 'vue'; 
+import { inject } from 'vue'; 
 import textAreaVue from '@/components/other/textArea/textArea.vue';
-	const {value} = defineProps(["value"])
-	const changeStatusValue = inject("changeStatusValue")
-	const newValue = ref(value)
+	const status = inject<any>("status")
+	const {disabled} = defineProps(["disabled"])
 </script>
 
 <style lang="scss" scoped>
