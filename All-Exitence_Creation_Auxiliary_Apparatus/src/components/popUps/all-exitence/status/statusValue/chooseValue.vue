@@ -1,6 +1,6 @@
 <template>
-	<div class="value">
-		<ElCheckboxGroup :min="min" :max="max" v-model="status.value" >
+	<div class="chooseValue" :class="ifVertical?'vertical':'horizontal'">
+		<ElCheckboxGroup v-if="!ifRadio" :min="min" :max="max" v-model="status.value" >
 			<ElCheckbox
 				:value="choice"
 				v-for="(choice) in choiceList"
@@ -8,32 +8,70 @@
 				{{choice}}
 			</ElCheckbox>
 		</ElCheckboxGroup>
+		
+		<div v-else-if="ifRadio" class="choice">
+			<div class="radioChoice" v-for="(choice,index) in choiceList">
+				<radioVue v-model="chosenList[index]" @change="takeChoose"></radioVue>
+				<div>{{ choice }}</div>
+			</div>
+		</div>
 	</div>
 </template>
 
 <script setup lang="ts" name="">
-import { computed, inject } from 'vue'; 
+import { computed, inject, reactive } from 'vue'; 
+import radioVue from '@/components/other/radio.vue';
 import { ElCheckboxGroup,ElCheckbox } from 'element-plus';
 	const status = inject<any>("status")
+	const {statusSetting} = defineProps(['statusSetting'])
+	//初始化
 	if(!Array.isArray(status.value)){
 		status.value = []
 	}
 	// 选项数组
 	const choiceList = computed(()=>{
-		return status["setting"]['choices']
+		return statusSetting['choices'] ?? []
 	})
 	// 选择数量
 	const min = computed(()=>{
-		return status["setting"]['chooseNum'][0]
+		return statusSetting['chooseNum'][0]
 	})
 	const max = computed(()=>{
-		return status["setting"]['chooseNum'][1]
+		return statusSetting['chooseNum'][1]
+	})
+
+	//属性设置：使用灯开关表示选项
+	const ifRadio = computed(()=>{
+		if(statusSetting.chooseByRadio){
+			return true
+		}
+		return false
+	})
+	// 灯开关选择
+	const chosenList = reactive(new Array(choiceList.value.length).fill(false))
+	function takeChoose(){
+		status.value = chosenList.reduce((arr,cur,index)=>{
+			//若为true(选择了)，则将对应的选项放入属性值中
+			if(cur){
+				arr.push(choiceList.value[index])
+			}
+			return arr
+		},[])
+		console.log(status.value)
+	}
+	// 属性设置：选项排列方向是否为竖向
+	const ifVertical = computed(()=>{
+		//(默认横向)
+		if(statusSetting.chooseDirection == "vertical"){
+			return true
+		}
+		return false
 	})
 	
 </script>
 
 <style lang="scss" scoped>
-	.value{
+	.chooseValue{
 		width: 100%;
 		display: flex;
 		flex-wrap: wrap;
@@ -54,6 +92,21 @@ import { ElCheckboxGroup,ElCheckbox } from 'element-plus';
 					}
 				}
 			}
+			.radioChoice{
+				align-items: center;
+				display: flex;
+				padding: 0 10px;
+			}
+		}
+	}
+	// 垂直显示
+	.chooseValue.vertical{
+		label{
+			display: block;
+		}
+		.choice{
+			display: block;
+			align-items: normal;
 		}
 	}
 </style>

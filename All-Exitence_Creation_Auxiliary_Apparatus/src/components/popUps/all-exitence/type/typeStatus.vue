@@ -1,5 +1,5 @@
 <template>
-	<div  class="status">
+	<div class="status">
 		<!-- 属性名 -->
 		<div class="name">
 			<textAreaVue
@@ -10,6 +10,7 @@
 		<div class="separator">：</div>
 		<!-- 属性值 -->
 		<statusValueVue class="value"></statusValueVue>
+		
 		<div class="buttons">
 			<div class="button">编辑</div>
 			<div class="button" @click="deleteStatus">删除</div>
@@ -23,7 +24,6 @@ import { provide } from 'vue';
 import statusValueVue from '../status/statusValue/statusValue.vue';
 import textAreaVue from '@/components/other/textArea/textArea.vue';
 	let {status} = defineProps(["status"])
-	console.log(status)
 	let emits = defineEmits(["deleteStatus"])
 	provide("status",status)
 	function deleteStatus(){

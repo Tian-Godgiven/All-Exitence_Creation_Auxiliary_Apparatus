@@ -3,7 +3,7 @@
 		<div class="titleBar" @click=" expending = !expending ">
 			<div class="titleName">{{name}}</div>
 			<div class="titleButtons">
-				<div>按键B</div>
+				<div @click="clickCreateExitence">创建事物</div>
 			</div>
 		</div>
 		<div class="inner" v-show="expending">
@@ -21,6 +21,7 @@
 import groupVue from "./group.vue"
 import exitenceVue from "./exitence.vue"
 import { ref } from "vue";
+import { createExitence } from "@/hooks/all-exitence/allExitence";
 	let expending = ref(true)
 	
 	let {type} = defineProps(["type"])
@@ -29,6 +30,11 @@ import { ref } from "vue";
 	let groups = ref(type.groups)
 	// 没有分组的事物
 	let noGroupExitence = ref(type.exitence)
+
+	function clickCreateExitence(event:any){
+		event.stopPropagation();
+		createExitence(type)
+	}
 </script>
 
 <style lang="scss" scoped>

@@ -54,7 +54,7 @@ import { multiStatusPart } from '@/hooks/expression/multiStatusValue';
 		"expression":shallowRef(multiStatusExpressionVue)
 	}
 	const status = inject<any>("status")
-	const typeStatus = inject<any>("typeStatus")
+	const allStatus = inject<any>("allStatus")
 	// 当前复合属性的值，数组内依次保存各个复合属性对象
 	const multiValue = ref(status.value ? status.value : [])
 	// 将值同步回属性上
@@ -112,7 +112,7 @@ import { multiStatusPart } from '@/hooks/expression/multiStatusValue';
 			return tmp?.text + "属性"
 		}
 		else if(part.valueType == "quoteStatus"){
-			const theStatus = typeStatus.find((status:any)=>status.__key == part.value)
+			const theStatus = allStatus.find((status:any)=>status.__key == part.value)
 			if(theStatus){
 				return "引用属性:" + theStatus.name
 			}
@@ -152,7 +152,7 @@ import { multiStatusPart } from '@/hooks/expression/multiStatusValue';
 			vue:multiBonusPopUpList[type],
 			props:{
 				parts:multiValue,
-				typeStatus:typeStatus
+				typeStatus:allStatus
 			},
 			buttons : [],
 			mask : true,
@@ -170,7 +170,7 @@ import { multiStatusPart } from '@/hooks/expression/multiStatusValue';
 		showPopUp({
 			vue:multiBonusPopUpList["quoteStatus"],
 			props:{
-				list:typeStatus,
+				list:allStatus,
 				info:"点击选择引用属性",
 				empty:"当前无可选属性",
 				//允许选择非复合属性和非嵌套的属性
@@ -204,6 +204,7 @@ import { multiStatusPart } from '@/hooks/expression/multiStatusValue';
 	// 显示属性输入弹窗，这个弹窗的尺寸和参数不一样
 	function showStatusValueInput(){
 		showPopUp({
+			name:"新增属性",
 			vue:multiBonusPopUpList["statusValue"],
 			props:{
 				banValueType:["multi","status"]

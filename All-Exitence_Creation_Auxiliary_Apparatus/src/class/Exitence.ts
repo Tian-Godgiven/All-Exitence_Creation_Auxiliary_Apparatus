@@ -3,8 +3,9 @@
 export class Exitence{
 	constructor(
 		public name:string,
-		public status:{},
-		public setting:{}
+		public status:any[],
+		public typeName:string,
+		public setting?:{[key:string]:any},
 	){}
 	
 }

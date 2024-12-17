@@ -21,11 +21,11 @@ import exitenceVue from './exitence.vue';
 	let name = ref(group.name)
 	let groupExitence = [{
 		name:"测试分组",
-		status:{},
+		status:[],
 		setting:{}
 	},{
 		name:"测试分组",
-		status:{},
+		status:[],
 		setting:{}
 	}]
 </script>

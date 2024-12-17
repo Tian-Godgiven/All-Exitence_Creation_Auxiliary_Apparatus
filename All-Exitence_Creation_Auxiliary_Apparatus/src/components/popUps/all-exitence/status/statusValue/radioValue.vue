@@ -9,8 +9,9 @@
 import { computed, inject } from 'vue'; 
 import radioVue from '@/components/other/radio.vue';
 	const status = inject<any>("status")
+	const {statusSetting} = defineProps(['statusSetting'])
 	const text = computed(()=>{
-		return status["setting"]["radio"]
+		return statusSetting["radio"]
 	})
 </script>
 

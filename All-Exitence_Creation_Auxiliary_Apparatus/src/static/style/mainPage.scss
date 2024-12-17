@@ -29,33 +29,33 @@
 	position: relative;
 	margin: 0px 25px;
 	overflow: hidden;
-	.container{
-		overflow: auto;
+}
+
+// mainPage中显示不同对象的统一基础样式
+.targetContainer{
+	overflow: auto;
+	width: 100%;
+	height: 100%;
+	.targetTitle{
+		min-height: 70px;
 		width: 100%;
-		height: 100%;
-		.innerTitle{
-			min-height: 70px;
-			width: 100%;
-			position: relative;
-			padding-top:40px;
-			font-weight: bold;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			word-break: break-all;
-			word-wrap: break-word;
-			font-size: global.$midFontSize;
-			color: global.$textColor;
-			text-align: center;
-		}
-		.innerText{
-			height: calc(100% - 110px);
-			width: 100%;
-			position: relative;
-		}
+		position: relative;
+		padding-top:40px;
+		font-weight: bold;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		word-break: break-all;
+		word-wrap: break-word;
+		font-size: global.$midFontSize;
+		color: global.$textColor;
 	}
-	
-	.textNum{
+	.targetInner{
+		height: calc(100% - 110px);
+		width: 100%;
+		position: relative;
+	}
+	.targetInfo{
 		position: absolute;
 		display: flex;
 		align-items: center;
@@ -73,6 +73,7 @@
 		text-align: center;
 		z-index: 2;
 	}
+	
 }
 
 //弹窗容器

@@ -2,6 +2,30 @@
 	"types":[
 		{
 			"name":"角色",
+			"typeStatus":[
+				{
+					"name":"名称",
+					"value":"",
+					"valueType":"downLine",
+					"setting":{},
+					"__key":0
+				},{
+					"name":"年龄",
+					"value":"18",
+					"valueType":"downLine",
+					"setting":{},
+					"__key":1
+				}
+				,{
+					"name":"性别",
+					"value":false,
+					"valueType":"switch",
+					"setting":{
+						"switch":["男性","女性"]
+					},
+					"__key":2 
+				}
+			],
 			"groups":[
 				{
 					"name":"人类",
@@ -12,40 +36,30 @@
 			"exitence":[
 				{
 					"name":"小明",
-					"status":{
-						"tags":["强壮","笨拙"]
-					},
-					"setting":{}
-				},
-				{
-					"name":"小王",
-					"status":{
-						"tags":["魅力","活泼"]
-					},
-					"setting":{}
-				}
-			],
-			"setting":{}
-		},
-		{
-			"name":"地点",
-			"groups":[
-				{
-					"name":"村落",
-					"rule":"haveTag('村落')",
-					"setting":{}
-				}
-			],
-			"exitence":[
-				{
-					"name":"高原村",
-					"status":{
-						"tags":["寒冷","空气稀薄"]
-					},
-					"setting":{}
+					"status":[
+						{
+							"value":"小明",
+							"__key":0
+						},
+						{
+							"__key":1
+						},
+						{
+							"__key":2
+						},
+						{
+							"name":"标签",
+							"value":["强壮","笨拙"],
+							"valueType":"tags",
+							"setting":{}
+						}
+					],
+					"setting":{},
+					"typeName":"角色"
 				}
 			],
 			"setting":{}
 		}
+		
 	]
 }

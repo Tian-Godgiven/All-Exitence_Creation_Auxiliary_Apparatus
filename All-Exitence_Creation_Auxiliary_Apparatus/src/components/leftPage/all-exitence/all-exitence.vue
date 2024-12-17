@@ -5,13 +5,11 @@
 </template>
 
 <script setup lang="ts" name=""> 
-import { ref } from 'vue';
 import typeVue from './type.vue';
 
-	import AllExitence from "@/data/projects/项目1/all-exitence.json"
+	import { types } from '@/hooks/all-exitence/allExitence';
 
-	let allExitence = AllExitence;
-	let types = allExitence.types
+	
 
 
 </script>

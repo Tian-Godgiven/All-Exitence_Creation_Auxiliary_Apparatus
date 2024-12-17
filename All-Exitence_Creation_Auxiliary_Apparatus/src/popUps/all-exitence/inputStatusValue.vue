@@ -1,14 +1,13 @@
 <template>
 	<div class="newStatus">
-		<div class="statusInfo">
+		<div class="statusInfo">  
 			<!-- 属性名 -->
 			<div class="statusName">
 				<textAreaVue
 					v-model="newStatus.name"
 					placeholder="属性名"/>
-				<div>：</div>
 			</div>
-
+			<div class="separator">：</div>
 			<!-- 属性值 -->
 			<statusValueVue class="statusValue"></statusValueVue>
 		</div>
@@ -35,13 +34,7 @@
 		<component :is="statusBonusInputList[newStatus.valueType]"></component>
 		
 		<!-- 属性设置栏 -->
-		<div class="settingBox" :class="setNewStatus? 'settingBox-show':''">
-			<settingBoxOptionVue 
-				v-for="(option,index) in setOptions" 
-				:setOption="option"
-				:ref="`option-${index}`">
-			</settingBoxOptionVue>
-		</div>
+		<setStatusVue ref="setStatus" :show="showSetStatus"></setStatusVue>
 		
 		<div class="buttons">
 			<div class="button" @click="confirm">确认</div>
@@ -53,9 +46,8 @@
 </template>
 
 <script setup lang="ts" name=""> 
-	import { provide, reactive, ref, toRaw, watch } from 'vue'; 
-	import { statusSettingList, statusValueTypeList } from '@/data/list/statusValueList';
-	import settingBoxOptionVue from '@/components/popUps/all-exitence/status/settingBoxOption.vue';
+	import { provide, reactive, ref, toRaw } from 'vue'; 
+	import { statusValueTypeList } from '@/data/list/statusValueList';
 	import statusValueVue from '@/components/popUps/all-exitence/status/statusValue/statusValue.vue';
 	import { statusBonusInputList } from '@/data/list/statusBonusInputList';
 	import textAreaVue from '@/components/other/textArea/textArea.vue';
@@ -63,6 +55,7 @@
 	import { ElOption, ElSelect } from 'element-plus';
 	import { showQuickInfo } from '@/api/showQuickInfo';
 	import Status from '@/interfaces/exitenceStatus';
+	import setStatusVue from '@/components/popUps/all-exitence/status/setStatus/setStatus.vue';
 
 	const {props,popUp,returnValue} = defineProps(["props","popUp","returnValue"])
 // 新增属性对象
@@ -91,44 +84,24 @@
 		newStatus.setting = {}
 		newStatus.value = null
 	}
-// 新增属性的设置
-	// 切换属性Box的显示
-	let setNewStatus = ref(false)
+
+// 属性设置
+	const setStatus = ref()
+	// 控制显示
+	let showSetStatus = ref(false) 
 	function switchSetting(){
-		setNewStatus.value = !setNewStatus.value
+		showSetStatus.value = !showSetStatus.value
 	}
-	// 属性box的选项内容
-	let setOptions = reactive([])
-	// 选项子组件
-	const optionRefs = setOptions.map((_) => ref(null));
-	watch(()=> newStatus.valueType ,()=>{
-		setOptions = statusSettingList.reduce((acc,option:any)=>{
-			//满足select需求
-			if(!option.select || option.select(newStatus) == true){
-				acc.push(option)
-			}
-			return acc
-		},<any>[])
-	},{
-		immediate:true
-	})
 	
 // 确认属性内容
 	function confirm(){
-		let tmp = true
-		//依次调用各个设置项的confirmValue函数，
-		optionRefs.forEach((childRef:any) => {
-			// 其中任一设置项返回false时，不创建该分类属性
-			if(childRef.value && childRef.value.confirmValue() !== true){
-				tmp = false
-			} 
-		});
-		if(!tmp){
-			return false
-		}
 		// 要求name不能为空
 		if(newStatus.name == ""){
 			showQuickInfo("属性名不能为空")
+			return false
+		}
+		// 要求属性设置合理
+		if(!setStatus.value.checkSet()){
 			return false
 		}
 		

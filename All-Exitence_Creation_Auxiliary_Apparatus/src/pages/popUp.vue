@@ -6,6 +6,7 @@
 	}">
 		<!-- 标题 -->
 		<div class="titleName" v-if="name">{{ name }}</div>
+		<div class="titleSpace" v-else></div>
 		<!-- 按键 -->
 		<div class="titleButtons" >
 			<div v-for="(button) in buttons" 
@@ -65,7 +66,7 @@ import { popUpVueList } from '../data/list/popUpVueList';
 		left:50%;
 		top:50%;
 		transform: translate(-50%, -50%);
-		padding: 50px 20px;
+		padding: 20px 20px;
 		box-sizing: border-box;
 		border-radius: 2%;
 		pointer-events: auto;
@@ -79,6 +80,9 @@ import { popUpVueList } from '../data/list/popUpVueList';
 				font-size: 60px;
 				display: flex;
 				align-items: center;
+			}
+			.titleSpace{
+				height: 70px;
 			}
 			.titleButtons{
 				height: 50px;

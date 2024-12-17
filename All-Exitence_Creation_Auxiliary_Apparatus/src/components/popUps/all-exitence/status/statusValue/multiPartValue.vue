@@ -43,14 +43,14 @@
 </script>
 
 <script setup lang='ts'>
-    import { computed, inject,onUnmounted,provide, reactive } from 'vue';
+    import { computed, inject,provide, reactive } from 'vue';
     import statusValueVue from './statusValue.vue';
     import { countExpression, getExpressionText, getQuotePart, getQuoteStatus } from '@/hooks/expression/multiStatusValue';
 import { showQuickInfo } from '@/api/showQuickInfo';
 
     const {part} = defineProps(["part","index"])
     const parts = inject<any>("parts")
-    const typeStatus = inject<any>("typeStatus")
+    const allStatus = inject<any>("allStatus")
     let status:any//提供给属性值组件的属性目标
     let targetPart:any//提供给引用part组件的part目标
     let expressionValue:any//表达式的值
@@ -62,7 +62,7 @@ import { showQuickInfo } from '@/api/showQuickInfo';
     //part为引用属性时，提供目标属性
     else if(valueType == "quoteStatus"){
         //获取目标属性
-        const targetStatus = getQuoteStatus(typeStatus,part.value)
+        const targetStatus = getQuoteStatus(allStatus,part.value)
         //提供目标属性
         status = targetStatus
     }
@@ -74,7 +74,7 @@ import { showQuickInfo } from '@/api/showQuickInfo';
     else if(valueType == "expression"){
         //获得表达式的结果
         expressionValue = computed(()=>{
-            const value = countExpression(typeStatus,parts,part.value)
+            const value = countExpression(allStatus,parts,part.value)
             return value
         })
     }
@@ -92,7 +92,7 @@ import { showQuickInfo } from '@/api/showQuickInfo';
             infoText = "引用部分:"+targetPart.__key
         }
         else if(valueType == "expression"){
-            infoText = getExpressionText(typeStatus,part.value)
+            infoText = getExpressionText(allStatus,part.value)
         }
         // 获取触发事件的元素的位置信息
         const rect = event.target.getBoundingClientRect();

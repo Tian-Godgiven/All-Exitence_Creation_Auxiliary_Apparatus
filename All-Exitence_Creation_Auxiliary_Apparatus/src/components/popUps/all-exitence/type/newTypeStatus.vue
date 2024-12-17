@@ -31,17 +31,12 @@
 			<div class="button" @click="switchSetting">设置</div>
 			<div class="button" @click="createTypeStatus">新建</div>
 		</div>
+
 		<!-- 额外输入栏 -->
 		<component :is="statusBonusInputList[newStatus.valueType]"></component>
 
 		<!-- 属性设置栏 -->
-		<div class="settingBox" :class="setNewStatus? 'settingBox-show':''">
-			<settingBoxOptionVue 
-				v-for="(option,index) in setOptions" 
-				:setOption="option"
-				:ref="`option-${index}`">
-			</settingBoxOptionVue>
-		</div>
+		<setStatusVue ref="setStatus" :show="showSetStatus"></setStatusVue>
 		
 
 		
@@ -49,9 +44,9 @@
 </template>
 
 <script setup lang="ts" name=""> 
-	import { provide, reactive, ref, toRaw, watch } from 'vue'; 
-	import { statusSettingList, statusValueTypeList } from '@/data/list/statusValueList';
-	import settingBoxOptionVue from '../status/settingBoxOption.vue';
+	import { provide, reactive, ref, toRaw } from 'vue'; 
+	import { statusValueTypeList } from '@/data/list/statusValueList';
+	import setStatusVue from "@/components/popUps/all-exitence/status/setStatus/setStatus.vue"
 	import statusValueVue from '../status/statusValue/statusValue.vue';
 	import { statusBonusInputList } from '@/data/list/statusBonusInputList';
 	import textAreaVue from '@/components/other/textArea/textArea.vue';
@@ -75,45 +70,27 @@
 		newStatus.setting = {}
 		newStatus.value = null
 	}
-	// 新增属性的设置
-	// 切换属性Box的显示
-	let setNewStatus = ref(false)
+
+	// 属性设置
+	const setStatus = ref()
+	// 控制显示
+	let showSetStatus = ref(false) 
 	function switchSetting(){
-		setNewStatus.value = !setNewStatus.value
+		showSetStatus.value = !showSetStatus.value
 	}
-	// 属性box的选项内容
-	let setOptions = reactive<any[]>([])
-	// 选项子组件
-	const optionRefs = setOptions.map((_,) => ref(null));
-	watch(()=> newStatus.valueType ,()=>{
-		setOptions = statusSettingList.reduce((acc,option)=>{
-			//满足select需求
-			if(!option.select || option.select(newStatus) == true){
-				acc.push(option)
-			}
-			return acc
-		},<any[]>[])
-	},{
-		immediate:true
-	})
 	
-	// 确认新增属性
+	
+// 确认新增属性
 	let emit = defineEmits(["createStatus"])
 	function createTypeStatus(){
-		let tmp = true
 		// 要求name不能为空
 		if(newStatus.name == ""){
 			showQuickInfo("属性名不能为空")
 			return false
 		}
-		//依次调用各个设置项的confirmValue函数，
-		optionRefs.forEach((childRef:{[key:string]:any}) => {
-			// 其中任一设置项返回false时，不创建该分类属性
-			if(childRef.value && childRef.value.confirmValue() !== true){
-				tmp = false
-			} 
-		});
-		if(!tmp){
+		// 要求属性设置合理
+		if(!setStatus.value.checkSet()){
+			showQuickInfo("属性设置不正确")
 			return false
 		}
 		
@@ -164,15 +141,6 @@
 			}
 		}
 		
-		.settingBox{
-			max-height: 0px;
-			width: 100%;
-			overflow: hidden;
-			transition: max-height 450ms ease-in-out;
-		}
-		.settingBox-show{
-			max-height: 300px;
-		}
 	}
 	
 	

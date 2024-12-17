@@ -27,15 +27,14 @@
 			<!-- 底部填充区 -->
 			<div class="scrollBottom"></div>
 		</div>
-		
-		
 	</div>
+
+	<!-- 左侧页面专用的mask遮罩层 -->
 	<div class="leftPageMask"
 		v-show="ifMask" 
 		:style="{
 			backgroundColor: `rgba(0, 0, 0, ${maskAlpha})`}"
-		@click="clickMask"
-	>
+		@click="clickMask">
 	</div>
 </div>
 </template>
@@ -45,8 +44,8 @@ import { leftMaxWidth } from '@/hooks/pageChange';
 import allExitenceVue from '@/components/leftPage/all-exitence/all-exitence.vue';
 import allArticlesVue from '@/components/leftPage/all-articles/all-articles.vue';
 import { ref } from "vue"
-import { createType } from '@/hooks/all-exitence/createType';
 import { ifMask,maskAlpha,clickMask } from '@/hooks/leftPageMask';
+import { createType } from '@/hooks/all-exitence/allExitence';
 
 	let {showWidth} = defineProps(["showWidth"])
 	let maxWidth = leftMaxWidth
