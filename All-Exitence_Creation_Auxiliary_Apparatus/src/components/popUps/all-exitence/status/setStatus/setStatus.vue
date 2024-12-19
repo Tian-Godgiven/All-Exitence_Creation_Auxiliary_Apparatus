@@ -16,16 +16,18 @@
     import { ref, inject, computed } from 'vue';
 
     const status = inject<any>("status")
+	const typeStatus = inject<any>("typeStatus")
 	const {show} = defineProps(["show"])
 	defineExpose({
 		"checkSet":checkSetOption
 	})
 
-	
+	//提供给select检验的是与typeStatus整合后的结果
+	const selectStatus = {...typeStatus,...status}
 	let setOptions = computed(()=>{
 		const tmp = statusSettingList.reduce((acc,option)=>{
-			//满足select需求或者不具备select
-			if(!option.select || option.select(status) == true){
+			//满足该设置项的select需求或者该设置项不具备select
+			if(!option.select || option.select(selectStatus) == true){
 				acc.push(option)
 			}
 			return acc

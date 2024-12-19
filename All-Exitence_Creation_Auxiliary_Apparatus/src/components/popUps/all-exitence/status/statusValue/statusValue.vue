@@ -22,7 +22,6 @@ import { statusValueVueList } from '@/data/list/statusValueList';
 		else{
 			status.value = null
 		}
-		
 	}
 	//优先使用status中的valueType
 	let valueType = computed(()=>{
@@ -32,7 +31,7 @@ import { statusValueVueList } from '@/data/list/statusValueList';
 	const statusSetting = computed(()=>{
 		//如果两者不同，则使用覆盖后的setting
 		if(typeStatus && typeStatus != status){
-			return Object.assign(typeStatus.setting,status?.setting)
+			return {...typeStatus.setting,...status?.setting}
 		}
 		//否则使用status中的setting
 		else{

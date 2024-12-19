@@ -17,6 +17,7 @@
     "postcss-plugin-px2rem": "^0.8.1",
     "sortable": "^2.0.0",
     "vue": "^3.3.4",
+    "vue3-touch-events": "^4.2.0",
     "vuedraggable": "^4.1.0"
   },
   "devDependencies": {

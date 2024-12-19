@@ -9,9 +9,9 @@
         </div>
         <div class="targetInner">
             <exitenceStatusVue 
-				v-for="(status,index) in exitence.status" 
+				v-for="(,index) in exitence.status" 
 				:key='index'
-				:status="status">
+				v-model:status="exitence.status[index]">
 			</exitenceStatusVue>
         </div>
         <div class="targetInfo">属性数: {{statusNum}}</div>
@@ -25,7 +25,6 @@ import exitenceStatusVue from '../popUps/all-exitence/exitence/exitenceStatus.vu
 import { types } from '@/hooks/all-exitence/allExitence';	
 import { Type } from '@/class/Type';
 	let exitence = defineModel<any>()
-	
 	
 	//事物所属的分类
 	const type = types.find((type:Type)=>{

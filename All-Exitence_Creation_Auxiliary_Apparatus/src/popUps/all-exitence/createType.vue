@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="container">
 		<div class="top">
 			<downLineInputVue 
 				v-model="typeName"
@@ -7,23 +7,25 @@
 				placeholder="输入分类名称"/>
 			<div class="button" @click="prepareStatus">预制属性</div>
 		</div>
-		<!-- 分类属性 -->
+
+		<!-- 显示已有的属性 -->
 		<div class="inner">
-			<!-- 显示已有的属性 -->
 			<typeStatusVue 
 				@deleteStatus="deleteStatus(index)" 
-				v-for="(status,index) in typeStatus" 
+				v-for="(,index) in typeStatus" 
 				:key="index"
-				:status="status">
+				v-model:status="typeStatus[index]">
 			</typeStatusVue>
+
 			<!-- 创建新属性 -->
 			<newTypeStatusVue 
 				@createStatus="addStatus($event)">
 			</newTypeStatusVue>
-		</div>
-		<!-- 分类设置 -->
-		<div class="setting">
-			分类设置
+
+			<!-- 分类设置 -->
+			<div class="setting">
+				分类设置
+			</div>
 		</div>
 
 		<!-- 确认按键 -->
@@ -100,9 +102,12 @@ import { showQuickInfo } from '@/api/showQuickInfo';
 <style lang="scss" scoped>
 @use "@/static/style/components/inputs.scss";
 @use "@/static/style/components/popUpButtons.scss";
+	.container{
+		height: 100%;
+	}
 	.top{
 		display: flex;
-		height: 100%;
+		height: 100px;
 		position: relative;
 		.typeName{
 			position: relative;
@@ -121,7 +126,8 @@ import { showQuickInfo } from '@/api/showQuickInfo';
 	}
 	.inner{
 		width: 100%;
-		
+		overflow: auto;
+		max-height: calc(100% - 200px);
 	}
 	.bottom{
 		@extend .buttons;

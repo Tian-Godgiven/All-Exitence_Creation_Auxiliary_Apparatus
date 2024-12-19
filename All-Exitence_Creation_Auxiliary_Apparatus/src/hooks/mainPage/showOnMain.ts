@@ -6,7 +6,7 @@ import { reactive, ref } from "vue"
 export const showOnMain:any = reactive({
     target:{
         title:"",
-        inner:"",
+        inner:"测试内容".repeat(250),
     },
     type:'article'
 }) 

@@ -38,6 +38,7 @@
 import { ElOption, ElSelect } from 'element-plus';
 import { computed, inject, ref, watch } from 'vue'; 
 import downLineInputVue from '@/components/other/input/downLineInput.vue';
+
 	defineExpose({
 		"confirmValue":confirmValue
 	})
@@ -51,7 +52,8 @@ import downLineInputVue from '@/components/other/input/downLineInput.vue';
 
 	//属性对象
 	const status = inject<any>("status")
-
+	const typeStatus = inject<any>("typeStatus")
+	const setting = {...typeStatus.setting,...status.setting}
 	//可选选项
 	let choices = computed(()=>{
 		const tmp = setOption.choices
@@ -70,8 +72,8 @@ import downLineInputVue from '@/components/other/input/downLineInput.vue';
 	//由于切换属性类型时，并不会重新创建设置项，因此需要监听设置项的变化从而重置绑定值
 	watch(()=>setOption,()=>{
 		//如果属性内部已有相关设置
-		if(status.setting[setOption.name]){
-			setValue.value = status.setting[setOption.name]
+		if(setting[setOption.name]){
+			setValue.value = setting[setOption.name]
 		}
 		//否则使用设置项内的默认值,并将其同步到属性内部
 		else if(setOption.value){
@@ -98,15 +100,16 @@ import downLineInputVue from '@/components/other/input/downLineInput.vue';
 		immediate:true
 	})
 	
-	
-
 	//将用户设置的值传入status的相应设置中
 	function setStatus(){
 		//不会对空内容进行设置
-		if(!status.setting[setOption.name] && setValue.value == ""){
+		if(!setting[setOption.name] && setValue.value == ""){
 			return false
 		}
-		status.setting[setOption.name] = setValue.value
+		if(!status.setting){
+			status.setting = {}
+		}
+		status["setting"][setOption.name] = setValue.value
 	}
 
 	// 确认该设置项的值是否符合要求

@@ -52,12 +52,14 @@ import { rightMaxWidth, switchRight } from '@/hooks/pageChange';
 		width: 100%;
 	}
 	.button{
-		height: 100px;
-		width: 100px;
-		border-radius: 50%;
-		background-color: red;
-		margin-bottom: 30px;
-	}
+			height: 100px;
+			width: 100px;
+			border-radius: 50%;
+			background-color: red;
+			margin-bottom: 30px;
+			z-index: 2;
+		}
+	
 	.rightPageSwitchButton{
 		@extend .button;
 		position: absolute;

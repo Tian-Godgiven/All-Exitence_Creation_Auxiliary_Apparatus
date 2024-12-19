@@ -10,19 +10,19 @@
     
     <div class="quoteStatus" 
         v-else-if="valueType == 'quoteStatus'"
-        @touchstart="showInfo">
+        @click="showInfo">
         <!-- 引用属性值 -->
         <statusValueVue disabled="true" class="statusValue"></statusValueVue>
     </div>
     
     <div class="quotePart" v-else-if="part && valueType == 'quotePart'"
-        @touchstart="showInfo">
+        @click="showInfo">
         <!-- 引用部分 -->
         <multiPartValueVue :part="targetPart"></multiPartValueVue>
     </div>
     
     <div class="multiExpression" v-else-if="valueType == 'expression'"
-        @touchstart="showInfo">
+        @click="showInfo">
         <!-- 表达式 -->
         {{ expressionValue }}
     </div>

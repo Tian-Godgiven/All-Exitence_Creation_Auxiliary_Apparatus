@@ -1,10 +1,22 @@
 <template>
     <div class="createExitence">
-        <div>名称：
-            <downLineInputVue placeholder="输入事物名称" v-model="name"/>
+        <div class="top">
+            <downLineInputVue 
+				v-model="name"
+				class="exitenceName"
+				placeholder="输入事物名称"/>
         </div>
-        <div>标签：
-            <tagsValueVue v-model="tags"/>
+
+        <div class="inner">
+            <div class="tags">
+                <div class="text">标签：</div>
+                <tagsValueVue v-model="tags"/>
+            </div>
+
+            <div class="setting">
+                <div class="text">设置：</div>
+                <div></div>
+            </div>
         </div>
         
         <div class="buttons">
@@ -35,6 +47,33 @@
 
 <style scoped lang='scss'>
     @use "@/static/style/components/popUpButtons.scss";
+    .createExitence{
+        .top{
+            display: flex;
+		    height: 100px;
+		    position: relative;
+            .exitenceName{
+                position: relative;
+                top:-20px;
+                margin-top:auto;
+                font-size: 1.4rem;
+                width: 550px;
+                height: 60px;
+            }
+        }
+        .inner{
+            width: 100%;
+            height: calc(100% - 200px);
+            overflow: auto;
+            >div{
+                display: flex;
+                >.text{
+                    flex-shrink: 0;
+                }
+            }
+        }
+        
+    }
     .buttons{
         @extend .buttons
     }

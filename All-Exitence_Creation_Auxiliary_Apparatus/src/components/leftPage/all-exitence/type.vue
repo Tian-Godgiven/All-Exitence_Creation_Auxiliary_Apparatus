@@ -22,7 +22,7 @@ import groupVue from "./group.vue"
 import exitenceVue from "./exitence.vue"
 import { ref } from "vue";
 import { createExitence } from "@/hooks/all-exitence/allExitence";
-import { showExitenceOnMain } from "@/hooks/showOnMain/showOnMain";
+import { showExitenceOnMain } from "@/hooks/mainPage/showOnMain";
 import { hidePage } from "@/hooks/pageChange";
 	let expending = ref(true)
 	

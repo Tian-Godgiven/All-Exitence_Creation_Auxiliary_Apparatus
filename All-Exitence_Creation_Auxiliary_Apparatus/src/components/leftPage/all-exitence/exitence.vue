@@ -9,7 +9,7 @@
 
 <script setup lang="ts" name="">
 import { hidePage } from '@/hooks/pageChange';
-import { showExitenceOnMain } from '@/hooks/showOnMain/showOnMain.ts';
+import { showExitenceOnMain } from '@/hooks/mainPage/showOnMain';
 import { ref } from 'vue'; 
 	let {exitence} = defineProps(["exitence"])
 	const tagsStatus = exitence.status.find((status:any)=>{

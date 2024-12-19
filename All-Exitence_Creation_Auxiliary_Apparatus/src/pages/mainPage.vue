@@ -49,7 +49,8 @@
 
 <script setup lang="ts">
 import { popUpList, showPopUp } from '@/hooks/popUp.ts'
-import { rightShowWidth,leftShowWidth,touchStart,touchMove,touchEnd,showLeft} from '@/hooks/pageChange';
+import { rightShowWidth,leftShowWidth,showLeft} from '@/hooks/pageChange';
+import {touchStart,touchMove,touchEnd } from '@/hooks/mainPage/mainTouch'
 import leftPageVue from '@/pages/leftPage.vue';
 import rightPageVue from '@/pages/rightPage.vue';
 import maskVue from '@/components/mainPage/mask.vue';
@@ -58,7 +59,7 @@ import popUpVue from './popUp.vue';
 import inputSuggestionVue from '@/components/other/inputSuggestion.vue';
 import showArticleVue from '@/components/mainPage/showArticle.vue';
 import showExitenceVue from '@/components/mainPage/showExitence.vue';
-import { showOnMain } from '@/hooks/showOnMain/showOnMain';
+import { showOnMain } from '@/hooks/mainPage/showOnMain';
 import { ref, watch } from 'vue';
 
 // 功能按键
@@ -91,7 +92,6 @@ import { ref, watch } from 'vue';
 	//刷新内容
 	let refreshKey = ref(0)
 	watch(showOnMain,()=>{
-		console.log("12345")
 		refreshKey.value+=1
 	},{
 		deep:false

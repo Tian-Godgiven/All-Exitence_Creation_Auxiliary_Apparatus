@@ -1,23 +1,30 @@
 <template>
-    <div class="exitenceStatus">
-        <!-- 属性名 -->
-        <div class="name">
-            {{ statusName }}
+    <div>
+        <!-- 显示属性 -->
+        <div :key="key" class="exitenceStatus" v-touch:longtap="showUpdateStatus">
+            <div class="name">
+                {{ statusName }}
+            </div>
+            <div class="separator">：</div>
+            <!-- 属性值 -->
+            <statusValueVue class="value"></statusValueVue>
         </div>
-        <div class="separator">：</div>
-        <!-- 属性值 -->
-        <statusValueVue class="value"></statusValueVue>
+
     </div>
     
 </template>
 
 <script setup lang='ts'>
-    import { computed, inject, provide } from 'vue';
+    import { computed, inject, provide, ref} from 'vue';
     import statusValueVue from '../status/statusValue/statusValue.vue';
     import { getTypeStatus } from '@/hooks/all-exitence/allExitence';
+    import Status from '@/interfaces/exitenceStatus';
+import { showPopUp } from '@/hooks/popUp';
 
-    let {status} = defineProps(["status","typeStatus"])
-    
+    let model = defineModel<any>("status")
+    let status:Status = model.value
+    const key = ref(0)
+
     const type = inject<any>("type")
     //获取事物所在的分类的属性
 	let typeStatus = getTypeStatus(status,type.typeStatus)
@@ -27,6 +34,30 @@
     //提供所需的属性/分类属性
     provide("status",status)
     provide("typeStatus",typeStatus)
+
+    //长按弹出更新属性
+    const allStatus = inject("allStatus")
+    const allTypeStatus = inject("allTypeStatus")
+    function showUpdateStatus(){
+        showPopUp({
+            mask:false,
+            vueName:"updateStatus",
+            buttons:[],
+            props:{
+                status,
+                typeStatus,
+                allStatus,
+                allTypeStatus
+            },
+            returnValue:updateStatus
+        })
+    }
+    // 更新属性对象
+    function updateStatus(newStatus:Status){
+        status = newStatus
+        //更新这个div
+        key.value+=1
+    }
 </script>
 
 <style scoped lang='scss'>
