@@ -14,20 +14,18 @@
 <script setup lang='ts'>
     import { computed, inject, provide } from 'vue';
     import statusValueVue from '../status/statusValue/statusValue.vue';
-    import Status from '@/interfaces/exitenceStatus';
+    import { getTypeStatus } from '@/hooks/all-exitence/allExitence';
 
     let {status} = defineProps(["status","typeStatus"])
-    provide("status",status)
+    
     const type = inject<any>("type")
-    //获取对应的分类属性并提供
-	let typeStatus = type.typeStatus.find((typeStatus:Status)=>{
-        if(typeStatus.__key == status.__key){
-            return status
-        }
-    })
+    //获取事物所在的分类的属性
+	let typeStatus = getTypeStatus(status,type.typeStatus)
     const statusName = computed(()=>{
-        return status.name || typeStatus.name
+        return status.name || typeStatus?.name
     })
+    //提供所需的属性/分类属性
+    provide("status",status)
     provide("typeStatus",typeStatus)
 </script>
 
@@ -42,7 +40,7 @@
 			min-width: 1rem;
 		}
 		.value{
-			width: calc(100% - 200px);
+			width: calc(100% - 150px);
 		}
 	}
 </style>

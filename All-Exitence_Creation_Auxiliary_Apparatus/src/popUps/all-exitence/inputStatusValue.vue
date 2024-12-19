@@ -67,6 +67,7 @@
 		__key:null
 	})
 	provide("status",newStatus)
+	provide("typeStatus",newStatus)
 // 选择属性类型
 	let valueTypes = statusValueTypeList
 	//去除禁用的属性类型

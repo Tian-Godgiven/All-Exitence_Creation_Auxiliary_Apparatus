@@ -199,6 +199,7 @@ import { findTargetDivs } from '@/hooks/findTargetDiv';
         height: 100%;
         width: 100%;
         outline: none;
+        word-break: break-all;
         :focus{
             border: none;
         }

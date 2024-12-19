@@ -5,9 +5,8 @@
 			<div class="separator" v-if="index < articles.length-1"></div>
 		</div>
 		
-		<chapterVue v-for="(chapter,index) in chapters" 
-			:chapter="chapter"
-		>
+		<chapterVue v-for="(chapter) in chapters" 
+			:chapter="chapter">
 		</chapterVue>
 	</div>
 </template>
@@ -15,26 +14,10 @@
 <script setup lang="ts" name=""> 
 import chapterVue from './chapter.vue';
 import articleVue from './article.vue';
-import { ref } from 'vue';
+import { allArticle } from '@/hooks/all-articles/article';
 
-import allArticlesJSON from "@/data/projects/项目1/all-articles.json"
-// import { readFileToJSON } from '../../../hooks/dataFile';
-	let chapters = ref([])
-	let articles = ref([])
-
-	const filePath = "/projects/项目1/all-articles.json"
-	
-	const loading = async ()=>{
-		// let allArticles = readFileToJSON(filePath)
-		let allArticles = allArticlesJSON
-		if(allArticles){
-			chapters = ref(allArticles.chapter)
-			articles = ref(allArticles.articles)
-		}
-	}
-	
-	loading()
-	
+	let chapters = allArticle.chapter
+	let articles = allArticle.article
 	
 </script>
 

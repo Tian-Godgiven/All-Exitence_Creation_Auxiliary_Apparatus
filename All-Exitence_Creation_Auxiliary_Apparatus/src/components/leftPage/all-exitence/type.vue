@@ -7,7 +7,7 @@
 			</div>
 		</div>
 		<div class="inner" v-show="expending">
-			<groupVue v-for="(group,index) in groups" :group="group"></groupVue>
+			<groupVue v-for="(group) in groups" :group="group"></groupVue>
 			
 			<div v-for="(exitence,index) in noGroupExitence">
 				<exitenceVue :exitence="exitence"></exitenceVue>
@@ -22,6 +22,8 @@ import groupVue from "./group.vue"
 import exitenceVue from "./exitence.vue"
 import { ref } from "vue";
 import { createExitence } from "@/hooks/all-exitence/allExitence";
+import { showExitenceOnMain } from "@/hooks/showOnMain/showOnMain";
+import { hidePage } from "@/hooks/pageChange";
 	let expending = ref(true)
 	
 	let {type} = defineProps(["type"])
@@ -31,9 +33,11 @@ import { createExitence } from "@/hooks/all-exitence/allExitence";
 	// 没有分组的事物
 	let noGroupExitence = ref(type.exitence)
 
-	function clickCreateExitence(event:any){
+	async function clickCreateExitence(event:any){
 		event.stopPropagation();
-		createExitence(type)
+		const exitence = await createExitence(type)
+		hidePage("left")
+		showExitenceOnMain(exitence)
 	}
 </script>
 

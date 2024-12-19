@@ -1,4 +1,4 @@
-// 递归查找符合条件的 div.target 元素
+// 从element元素中递归查找符合条件的 div.target 元素
 export function findTargetDivs(element:any,result:any[],targetClass:string,getRule:(e:any)=>{}) {
     Array.from(element.childNodes).forEach((child:any) => {
         // 判断当前元素是否符合条件，若符合则将其值添加到数组中

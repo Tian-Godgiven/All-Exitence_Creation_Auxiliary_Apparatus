@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="ts" name="">
-import { computed, getCurrentInstance, provide, ref, watch,ComponentInternalInstance } from 'vue';
+import { provide } from 'vue';
 import textAreaVue from '@/components/other/textArea/textArea.vue';
 import exitenceStatusVue from '../popUps/all-exitence/exitence/exitenceStatus.vue';
 import { types } from '@/hooks/all-exitence/allExitence';	
@@ -33,13 +33,14 @@ import { Type } from '@/class/Type';
 			return type
 		}
     })
-	provide("type",type)
-
+	
 	//显示事物的属性数量
 	const statusNum = exitence.value.status.length
 
-	//提供所有属性
-	provide("allStatus",exitence.value.status)
+	provide("type",type)//提供该事物所在的分类
+	provide("allStatus",exitence.value.status)//提供所有属性
+	provide("allTypeStatus",type.typeStatus)//提供所在的分类的所有属性
+
 </script>
 
 <style lang="scss" scoped>

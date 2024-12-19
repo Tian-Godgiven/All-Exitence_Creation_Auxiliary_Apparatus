@@ -17,6 +17,7 @@ import MultiPartValueVue from './multiPartValue.vue';
 		immediate:true,
 		deep:true,
 	})
+	//提供当前属性中的所有parts
 	provide("parts",parts)
 	
 </script>
@@ -27,6 +28,8 @@ import MultiPartValueVue from './multiPartValue.vue';
 		width: 100%;
 		
 		.part{
+			word-break: break-all;
+			max-width: 100%;
 			float: left;
 			padding:0 5px;
 		}

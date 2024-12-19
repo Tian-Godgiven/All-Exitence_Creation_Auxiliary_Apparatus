@@ -3,6 +3,7 @@
 		<textAreaVue 
 			:disabled="disabled"
 			class="textArea"
+			:class="ifUnit?'withUnit':''"
 			v-model="status.value"
 			placeholder="输入默认值"/>
 		<div class="unit" v-if="ifUnit">{{ unit }}</div>
@@ -37,7 +38,8 @@ import textAreaVue from '@/components/other/textArea/textArea.vue';
 		display: flex;
 		width: 100%;
 		border:3px solid black;
-		.textArea{
+		box-sizing: border-box;
+		.textArea.withUnit{
 			max-width: calc(100% - 3rem);
 		}
 		.unit{

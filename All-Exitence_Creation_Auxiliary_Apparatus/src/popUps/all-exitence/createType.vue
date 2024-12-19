@@ -48,10 +48,10 @@ import { showQuickInfo } from '@/api/showQuickInfo';
 	//分类名称
 	let typeName = ref("")
 
-	//分类的属性
+	//分类的所有属性
 	let typeStatus = reactive<any>([])
-	console.log(typeStatus)
 	provide("allStatus",typeStatus)
+	provide("allTypeStatus",typeStatus)
 	
 	//显示预制属性弹窗
 	function prepareStatus(){

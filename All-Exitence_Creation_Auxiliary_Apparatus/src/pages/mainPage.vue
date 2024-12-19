@@ -20,8 +20,8 @@
 	
 	<!-- 首页内容 -->
 	<div class="mainInner" :key="refreshKey">
-		<showArticleVue v-model="showTarget.target" class="container" v-if="showTarget.type == 'article'"/>
-		<showExitenceVue v-model="showTarget.target" class="container" v-else-if="showTarget.type == 'exitence'"/>
+		<showArticleVue v-model="showOnMain.target" class="container" v-if="showOnMain.type == 'article'"/>
+		<showExitenceVue v-model="showOnMain.target" class="container" v-else-if="showOnMain.type == 'exitence'"/>
 	</div>
 	
 	<!-- 左侧页面-->
@@ -58,8 +58,8 @@ import popUpVue from './popUp.vue';
 import inputSuggestionVue from '@/components/other/inputSuggestion.vue';
 import showArticleVue from '@/components/mainPage/showArticle.vue';
 import showExitenceVue from '@/components/mainPage/showExitence.vue';
-import { showTarget } from '@/hooks/showOnMain/showOnMain';
-import { provide, ref, watch } from 'vue';
+import { showOnMain } from '@/hooks/showOnMain/showOnMain';
+import { ref, watch } from 'vue';
 
 // 功能按键
 	const buttons = [
@@ -90,8 +90,11 @@ import { provide, ref, watch } from 'vue';
 // 首页内容栏
 	//刷新内容
 	let refreshKey = ref(0)
-	watch(showTarget,()=>{
+	watch(showOnMain,()=>{
+		console.log("12345")
 		refreshKey.value+=1
+	},{
+		deep:false
 	})
 	
 </script>

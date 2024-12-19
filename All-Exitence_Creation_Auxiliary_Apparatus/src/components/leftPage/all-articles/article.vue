@@ -1,22 +1,20 @@
 <template>
-	<div class="article">
-		<div class="title">{{articleTitle}}</div>
-		<div class="preview">{{articlePreview}}</div>
+	<div @click="clickArticle" class="article">
+		<div class="title">{{article.title}}</div>
+		<div class="preview">{{article.inner.slice(0,100)}}</div>
 	</div>
 </template>
 
 <script setup lang="ts" name="article">
-import { ref } from 'vue'; 
+import { hidePage } from '@/hooks/pageChange';
+import { showArticle } from '@/hooks/showOnMain/showOnMain';
 	let {article} = defineProps(["article"])
 	
-	let 文章标题 = article.title
-	let 文章内容 = article.inner
-	// 生成文章预览，提取前100个字符
-	let 预览内容 = 文章内容.slice(0,100)
-
-	let articleTitle = ref(文章标题)
-	let articlePreview = ref(预览内容)
-	
+	//点击切换到该文章
+	function clickArticle(){
+		showArticle(article)
+		hidePage("left")
+	}
 	
 </script>
 

@@ -32,10 +32,7 @@ export function showQuickInfo(
 	else{
 		//如果要求中心显示在目标位置
 		if(divCenter){
-			console.log(infoDiv)
-			console.log(parseInt(position.left),infoDiv.clientWidth)
 			position.left = (parseInt(position.left) - infoDiv.offsetWidth/2) + "px"
-			console.log(position.left)
 		}
 	}
 

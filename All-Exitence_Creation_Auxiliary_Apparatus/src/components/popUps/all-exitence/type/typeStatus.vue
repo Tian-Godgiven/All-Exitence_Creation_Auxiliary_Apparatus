@@ -25,7 +25,9 @@ import statusValueVue from '../status/statusValue/statusValue.vue';
 import textAreaVue from '@/components/other/textArea/textArea.vue';
 	let {status} = defineProps(["status"])
 	let emits = defineEmits(["deleteStatus"])
+	//对于分类对象来说，其属性就是分类属性
 	provide("status",status)
+	provide("typeStatus",status)
 	function deleteStatus(){
 		emits('deleteStatus')
 	}

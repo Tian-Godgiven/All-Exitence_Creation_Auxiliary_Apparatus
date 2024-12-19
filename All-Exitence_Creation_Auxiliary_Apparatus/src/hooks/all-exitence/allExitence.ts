@@ -64,19 +64,39 @@ export const types = shallowReactive<any>(allExitenceData.types)
             setting:{}
         })
         type.exitence.push(newExitence)
+        
+        return newExitence
     }
 
-    // 显示创建事物页面，创建成功时添加该分类
-    export function createExitence(type:Type){
-        // 显示创建事物页面
-        showPopUp({
-            name:"创建事物",
-            props:{
-                type
-            },
-            buttons:[],
-            vueName:"createExitence",
-            mask:true,
+    // 显示创建事物页面，创建成功时添加该事物并通过resolve返回
+    export async function createExitence(type:Type):Promise<Exitence>{
+        return new Promise((resolve,reject)=>{
+            // 显示创建事物页面
+            showPopUp({
+                name:"创建事物",
+                props:{
+                    type
+                },
+                buttons:[],
+                vueName:"createExitence",
+                mask:true,
+                returnValue:(newExitence)=>{
+                    if(!newExitence){
+                        reject("未能成功创建事物")
+                    }
+                    resolve(newExitence)
+                }
+            })
+        })
+        
+    }
+
+    // 获取事物属性对应的分类属性
+    export function getTypeStatus(status:any,allTypeStatus:[]):Status | undefined{
+        return allTypeStatus.find((tmp:Status)=>{
+            if(tmp.__key == status.__key){
+                return tmp
+            }
         })
     }
 

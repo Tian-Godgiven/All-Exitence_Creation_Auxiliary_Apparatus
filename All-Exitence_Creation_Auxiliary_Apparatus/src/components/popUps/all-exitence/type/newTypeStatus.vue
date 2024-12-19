@@ -63,6 +63,7 @@
 		__key:null
 	})
 	provide("status",newStatus)
+	provide("typeStatus",newStatus)
 	// 选择属性类型
 	let valueTypes = statusValueTypeList
 	//切换属性类型时，清空setting和value

@@ -20,14 +20,16 @@
     import { closePopUp } from '@/hooks/popUp';
     import { addExitence } from '@/hooks/all-exitence/allExitence';
     import tagsValueVue from '@/components/popUps/all-exitence/status/statusValue/tagsValue.vue';
-    const {props, popUp} = defineProps(["props","popUp","returnValue"])
+    const {props, popUp, returnValue} = defineProps(["props","popUp","returnValue"])
     const name = ref("")
     const tags = reactive([])
     const type = props.type
 
+    //确认创建
     function confirm(){
-        addExitence(type,name.value,toRaw(tags))
+        const exitence = addExitence(type,name.value,toRaw(tags))
         closePopUp(popUp)
+        returnValue(exitence)
     }
 </script>
 

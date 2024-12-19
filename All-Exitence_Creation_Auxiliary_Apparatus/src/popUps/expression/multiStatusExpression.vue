@@ -121,6 +121,7 @@ import { explainExpression, multiStatusPart } from '@/hooks/expression/multiStat
 		let lastItem:any
 		//解析输入内容值
 		const tmp = explainExpression(expressionValue)
+		console.log(tmp)
 		if(!tmp){
 			errorMsg.value.push("表达式无法解析，请检查是否存在错误输入对象")
 			noError = false
@@ -248,7 +249,7 @@ import { explainExpression, multiStatusPart } from '@/hooks/expression/multiStat
 			mask : true,
 			returnValue : (array)=>{
 				//遍历返回的数组
-				array.forEach((value)=>{
+				array.forEach((value:any)=>{
 					addItem(value,"quotePart")
 				})
 			},

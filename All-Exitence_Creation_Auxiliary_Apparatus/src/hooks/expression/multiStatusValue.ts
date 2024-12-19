@@ -1,3 +1,5 @@
+import { getTypeStatus } from "../all-exitence/allExitence";
+
 // 该表达式为multi类型的属性的属性值中computed类型属性中使用到的特殊表达式
 export interface multiStatusPart{
     value:any,
@@ -33,10 +35,8 @@ export function explainExpression(expressionValue:any[]){
 
 }
 
-// 
-
 // 遍历表达式数组，并计算其中的值
-export function countExpression(typeStatus:any[],parts:any,expression:any[]){
+export function countExpression(allStatus:any,allTypeStatus:any[],parts:any,expression:any[]){
     let totalValue
     let tmpArray:any[] = []
     let lastItem:any
@@ -72,7 +72,7 @@ export function countExpression(typeStatus:any[],parts:any,expression:any[]){
                 //提取括号中的内容
                 let inside = arr.slice(startIndex+1, endIndex);
                 //计算括号内容的值
-                let insideValue = countExpression(typeStatus,parts,inside);
+                let insideValue = countExpression(allStatus,allTypeStatus,parts,inside);
                 let subExpression = [lastItem,"[",insideValue,"]"]
                 //再计算取数组表达式的值
                 let result = returnExpressionValue(subExpression)
@@ -103,7 +103,7 @@ export function countExpression(typeStatus:any[],parts:any,expression:any[]){
                 //提取括号中的内容为子表达式
                 let subExpression = arr.slice(startIndex+1, endIndex);
                 // 递归计算子表达式的值
-                let result = countExpression(typeStatus,parts,subExpression);
+                let result = countExpression(allStatus,allTypeStatus,parts,subExpression);
                 // 将计算结果添加到 tmpArray占位
                 tmpArray.push(result); 
             }
@@ -128,7 +128,7 @@ export function countExpression(typeStatus:any[],parts:any,expression:any[]){
         let value:any
         expression.flatMap((item:any) => {
             //初始化
-            let itemValue = getExpressionItemValue(typeStatus,parts,item)
+            let itemValue = getExpressionItemValue(allStatus,allTypeStatus,parts,item)
             if(value == null){
                 value = itemValue
             }
@@ -240,12 +240,12 @@ export function countExpressionPart(lastValue:any,simbol:string,nextValue:any){
 }
 
 //获取表达式对象的值
-function getExpressionItemValue(typeStatus:any,parts:any,item:any){
+function getExpressionItemValue(allStatus:any,allTypeStatus:any,parts:any,item:any){
     if(typeof item == "object"){
         //如果是引用属性
         if(item.type == "quoteStatus"){
             //获取目标属性
-            const targetStatus = getQuoteStatus(typeStatus,item.key)
+            const targetStatus = getQuoteStatus(allStatus,item.key)
             if(targetStatus){
                 return targetStatus.value
             }
@@ -259,7 +259,7 @@ function getExpressionItemValue(typeStatus:any,parts:any,item:any){
             const targetPart = getQuotePart(parts,item.key)
             //如果目标部分是引用属性,则获得其目标属性
             if(targetPart.valueType == "quoteStatus"){
-                const targetStatus = getQuoteStatus(typeStatus,targetPart.value)
+                const targetStatus = getQuoteStatus(allStatus,targetPart.value)
                 //返回属性值
                 if(targetStatus){
                     return targetStatus.value
@@ -270,7 +270,7 @@ function getExpressionItemValue(typeStatus:any,parts:any,item:any){
             }
             //如果目标部分是表达式，则获得其值
             else if(targetPart.valueType == "expression"){
-                const expressionValue = countExpression(typeStatus,parts,targetPart.value)
+                const expressionValue = countExpression(allStatus,allTypeStatus,parts,targetPart.value)
                 return expressionValue
             }
             //如果目标是属性值，则获得其值为一个属性对象，再获得属性的值
@@ -291,13 +291,15 @@ function getExpressionItemValue(typeStatus:any,parts:any,item:any){
 }
 
 //获取表达式的文本内容
-export function getExpressionText(typeStatus:any,expression:any[]){
+export function getExpressionText(allStatus:any,allTypeStatus:any,expression:any[]){
     const infoText = expression.reduce((arr:string,value:any)=>{
         if(value.type && value.type=="quotePart"){
             arr+=("引用部分:"+value.key)
         }
         else if(value.type && value.type == "quoteStatus"){
-            arr += ("引用属性:"+getQuoteStatus(typeStatus,value.key).name)
+            const targetStatus = getQuoteStatus(allStatus,value.key)
+            const targetTypeStatus = getTypeStatus(targetStatus,allTypeStatus)
+            arr += ("引用属性:"+(targetStatus.name??targetTypeStatus?.name))
         }
         else{
             arr+=value;
@@ -308,10 +310,11 @@ export function getExpressionText(typeStatus:any,expression:any[]){
 }
 
 //获取引用的属性目标
-export function getQuoteStatus(typeStatus:any[],statusKey:string){
-    const tmp = typeStatus.find((status:any)=>{
+export function getQuoteStatus(allStatus:any[],statusKey:string){
+    let tmp = allStatus.find((status:any)=>{
         return status.__key == statusKey
     })
+    
     if(tmp){
         return tmp
     }
