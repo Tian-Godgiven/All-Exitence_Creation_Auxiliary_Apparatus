@@ -1,19 +1,25 @@
 <template>
     <div class="container">
-        <div class="targetTitle" >
-            <textAreaVue
-                placeholder="输入标题"
-                v-model="article.title"
-                :inputSupport="true">
-            </textAreaVue>
+
+        <div class="top">
+            <div class="targetTitle" >
+                <textAreaVue
+                    placeholder="输入标题"
+                    v-model="article.title"
+                    :inputSupport="true">
+                </textAreaVue>
+            </div>
         </div>
+        
         <div class="targetInner">
             <textAreaVue 
+                class="articleText"
                 :inputSuggestionList="keyWordList"
                 v-model="article.inner"
                 :inputSupport="true"> 
             </textAreaVue>
         </div>
+
         <div class="targetInfo">字数: {{textNum}}</div>
     </div>
 </template>
@@ -35,6 +41,16 @@
         @extend .targetContainer;
         .targetTitle{
             text-align: center;
+        }
+        .targetInner{
+            .articleText{
+                :deep(.textArea){
+                    min-height: 40%;
+                    padding-bottom: 100%;
+                    height: auto;
+                }
+                
+            }
         }
     }
 </style>

@@ -4,6 +4,7 @@
 			<div class="titleName">{{name}}</div>
 			<div class="titleButtons">
 				<div @click="clickCreateExitence">创建事物</div>
+				<div @click="clickCreateGroup">创建分组</div>
 			</div>
 		</div>
 		<div class="inner" v-show="expending">
@@ -21,7 +22,7 @@
 import groupVue from "./group.vue"
 import exitenceVue from "./exitence.vue"
 import { ref } from "vue";
-import { createExitence } from "@/hooks/all-exitence/allExitence";
+import { createExitence,createGroup } from "@/hooks/all-exitence/allExitence";
 import { showExitenceOnMain } from "@/hooks/mainPage/showOnMain";
 import { hidePage } from "@/hooks/pageChange";
 	let expending = ref(true)
@@ -32,12 +33,19 @@ import { hidePage } from "@/hooks/pageChange";
 	let groups = ref(type.groups)
 	// 没有分组的事物
 	let noGroupExitence = ref(type.exitence)
-
+	
+	//点击创建事物
 	async function clickCreateExitence(event:any){
 		event.stopPropagation();
 		const exitence = await createExitence(type)
 		hidePage("left")
 		showExitenceOnMain(exitence)
+	}
+	//点击创建分组
+	async function clickCreateGroup(event:any){
+		event.stopPropagation();
+		const group = await createGroup(type)
+		console.log(group)
 	}
 </script>
 

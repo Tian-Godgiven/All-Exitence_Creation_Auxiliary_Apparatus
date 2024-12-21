@@ -1,6 +1,6 @@
 <template>
 	<div class="newStatus">
-		<editStatusVue @confirm="createTypeStatus" :status="newStatus">
+		<editStatusVue @confirm="createTypeStatus" :banValueType="banValueType">
 			<template v-slot:confirm>新增</template>
 		</editStatusVue>
 	</div>
@@ -18,6 +18,9 @@
 		setting:{},
 		__key:null
 	})
+
+	// 不需要的类型
+	const {banValueType} = defineProps(["banValueType"])
 
 	// 确认新增属性
 	let emit = defineEmits(["createStatus"])

@@ -40,7 +40,6 @@ import draggableListVue from '@/components/other/draggableList/draggableList.vue
 import { showPopUp } from '@/hooks/popUp';
 import textInputVue from "@/components/popUps/others/textInput.vue";
 import { showQuickInfo } from '@/api/showQuickInfo';
-import inputStatusValueVue from '@/popUps/all-exitence/inputStatusValue.vue';
 import multiStatusExpressionVue from '@/popUps/expression/multiStatusExpression.vue';
 import chooseFromListVue from '@/components/popUps/others/chooseFromList.vue';
 import inputVue from '@/components/other/input/downLineInput.vue'
@@ -50,11 +49,11 @@ import { multiStatusPart } from '@/hooks/expression/multiStatusValue';
 	const multiBonusPopUpList:{[key:string]:any} = {
 		"text":shallowRef(textInputVue),
 		"quoteStatus":shallowRef(chooseFromListVue),
-		"statusValue":shallowRef(inputStatusValueVue),
 		"expression":shallowRef(multiStatusExpressionVue)
 	}
 	const status = inject<any>("status")
 	const allStatus = inject<any>("allStatus")
+	const allTypeStatus = inject<any>("allTypeStatus")
 	// 当前复合属性的值，数组内依次保存各个复合属性对象
 	const multiValue = ref(status.value ? status.value : [])
 	// 将值同步回属性上
@@ -201,13 +200,15 @@ import { multiStatusPart } from '@/hooks/expression/multiStatusValue';
 			}
 		})
 	}
-	// 显示属性输入弹窗，这个弹窗的尺寸和参数不一样
+	// 显示创建属性弹窗，这个弹窗的尺寸和参数不一样
 	function showStatusValueInput(){
 		showPopUp({
 			name:"新增属性",
-			vue:multiBonusPopUpList["statusValue"],
+			vueName:"createStatus",
 			props:{
-				banValueType:["multi","status"]
+				banValueType:["multi","status"],
+				allStatus,
+				allTypeStatus
 			},
 			buttons : [],
 			mask : true,

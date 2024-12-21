@@ -4,6 +4,7 @@ import allExitenceData from "@/data/projects/项目1/all-exitence.json"
 import { showPopUp } from "../popUp";
 import { reactive, shallowReactive } from "vue";
 import Status from "@/interfaces/exitenceStatus";
+import { Group } from "@/class/Group";
 
 //当前万物
 export const allExitence = reactive(allExitenceData)
@@ -99,5 +100,26 @@ export const types = shallowReactive<any>(allExitenceData.types)
             }
         })
     }
-
+// 分组相关
+    // 显示创建分组页面，创建成功时添加该分组并通过resolve返回
+    export async function createGroup(type:Type):Promise<Group>{
+        return new Promise((resolve,reject)=>{
+            // 显示创建事物页面
+            showPopUp({
+                name:"创建分组",
+                props:{
+                    type
+                },
+                buttons:[],
+                vueName:"createGroup",
+                mask:true,
+                returnValue:(newGroup)=>{
+                    if(!newGroup){
+                        reject("未能成功创建事物")
+                    }
+                    resolve(newGroup)
+                }
+            })
+        })
+    }
     

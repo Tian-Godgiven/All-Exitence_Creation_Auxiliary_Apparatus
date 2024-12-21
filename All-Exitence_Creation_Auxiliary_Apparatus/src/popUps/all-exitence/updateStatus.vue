@@ -1,6 +1,6 @@
 <template>
 	<div class="updateStatus">
-		<editStatusVue @confirm="updateStatus">
+		<editStatusVue @confirm="updateStatus" :banValueType="banValueType">
 			<template v-slot:confirm>确认</template>
 		</editStatusVue>
 	</div>
@@ -10,10 +10,10 @@
 	import { provide, toRaw } from 'vue'; 
 	import Status from '@/interfaces/exitenceStatus';
 	import editStatusVue from '@/components/popUps/all-exitence/status/editStatus.vue';
-import { closePopUp } from '@/hooks/popUp';
+	import { closePopUp } from '@/hooks/popUp';
 	// 编辑对象与编辑对象的属性等数据
 	const {props,popUp,returnValue} = defineProps(["props","popUp","returnValue"])
-	const {status,typeStatus,allStatus,allTypeStatus} = props
+	const {status,typeStatus,allStatus,allTypeStatus,banValueType} = props
 	const emits = defineEmits(["confirm"])
 
 	provide("status",status)

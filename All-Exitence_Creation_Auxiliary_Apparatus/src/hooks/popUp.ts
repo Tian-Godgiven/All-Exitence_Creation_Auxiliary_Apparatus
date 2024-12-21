@@ -73,10 +73,12 @@ export function closePopUp(popUp?:PopUp){
 	
 	if(popUp && popUp.mask){
 		maskIndex.value -= 1
-		if(maskIndex.value == 0){
-			hideMask()
-			// 恢复页面切换
-			enableChangePage()
-		}
+	}
+
+	//已经没有任何弹窗时
+	if(maskIndex.value == 0){
+		hideMask()
+		// 恢复页面切换
+		enableChangePage()
 	}
 }

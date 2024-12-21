@@ -51,7 +51,7 @@
 	import textAreaVue from '@/components/other/textArea/textArea.vue';
 	import { showQuickInfo } from '@/api/showQuickInfo';
 	import { ElOption, ElSelect } from 'element-plus';
-import { cloneDeep } from 'lodash';
+	import { cloneDeep } from 'lodash';
 
 	// 需要编辑的属性初值
     let status = inject<any>("status")
@@ -63,9 +63,18 @@ import { cloneDeep } from 'lodash';
         status.valueType = cloneDeep(typeStatus.valueType)
     }
     
-
 	// 选择属性类型
 	let valueTypes = statusValueTypeList
+	// 去除禁用属性
+	const {banValueType} = defineProps(["banValueType"])
+	if(banValueType){
+		valueTypes = valueTypes.reduce((acc,cur)=>{
+			if(!banValueType.includes(cur.value)){
+				acc.push(cur)
+			}
+			return acc
+		},<any[]>[])
+	}
 	//切换属性类型时，清空setting和value
 	function changeValueType(){
 		status.setting = {}

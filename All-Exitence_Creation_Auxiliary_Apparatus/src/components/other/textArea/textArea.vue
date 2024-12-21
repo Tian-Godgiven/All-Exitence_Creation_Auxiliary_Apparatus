@@ -14,6 +14,7 @@
             @focus="onFocus">
             {{ showText }}
         </div>
+        <slot name="scrollSpace"></slot>
     </div>
 </template>
 
