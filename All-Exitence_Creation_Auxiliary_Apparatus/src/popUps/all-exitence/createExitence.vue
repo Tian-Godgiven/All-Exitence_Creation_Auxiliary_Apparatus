@@ -40,8 +40,8 @@
     //确认创建
     function confirm(){
         const exitence = addExitence(type,name.value,toRaw(tags))
-        closePopUp(popUp)
         returnValue(exitence)
+        closePopUp(popUp)
     }
 </script>
 

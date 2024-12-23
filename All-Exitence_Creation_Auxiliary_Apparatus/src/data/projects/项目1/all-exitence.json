@@ -29,7 +29,7 @@
 			"groups":[
 				{
 					"name":"人类",
-					"rule":"haveTag('人类')",
+					"rules":["&&name==小明"],
 					"setting":{}
 				}
 			],
@@ -51,6 +51,7 @@
 							"name":"标签",
 							"value":["强壮","笨拙"],
 							"valueType":"tags",
+							"__key":"exitence__0",
 							"setting":{}
 						},{
 							"__key":2
@@ -100,7 +101,9 @@
 							"__key":2
 						}
 					],
-					"setting":{},
+					"setting":{
+						"tagStatus":"exitence__0"
+					},
 					"typeName":"角色"
 				}
 			],

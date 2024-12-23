@@ -3,7 +3,7 @@
 
         <div class="top">
             <downLineInputVue 
-				v-model="newGroup.name"
+				v-model="groupName"
 				class="groupName"
 				placeholder="输入分组名称"/>
         </div>
@@ -11,7 +11,11 @@
         <div class="inner">
             <!-- 已存在的分组规则 -->
             <div class="groupRules">
-                <groupRuleVue v-for="rule in newGroup.rules" :rule="rule"></groupRuleVue>
+                <groupRuleVue 
+                    v-for="(rule,index) in groupRule" 
+                    :key="Symbol()"
+                    :rule="rule"
+                    @deleteRule="deleteRule(index)"></groupRuleVue>
             </div>
 
             <!-- 连接分组规则，默认为并且 -->
@@ -28,7 +32,7 @@
             </div>
 
             <!-- 创建新的分组规则 -->
-            <newGroupRule></newGroupRule>
+            <newGroupRuleVue @createGroupRule="createNewRule" ></newGroupRuleVue>
 
             
         </div>
@@ -44,20 +48,20 @@
     import { closePopUp } from '@/hooks/popUp';
     import {provide, reactive, ref, toRaw } from 'vue';
     import downLineInputVue from '@/components/other/input/downLineInput.vue';
-    import newGroupRule from '@/components/popUps/all-exitence/group/newGroupRule.vue';
+    import newGroupRuleVue from '@/components/popUps/all-exitence/group/newGroupRule.vue';
     import { ElSelect, ElOption } from 'element-plus';
     import groupRuleVue from '@/components/popUps/all-exitence/group/groupRule.vue';
+    import { showQuickInfo } from '@/api/showQuickInfo';
+    import { addGroup } from '@/hooks/all-exitence/allExitence';
     const {props,popUp,returnValue} = defineProps(["props","popUp","returnValue"])
     //分组所在的分类
     const {type} = props
     provide("type",type)
 
-    //新分组本身
-    const newGroup = reactive({
-        name:"",
-        rules:[],
-        setting:{}
-    })
+    //新分组
+    const groupName = ref("")
+    const groupRule= reactive<any[]>([])
+    const groupSetting = reactive({})
 
     //分组规则连接符号
     const ruleLinker = ref("&&")
@@ -67,9 +71,40 @@
         {text:"取反/否定",value:"!"}
     ]
 
+    //删除已有的分组规则
+    function deleteRule(index:number){
+        groupRule.splice(index,1)
+    }
+
+    //创建新的分组规则
+    function createNewRule(newRule:string){
+        //将分组规则连接符号放在前面
+        const rule = ruleLinker.value + newRule
+        //将新的分组规则添加到分组中
+        groupRule.push(rule)
+    }
+    
     //点击确认返回该分组
     function confirm(){
-        returnValue(toRaw(newGroup))
+        //分类名称不可为空
+		if(groupName.value == "" || !groupName.value){
+			showQuickInfo("分组名不可为空")
+			return false
+		}
+        //分组规则不能为空
+        if(groupRule.length == 0){
+            showQuickInfo("分组需要至少一条规则")
+            return false
+        }
+		//添加该分组
+		const newGroup = {
+            name:groupName.value,
+            rules:toRaw(groupRule),
+            setting:toRaw(groupSetting)
+        }
+        addGroup(type,newGroup)
+        returnValue(newGroup)
+		//关闭弹窗
         closePopUp(popUp)
     }
 </script>

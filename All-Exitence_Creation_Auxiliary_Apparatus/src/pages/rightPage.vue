@@ -38,6 +38,7 @@ import { rightMaxWidth, switchRight } from '@/hooks/pageChange';
 	
 	// 右侧页面按键通用样式
 	.rightPage{
+		pointer-events: none;
 		height:calc(100% - 550px);
 		right: 0;
 		top:350px;
@@ -52,6 +53,7 @@ import { rightMaxWidth, switchRight } from '@/hooks/pageChange';
 		width: 100%;
 	}
 	.button{
+			pointer-events: all;
 			height: 100px;
 			width: 100px;
 			border-radius: 50%;

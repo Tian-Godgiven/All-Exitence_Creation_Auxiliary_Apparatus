@@ -3,7 +3,7 @@
 export class Group{
 	constructor(
 		public name:string,
-		public rule:string,
+		public rules:string[],
 		public setting:{}
 	){}
 	

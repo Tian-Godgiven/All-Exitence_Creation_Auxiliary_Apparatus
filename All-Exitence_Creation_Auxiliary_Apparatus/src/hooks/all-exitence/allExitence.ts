@@ -27,6 +27,15 @@ export const types = shallowReactive<any>(allExitenceData.types)
         }
     }
 
+    // 获取key对应的分类的属性
+    export function getTypeStatusByKey(statusKey:any,allTypeStatus:[]):Status | undefined{
+        return allTypeStatus.find((tmp:Status)=>{
+            if(tmp.__key == statusKey){
+                return tmp
+            }
+        })
+    }
+
     //向万物中添加新的分类
     export function addType(typeName:string,typeStatus:[],typeSetting:{}){
         const type = new Type(typeName,typeStatus,typeSetting,[],[])
@@ -50,7 +59,7 @@ export const types = shallowReactive<any>(allExitenceData.types)
         if(!name || name == ""){
             name = "未命名"+type.name
         }
-        const newExitence = new Exitence(name,[],type.name)
+        const newExitence = new Exitence(name,[],type.name,{})
         //添加分类的属性
         type.typeStatus.forEach((status:Status)=>{
             newExitence.status.push({
@@ -92,13 +101,39 @@ export const types = shallowReactive<any>(allExitenceData.types)
         
     }
 
-    // 获取事物属性对应的分类属性
-    export function getTypeStatus(status:any,allTypeStatus:[]):Status | undefined{
-        return allTypeStatus.find((tmp:Status)=>{
-            if(tmp.__key == status.__key){
+    // 获取key对应的事物的属性
+    export function getExitenceStatusByKey(statusKey:any,allStatus:any[],allTypeStatus?:any[],every?:boolean){
+        const status = allStatus.find((tmp:Status)=>{
+            if(tmp.__key == statusKey){
                 return tmp
             }
         })
+        //不要求所有属性的情况下，直接返回事物的该属性
+        if(!every){
+            return status
+        }
+        if(!allTypeStatus){
+            return false
+        }
+        const typeStatus = allTypeStatus.find((tmp:Status)=>{
+            if(tmp.__key == statusKey){
+                return tmp
+            }
+        })
+        //优先使用status中的valueType
+        let valueType = status["valueType"] || typeStatus["valueType"]
+        //优先使用两者覆盖后的setting
+        const statusSetting = (function(){
+            if(typeStatus){
+                return {...typeStatus.setting,...status?.setting}
+            }
+        })()
+
+        return {
+            value:status.value,
+            valueType:valueType,
+            setting:statusSetting
+        }
     }
 // 分组相关
     // 显示创建分组页面，创建成功时添加该分组并通过resolve返回
@@ -121,5 +156,11 @@ export const types = shallowReactive<any>(allExitenceData.types)
                 }
             })
         })
+    }
+    //使用分类，向其中添加新的分组
+    export function addGroup(type:Type,{name,rules,setting}:any){
+        const newGroup= new Group(name,rules,setting)
+        type.groups.push(newGroup)
+        return newGroup
     }
     

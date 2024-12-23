@@ -1,4 +1,4 @@
-import { getTypeStatus } from "../all-exitence/allExitence";
+import { getTypeStatusByKey } from "../all-exitence/allExitence";
 
 // 该表达式为multi类型的属性的属性值中computed类型属性中使用到的特殊表达式
 export interface multiStatusPart{
@@ -298,7 +298,7 @@ export function getExpressionText(allStatus:any,allTypeStatus:any,expression:any
         }
         else if(value.type && value.type == "quoteStatus"){
             const targetStatus = getQuoteStatus(allStatus,value.key)
-            const targetTypeStatus = getTypeStatus(targetStatus,allTypeStatus)
+            const targetTypeStatus = getTypeStatusByKey(targetStatus.__key,allTypeStatus)
             arr += ("引用属性:"+(targetStatus.name??targetTypeStatus?.name))
         }
         else{

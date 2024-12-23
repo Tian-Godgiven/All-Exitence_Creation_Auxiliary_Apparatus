@@ -46,7 +46,7 @@
     import statusValueVue from './statusValue.vue';
     import { countExpression, getExpressionText, getQuotePart, getQuoteStatus } from '@/hooks/expression/multiStatusValue';
     import { showQuickInfo } from '@/api/showQuickInfo';
-    import { getTypeStatus } from '@/hooks/all-exitence/allExitence';
+    import { getTypeStatusByKey } from '@/hooks/all-exitence/allExitence';
 
     const {part} = defineProps(["part","index"])
     const parts = inject<any>("parts")
@@ -66,7 +66,7 @@
     else if(valueType == "quoteStatus"){
         //获取并提供目标属性
         status = getQuoteStatus(allStatus,part.value)
-        typeStatus = getTypeStatus(status,allTypeStatus)
+        typeStatus = getTypeStatusByKey(status.__key,allTypeStatus)
     }
     //part为引用部分时，递归寻找目标对象
     else if(valueType == "quotePart"){

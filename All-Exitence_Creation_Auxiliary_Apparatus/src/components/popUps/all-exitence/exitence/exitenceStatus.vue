@@ -17,7 +17,7 @@
 <script setup lang='ts'>
     import { computed, inject, provide, ref} from 'vue';
     import statusValueVue from '../status/statusValue/statusValue.vue';
-    import { getTypeStatus } from '@/hooks/all-exitence/allExitence';
+    import { getTypeStatusByKey } from '@/hooks/all-exitence/allExitence';
     import Status from '@/interfaces/exitenceStatus';
 import { showPopUp } from '@/hooks/popUp';
 
@@ -27,7 +27,7 @@ import { showPopUp } from '@/hooks/popUp';
 
     const type = inject<any>("type")
     //获取事物所在的分类的属性
-	let typeStatus = getTypeStatus(status,type.typeStatus)
+	let typeStatus = getTypeStatusByKey(status.__key,type.typeStatus)
     const statusName = computed(()=>{
         return status.name || typeStatus?.name
     })

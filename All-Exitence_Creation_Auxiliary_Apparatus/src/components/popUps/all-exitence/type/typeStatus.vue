@@ -3,7 +3,7 @@
 		<!-- 属性名 -->
 		<div class="name">
 			<textAreaVue
-				v-model="status['name']"
+				v-model="status.name"
 				placeholder="属性名">
 			</textAreaVue>
 		</div>
@@ -26,7 +26,7 @@ import textAreaVue from '@/components/other/textArea/textArea.vue';
 import { showPopUp } from '@/hooks/popUp';
 import Status from '@/interfaces/exitenceStatus';
 	const model = defineModel("status")
-	let status = model.value
+	let status:any = model.value
 	const emits = defineEmits(["deleteStatus"])
 	//对于分类对象来说，其属性就是分类属性
 	provide("status",status)

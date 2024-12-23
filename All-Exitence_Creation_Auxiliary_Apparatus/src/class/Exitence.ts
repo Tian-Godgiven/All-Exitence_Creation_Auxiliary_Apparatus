@@ -5,7 +5,8 @@ export class Exitence{
 		public name:string,
 		public status:any[],
 		public typeName:string,
-		public setting?:{[key:string]:any},
-	){}
-	
+		public setting:{[key:string]:any},
+	){
+
+	}
 }

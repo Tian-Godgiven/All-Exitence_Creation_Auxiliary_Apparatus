@@ -11,4 +11,10 @@ import mainPage from "./pages/mainPage.vue";
   html{
     font-size: 16px;
   }
+  body{
+    :deep(.el-cascader-menu){
+      min-width: auto !important;
+    }
+  }
+  
 </style>

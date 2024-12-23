@@ -1,7 +1,7 @@
 <template>
 	<div class="group">
 		<div class="titleBar" @click="expending = !expending">
-			<div class="titleName">{{name}}</div>
+			<div class="titleName">{{group.name}}</div>
 		</div>
 		<div class="inner" v-show="expending">
 			<div v-for="(exitence,index) in groupExitence">
@@ -16,18 +16,10 @@
 import { ref } from 'vue';
 import exitenceVue from './exitence.vue';
 	
+	let {group,groupExitence} = defineProps(["group","groupExitence"]) 
+
+	//分组展开
 	let expending = ref(true)
-	let {group} = defineProps(["group"]) 
-	let name = ref(group.name)
-	let groupExitence = [{
-		name:"测试分组",
-		status:[],
-		setting:{}
-	},{
-		name:"测试分组",
-		status:[],
-		setting:{}
-	}]
 </script>
 
 <style lang="scss" scoped>

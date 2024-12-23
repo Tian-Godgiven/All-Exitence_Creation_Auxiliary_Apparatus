@@ -1,6 +1,6 @@
 <template>
 	<div class="all-exitence">
-		<typeVue v-for="(type,index) in types" :type="type"></typeVue>
+		<typeVue v-for="(type,index) in types" :type="types[index]"></typeVue>
 	</div>
 </template>
 
@@ -8,9 +8,6 @@
 import typeVue from './type.vue';
 
 	import { types } from '@/hooks/all-exitence/allExitence';
-
-	
-
 
 </script>
 

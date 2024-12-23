@@ -37,7 +37,6 @@
 </script>
 
 <style lang="scss" scoped>
-@use "@/static/style/components/inputs.scss";
 	
 	
 </style>
