@@ -1,17 +1,31 @@
 <template>
 	<div class="updateStatus">
-		<newTypeStatusVue @createStatus=" createStatus" :banValueType="banValueType"></newTypeStatusVue>
+		<editStatusVue @confirm="createStatus" :banValueType="banValueType">
+			<template v-slot:confirm>新增</template>
+		</editStatusVue>
 	</div>
 </template>
 <script setup lang="ts" name=""> 
-	import { provide } from 'vue'; 
+	import { provide,reactive,toRaw } from 'vue'; 
 	import { closePopUp } from '@/hooks/popUp';
 	import Status from '@/interfaces/exitenceStatus';
-	import newTypeStatusVue from '@/components/popUps/all-exitence/type/newTypeStatus.vue';
+	import editStatusVue from '@/components/popUps/all-exitence/status/editStatus.vue';
 
 	const {props,popUp,returnValue} = defineProps(["props","popUp","returnValue"])
 	const {allStatus,allTypeStatus,banValueType} = props
 	const emits = defineEmits(["confirm"])
+
+	// 新增属性
+	let newStatus = reactive<Status>({
+		name:"",
+		value:null,
+		valueType:"downLine",
+		setting:{},
+		__key:null
+	})
+
+	provide("status",newStatus)
+	provide("typeStatus",newStatus)
 
 	provide("allStatus",allStatus)
 	provide("allTypeStatus",allTypeStatus)
@@ -19,7 +33,7 @@
 	// 确认创建属性
 	function createStatus(newStatus:Status){
 		// 返回这个属性
-		returnValue(newStatus)
+		returnValue(JSON.parse(JSON.stringify(toRaw(newStatus))))
 		closePopUp(popUp)
 	}
 	

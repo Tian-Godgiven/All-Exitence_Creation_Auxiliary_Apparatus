@@ -8,7 +8,7 @@
 			</div>
 		</div>
 		<div class="inner" v-show="expending">
-			<groupVue :groupExitence="getGroupExitence(group)" v-for="(group) in groups" :group="group"></groupVue>
+			<groupVue v-for="(group) in groups" :group="group"></groupVue>
 			<div v-for="(exitence,index) in noGroupExitence">
 				<exitenceVue :exitence="exitence"></exitenceVue>
 				<div class="separator" v-if="index < noGroupExitence.length-1"></div>
@@ -20,16 +20,18 @@
 <script setup lang="ts" name=""> 
 import groupVue from "./group.vue"
 import exitenceVue from "./exitence.vue"
-import { computed, reactive, ref } from "vue";
+import { computed, reactive, ref, provide } from "vue";
 import { createExitence,createGroup } from "@/hooks/all-exitence/allExitence";
 import { showExitenceOnMain } from "@/hooks/mainPage/showOnMain";
 import { hidePage } from "@/hooks/pageChange";
-import { filterExitenceByRule } from "@/hooks/expression/groupRule";
-import { Group } from "@/class/Group";
+
 
 	let expending = ref(true)
 	
 	let {type} = defineProps(["type"])
+	provide("type",type)
+
+	// 分类名称
 	let name = ref(type.name)
 	// 分类中的分组
 	let groups = reactive(type.groups)
@@ -37,25 +39,16 @@ import { Group } from "@/class/Group";
 	// 分类中的事物
 	const allExitence = reactive(type.exitence)
 	// 获取一个数组对应分类中的事物的index
-	const exitenceIndex = reactive(new Array(allExitence.length).fill(true))
-	// 分组中的事物
-	function getGroupExitence(group:Group){
-		//遍历所有事物
-		const tmp = allExitence.reduce((arr:any[],exitence:any,index:number)=>{
-			if(filterExitenceByRule(exitence,group.rules)){
-				//去除这个index
-				exitenceIndex[index] = false
-				arr.push(exitence)
-			}
-			return arr
-		},[])
-		return tmp
-	}
+	const exitenceIndex = computed(()=>{
+		return reactive(new Array(allExitence.length).fill(true))
+	})
+	provide("exitenceIndex",exitenceIndex)
+	
 	// 没有分组的事物
 	let noGroupExitence = computed(()=>{
 		const tmp = allExitence.filter((exitence:any,index:number)=>{
 			//去除在exitenceIndex中标记为false的
-			if(exitenceIndex[index]!=false){
+			if(exitenceIndex.value[index]!=false){
 				return exitence
 			}
 		})

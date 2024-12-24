@@ -98,7 +98,6 @@ import { groupRuleSimbolList } from '@/data/list/groupRuleList';
         else{
             newRule = theTarget+ruleInner
         }
-        console.log(newRule)
         //返回新的规则
         emits("createGroupRule",newRule)
     }

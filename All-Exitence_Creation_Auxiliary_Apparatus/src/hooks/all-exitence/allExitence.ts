@@ -157,6 +157,28 @@ export const types = shallowReactive<any>(allExitenceData.types)
             })
         })
     }
+    // 显示编辑分组页面，显示该分组
+    export async function updateGroup(type:Type,group:Group){
+        return new Promise((resolve,reject)=>{
+            // 显示编辑分组页面
+            showPopUp({
+                name:"编辑分组",
+                props:{
+                    type,
+                    group
+                },
+                buttons:[],
+                vueName:"updateGroup",
+                mask:true,
+                returnValue:(newGroup)=>{
+                    if(!newGroup){
+                        reject("未能成功编辑事物")
+                    }
+                    resolve(newGroup)
+                }
+            })
+        })
+    }
     //使用分类，向其中添加新的分组
     export function addGroup(type:Type,{name,rules,setting}:any){
         const newGroup= new Group(name,rules,setting)
