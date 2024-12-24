@@ -2,7 +2,6 @@
 <div>
 	<div class="leftPage" :style="{left:(showWidth-maxWidth)+'px'}">
 		<div class="titleBar">
-			<div class="titleName" @click="changeModel">{{model?"万物":"文本"}}</div>
 			<div class="titleButtons">
 				<div class="button" @click="createNew">新建</div>
 				<div class="button">管理</div>
@@ -15,8 +14,10 @@
 						<div>切换项目</div>
 					</div>
 				</div>
-				
 			</div>
+			
+			<div class="titleName" @click="changeModel">{{model?"万物":"文本"}}</div>
+			
 		</div>
 		
 		<div class="inner">

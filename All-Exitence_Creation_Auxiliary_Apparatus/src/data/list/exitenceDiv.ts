@@ -1,1 +1,0 @@
-const exitenceDivHtml = `<span style="color:red" contenteditable="false" class="jumpExitence" data-exitence="${item.target}">${item.text}</span>`

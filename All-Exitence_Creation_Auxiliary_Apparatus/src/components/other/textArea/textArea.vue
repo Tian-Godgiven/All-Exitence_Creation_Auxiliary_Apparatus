@@ -9,7 +9,6 @@
             inputmode="text"
             tabindex="0"
             @compositionstart="compositionstart"
-            @compositionupdate="compositionupdate"
             @compositionend="compositionend"
             @click="clickEvent"
             @input="onInput"
@@ -80,13 +79,8 @@ import { findTargetDivs } from '@/hooks/findTargetDiv';
         ifIME = true
     }
 
-    function compositionupdate(event){
-
-    }
-
-    function compositionend(event){
+    function compositionend(event:any){
         const newInput = event.data
-        console.log(newInput)
         listenInput(event,newInput)
         ifIME = false
     }
@@ -121,8 +115,6 @@ import { findTargetDivs } from '@/hooks/findTargetDiv';
                 return false
             }
             //检查是否存在输入建议
-
-            
             const content = checkInputSuggestion(inputSuggestionList,effectInput)
             // 有输入建议：显示输入补全框
             if(content){
@@ -130,9 +122,7 @@ import { findTargetDivs } from '@/hooks/findTargetDiv';
             }
             // 整体不行，则再单独判断新输入的内容
             else{
-                
                 const content2 = checkInputSuggestion(inputSuggestionList,newInput)
-                console.log(newInput,content2)
                 //可行则更新有效输入
                 if(content2){
                     effectInput = newInput

@@ -2,7 +2,7 @@ import { addInputLastDiv, deleteInputLast, getInputPosition } from "@/api/cursor
 import { addInputLast } from "@/api/cursorAbility"
 import { Exitence } from "@/class/Exitence";
 import { Type } from "@/class/Type";
-import { exitenceDivStyle } from "@/data/list/exitenceDivStyle";
+import { exitenceDivStyle } from "@/static/style/exitenceDivStyle";
 import globalInputSuggestionListData from "@/data/list/globalInputSuggestionList.json";
 import { types } from "@/hooks/all-exitence/allExitence";
 import { showPopUp } from "@/hooks/popUp";

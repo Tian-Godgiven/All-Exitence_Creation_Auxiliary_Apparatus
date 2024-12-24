@@ -1,11 +1,14 @@
 <template>
 	<div class="type">
 		<div class="titleBar" @click=" expending = !expending ">
-			<div class="titleName">{{name}}</div>
 			<div class="titleButtons">
 				<div @click="clickCreateExitence">创建事物</div>
 				<div @click="clickCreateGroup">创建分组</div>
 			</div>
+			<div class="titleName">
+				<div class="text">{{name}}</div>
+			</div>
+			
 		</div>
 		<div class="inner" v-show="expending">
 			<groupVue v-for="(group) in groups" :group="group"></groupVue>

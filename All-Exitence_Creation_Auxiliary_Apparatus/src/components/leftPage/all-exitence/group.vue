@@ -1,8 +1,13 @@
 <template>
 	<div class="group">
 		<div class="titleBar" @click="expending = !expending">
-			<div class="titleName">{{group.name}}</div>
-			<div @click="clickUpdateGroup">编辑</div>
+			<div class="titleButtons" >
+				<div class="button" @click="clickUpdateGroup">编辑</div>
+			</div>
+			<div class="titleName">
+				<div class="text">{{group.name}}</div>
+			</div>
+			
 		</div>
 		<div class="inner" v-show="expending">
 			<div v-for="(exitence,index) in groupExitence">
