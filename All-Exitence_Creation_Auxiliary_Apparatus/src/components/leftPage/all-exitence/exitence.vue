@@ -1,6 +1,6 @@
 <template>
 	<div class="exitence" @click="clickExitence">
-		<div class="name">{{exitence.name}}</div>
+		<div class="name">{{name}}</div>
 		<div class="tags">
 			<div v-for="(tag) in tags">[{{tag}}]</div>
 		</div>
@@ -13,6 +13,9 @@ import { showExitenceOnMain } from '@/hooks/mainPage/showOnMain';
 import { computed } from 'vue'; 
 import Status from '@/interfaces/exitenceStatus';
 	let {exitence} = defineProps(["exitence"])
+	const name = computed(()=>{
+		return exitence.name
+	})
 	
 	//显示事物的tag
 	let tags = computed(()=>{

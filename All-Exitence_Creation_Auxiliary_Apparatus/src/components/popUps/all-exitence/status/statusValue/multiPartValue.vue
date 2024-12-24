@@ -12,7 +12,7 @@
         v-else-if="valueType == 'quoteStatus'"
         @click="showInfo">
         <!-- 引用属性值 -->
-        <statusValueVue disabled="true" class="statusValue"></statusValueVue>
+        <statusValueVue :disabled="true" class="statusValue"></statusValueVue>
     </div>
     
     <div class="quotePart" v-else-if="part && valueType == 'quotePart'"

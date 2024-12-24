@@ -1,5 +1,5 @@
 import managePx from "@/api/managePx"
-import { hideInputSupport } from "../inputSupport"
+import { hideInputSupport } from "../inputSupport/inputSupport"
 import { changePage, hidePage, leftMaxWidth, leftPageMask, leftShowing, leftShowWidth, rightMaxWidth, rightShowing, rightShowWidth, showPage } from "../pageChange"
 
 // 滑动相关数据

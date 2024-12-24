@@ -5,7 +5,7 @@ import { Exitence } from "./Exitence";
 
 export class Type{
 	constructor(
-		public name:string, //分类名
+		public name:string, //分类名，分类名称在项目中是唯一的
 		public typeStatus:[], //分类的属性数组与其对应的设置
 		public setting:{}, //分类设置
 		public groups:Group[], //分组数组

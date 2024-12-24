@@ -6,7 +6,6 @@ export class Exitence{
 		public status:any[],
 		public typeName:string,
 		public setting:{[key:string]:any},
-	){
-
-	}
+		public __key:string//由nanoId生成的唯一标识符
+	){}
 }

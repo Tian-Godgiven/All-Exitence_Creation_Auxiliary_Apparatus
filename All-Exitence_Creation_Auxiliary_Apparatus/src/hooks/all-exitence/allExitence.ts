@@ -2,14 +2,15 @@ import { Exitence } from "@/class/Exitence"
 import { Type } from "@/class/Type"
 import allExitenceData from "@/data/projects/项目1/all-exitence.json"
 import { showPopUp } from "../popUp";
-import { reactive, shallowReactive } from "vue";
+import { reactive } from "vue";
 import Status from "@/interfaces/exitenceStatus";
 import { Group } from "@/class/Group";
+import { nanoid } from "nanoid";
+import { addInputSuggestion } from "../inputSupport/inputSuggestion/inputSuggestion";
 
 //当前万物
 export const allExitence = reactive(allExitenceData)
-export const types = shallowReactive<any>(allExitenceData.types)
-
+export const types = reactive<any>(allExitenceData.types)
 
 //分类相关
     //判断分类名称是否重复
@@ -54,12 +55,13 @@ export const types = shallowReactive<any>(allExitenceData.types)
     }
 
 //事物相关
-    //使用分类，向其中添加新的事物
+    //向分类中添加新的事物
     export function addExitence(type:Type,name:string,tags:any[]){
         if(!name || name == ""){
             name = "未命名"+type.name
         }
-        const newExitence = new Exitence(name,[],type.name,{})
+        //创建该事物，并为其分配一个nanoid
+        const newExitence = new Exitence(name,[],type.name,{},nanoid())
         //添加分类的属性
         type.typeStatus.forEach((status:Status)=>{
             newExitence.status.push({
@@ -74,6 +76,13 @@ export const types = shallowReactive<any>(allExitenceData.types)
             setting:{}
         })
         type.exitence.push(newExitence)
+
+        //创建该事物的输入建议
+        addInputSuggestion({
+            text:newExitence.name,
+            type:"exitence",
+            info:"创建的事物"
+        },newExitence,"project")
         
         return newExitence
     }
@@ -90,6 +99,7 @@ export const types = shallowReactive<any>(allExitenceData.types)
                 buttons:[],
                 vueName:"createExitence",
                 mask:true,
+                //创建成功时
                 returnValue:(newExitence)=>{
                     if(!newExitence){
                         reject("未能成功创建事物")

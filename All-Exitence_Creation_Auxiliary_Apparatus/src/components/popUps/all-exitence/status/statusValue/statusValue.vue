@@ -1,18 +1,22 @@
 <template>
-	<div class="value">
-		<component :statusSetting="statusSetting" :disabled="disabled" :is="statusValueVueList[valueType]"></component>
+	<div class="value" :class="disabled?'disabled':''">
+		<component :statusSetting="statusSetting" :is="statusValueVueList[valueType]"></component>
 	</div>
 </template>
 
 <script setup lang="ts" name="">
-import {computed, inject } from 'vue'; 
+import {computed, inject, provide } from 'vue'; 
 import { statusValueVueList } from '@/data/list/statusValueList';
 	//需要显示的属性对象
 	const status = inject<any>("status")
 	//事物所在的分类属性typeStatus对象，如果是分类则其就是分类的属性
 	const typeStatus = inject<any>("typeStatus")
 
+	//是否禁用属性修改
 	const {disabled} = defineProps(["disabled"])
+	if(disabled){
+		provide("disabled",true)
+	}
 	
 	//如果status中的值为空，则使用typeStatus中的默认值
 	if(!status.value || status.value == undefined){
@@ -43,5 +47,8 @@ import { statusValueVueList } from '@/data/list/statusValueList';
 <style lang="scss" scoped>
 	.value{
 		width: 100%;
+	}
+	.value.disabled{
+		pointer-events: none;
 	}
 </style>

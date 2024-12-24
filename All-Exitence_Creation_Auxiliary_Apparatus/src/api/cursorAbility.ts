@@ -88,12 +88,11 @@ export function addInputLastDiv(htmlText:string,range?:any){
     // 插入div到选区位置
     range.deleteContents(); // 删除选区内的内容（如果有）
     range.insertNode(div); // 插入新创建的div元素
- 
-    // 调整光标位置到插入的 div 后面
+
+    // 调整光标位置
     const newRange = document.createRange();
     newRange.setStartAfter(div);
     newRange.setEndAfter(div);
-    
     selection.removeAllRanges();
     selection.addRange(newRange);
 

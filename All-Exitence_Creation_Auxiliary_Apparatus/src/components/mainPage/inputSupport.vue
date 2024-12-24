@@ -8,7 +8,7 @@
 </template>
 
 <script setup lang="ts" name=""> 
-	import { hideInputSupport, inputSupportShowing } from '@/hooks/inputSupport';
+	import { hideInputSupport, inputSupportShowing } from '@/hooks/inputSupport/inputSupport';
 	import { onMounted, onUnmounted } from 'vue';
 
 	//点击非inputSupport元素时，隐藏输入辅助框

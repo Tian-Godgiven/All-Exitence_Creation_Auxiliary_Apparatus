@@ -1,7 +1,6 @@
 <template>
 	<div class="inputBox" :class="ifHoverBox? 'hoverBox':''"> 
 		<textAreaVue 
-			:disabled="disabled"
 			class="textArea"
 			:class="ifUnit?'withUnit':''"
 			v-model="status.value"
@@ -14,7 +13,8 @@
 import { computed, inject, ref } from 'vue'; 
 import textAreaVue from '@/components/other/textArea/textArea.vue';
 	const status = inject<any>("status")
-	const {disabled,statusSetting} = defineProps(["disabled","statusSetting"])
+	const {statusSetting} = defineProps(["statusSetting"])
+
 	// 属性设置：聚焦不显示显示高亮输入框
 	const ifHoverBox = computed(()=>{
 		if(statusSetting.hoverBox == false){

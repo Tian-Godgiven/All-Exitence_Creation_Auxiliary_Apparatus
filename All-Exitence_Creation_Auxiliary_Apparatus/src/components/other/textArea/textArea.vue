@@ -20,9 +20,9 @@
 
 <script setup lang='ts'>
 import { focusOnEnd } from '@/api/focusOnEnd';
-import { showInputSupport } from '@/hooks/inputSupport';
-import { ref } from 'vue';
-import { checkInputSuggestion, hideInputSuggestion, showInputSuggestion } from '@/hooks/inputSuggestion';
+import { showInputSupport } from '@/hooks/inputSupport/inputSupport';
+import { inject, ref } from 'vue';
+import { checkInputSuggestion, hideInputSuggestion, showInputSuggestion } from '@/hooks/inputSupport/inputSuggestion/inputSuggestion';
 import { addInputLast, addInputLastDiv, deleteInputLast, getInputLast } from '@/api/cursorAbility';
 import { findTargetDivs } from '@/hooks/findTargetDiv';
 
@@ -31,9 +31,11 @@ import { findTargetDivs } from '@/hooks/findTargetDiv';
     let effectInput = "" //有效输入
     let selectionRange:any //记录光标上一次聚焦的位置
 
-    //是否启用修改，占位符，是否静态，是否启用输入辅助，输入建议列表
-    const {disabled,placeholder,inputSupport,inputSuggestionList} = defineProps(
-        ["disabled","placeholder","inputSupport","inputSuggestionList"])
+    //占位符，是否启用输入辅助，输入建议列表
+    const {placeholder,inputSupport,inputSuggestionList} = defineProps(
+        ["placeholder","inputSupport","inputSuggestionList"])
+    //是否禁用修改
+    const disabled = inject("disabled",false)
     //初始值
     const content = defineModel<any>()
     const emits = defineEmits(["input","blur","focus"])
@@ -201,14 +203,15 @@ import { findTargetDivs } from '@/hooks/findTargetDiv';
         width: 100%;
         outline: none;
         word-break: break-all;
+        z-index: 1;
         :focus{
             border: none;
         }
-        z-index: 1;
     }
     .textArea.showPlaceholder{
         font-size: 1em;
         text-decoration-color: rgb(125, 125, 125)!important;
         color:rgb(125, 125, 125)!important;
     }
+
 </style>

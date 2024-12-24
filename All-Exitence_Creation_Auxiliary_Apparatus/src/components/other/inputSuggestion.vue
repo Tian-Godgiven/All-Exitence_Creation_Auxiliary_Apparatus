@@ -13,7 +13,7 @@
 
 <script setup lang='ts'>
     import managePx from '@/api/managePx';
-    import { ifShow,content,positionCSS, hideInputSuggestion, inputText, suggestionItem } from '@/hooks/inputSuggestion';
+    import { ifShow,content,positionCSS, hideInputSuggestion, inputText, suggestionItem } from '@/hooks/inputSupport/inputSuggestion/inputSuggestion';
     import { computed, onMounted, onUnmounted, ref } from 'vue';
     const css = computed(()=>{
         //如果left会使其超出，则左移这个差值

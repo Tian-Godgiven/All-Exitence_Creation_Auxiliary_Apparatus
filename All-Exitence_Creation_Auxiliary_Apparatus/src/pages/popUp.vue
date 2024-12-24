@@ -82,7 +82,7 @@ import { popUpVueList } from '../data/list/popUpVueList';
 				align-items: center;
 			}
 			.titleSpace{
-				height: 70px;
+				height: 30px;
 			}
 			.titleButtons{
 				height: 50px;

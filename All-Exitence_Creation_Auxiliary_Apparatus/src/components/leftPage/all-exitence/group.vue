@@ -35,7 +35,6 @@ import { filterExitenceByRule } from '@/hooks/expression/groupRule';
 		const tmp = type.exitence.reduce((arr:any[],exitence:any,index:number)=>{
 			if(filterExitenceByRule(exitence,group.rules)){
 				//去除这个index
-				console.log("有分组",exitenceIndex)
 				exitenceIndex.value[index] = false
 				arr.push(exitence)
 			}

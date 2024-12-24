@@ -7,7 +7,7 @@
             </div>
             <div class="separator">：</div>
             <!-- 属性值 -->
-            <statusValueVue class="value"></statusValueVue>
+            <statusValueVue :disabled="disabled" class="value"></statusValueVue>
         </div>
 
     </div>
@@ -19,8 +19,9 @@
     import statusValueVue from '../status/statusValue/statusValue.vue';
     import { getTypeStatusByKey } from '@/hooks/all-exitence/allExitence';
     import Status from '@/interfaces/exitenceStatus';
-import { showPopUp } from '@/hooks/popUp';
+    import { showPopUp } from '@/hooks/popUp';
 
+    let {disabled} = defineProps(["disabled"])
     let model = defineModel<any>("status")
     let status:Status = model.value
     const key = ref(0)

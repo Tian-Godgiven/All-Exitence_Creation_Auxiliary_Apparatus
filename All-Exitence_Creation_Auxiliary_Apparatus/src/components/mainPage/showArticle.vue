@@ -14,7 +14,7 @@
         <div class="targetInner">
             <textAreaVue 
                 class="articleText"
-                :inputSuggestionList="keyWordList"
+                :inputSuggestionList="inputSuggestionList"
                 v-model="article.inner"
                 :inputSupport="true"> 
             </textAreaVue>
@@ -27,7 +27,7 @@
 <script setup lang='ts'>
     import { computed } from 'vue';
     import textAreaVue from '@/components/other/textArea/textArea.vue';
-    import { keyWordList } from '@/data/list/inputSuggestionList/keyWorkList';
+    import { inputSuggestionList } from '@/hooks/inputSupport/inputSuggestion/inputSuggestion';
     const article = defineModel<any>()
     // 内容栏字符数量
 	let textNum = computed(()=>{
