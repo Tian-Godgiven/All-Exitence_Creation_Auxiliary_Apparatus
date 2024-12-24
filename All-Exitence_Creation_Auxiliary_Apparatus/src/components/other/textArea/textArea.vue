@@ -8,6 +8,9 @@
             :placeholder="placeholder"
             inputmode="text"
             tabindex="0"
+            @compositionstart="compositionstart"
+            @compositionupdate="compositionupdate"
+            @compositionend="compositionend"
             @click="clickEvent"
             @input="onInput"
             @blur="onBlur"
@@ -48,7 +51,8 @@ import { findTargetDivs } from '@/hooks/findTargetDiv';
         "getContentDom":getContentDom,
         "deleteContent":deleteContent
     })
-    
+
+        
     //初始化值
     let showText:any
     //如果是禁用状态，则showText动态
@@ -68,17 +72,46 @@ import { findTargetDivs } from '@/hooks/findTargetDiv';
             showText.value = content.value
         }
     }
+
+
+    //拼音输入--与输入监听冲突
+    let ifIME = false 
+    function compositionstart(){
+        ifIME = true
+    }
+
+    function compositionupdate(event){
+
+    }
+
+    function compositionend(event){
+        const newInput = event.data
+        console.log(newInput)
+        listenInput(event,newInput)
+        ifIME = false
+    }
+
     
     //同步输入，判断输入补全提示
     function onInput(event:any){
+        //拼音输入的过程不进行同步输入
+        if(ifIME){return}
+        //获取新输入的内容
+        const newInput = getInputLast()
+        listenInput(event,newInput)
+    }
+    //通用的输入监听
+    function listenInput(event:any,newInput:any){
+        //同步输入位置
         const selection = window.getSelection();
         if(selection) selectionRange = selection.getRangeAt(0);
-        //获取输入的内容
-        const text = event.target.textContent
-        const newInput = getInputLast()
-        content.value = text
-        emits("input",text,newInput)
-        //如果需要输入建议，则check内容
+        //同步content的内容
+        const allText = event.target.textContent
+        content.value = allText
+        //执行input事件，返回新输入的内容
+        emits("input",allText,newInput)
+
+        //如果需要输入建议，则check新输入的内容
         if(inputSuggestionList){
             // 将新的输入内容添加到有效输入
             if(newInput){
@@ -87,15 +120,19 @@ import { findTargetDivs } from '@/hooks/findTargetDiv';
             else{
                 return false
             }
+            //检查是否存在输入建议
+
             
             const content = checkInputSuggestion(inputSuggestionList,effectInput)
             // 有输入建议：显示输入补全框
             if(content){
                 showInputSuggestion(effectInput,content)
             }
-            // 整体不行，则再单独判断新输入
+            // 整体不行，则再单独判断新输入的内容
             else{
+                
                 const content2 = checkInputSuggestion(inputSuggestionList,newInput)
+                console.log(newInput,content2)
                 //可行则更新有效输入
                 if(content2){
                     effectInput = newInput
@@ -110,6 +147,7 @@ import { findTargetDivs } from '@/hooks/findTargetDiv';
             }
         }
     }
+
     //移动光标到其他位置时清空有效输入,同时记录当前光标位置
     let oldPosition:any
     function clickEvent(){
