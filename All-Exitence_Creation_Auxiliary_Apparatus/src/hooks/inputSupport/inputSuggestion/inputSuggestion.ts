@@ -4,9 +4,9 @@ import { Exitence } from "@/class/Exitence";
 import { Type } from "@/class/Type";
 import { exitenceDivStyle } from "@/static/style/exitenceDivStyle";
 import globalInputSuggestionListData from "@/data/list/globalInputSuggestionList.json";
-import { types } from "@/hooks/all-exitence/allExitence";
+import { nowAllExitence } from "@/hooks/all-exitence/allExitence";
 import { showPopUp } from "@/hooks/popUp";
-import { projectInputSuggestionListData } from "@/hooks/project/projectData";
+import { projectInputSuggestionList } from "@/hooks/project/projectData";
 import { computed, ref, shallowReactive } from "vue";
 
 export interface suggestionItem{
@@ -19,7 +19,6 @@ export interface suggestionItem{
 }
 
 const globalInputSuggestionList = shallowReactive(globalInputSuggestionListData)
-const projectInputSuggestionList = shallowReactive(projectInputSuggestionListData)
 
 // 输入提示的内容
 export const content = ref<suggestionItem[]>([])
@@ -173,7 +172,7 @@ document.addEventListener("click",(event)=>{
 })
 export function showJumpExitence(exitenceKey:string){
     //寻找这个事物对象和其所在的type
-    const result = types.reduce((acc:any, type: Type) => {
+    const result = nowAllExitence.types.reduce((acc:any, type: Type) => {
         if (acc) return acc;  // 已经找到了，不需要继续查找
         const exitence = type.exitence.find((exitence: Exitence) => exitence.__key === exitenceKey);
         if (exitence) {

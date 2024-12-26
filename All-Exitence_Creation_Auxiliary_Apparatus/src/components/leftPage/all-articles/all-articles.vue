@@ -14,10 +14,10 @@
 <script setup lang="ts" name=""> 
 import chapterVue from './chapter.vue';
 import articleVue from './article.vue';
-import { allArticle } from '@/hooks/all-articles/article';
+import { nowAllArticles } from '@/hooks/all-articles/allArticles';
 
-	let chapters = allArticle.chapter
-	let articles = allArticle.article
+	let chapters = nowAllArticles.chapter
+	let articles = nowAllArticles.article
 	
 </script>
 

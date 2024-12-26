@@ -96,7 +96,7 @@ import { ref, watch } from 'vue';
 	},{
 		deep:false
 	})
-	
+
 </script>
 
 <style lang="scss" scoped>

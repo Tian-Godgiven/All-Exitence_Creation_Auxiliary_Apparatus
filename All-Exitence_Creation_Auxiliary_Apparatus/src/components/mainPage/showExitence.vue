@@ -27,14 +27,14 @@
 import { provide, ref } from 'vue';
 import textAreaVue from '@/components/other/textArea/textArea.vue';
 import exitenceStatusVue from '../popUps/all-exitence/exitence/exitenceStatus.vue';
-import { types } from '@/hooks/all-exitence/allExitence';	
+import { nowAllExitence } from '@/hooks/all-exitence/allExitence';	
 import { Type } from '@/class/Type';
 import Status from '@/interfaces/exitenceStatus';
 import { showPopUp } from '@/hooks/popUp';
 	let exitence = defineModel<any>()
 	
 	//事物所属的分类
-	const type = types.find((type:Type)=>{
+	const type = nowAllExitence.types.find((type:Type)=>{
 		if(type.name == exitence.value.typeName){
 			return type
 		}
@@ -53,7 +53,7 @@ import { showPopUp } from '@/hooks/popUp';
 			buttons:[],
 			props:{
 				allStatus:exitence.value.status,
-				allTypeStatus:type.typeStatus
+				allTypeStatus:type?.typeStatus
 			},
 			returnValue : addStatus,
 			size:{
@@ -72,7 +72,7 @@ import { showPopUp } from '@/hooks/popUp';
 
 	provide("type",type)//提供该事物所在的分类
 	provide("allStatus",exitence.value.status)//提供所有属性
-	provide("allTypeStatus",type.typeStatus)//提供所在的分类的所有属性
+	provide("allTypeStatus",type?.typeStatus)//提供所在的分类的所有属性
 
 </script>
 

@@ -13,8 +13,8 @@
     "windows": [
       {
         "title": "all-exitence_creation_auxiliary_apparatus",
-        "width": 800,
-        "height": 600
+        "width": 350,
+        "height": 700
       }
     ],
     "security": {
@@ -31,5 +31,12 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ]
-  }
+  },
+  "plugins": {
+    "fs": {
+        "requireLiteralLeadingDot": true
+      }
+  },
+  "mainBinaryName": ""
+  
 }

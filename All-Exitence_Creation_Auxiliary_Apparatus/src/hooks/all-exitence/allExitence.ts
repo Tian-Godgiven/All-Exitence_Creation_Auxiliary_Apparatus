@@ -1,6 +1,5 @@
 import { Exitence } from "@/class/Exitence"
 import { Type } from "@/class/Type"
-import allExitenceData from "@/data/projects/项目1/all-exitence.json"
 import { showPopUp } from "../popUp";
 import { reactive } from "vue";
 import Status from "@/interfaces/exitenceStatus";
@@ -9,13 +8,21 @@ import { nanoid } from "nanoid";
 import { addInputSuggestion } from "../inputSupport/inputSuggestion/inputSuggestion";
 
 //当前万物
-export const allExitence = reactive(allExitenceData)
-export const types = reactive<any>(allExitenceData.types)
+export const nowAllExitence = reactive<{[types:string]:Type[]}>({types:[]})
+
+//修改当前万物
+export function changeNowAllExitence(newAllExitence:{types:Type[]}){
+    //不知道为什么有时会传一个字符串过来？？？
+    if(typeof newAllExitence != "object"){
+        newAllExitence = JSON.parse(newAllExitence)
+    }
+    nowAllExitence.types = newAllExitence.types
+}
 
 //分类相关
     //判断分类名称是否重复
     export function checkTypeNameRepeat(typeName:string){
-        const tmp = types.find((type:Type)=>{
+        const tmp = nowAllExitence.types.find((type:Type)=>{
             if(type.name == typeName){
                 return type
             }
@@ -40,7 +47,7 @@ export const types = reactive<any>(allExitenceData.types)
     //向万物中添加新的分类
     export function addType(typeName:string,typeStatus:[],typeSetting:{}){
         const type = new Type(typeName,typeStatus,typeSetting,[],[])
-        types.push(type)
+        nowAllExitence.types.push(type)
     }
 
     // 显示创建分类页面，创建成功时添加该分类

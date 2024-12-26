@@ -1,9 +1,20 @@
 <template>
-  <mainPage/>
+    <mainPage/>
 </template>
 
 <script setup lang="ts">
+import { initFileSystem} from "./hooks/fileSysytem";
+import { startAutoSave } from "./hooks/project/saveProject";
 import mainPage from "./pages/mainPage.vue";
+
+
+//初始化文件系统
+initFileSystem()
+//开始自动保存
+startAutoSave()
+
+
+
 
 </script>
 

@@ -3,10 +3,10 @@
 	<div class="leftPage" :style="{left:(showWidth-maxWidth)+'px'}">
 		<div class="titleBar">
 			<div class="titleButtons">
-				<div class="button" @click="createNew">新建</div>
 				<div class="button">管理</div>
 				<div class="button">搜索</div>
 				<div class="button">展开收起</div>
+				<div class="button" @click="createNew">新建</div>
 				<div class="moreButton" @click="showMoreButton">
 					显示更多
 					<div v-show="showMore">
