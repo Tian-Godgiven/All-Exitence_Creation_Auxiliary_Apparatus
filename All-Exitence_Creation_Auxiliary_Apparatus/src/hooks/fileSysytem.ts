@@ -1,4 +1,4 @@
-import { BaseDirectory, exists, mkdir, create,  readTextFile, writeTextFile, readDir, remove } from "@tauri-apps/plugin-fs";
+import { BaseDirectory, exists, mkdir, create,  readTextFile, writeTextFile, readDir, remove, rename } from "@tauri-apps/plugin-fs";
 import { initProject } from "./project/project";
 import { initAppSetting } from "./appSetting";
 
@@ -90,6 +90,28 @@ export async function writeFileAtPath(path:string,fileName:string,content:Object
     const filePath = getPath(path,fileName)
     const stringContent = JSON.stringify(content)
     await writeTextFile(filePath,stringContent,appData)
+}
+
+//重命名指定的文件/文件夹，当名称重复时会尝试修改这个名称并返回新的名称
+export async function renameToAtPath(path:string,oldName:string,newName:string){
+    const newPath = getPath(path,newName)
+    //判断该路径下是否存在新名称的重名
+    let ifExists = await exists(newPath,appData)
+    let newnewName 
+    let i = 1
+    //存在重名则不断添加数字
+    while(ifExists){
+        newnewName = newName + "_" + i
+        const newnewPath = getPath(path,newnewName)
+        ifExists = await exists(newnewPath,appData)
+        i+=1
+    }
+    //存在重名时使用新名称
+    if(newnewName){newName = newnewName}
+    //重命名这个文件夹
+    await rename(getPath(path,oldName),getPath(path,newName),{newPathBaseDir:BaseDirectory.AppLocalData,oldPathBaseDir:BaseDirectory.AppLocalData})
+    //返回新的文件夹名称
+    return newName
 }
 
 //获取文件路径

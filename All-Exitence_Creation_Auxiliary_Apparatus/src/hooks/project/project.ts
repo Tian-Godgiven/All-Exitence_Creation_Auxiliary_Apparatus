@@ -1,6 +1,6 @@
 import { ref } from "vue";
 import { appSetting, changeAppSetting } from "../appSetting";
-import { createDirByPath, createFileToPath, deleteAtPath, readDirAsArray, readFileFromPath, writeFileAtPath } from "../fileSysytem";
+import { createDirByPath, createFileToPath, deleteAtPath, readDirAsArray, readFileFromPath, renameToAtPath, writeFileAtPath } from "../fileSysytem";
 import { showPopUp } from "../pages/popUp";
 import { syncProject } from "./projectData";
 import { showAlert } from "../alert";
@@ -109,11 +109,15 @@ export async function createNewProject(){
     })
 }
 
-// 更新一个项目的名称和简介信息，注意不得更新其
+// 更新一个项目的名称和简介信息，同时也会尝试更新项目的文件夹名称
 async function updateProject(projectInfo:ProjectInfo,newName:string,newInfo:string){
     //覆盖原本的信息
     projectInfo.name = newName;
     projectInfo.info = newInfo;
+    //尝试使用newName更新项目文件夹的名称
+    const newPathName = await renameToAtPath("projects",projectInfo.pathName,newName)
+    projectInfo.pathName = newPathName
+    //将项目信息写入
     await writeFileAtPath(`projects/${projectInfo.pathName}`,"projectInfo.json",projectInfo)
 }
 
