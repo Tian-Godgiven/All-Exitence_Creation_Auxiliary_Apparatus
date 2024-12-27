@@ -1,39 +1,37 @@
 <template>
-	<div class="group">
-		<div class="titleBar" @click="expending = !expending">
-			<div class="titleButtons" >
-				<div class="button" @click="clickUpdateGroup">编辑</div>
-			</div>
-			<div class="titleName">
-				<div class="text">{{group.name}}</div>
-			</div>
-			
-		</div>
-		<div class="inner" v-show="expending">
+	<expendableContainerVue
+		class="group"
+		:buttons="buttons"
+		@longTap="longTap">
+		<template #title>
+			<div class="text">{{ group.name }}</div>
+		</template>
+		<template #inner>
 			<div v-for="(exitence,index) in groupExitence">
 				<exitenceVue :exitence="exitence"></exitenceVue>
 				<div class="separator" v-if="index < groupExitence.length-1"></div>
 			</div>
-		</div>
-	</div>
+		</template>
+	</expendableContainerVue>
 </template>
 
 <script setup lang="ts" name=""> 
-import { ref,inject, computed } from 'vue';
+import { inject, computed } from 'vue';
 import exitenceVue from './exitence.vue';
-import { updateGroup } from '@/hooks/all-exitence/allExitence';
+import { deleteGroup, updateGroup } from '@/hooks/all-exitence/allExitence';
 import { filterExitenceByRule } from '@/hooks/expression/groupRule';
+import expendableContainerVue from '../expendableContainer.vue';
+import { showControlPanel } from '@/hooks/controlPanel';
 	
 	let {group} = defineProps(["group","exitenceIndex"]) 
 	const exitenceIndex = inject<any>("exitenceIndex")
 	const type = inject<any>("type")
-	//分组展开
-	let expending = ref(true)
-	//点击编辑分组
-	function clickUpdateGroup(event:any){
-		event.stopPropagation()
-		updateGroup(type,group)
-	}
+
+	const buttons = [{
+		text:"编辑",
+		click:()=>{updateGroup(type,group)}
+	}]
+
 	// 分组中的事物
 	const groupExitence = computed(()=>{
 		//遍历所有事物
@@ -50,6 +48,24 @@ import { filterExitenceByRule } from '@/hooks/expression/groupRule';
 		},[])
 		return tmp
 	})
+
+	// 长按显示控制面板
+	function longTap(){
+		showControlPanel([
+			{
+				text:"编辑分组",
+				click:()=>{
+					updateGroup(type,group)
+				}
+			},
+			{
+				text:"删除分组",
+				click:()=>{
+					deleteGroup(type,group)
+				}
+			}
+		])
+	}
 
 </script>
 

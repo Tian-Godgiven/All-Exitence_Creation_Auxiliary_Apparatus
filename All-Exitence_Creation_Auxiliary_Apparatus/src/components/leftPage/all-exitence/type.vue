@@ -1,43 +1,45 @@
 <template>
-	<div class="type">
-		<div class="titleBar" @click=" expending = !expending ">
-			<div class="titleButtons">
-				<div @click="clickCreateExitence">创建事物</div>
-				<div @click="clickCreateGroup">创建分组</div>
-			</div>
-			<div class="titleName">
-				<div class="text">{{name}}</div>
-			</div>
-			
-		</div>
-		<div class="inner" v-show="expending">
-			<groupVue v-for="(group) in groups" :group="group"></groupVue>
+	<expendableContainerVue
+		class="type"
+		@longTap="longTap"
+		:buttons="buttons">
+		<template #title>{{ type.name }}</template>
+		<template #inner>
+			<groupVue v-for="(group) in type.groups" :group="group"></groupVue>
 			<div v-for="(exitence,index) in noGroupExitence">
 				<exitenceVue :exitence="exitence"></exitenceVue>
 				<div class="separator" v-if="index < noGroupExitence.length-1"></div>
 			</div>
-		</div> 
-	</div>
+		</template>
+	</expendableContainerVue>
 </template>
 
 <script setup lang="ts" name=""> 
 import groupVue from "./group.vue"
 import exitenceVue from "./exitence.vue"
-import { computed, reactive, ref, provide } from "vue";
-import { createExitence,createGroup } from "@/hooks/all-exitence/allExitence";
+import { computed, reactive, provide } from "vue";
+import { createExitence,createGroup, deleteType, updateType } from "@/hooks/all-exitence/allExitence";
 import { showExitenceOnMain } from "@/hooks/pages/mainPage/showOnMain";
 import { hidePage } from "@/hooks/pages/pageChange";
-
-
-	let expending = ref(true)
-	
+import expendableContainerVue from "../expendableContainer.vue";
+import { showControlPanel } from "@/hooks/controlPanel";
 	let {type} = defineProps(["type"])
 	provide("type",type)
-
-	// 分类名称
-	let name = ref(type.name)
-	// 分类中的分组
-	let groups = reactive(type.groups)
+	//功能按键
+	const buttons = [
+		{
+			text:"创建分组",
+			click:()=>{
+				createGroup(type)
+			}
+		},
+		{
+			text:"创建事物",
+			click:()=>{
+				clickCreateExitence()
+			}
+		}
+	]
 
 	// 分类中的事物
 	const allExitence = reactive(type.exitence)
@@ -58,18 +60,27 @@ import { hidePage } from "@/hooks/pages/pageChange";
 		return tmp
 	})
 	
-	
-	//点击创建事物
-	async function clickCreateExitence(event:any){
-		event.stopPropagation();
+	//点击创建事物并显示
+	async function clickCreateExitence(){
 		const exitence = await createExitence(type)
 		hidePage("left")
 		showExitenceOnMain(exitence)
 	}
-	//点击创建分组
-	async function clickCreateGroup(event:any){
-		event.stopPropagation();
-		createGroup(type)
+
+	//长按显示控制面板
+	function longTap(){
+		showControlPanel([
+			{
+				text:"编辑分类",
+				click:()=>{
+					console.log("这个type一开始是",type)
+					updateType(type)}
+			},
+			{
+				text:"删除分类",
+				click:()=>{deleteType(type)}
+			}
+		])
 	}
 </script>
 

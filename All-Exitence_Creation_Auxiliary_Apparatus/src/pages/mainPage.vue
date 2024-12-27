@@ -20,8 +20,8 @@
 	
 	<!-- 首页内容 -->
 	<div class="mainInner" :key="refreshKey">
-		<showArticleVue v-model="showOnMain.target" class="container" v-if="showOnMain.type == 'article'"/>
-		<showExitenceVue v-model="showOnMain.target" class="container" v-else-if="showOnMain.type == 'exitence'"/>
+		<showArticleVue :article="showOnMain.target" class="container" v-if="showOnMain.type == 'article'"/>
+		<showExitenceVue :exitence="showOnMain.target" class="container" v-else-if="showOnMain.type == 'exitence'"/>
 	</div>
 
 	<!-- 项目页面 -->

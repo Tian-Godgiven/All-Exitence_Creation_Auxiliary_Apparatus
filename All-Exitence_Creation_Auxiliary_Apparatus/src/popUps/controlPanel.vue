@@ -18,7 +18,7 @@
             const value = controlItem.click()
             if(returnValue){
                 returnValue(value)
-            }
+            } 
             closePopUp(popUp)
         }
     }

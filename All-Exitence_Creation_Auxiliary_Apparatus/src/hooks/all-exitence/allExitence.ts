@@ -6,6 +6,7 @@ import Status from "@/interfaces/exitenceStatus";
 import { Group } from "@/class/Group";
 import { nanoid } from "nanoid";
 import { addInputSuggestion } from "../inputSupport/inputSuggestion/inputSuggestion";
+import { showAlert } from "../alert";
 
 //当前万物
 export const nowAllExitence = reactive<{[types:string]:Type[]}>({types:[]})
@@ -14,7 +15,6 @@ export const nowAllExitence = reactive<{[types:string]:Type[]}>({types:[]})
 export function changeNowAllExitence(newAllExitence:{types:Type[]}){
     //不知道为什么有时会传一个字符串过来？？？
     if(typeof newAllExitence != "object"){
-        console.log(newAllExitence)
         newAllExitence = JSON.parse(newAllExitence)
     }
     nowAllExitence.types = newAllExitence.types
@@ -22,18 +22,20 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
 
 //分类相关
     //判断分类名称是否重复
-    export function checkTypeNameRepeat(typeName:string){
+    export function checkTypeNameRepeat(typeName:string,type?:Type){
         const tmp = nowAllExitence.types.find((type:Type)=>{
             if(type.name == typeName){
                 return type
             }
         })
+        //若重复
         if(tmp){
-            return true
+            //并且不与传入的type为同一个type
+            if(type && tmp != type){
+                return true
+            }
         }
-        else{
-            return false
-        }
+        return false
     }
 
     // 获取key对应的分类的属性
@@ -47,7 +49,7 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
 
     //向万物中添加新的分类
     export function addType(typeName:string,typeStatus:[],typeSetting:{}){
-        const type = new Type(typeName,typeStatus,typeSetting,[],[])
+        const type = new Type(typeName,typeStatus,typeSetting,[],[],nanoid())
         nowAllExitence.types.push(type)
     }
 
@@ -59,17 +61,53 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
             buttons:[],
             vueName:"createType",
             mask:true,
+            returnValue:(name,typeStatus,setting)=>{
+                //添加该分类
+		        addType(name,typeStatus,setting)
+            }
         })
     }
 
-//事物相关
+    // 显示编辑分类页面
+    export function updateType(type:Type){
+        showPopUp({
+            vueName:"updateType",
+            mask:true,
+            buttons:[],
+            props:{
+                type:type,
+            },
+            returnValue:(name:string,typeStatus:Status[],setting:{})=>{
+                console.log(type)
+                type.name = name;
+                type.typeStatus = typeStatus;
+                type.setting= setting
+                console.log(type)
+            }
+        })
+    }
+
+    // 删除分类
+    export function deleteType(type:Type){
+        //进行提示
+        showAlert({
+            info:`删除分类${type.name}及其中的所有内容？`,
+            "confirm":()=>{
+                //从项目中删除该分类
+                const index = nowAllExitence.types.indexOf(type)
+                nowAllExitence.types.splice(index,1)
+            }
+        })
+    }
+
+// 事物相关
     //向分类中添加新的事物
     export function addExitence(type:Type,name:string,tags:any[]){
         if(!name || name == ""){
             name = "未命名"+type.name
         }
         //创建该事物，并为其分配一个nanoid
-        const newExitence = new Exitence(name,[],type.name,{},nanoid())
+        const newExitence = new Exitence(name,[],type.__key,{},nanoid())
         //添加分类的属性
         type.typeStatus.forEach((status:Status)=>{
             newExitence.status.push({
@@ -202,5 +240,19 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
         const newGroup= new Group(name,rules,setting)
         type.groups.push(newGroup)
         return newGroup
+    }
+    // 删除分组
+    export function deleteGroup(type:Type,group:Group){
+        showAlert({
+            info:`删除${type.name}中的分组${group.name}？`,
+            confirm:()=>{
+                
+                //从type中移除这个group
+                const index = type.groups.indexOf(group)
+                console.log(index)
+                type.groups.splice(index,1)
+                console.log(type)
+            }
+        })
     }
     

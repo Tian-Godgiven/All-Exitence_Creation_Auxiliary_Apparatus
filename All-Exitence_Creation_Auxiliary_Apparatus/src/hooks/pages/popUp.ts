@@ -59,7 +59,6 @@ export function showPopUp(popUp:PopUp){
 
 // 关闭弹窗
 export function closePopUp(popUp?:PopUp){
-	console.log("即将关闭一个popUp",popUp,popUpList)
 	// 未指定弹窗时，关闭最外层弹窗
 	if(!popUp){
 		popUp = popUpList.pop()

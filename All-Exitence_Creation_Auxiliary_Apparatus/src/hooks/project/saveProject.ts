@@ -28,7 +28,6 @@ async function saveProject(){
     const projectPath = "projects/"+ nowProjectPath.value
     //当前万物
     const allExitence = nowAllExitence
-    console.log("当前万物：",allExitence)
     await writeFileAtPath(projectPath,"all-exitence.json",JSON.stringify(toRaw(allExitence)))
     //文章
     const allArticles = nowAllArticles

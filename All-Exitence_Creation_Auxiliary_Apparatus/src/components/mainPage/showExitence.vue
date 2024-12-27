@@ -12,9 +12,9 @@
         </div>
         <div class="targetInner" ref="inner">
             <exitenceStatusVue 
+				:key="Symbol()"
 				v-for="(,index) in exitence.status" 
-				:key='index'
-				v-model:status="exitence.status[index]">
+				:status="exitence.status[index]">
 			</exitenceStatusVue>
 
 			<div class="scrollSpace"></div>
@@ -31,17 +31,17 @@ import { nowAllExitence } from '@/hooks/all-exitence/allExitence';
 import { Type } from '@/class/Type';
 import Status from '@/interfaces/exitenceStatus';
 import { showPopUp } from '@/hooks/pages/popUp';
-	let exitence = defineModel<any>()
+	let {exitence} = defineProps(["exitence"])
 	
 	//事物所属的分类
 	const type = nowAllExitence.types.find((type:Type)=>{
-		if(type.name == exitence.value.typeName){
+		if(type.__key == exitence.typeKey){
 			return type
 		}
     })
 	
 	//显示事物的属性数量
-	const statusNum = exitence.value.status.length
+	const statusNum = exitence.status.length
 	//创建新属性
 	const ifNewStatus = ref(false)
 	const inner = ref()//事物属性内容
@@ -52,7 +52,7 @@ import { showPopUp } from '@/hooks/pages/popUp';
 			mask:true,
 			buttons:[],
 			props:{
-				allStatus:exitence.value.status,
+				allStatus:exitence.status,
 				allTypeStatus:type?.typeStatus
 			},
 			returnValue : addStatus,
@@ -64,14 +64,14 @@ import { showPopUp } from '@/hooks/pages/popUp';
 	}
 	function addStatus(newStatus:Status){
 		//将该属性添加到事物中
-		exitence.value.status.push(newStatus)
+		exitence.status.push(newStatus)
 		ifNewStatus.value = false
 		//滑动到最后
 		inner.value.scrollTop = inner.value.scrollHeight
 	}
 
 	provide("type",type)//提供该事物所在的分类
-	provide("allStatus",exitence.value.status)//提供所有属性
+	provide("allStatus",exitence.status)//提供所有属性
 	provide("allTypeStatus",type?.typeStatus)//提供所在的分类的所有属性
 
 </script>

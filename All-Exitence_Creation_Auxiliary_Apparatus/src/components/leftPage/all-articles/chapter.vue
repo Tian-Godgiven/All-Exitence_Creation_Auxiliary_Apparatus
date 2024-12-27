@@ -1,15 +1,10 @@
 <template>
-	<div class="chapter">
-		<div
-			@mousedown="touchStart"
-			@mouseup="touchEnd" class="titleBar" >
-			<div class="titleButtons">
-				<div class="button" @click="clickAddChapter">插入章节</div>
-				<div class="button" @click="clickAddArticle">插入文本</div>
-			</div>
-			<div class="titleName">{{ chapter.name }}</div>
-		</div>
-		<div class="inner" v-show="expending">
+	<expendableContainerVue 
+		class="chapter"
+		@longTap="longtap"
+		:buttons="buttons">
+		<template v-slot:title>{{ chapter.name }}</template>
+		<template v-slot:inner>
 			<!-- 章节内的文本 -->
 			<div v-for="(article,index) in articles">
 				<articleVue :article = "article"></articleVue>
@@ -20,8 +15,8 @@
 				:from="chapter"
 				:chapter="childChapter">
 			</chapterVue>
-		</div>
-	</div>
+		</template>
+	</expendableContainerVue>
 </template>
 
 <script setup lang="ts" name="chapterVue"> 
@@ -30,36 +25,28 @@ import articleVue from "./article.vue"
 import chapterVue from "./chapter.vue"
 import { addArticle, createChapter, focusOnChapter,focusOnArticle, deleteChapter ,updateChapter} from "@/hooks/all-articles/allArticles";
 import { showControlPanel } from "@/hooks/controlPanel";
-import { LongTapAndClickTouchEnd, LongTapAndClickTouchStart } from "@/api/longTapAndClick";
+import expendableContainerVue from "../expendableContainer.vue";
 
 	let {chapter,from} = defineProps(["chapter","from"])
 	let expending = ref(true)
 
 	let articles = ref(chapter.articles)
 	let chapters = ref(chapter.chapters)
-	const ifLongTap = ref(false)
-	let timeout:any 
-	//处理点击和长按事件
-	function touchStart(){
-		timeout = LongTapAndClickTouchStart(ifLongTap)
-	}
-	function touchEnd(){
-		LongTapAndClickTouchEnd({
-			theTimeOut:timeout,
-			ifLongTap,
-			longTap:()=>longtap(),
-			click:()=>clickTitle()
-		})
-	}
-	
-	//点击收起/展开章节
-	function clickTitle(){
-		expending.value = !expending.value
-	}
+
+	const buttons = [{
+		text:"插入章节",
+		click:()=>{
+			clickAddChapter()
+		}
+	},{
+		text:"插入文本",
+		click:()=>{
+			clickAddArticle()
+		}
+	}]
 
 	//点击插入章节
-	async function clickAddChapter(event:Event){
-		event.stopPropagation();
+	async function clickAddChapter(){
 		//弹出创建章节页面
 		const newChapter = await createChapter(chapter)
 		expending.value=true
@@ -68,8 +55,7 @@ import { LongTapAndClickTouchEnd, LongTapAndClickTouchStart } from "@/api/longTa
 	}
 
 	//点击插入新文章
-	async function clickAddArticle(event:Event){
-		event.stopPropagation()
+	async function clickAddArticle(){
 		const newArticle = addArticle(chapter)
 		//聚焦到该文章
 		expending.value=true
@@ -99,7 +85,6 @@ import { LongTapAndClickTouchEnd, LongTapAndClickTouchStart } from "@/api/longTa
 		.titleBar{
 			@extend .leftPageMidTitleBar;
 		}
-		
 	}
 	.separator{
 		@extend .leftPageSeparator

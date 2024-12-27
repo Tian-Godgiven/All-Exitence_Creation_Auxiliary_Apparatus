@@ -9,9 +9,7 @@
             <!-- 属性值 -->
             <statusValueVue :disabled="disabled" class="value"></statusValueVue>
         </div>
-
     </div>
-    
 </template>
 
 <script setup lang='ts'>
@@ -21,9 +19,7 @@
     import Status from '@/interfaces/exitenceStatus';
     import { showPopUp } from '@/hooks/pages/popUp';
 
-    let {disabled} = defineProps(["disabled"])
-    let model = defineModel<any>("status")
-    let status:Status = model.value
+    let {disabled,status} = defineProps(["disabled","status"])
     const key = ref(0)
 
     const type = inject<any>("type")
@@ -40,6 +36,10 @@
     const allStatus = inject("allStatus")
     const allTypeStatus = inject("allTypeStatus")
     function showUpdateStatus(){
+        //禁用状态下无效
+        if(disabled){
+            return false
+        }
         showPopUp({
             mask:false,
             vueName:"updateStatus",
@@ -50,14 +50,12 @@
                 allStatus,
                 allTypeStatus
             },
-            returnValue:updateStatus
+            returnValue:(newStatus:Status)=>{
+                Object.assign(status,newStatus)
+                //更新这个div:有必要的！
+                key.value+=1
+            }
         })
-    }
-    // 更新属性对象
-    function updateStatus(newStatus:Status){
-        status = newStatus
-        //更新这个div
-        key.value+=1
     }
 </script>
 

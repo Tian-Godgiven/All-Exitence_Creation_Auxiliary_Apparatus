@@ -1,14 +1,14 @@
 <template>
-	<div class="container">
+	<div class="editType">
 		<div class="top">
 			<downLineInputVue 
-				v-model="typeName"
+				v-model="name"
 				class="typeName"
 				placeholder="输入分类名称"/>
 			<div class="button" @click="prepareStatus">预制属性</div>
 		</div>
 
-		<!-- 显示已有的属性 -->
+		<!-- 内容 -->
 		<div class="inner">
 			<typeStatusVue 
 				@deleteStatus="deleteStatus(index)" 
@@ -42,16 +42,24 @@ import downLineInputVue from '@/components/other/input/downLineInput.vue';
 import typeStatusVue from '@/components/popUps/all-exitence/type/typeStatus.vue';
 import newTypeStatusVue from '@/components/popUps/all-exitence/type/newTypeStatus.vue';
 import { closePopUp } from '@/hooks/pages/popUp';
-import { addType, checkTypeNameRepeat } from '@/hooks/all-exitence/allExitence';
+import { checkTypeNameRepeat } from '@/hooks/all-exitence/allExitence';
 import { showQuickInfo } from '@/api/showQuickInfo';
+import { cloneDeep } from 'lodash';
 
-	const {popUp} = defineProps(["popUp","returnValue"])
+	const {props={},popUp,returnValue} = defineProps(["props","popUp","returnValue"])
+    let {type} = props
 
-	//分类名称
-	let typeName = ref("")
-
+	//type存在则创建深拷贝，不存在则创建空type
+	const tmpType = type? reactive(cloneDeep(type)) : {
+		name:"",
+		typeStatus:reactive([]),
+		setting:reactive({})
+	}
+	
+	const {typeStatus,setting} = tmpType
+	const name = ref(tmpType.name)
+	
 	//分类的所有属性
-	let typeStatus = reactive<any>([])
 	provide("allStatus",typeStatus)
 	provide("allTypeStatus",typeStatus)
 	
@@ -77,23 +85,19 @@ import { showQuickInfo } from '@/api/showQuickInfo';
 		typeStatus.splice(index,1)
 	}
 
-	// 分类设置
-	const typeSetting = reactive([])
-
-
 	//确认创建分类
 	function confirm(){
 		//分类名称不可为空
-		if(typeName.value == "" || !typeName.value){
+		if(name.value == "" || !name.value){
 			showQuickInfo("分类名不可为空")
 			return false
 		}
-		if(checkTypeNameRepeat(typeName.value)){
+		if(checkTypeNameRepeat(name.value,type)){
 			showQuickInfo("分类名不可重复")
 			return false
 		}
-		//添加该分类
-		addType(typeName.value,toRaw(typeStatus),toRaw(typeSetting))
+		//返回该分类的内容
+        returnValue(name.value,toRaw(typeStatus),toRaw(setting))
 		//关闭弹窗
 		closePopUp(popUp)
 	}
@@ -102,7 +106,7 @@ import { showQuickInfo } from '@/api/showQuickInfo';
 <style lang="scss" scoped>
 @use "@/static/style/components/inputs.scss";
 @use "@/static/style/components/popUpButtons.scss";
-	.container{
+	.editType{
 		height: 100%;
 	}
 	.top{

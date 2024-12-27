@@ -29,7 +29,6 @@ export function addChapter(chapterName:string,chapter?:Chapter){
     else{
         nowAllArticles.chapters.push(newChapter)
     }
-    console.log(nowAllArticles)
     return newChapter
 }
     
@@ -88,8 +87,6 @@ export function updateChapter(chapter:Chapter){
 
 //删除指定章节
 export function deleteChapter(from:any,chapter:Chapter){
-    
-    console.log("//即将进行删除",from,chapter)
     //进行提示 
     showAlert({
         "info":`删除章节${chapter.name}及其中的所有内容？`,

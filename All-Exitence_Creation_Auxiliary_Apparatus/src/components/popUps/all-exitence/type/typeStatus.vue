@@ -48,11 +48,10 @@ import Status from '@/interfaces/exitenceStatus';
                 allStatus,
                 allTypeStatus
             },
-            returnValue:updateStatus
+            returnValue:(newStatus:Status)=>{
+				status = newStatus
+			}
         })
-	}
-	function updateStatus(newStatus:Status){
-		status = newStatus
 	}
 </script>
 

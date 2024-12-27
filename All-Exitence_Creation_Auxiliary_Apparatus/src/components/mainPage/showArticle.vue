@@ -28,10 +28,10 @@
     import { computed } from 'vue';
     import textAreaVue from '@/components/other/textArea/textArea.vue';
     import { inputSuggestionList } from '@/hooks/inputSupport/inputSuggestion/inputSuggestion';
-    const article = defineModel<any>()
+    const {article} = defineProps(["article"])
     // 内容栏字符数量
 	let textNum = computed(()=>{
-		return article.value.inner.length
+		return article.inner.length
 	})
 </script>
 
