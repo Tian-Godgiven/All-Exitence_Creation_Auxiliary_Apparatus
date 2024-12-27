@@ -16,7 +16,7 @@
 <script setup lang="ts" name=""> 
 	import { ref } from 'vue';
 	import textAreaVue from '@/components/other/textArea/textArea.vue';
-	import { closePopUp } from '../../../hooks/popUp';
+	import { closePopUp } from '../../../hooks/pages/popUp';
 	const inputText = ref("")
 	const {returnValue,popUp} = defineProps(["returnValue","popUp"])
 	function confirm(){

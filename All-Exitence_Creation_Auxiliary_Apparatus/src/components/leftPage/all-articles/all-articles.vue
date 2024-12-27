@@ -1,11 +1,11 @@
 <template>
 	<div class="articles">
-		<div v-for="(article,index) in articles">
+		<div :key="Symbol()" v-for="(article,index) in articles">
 			<articleVue :article="article"></articleVue>
 			<div class="separator" v-if="index < articles.length-1"></div>
 		</div>
 		
-		<chapterVue v-for="(chapter) in chapters" 
+		<chapterVue :key="Symbol()" v-for="(chapter) in chapters" 
 			:chapter="chapter">
 		</chapterVue>
 	</div>

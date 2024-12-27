@@ -40,6 +40,7 @@
 pathName:string //项目文件夹的路径名称
 name:string //项目名称
 time:date //项目创建时间
+info:string //项目简介
 ~~~
 
 ### 项目数据 data

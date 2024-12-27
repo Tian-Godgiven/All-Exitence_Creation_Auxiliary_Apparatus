@@ -6,8 +6,8 @@
 </template>
 
 <script setup lang="ts" name="article">
-import { hidePage } from '@/hooks/pageChange';
-import { showArticle } from '@/hooks/mainPage/showOnMain';
+import { hidePage } from '@/hooks/pages/pageChange';
+import { showArticle } from '@/hooks/pages/mainPage/showOnMain';
 	let {article} = defineProps(["article"])
 	
 	//点击切换到该文章

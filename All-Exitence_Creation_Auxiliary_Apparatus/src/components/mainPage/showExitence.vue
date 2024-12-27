@@ -30,7 +30,7 @@ import exitenceStatusVue from '../popUps/all-exitence/exitence/exitenceStatus.vu
 import { nowAllExitence } from '@/hooks/all-exitence/allExitence';	
 import { Type } from '@/class/Type';
 import Status from '@/interfaces/exitenceStatus';
-import { showPopUp } from '@/hooks/popUp';
+import { showPopUp } from '@/hooks/pages/popUp';
 	let exitence = defineModel<any>()
 	
 	//事物所属的分类

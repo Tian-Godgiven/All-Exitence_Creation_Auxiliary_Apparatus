@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang='ts'>
-    import { closePopUp } from '@/hooks/popUp';
+    import { closePopUp } from '@/hooks/pages/popUp';
     import {provide, reactive, toRaw } from 'vue';
     import editGroupVue from '@/components/popUps/all-exitence/group/editGroup.vue';
     import { showQuickInfo } from '@/api/showQuickInfo';

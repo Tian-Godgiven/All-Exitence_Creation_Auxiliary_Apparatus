@@ -1,6 +1,6 @@
 <template>
 	<div class="rightPage">
-		<div class="buttons" :style="{right:showWidth-maxWidth +'px'}">
+		<div class="buttons" :style="{right:rightWidth}">
 			<div class="button" v-for="(ability,index) in abilities" :key="index">
 				<div>{{ability}}</div>
 			</div>
@@ -16,10 +16,12 @@
 </template>
 
 <script setup lang="ts" name="RightPage">
-import { rightMaxWidth, switchRight } from '@/hooks/pageChange';
+import { rightMaxWidth, rightShowWidth, switchRight } from '@/hooks/pages/pageChange';
+import { computed } from 'vue';
 	// 由于右侧页面是从右往左的，因此实际设定的是该页面的right属性
-	let {showWidth} = defineProps(["showWidth","maxWidth"])
-	const maxWidth = rightMaxWidth
+	let rightWidth = computed(()=>{
+		return (rightShowWidth.value - rightMaxWidth) +"px"
+	})
 	
 	let abilities = ["1","2","3"]
 	// 功能按键的数量
@@ -45,7 +47,7 @@ import { rightMaxWidth, switchRight } from '@/hooks/pageChange';
 		width:150px;
 		background-color: transparent;
 		position: absolute;
-		z-index: 0;
+		z-index: 1;
 		overflow: hidden;
 	}
 	.buttons{

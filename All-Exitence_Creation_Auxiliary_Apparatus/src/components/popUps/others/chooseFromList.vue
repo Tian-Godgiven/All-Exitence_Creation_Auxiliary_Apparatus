@@ -20,7 +20,7 @@
 
 <script setup lang="ts" name="">
 import { ref, toRaw } from 'vue';
-import { closePopUp } from '../../../hooks/popUp';
+import { closePopUp } from '../../../hooks/pages/popUp';
 	const {props,returnValue,popUp} = defineProps(["props","returnValue","popUp"])
 	const {list,emptyInfo,info,chooseNum,selectRule,showValue,chooseValue} = props
 	//允许显示的项
@@ -46,7 +46,7 @@ import { closePopUp } from '../../../hooks/popUp';
 	const chosenIndex = ref<number[]>([])
 	// 选择指定的属性对象
 	function chooseOption(option:any,index:number){
-		console.log(option)
+
 		//若已经选中则删除
 		if(chosenIndex.value.includes(index)){
 			const idx = chosenIndex.value.indexOf(index)

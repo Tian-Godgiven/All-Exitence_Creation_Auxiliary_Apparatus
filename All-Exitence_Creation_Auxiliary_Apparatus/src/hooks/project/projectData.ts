@@ -1,27 +1,21 @@
 import { reactive, ref, shallowReactive } from "vue"
 import { readFileFromPath } from "../fileSysytem"
-import { changeAppSetting } from "../appSetting"
 import { changeNowAllExitence } from "../all-exitence/allExitence"
 import { changeNowAllArticles } from "../all-articles/allArticles"
 
 //当前项目的文件夹路径
 export const nowProjectPath = ref("")
+//当前项目的信息
+export const nowProjectInfo = reactive({name:""})
 //项目中的输入提示表
 export const projectInputSuggestionList = shallowReactive([])
 
-//移动到指定项目
-export async function moveToProject(projectPath:string){
-    //要求该项目存在
-    nowProjectPath.value = projectPath
-    //同步项目数据
-    await syncProject(projectPath)
-    //记录当前项目为上一次打开的项目
-    changeAppSetting("lastProjectPath",projectPath)
-}
-
-//同步到当前项目中
-async function syncProject(projectPath:string){
+//同步当前项目的数据
+export async function syncProject(projectPath:string){
     try{
+        //项目路径
+        nowProjectPath.value = projectPath
+
         projectPath = `projects/${projectPath}`
         const dataPath = `${projectPath}/data`
 
@@ -31,13 +25,14 @@ async function syncProject(projectPath:string){
         Object.assign(projectInputSuggestionList,inputSuggestionList)
 
         //修改当前的万物和文章
-        const nowProjectInfo = await readFileFromPath(projectPath,"projectInfo.json")
+        const tmp = await readFileFromPath(projectPath,"projectInfo.json")
+        Object.assign(nowProjectInfo,tmp)
         let nowAllExitence = await readFileFromPath(projectPath,"all-exitence.json")
         changeNowAllExitence(nowAllExitence)
         const nowAllArticles = await readFileFromPath(projectPath,"all-articles.json")
         changeNowAllArticles(nowAllArticles)
     }catch(err){
-        console.log(err)
+        console.error(err)
         return false
     }
     

@@ -37,8 +37,6 @@ import { ref,inject } from 'vue';
         else{
             status.value.push(newTag.value)
         }
-
-        console.log("加入了tag")
         
         newTag.value = ""
     }

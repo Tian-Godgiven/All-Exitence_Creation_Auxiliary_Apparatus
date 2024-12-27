@@ -1,6 +1,6 @@
 import { Exitence } from "@/class/Exitence"
 import { Type } from "@/class/Type"
-import { showPopUp } from "../popUp";
+import { showPopUp } from "../pages/popUp";
 import { reactive } from "vue";
 import Status from "@/interfaces/exitenceStatus";
 import { Group } from "@/class/Group";

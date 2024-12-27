@@ -1,5 +1,5 @@
 import { reactive, ref } from "vue"
-import { hideMask, showMask } from "./mask"
+import { hideMask, showMask } from "./masks/popUpMask"
 import { disableChangePage, enableChangePage } from "./pageChange"
 
 export let popUpList = reactive<PopUp[]>([])

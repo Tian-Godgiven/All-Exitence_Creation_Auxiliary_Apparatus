@@ -3,9 +3,6 @@ import { nowAllArticles } from "../all-articles/allArticles";
 import { nowAllExitence } from "../all-exitence/allExitence";
 import { writeFileAtPath } from "../fileSysytem";
 import { nowProjectPath } from "./projectData";
-import { emit, emitTo, listen } from "@tauri-apps/api/event";
-import { getCurrentWindow } from "@tauri-apps/api/window";
-import { getCurrentWebview } from "@tauri-apps/api/webview";
 
 //每隔10秒保存一次当前项目
 export function startAutoSave(){
@@ -15,22 +12,9 @@ export function startAutoSave(){
     },10000)
 }
 
-//窗口切换前保存一次当前项目
-
+//软件退出前保存一次当前项目
 export async function startQuitSave(){
-    //向main发送事件
-    await emit("tauri://destroyed")
-
-    const currentWebview = getCurrentWebview()
-    console.log("事件开始了的")
-    currentWebview.listen("tauri://blur",async()=>{
-        console.log("有弹出的")
-        // await saveProject()
-    })
-    currentWebview.listen("tauri://close-requested",async()=>{
-        console.log("有关闭的")
-        // await saveProject()
-    }) 
+    
 }
 
 

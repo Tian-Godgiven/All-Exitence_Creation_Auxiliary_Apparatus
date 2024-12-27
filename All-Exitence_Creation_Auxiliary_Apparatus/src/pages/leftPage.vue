@@ -1,6 +1,6 @@
 <template>
 <div>
-	<div class="leftPage" :style="{left:(showWidth-maxWidth)+'px'}">
+	<div class="leftPage" :style="{left:leftWidth}">
 		<div class="titleBar">
 			<div class="titleButtons">
 				<div class="button">管理</div>
@@ -30,26 +30,22 @@
 		</div>
 	</div>
 
-	<!-- 左侧页面专用的mask遮罩层 -->
-	<div class="leftPageMask"
-		v-show="ifMask" 
-		:style="{
-			backgroundColor: `rgba(0, 0, 0, ${maskAlpha})`}"
-		@click="clickMask">
-	</div>
+
 </div>
 </template>
 
 <script setup lang="ts" name="LeftPage">
-import { leftMaxWidth } from '@/hooks/pageChange';
+import { leftMaxWidth, leftShowWidth } from '@/hooks/pages/pageChange';
 import allExitenceVue from '@/components/leftPage/all-exitence/all-exitence.vue';
 import allArticlesVue from '@/components/leftPage/all-articles/all-articles.vue';
-import { ref } from "vue"
-import { ifMask,maskAlpha,clickMask } from '@/hooks/leftPageMask';
-import { createType } from '@/hooks/all-exitence/allExitence';
+import { computed, ref } from "vue"
 
-	let {showWidth} = defineProps(["showWidth"])
-	let maxWidth = leftMaxWidth
+import { createType } from '@/hooks/all-exitence/allExitence';
+	//左侧宽度
+	const leftWidth = computed(()=>{
+		return (leftShowWidth.value - leftMaxWidth)+'px'
+	})
+
 	// true = [万物] false = [文本]
 	let model = ref(true)
 	function changeModel(){
@@ -77,12 +73,5 @@ import { createType } from '@/hooks/all-exitence/allExitence';
 		@extend .leftPage;
 		
 	}
-	.leftPageMask{
-		position: absolute;
-		left:0;
-		top:0;
-		width: 100vw;
-		height: 100vh;
-		z-index: 1;
-	}
+
 </style>

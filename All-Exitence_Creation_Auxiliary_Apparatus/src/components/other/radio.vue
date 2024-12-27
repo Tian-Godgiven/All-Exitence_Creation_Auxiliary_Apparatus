@@ -13,12 +13,10 @@
 <script setup lang="ts">
 
     let value:any = defineModel()
-    console.log(value.value)
 	  // 默认为false
 	  if(!value.value){
 		    value.value = false
 	  }
-    console.log(value.value)
 	  const emits = defineEmits(["change"])
 	  function switchRadio() {
 		  value.value = !value.value

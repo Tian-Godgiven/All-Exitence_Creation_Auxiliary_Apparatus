@@ -23,8 +23,8 @@
 <script setup lang='ts'>
 import { provide} from 'vue';
 import exitenceStatusVue from '@/components/popUps/all-exitence/exitence/exitenceStatus.vue';
-import { showExitenceOnMain } from '@/hooks/mainPage/showOnMain';
-import { closePopUp } from '@/hooks/popUp';
+import { showExitenceOnMain } from '@/hooks/pages/mainPage/showOnMain';
+import { closePopUp } from '@/hooks/pages/popUp';
     const {props,popUp} = defineProps(["props","popUp","returnValue"])
     const {type,exitence} = props
     provide("type",type)//提供该事物所在的分类

@@ -25,8 +25,8 @@ import groupVue from "./group.vue"
 import exitenceVue from "./exitence.vue"
 import { computed, reactive, ref, provide } from "vue";
 import { createExitence,createGroup } from "@/hooks/all-exitence/allExitence";
-import { showExitenceOnMain } from "@/hooks/mainPage/showOnMain";
-import { hidePage } from "@/hooks/pageChange";
+import { showExitenceOnMain } from "@/hooks/pages/mainPage/showOnMain";
+import { hidePage } from "@/hooks/pages/pageChange";
 
 
 	let expending = ref(true)

@@ -1,4 +1,4 @@
-import { BaseDirectory, exists, mkdir, create,  readTextFile, writeTextFile } from "@tauri-apps/plugin-fs";
+import { BaseDirectory, exists, mkdir, create,  readTextFile, writeTextFile, readDir, remove } from "@tauri-apps/plugin-fs";
 import { initProject } from "./project/project";
 import { initAppSetting } from "./appSetting";
 
@@ -37,10 +37,17 @@ export async function createDirByPath(path:string,dirName:string){
         ifExists = await exists(`data/${path}/${newDirName}`,appData)
         i+=1
     }
+    //存在重名时使用新名称
+    if(newDirName){dirName = newDirName}
     //初始化数据文件夹
     await mkdir(`data/${path}/${dirName}`,appData)
     //返回新的文件夹名称
     return newDirName || dirName
+}
+
+//删除指定路径的文件夹,设定deleteNotEmpty为true才可以删除非空文件夹
+export async function deleteAtPath(path:string,name:string,deleteNoEmpty:boolean=false){
+    await remove(getPath(path,name),{...appData,recursive:deleteNoEmpty})
 }
 
 //创建指定路径的文件,添加指定内容
@@ -61,12 +68,21 @@ export async function readFileFromPath(path:string,fileName:string,ifJSON:boolea
     const content = await readTextFile(getPath(path,fileName), appData);
     //读取文件
     if(ifJSON && content){
-        console.log("返回的是应该是一个对象")
         return JSON.parse(content)
     }
-    console.log("返回的不是一个对象:",ifJSON,content)
     return content
     
+}
+
+//读取指定文件夹的内容，返回其中的文件名称组成的数组
+export async function readDirAsArray(path:string,dirName:string){
+    const dirPath = getPath(path,dirName)
+    const dirInfo = await readDir(dirPath,appData)
+    const infoArray = dirInfo.reduce((arr:any,value:any)=>{
+        arr.push(value.name)
+        return arr
+    },[])
+    return infoArray
 }
 
 //写指定内容覆盖到目标文件

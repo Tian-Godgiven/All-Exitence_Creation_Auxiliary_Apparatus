@@ -30,7 +30,7 @@
 
 <script setup lang="ts" name="">
 import { ref, shallowRef } from 'vue';
-import { PopUp } from '../hooks/popUp'; 
+import { PopUp } from '../hooks/pages/popUp'; 
 import { popUpVueList } from '../data/list/popUpVueList';
 	let tmp = defineProps(["popUp"])
 	let popUp:PopUp = tmp.popUp

@@ -8,8 +8,8 @@
 </template>
 
 <script setup lang="ts" name="">
-import { hidePage } from '@/hooks/pageChange';
-import { showExitenceOnMain } from '@/hooks/mainPage/showOnMain';
+import { hidePage } from '@/hooks/pages/pageChange';
+import { showExitenceOnMain } from '@/hooks/pages/mainPage/showOnMain';
 import { computed } from 'vue'; 
 import Status from '@/interfaces/exitenceStatus';
 	let {exitence} = defineProps(["exitence"])

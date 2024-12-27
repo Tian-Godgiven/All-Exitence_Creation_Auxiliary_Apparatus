@@ -7,7 +7,7 @@
 </template>
 <script setup lang="ts" name=""> 
 	import { provide,reactive,toRaw } from 'vue'; 
-	import { closePopUp } from '@/hooks/popUp';
+	import { closePopUp } from '@/hooks/pages/popUp';
 	import Status from '@/interfaces/exitenceStatus';
 	import editStatusVue from '@/components/popUps/all-exitence/status/editStatus.vue';
 

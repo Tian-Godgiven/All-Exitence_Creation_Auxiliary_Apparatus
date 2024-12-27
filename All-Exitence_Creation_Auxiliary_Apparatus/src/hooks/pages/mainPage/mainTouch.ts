@@ -1,6 +1,6 @@
 import managePx from "@/api/managePx"
-import { hideInputSupport } from "../inputSupport/inputSupport"
-import { changePage, hidePage, leftMaxWidth, leftPageMask, leftShowing, leftShowWidth, rightMaxWidth, rightShowing, rightShowWidth, showPage } from "../pageChange"
+import { hideInputSupport } from "../../inputSupport/inputSupport"
+import { changePage, hidePage, leftMaxWidth, changePageMask, leftShowing, leftShowWidth, rightMaxWidth, rightShowing, rightShowWidth, showPage } from "../pageChange"
 
 // 滑动相关数据
 let touchStartTime = 0
@@ -66,7 +66,7 @@ export function touchMove(e:any){
 		// 如果此时左侧界面已显示，逐渐隐藏左侧页面
 		if(leftShowing){
 			leftShowWidth.value = Math.max(leftShowWidth.value - movingX, 0);
-			leftPageMask()
+			changePageMask("left")
 		}
 		// 如果此时左侧页面未显示，并且右侧界面未显示，则逐渐显示右侧页面
 		else if(!rightShowing){
@@ -79,7 +79,7 @@ export function touchMove(e:any){
 		if(!leftShowing){
 			leftShowWidth.value = Math.min(leftShowWidth.value - movingX, leftMaxWidth)
 			//逐渐显示遮罩层
-			leftPageMask()
+			changePageMask("left")
 		}
 	}
 }

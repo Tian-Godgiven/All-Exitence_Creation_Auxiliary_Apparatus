@@ -5,7 +5,7 @@ import { Type } from "@/class/Type";
 import { exitenceDivStyle } from "@/static/style/exitenceDivStyle";
 import globalInputSuggestionListData from "@/data/list/globalInputSuggestionList.json";
 import { nowAllExitence } from "@/hooks/all-exitence/allExitence";
-import { showPopUp } from "@/hooks/popUp";
+import { showPopUp } from "@/hooks/pages/popUp";
 import { projectInputSuggestionList } from "@/hooks/project/projectData";
 import { computed, ref, shallowReactive } from "vue";
 
@@ -180,7 +180,6 @@ export function showJumpExitence(exitenceKey:string){
         }
         return null;  // 没有找到，继续查找
     }, null);
-    console.log(result)
     const {type,exitence} = result
 
 

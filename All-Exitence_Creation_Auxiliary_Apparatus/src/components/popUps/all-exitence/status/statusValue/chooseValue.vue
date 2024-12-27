@@ -57,7 +57,6 @@ import { ElCheckboxGroup,ElCheckbox } from 'element-plus';
 			}
 			return arr
 		},[])
-		console.log(status.value)
 	}
 	// 属性设置：选项排列方向是否为竖向
 	const ifVertical = computed(()=>{

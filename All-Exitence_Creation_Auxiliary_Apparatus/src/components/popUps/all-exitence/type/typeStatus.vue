@@ -23,7 +23,7 @@
 import { inject, provide } from 'vue';
 import statusValueVue from '../status/statusValue/statusValue.vue';
 import textAreaVue from '@/components/other/textArea/textArea.vue';
-import { showPopUp } from '@/hooks/popUp';
+import { showPopUp } from '@/hooks/pages/popUp';
 import Status from '@/interfaces/exitenceStatus';
 	const model = defineModel("status")
 	let status:any = model.value

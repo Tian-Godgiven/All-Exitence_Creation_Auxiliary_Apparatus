@@ -1,6 +1,6 @@
 <template>
 	<div class="all-exitence">
-		<typeVue v-for="(type,index) in nowTypes" :type="nowTypes[index]"></typeVue>
+		<typeVue :key="Symbol()" v-for="(type,index) in nowTypes" :type="nowTypes[index]"></typeVue>
 	</div>
 </template>
 

@@ -103,7 +103,6 @@
             top:`calc(${rect.top-4}px - 1rem)`,  // 设置 div 显示在元素上方
             left:`${rect.left + rect.width/2}`
         }
-        console.log(infoText)
         showQuickInfo(infoText,{
             minWidth:"100px",
             height:"1rem",

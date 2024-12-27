@@ -41,7 +41,7 @@ import { provide, reactive, ref, toRaw } from 'vue';
 import downLineInputVue from '@/components/other/input/downLineInput.vue';
 import typeStatusVue from '@/components/popUps/all-exitence/type/typeStatus.vue';
 import newTypeStatusVue from '@/components/popUps/all-exitence/type/newTypeStatus.vue';
-import { closePopUp } from '@/hooks/popUp';
+import { closePopUp } from '@/hooks/pages/popUp';
 import { addType, checkTypeNameRepeat } from '@/hooks/all-exitence/allExitence';
 import { showQuickInfo } from '@/api/showQuickInfo';
 

@@ -37,7 +37,7 @@
 <script setup lang="ts" name="">
 import { inject, ref, shallowRef, toRaw } from 'vue'; 
 import draggableListVue from '@/components/other/draggableList/draggableList.vue';
-import { showPopUp } from '@/hooks/popUp';
+import { showPopUp } from '@/hooks/pages/popUp';
 import textInputVue from "@/components/popUps/others/textInput.vue";
 import { showQuickInfo } from '@/api/showQuickInfo';
 import multiStatusExpressionVue from '@/popUps/expression/multiStatusExpression.vue';
@@ -190,7 +190,6 @@ import { multiStatusPart } from '@/hooks/expression/multiStatusValue';
 			mask : true,
 			returnValue : (array)=>{
 				array.forEach((value:any)=>{
-					console.log(value)
 					createNewPart(value,"quoteStatus")
 				})
 			},

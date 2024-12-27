@@ -13,8 +13,8 @@
 
 	//点击非inputSupport元素时，隐藏输入辅助框
 	const clickListener = (event:any)=>{
-		 // 使用 event.target.closest 判断是否点击了一个inputSupport元素或其子元素
-		 const inputSupportElement = event.target.closest('[inputSupport]');
+		// 使用 event.target.closest 判断是否点击了一个inputSupport元素或其子元素
+		const inputSupportElement = event.target.closest('[inputSupport]');
 		// 如果点击的元素不是inputSupport元素或其子元素，隐藏输入辅助框
 		if (!inputSupportElement) {
 			hideInputSupport(); // 隐藏输入辅助框

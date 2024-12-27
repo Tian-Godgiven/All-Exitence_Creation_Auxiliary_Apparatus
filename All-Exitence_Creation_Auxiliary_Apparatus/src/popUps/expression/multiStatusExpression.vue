@@ -42,7 +42,7 @@
 
 <script setup lang="ts" name="">
 	import { onMounted, onUnmounted, ref, shallowRef } from 'vue'; 
-	import { closePopUp, showPopUp } from '@/hooks/popUp';
+	import { closePopUp, showPopUp } from '@/hooks/pages/popUp';
 	import chooseFromListVue from '@/components/popUps/others/chooseFromList.vue';
 	import textAreaVue from '@/components/other/textArea/textArea.vue';
 	import { showQuickInfo } from '@/api/showQuickInfo';
@@ -86,7 +86,6 @@ import { explainExpression, multiStatusPart } from '@/hooks/expression/multiStat
 			const text = type=="quoteStatus" ? "引用属性":"引用部分"
 			const name = type=="quoteStatus" ? value.name:value.__key
 			const tmp = text + name
-			console.log(value,type,name,tmp)
 			const data = {
 				type,
 				name,
@@ -121,7 +120,6 @@ import { explainExpression, multiStatusPart } from '@/hooks/expression/multiStat
 		let lastItem:any
 		//解析输入内容值
 		const tmp = explainExpression(expressionValue)
-		console.log(tmp)
 		if(!tmp){
 			errorMsg.value.push("表达式无法解析，请检查是否存在错误输入对象")
 			noError = false
