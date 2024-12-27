@@ -43,7 +43,7 @@
 	<div class="popUpContainer" >
 		<!-- 遮罩层 -->
 		<popUpMaskVue></popUpMaskVue>
-		<popUpVue v-for="popUp in popUpList" :popUp="popUp"></popUpVue>
+		<popUpVue :key="Symbol()" v-for="popUp in popUpList" :popUp="popUp"></popUpVue>
 	</div>
 
 </div>

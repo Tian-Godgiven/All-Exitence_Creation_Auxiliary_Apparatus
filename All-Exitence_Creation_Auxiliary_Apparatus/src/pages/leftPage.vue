@@ -41,6 +41,7 @@ import allArticlesVue from '@/components/leftPage/all-articles/all-articles.vue'
 import { computed, ref } from "vue"
 
 import { createType } from '@/hooks/all-exitence/allExitence';
+import { createChapter } from '@/hooks/all-articles/allArticles';
 	//左侧宽度
 	const leftWidth = computed(()=>{
 		return (leftShowWidth.value - leftMaxWidth)+'px'
@@ -59,8 +60,11 @@ import { createType } from '@/hooks/all-exitence/allExitence';
 	
 	function createNew(){
 		//万物类
-		if(model){
+		if(model.value){
 			createType()
+		}
+		else{
+			createChapter()
 		}
 	}
 	

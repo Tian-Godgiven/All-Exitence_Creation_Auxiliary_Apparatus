@@ -70,7 +70,7 @@ export async function createProject(name:string,info:string=""){
     await createFileToPath(projectPath,"all-Articles.json",JSON.stringify(
         {
             chapters:[],
-            article:[]
+            articles:[]
         }
     ))
 

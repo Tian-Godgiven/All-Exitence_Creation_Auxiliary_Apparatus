@@ -14,6 +14,7 @@ export const nowAllExitence = reactive<{[types:string]:Type[]}>({types:[]})
 export function changeNowAllExitence(newAllExitence:{types:Type[]}){
     //不知道为什么有时会传一个字符串过来？？？
     if(typeof newAllExitence != "object"){
+        console.log(newAllExitence)
         newAllExitence = JSON.parse(newAllExitence)
     }
     nowAllExitence.types = newAllExitence.types

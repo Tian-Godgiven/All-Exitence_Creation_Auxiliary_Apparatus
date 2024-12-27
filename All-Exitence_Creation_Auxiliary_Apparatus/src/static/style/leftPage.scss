@@ -41,8 +41,7 @@
 	.titleName{
 		display: flex;
 		align-items: center;
-		> 
-		.text{
+		>.text{
 			width: 100%;
 			white-space:nowrap;
 			overflow: hidden;
@@ -120,7 +119,6 @@
 .leftPageArticle{
 	background-color: global.$bgColor;
 	width: 100%;
-	min-height: 100px;
 	box-sizing: border-box;
 	padding: 10px 20px; 
 	.title{
