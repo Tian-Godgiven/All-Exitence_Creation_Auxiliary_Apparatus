@@ -33,7 +33,7 @@ import { closePopUp } from '@/hooks/pages/popUp';
 
     function clickJumpToExitence(){
         closePopUp(popUp)
-        showExitenceOnMain(exitence)
+        showExitenceOnMain(type,exitence)
     }
 </script>
 

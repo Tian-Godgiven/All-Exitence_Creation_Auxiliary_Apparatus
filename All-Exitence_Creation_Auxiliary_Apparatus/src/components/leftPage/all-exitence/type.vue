@@ -64,7 +64,7 @@ import { showControlPanel } from "@/hooks/controlPanel";
 	async function clickCreateExitence(){
 		const exitence = await createExitence(type)
 		hidePage("left")
-		showExitenceOnMain(exitence)
+		showExitenceOnMain(type,exitence)
 	}
 
 	//长按显示控制面板
@@ -73,7 +73,6 @@ import { showControlPanel } from "@/hooks/controlPanel";
 			{
 				text:"编辑分类",
 				click:()=>{
-					console.log("这个type一开始是",type)
 					updateType(type)}
 			},
 			{

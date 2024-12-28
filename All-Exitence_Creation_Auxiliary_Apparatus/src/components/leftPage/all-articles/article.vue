@@ -11,7 +11,7 @@
 
 <script setup lang="ts" name="article">
 import { hidePage } from '@/hooks/pages/pageChange';
-import { showArticle } from '@/hooks/pages/mainPage/showOnMain';
+import { showArticleOnMain } from '@/hooks/pages/mainPage/showOnMain';
 import { computed,ref } from 'vue';
 import { LongTapAndClickTouchEnd, LongTapAndClickTouchStart } from '@/api/longTapAndClick';
 import { showControlPanel } from '@/hooks/controlPanel';
@@ -60,7 +60,7 @@ import { showControlPanel } from '@/hooks/controlPanel';
 			},
 			click:()=>{
 				//点击将文章显示在主页面
-				showArticle(article)
+				showArticleOnMain(article)
 				hidePage("left")
 			}
 		})

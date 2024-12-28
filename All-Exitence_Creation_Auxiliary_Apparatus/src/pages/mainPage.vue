@@ -20,8 +20,9 @@
 	
 	<!-- 首页内容 -->
 	<div class="mainInner" :key="refreshKey">
-		<showArticleVue :article="showOnMain.target" class="container" v-if="showOnMain.type == 'article'"/>
-		<showExitenceVue :exitence="showOnMain.target" class="container" v-else-if="showOnMain.type == 'exitence'"/>
+		<showInfoVue :target="showOnMain.target" v-if="showOnMain.type=='info'"></showInfoVue>
+		<showArticleVue :article="showOnMain.target" v-else-if="showOnMain.type == 'article'"/>
+		<showExitenceVue :exitence="showOnMain.target" v-else-if="showOnMain.type == 'exitence'"/>
 	</div>
 
 	<!-- 项目页面 -->
@@ -65,6 +66,7 @@ import inputSuggestionVue from '@/components/other/inputSuggestion.vue';
 import popUpVue from './popUp.vue';
 import popUpMaskVue from '@/components/mainPage/popUpMask.vue'
 
+import showInfoVue from '@/components/mainPage/showInfo.vue';
 import showArticleVue from '@/components/mainPage/showArticle.vue';
 import showExitenceVue from '@/components/mainPage/showExitence.vue';
 

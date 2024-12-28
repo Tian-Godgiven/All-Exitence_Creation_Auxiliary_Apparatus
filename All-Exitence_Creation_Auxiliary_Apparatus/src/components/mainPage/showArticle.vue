@@ -49,7 +49,6 @@
                     padding-bottom: 100%;
                     height: auto;
                 }
-                
             }
         }
     }

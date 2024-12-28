@@ -41,12 +41,14 @@ pathName:string //项目文件夹的路径名称
 name:string //项目名称
 time:date //项目创建时间
 info:string //项目简介
+lastTarget:{from,target,type} //记录该项目在切换前显示的目标，若为空则会显示第一个事物对象
 ~~~
 
 ### 项目数据 data
 
 ~~~
 /data
+	/setting.json : 与该项目关联设置信息
 	/inputSuggestionList.json : 与该项目关联的输入提示表
 ~~~
 

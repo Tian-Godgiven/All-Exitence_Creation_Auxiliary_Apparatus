@@ -4,6 +4,8 @@ export class Chapter{
     constructor(
         public name:string,
         public articles:Article[],
-        public chapters:Chapter[]
+        public chapters:Chapter[],
+        public from:string[],
+        public __key:string
     ){}
 }

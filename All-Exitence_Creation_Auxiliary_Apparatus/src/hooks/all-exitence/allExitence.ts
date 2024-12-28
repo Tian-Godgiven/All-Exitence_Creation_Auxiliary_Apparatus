@@ -78,11 +78,9 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
                 type:type,
             },
             returnValue:(name:string,typeStatus:Status[],setting:{})=>{
-                console.log(type)
                 type.name = name;
                 type.typeStatus = typeStatus;
                 type.setting= setting
-                console.log(type)
             }
         })
     }
@@ -265,9 +263,7 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
                 
                 //从type中移除这个group
                 const index = type.groups.indexOf(group)
-                console.log(index)
                 type.groups.splice(index,1)
-                console.log(type)
             }
         })
     }

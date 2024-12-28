@@ -3,6 +3,7 @@ import { showPopUp } from "../pages/popUp";
 import { Chapter } from "@/class/Chapter";
 import { Article } from "@/class/Article";
 import { showAlert } from "../alert";
+import { nanoid } from "nanoid";
 
 //当前文章
 export const nowAllArticles = reactive<{
@@ -21,10 +22,11 @@ export function changeNowAllArticles(newAllArticles:any){
 }
 
 //文本相关
-    
     //向目标章节中插入一个新的空文本
     export function addArticle(chapter:Chapter){
-        const newArticle:Article = new Article("","")
+        //继承章节的from
+        const from = [...chapter.from,chapter.__key]
+        const newArticle:Article = new Article("","",from,nanoid())
         chapter.articles.push(newArticle)
         return newArticle
     }
@@ -56,28 +58,15 @@ export function changeNowAllArticles(newAllArticles:any){
         //在主页面显示该文章
     }
 
-    //更新指定文章
-    export function updateChapter(chapter:Chapter){
-        showPopUp({
-            name:"编辑文章",
-            mask:true,
-            buttons:[],
-            vueName:"updateChapter",
-            props:{
-                chapter
-            },
-            returnValue:(newName:string)=>{
-                chapter.name = newName
-            }
-        })
-    }
+
     
 
 //章节相关
-
     //向当前文章的底部插入一个新章节,如果指定一个章节，则向这个章节中嵌套插入文章
     export function addChapter(chapterName:string,chapter?:Chapter){
-        const newChapter = new Chapter(chapterName,[],[])
+        //如果指定一个章节，则其继承章节的from，否则为from为空
+        const from = chapter? [...chapter.from,chapter.__key] : []
+        const newChapter = new Chapter(chapterName,[],[],from,nanoid())
         if(chapter){
             chapter.chapters.push(newChapter)
         }
@@ -119,6 +108,22 @@ export function changeNowAllArticles(newAllArticles:any){
                 //从from中移除这个chapter
                 const index = from.chapters.indexOf(chapter)
                 from.chapters.splice(index,1)
+            }
+        })
+    }
+
+    //更新指定章节的名称
+    export function updateChapter(chapter:Chapter){
+        showPopUp({
+            name:"编辑文章",
+            mask:true,
+            buttons:[],
+            vueName:"updateChapter",
+            props:{
+                chapter
+            },
+            returnValue:(newName:string)=>{
+                chapter.name = newName
             }
         })
     }

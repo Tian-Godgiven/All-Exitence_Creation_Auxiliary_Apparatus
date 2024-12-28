@@ -11,7 +11,7 @@ export async function initAppSetting(){
 }
 
 //改变软件设置的指定属性
-export async function changeAppSetting(key:string,value:string){
+export async function changeAppSetting(key:string,value:string|boolean|null){
     appSetting[key] = value
     //记录本次改变
     await writeFileAtPath("data","appSetting.json",toRaw(appSetting))

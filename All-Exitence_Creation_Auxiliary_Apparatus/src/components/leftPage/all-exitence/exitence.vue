@@ -47,7 +47,7 @@ import { deleteExitence } from '@/hooks/all-exitence/allExitence';
 			},
 			click:()=>{
 				//点击将事物显示在主页面
-				showExitenceOnMain(exitence)
+				showExitenceOnMain(type,exitence)
 				hidePage("left")
 			}
 		})

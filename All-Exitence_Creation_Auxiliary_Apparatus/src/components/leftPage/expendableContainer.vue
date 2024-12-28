@@ -33,11 +33,9 @@ import { ref } from 'vue';
 	let timeout:any 
 	//处理点击和长按事件
 	function touchStart(){
-		console.log("是按下")
 		timeout = LongTapAndClickTouchStart(ifLongTap)
 	}
 	function touchEnd(){
-		console.log("是按起")
 		LongTapAndClickTouchEnd({
 			theTimeOut:timeout,
 			ifLongTap,
@@ -53,7 +51,6 @@ import { ref } from 'vue';
 	}
 
 	function clickButton(event:Event,button:{text:string,click:()=>void}){
-		console.log(event)
 		event.stopPropagation()
 		button.click()
 	}

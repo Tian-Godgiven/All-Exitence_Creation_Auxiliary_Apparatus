@@ -7,8 +7,10 @@ import { nowProjectPath } from "./projectData";
 //每隔10秒保存一次当前项目
 export function startAutoSave(){
     setInterval(async ()=>{
-        await saveProject()
-        console.log("已自动保存")
+        const tmp = await saveProject()
+        if(tmp){
+            console.log("已自动保存")
+        }
     },10000)
 }
 
@@ -18,12 +20,11 @@ export async function startQuitSave(){
 }
 
 
-
-
-
-
 //保存当前项目中的数据
 async function saveProject(){
+    if(!nowProjectPath.value){
+        return false
+    }
     //当前项目的路径
     const projectPath = "projects/"+ nowProjectPath.value
     //当前万物
@@ -33,5 +34,7 @@ async function saveProject(){
     const allArticles = nowAllArticles
     await writeFileAtPath(projectPath,"all-articles.json",JSON.stringify(toRaw(allArticles)))
     //项目设置
+
+    return true
     
 }
