@@ -191,6 +191,22 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
             setting:statusSetting
         }
     }
+
+    // 从分类中删除指定事物
+    export function deleteExitence(type:Type,exitence:Exitence){
+        showAlert({
+            "info":`删除${type.name}中的事物${exitence.name}？\n
+                这会使得所有指向该事物的索引失效！`,
+            confirm:()=>{
+                const index = type.exitence.indexOf(exitence)
+                type.exitence.splice(index,1)
+            }
+        })
+    }
+
+
+
+
 // 分组相关
     // 显示创建分组页面，创建成功时添加该分组并通过resolve返回
     export async function createGroup(type:Type):Promise<Group>{

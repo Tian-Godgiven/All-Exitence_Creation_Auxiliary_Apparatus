@@ -20,80 +20,105 @@ export function changeNowAllArticles(newAllArticles:any){
     nowAllArticles.articles = newAllArticles.articles
 }
 
-//向当前文章的底部插入一个新章节,如果指定一个章节，则向这个章节中嵌套插入文章
-export function addChapter(chapterName:string,chapter?:Chapter){
-    const newChapter = new Chapter(chapterName,[],[])
-    if(chapter){
-        chapter.chapters.push(newChapter)
-    }
-    else{
-        nowAllArticles.chapters.push(newChapter)
-    }
-    return newChapter
-}
+//文本相关
     
-//向当前章节中插入一个空文本
-export function addArticle(chapter:Chapter){
-    const newArticle:Article = new Article("","")
-    chapter.articles.push(newArticle)
-    return newArticle
-}
+    //向目标章节中插入一个新的空文本
+    export function addArticle(chapter:Chapter){
+        const newArticle:Article = new Article("","")
+        chapter.articles.push(newArticle)
+        return newArticle
+    }
 
-//打开创建章节弹窗，获得用户输入的弹窗名称
-export function createChapter(chapter?:Chapter):Promise<Chapter>{
-    return new Promise((resolve)=>{
-        showPopUp({
-            name:"插入章节",
-            vueName:"createChapter",
-            mask:true,
-            buttons:[],
-            returnValue:(chapterName:string)=>{
-                const newChapter = addChapter(chapterName,chapter)
-                resolve(newChapter)
+    //从目标位置删除指定的文本
+    export function deleteArticle(article:Article,chapter?:Chapter){
+        const position = chapter? chapter.name+"中的":""
+        showAlert({
+            "info":`删除${position}文本${article.title}？`,
+            confirm:()=>{
+                //若不传入或chapter为空，则从认为该文本处于所有文章中
+                if(!chapter){
+                    const index = nowAllArticles.articles.indexOf(article)
+                    nowAllArticles.articles.splice(index,1)
+                }
+                else{
+                    const index = chapter.articles.indexOf(article)
+                    chapter.articles.splice(index,1)
+                }
             }
         })
-    })
-}
+        
+    }
 
-//聚焦到指定章节
-export function focusOnChapter(chapter:Chapter){
-    //将其展开
+    //聚焦到指定文章
+    export function focusOnArticle(article:Article){
+        //将其所处的chapter展开
 
-    //将其聚焦
-}
+        //在主页面显示该文章
+    }
 
-//聚焦到指定文章
-export function focusOnArticle(article:Article){
-    //将其所处的chapter展开
+    //更新指定文章
+    export function updateChapter(chapter:Chapter){
+        showPopUp({
+            name:"编辑文章",
+            mask:true,
+            buttons:[],
+            vueName:"updateChapter",
+            props:{
+                chapter
+            },
+            returnValue:(newName:string)=>{
+                chapter.name = newName
+            }
+        })
+    }
+    
 
-    //在主页面显示该文章
-}
+//章节相关
 
-//更新指定文章
-export function updateChapter(chapter:Chapter){
-    showPopUp({
-        name:"编辑文章",
-        mask:true,
-        buttons:[],
-        vueName:"updateChapter",
-        props:{
-            chapter
-        },
-        returnValue:(newName:string)=>{
-            chapter.name = newName
+    //向当前文章的底部插入一个新章节,如果指定一个章节，则向这个章节中嵌套插入文章
+    export function addChapter(chapterName:string,chapter?:Chapter){
+        const newChapter = new Chapter(chapterName,[],[])
+        if(chapter){
+            chapter.chapters.push(newChapter)
         }
-    })
-}
-
-//删除指定章节
-export function deleteChapter(from:any,chapter:Chapter){
-    //进行提示 
-    showAlert({
-        "info":`删除章节${chapter.name}及其中的所有内容？`,
-        "confirm":()=>{
-            //从from中移除这个chapter
-            const index = from.chapters.indexOf(chapter)
-            from.chapters.splice(index,1)
+        else{
+            nowAllArticles.chapters.push(newChapter)
         }
-    })
-}
+        return newChapter
+    }
+
+    //打开创建章节弹窗，获得用户输入的弹窗名称
+    export function createChapter(chapter?:Chapter):Promise<Chapter>{
+        return new Promise((resolve)=>{
+            showPopUp({
+                name:"插入章节",
+                vueName:"createChapter",
+                mask:true,
+                buttons:[],
+                returnValue:(chapterName:string)=>{
+                    const newChapter = addChapter(chapterName,chapter)
+                    resolve(newChapter)
+                }
+            })
+        })
+    }
+
+    //聚焦到指定章节
+    export function focusOnChapter(chapter:Chapter){
+        //将其展开
+
+        //将其聚焦
+    }
+
+    //删除指定章节
+    export function deleteChapter(from:any,chapter:Chapter){
+        //进行提示 
+        showAlert({
+            "info":`删除章节${chapter.name}及其中的所有内容？`,
+            "confirm":()=>{
+                //从from中移除这个chapter
+                const index = from.chapters.indexOf(chapter)
+                from.chapters.splice(index,1)
+            }
+        })
+    }

@@ -1,5 +1,9 @@
 <template>
-	<div class="exitence" @click="clickExitence">
+	<div class="exitence" 
+		@touchstart="touchStart" 
+		@touchend="touchEnd"
+		@mousedown="touchStart"
+		@mouseup="touchEnd">
 		<div class="name">{{name}}</div>
 		<div class="tags">
 			<div v-for="(tag) in tags">[{{tag}}]</div>
@@ -10,12 +14,44 @@
 <script setup lang="ts" name="">
 import { hidePage } from '@/hooks/pages/pageChange';
 import { showExitenceOnMain } from '@/hooks/pages/mainPage/showOnMain';
-import { computed } from 'vue'; 
+import { computed, inject, ref } from 'vue'; 
 import Status from '@/interfaces/exitenceStatus';
+import { LongTapAndClickTouchEnd, LongTapAndClickTouchStart } from '@/api/longTapAndClick';
+import { showControlPanel } from '@/hooks/controlPanel';
+import { deleteExitence } from '@/hooks/all-exitence/allExitence';
 	let {exitence} = defineProps(["exitence"])
 	const name = computed(()=>{
 		return exitence.name
 	})
+
+	const type:any = inject("type")
+
+	const ifLongTap = ref(false)
+	let timeOut:any
+	function touchStart(){
+		timeOut = LongTapAndClickTouchStart(ifLongTap)
+	}
+
+	function touchEnd(){
+		LongTapAndClickTouchEnd({
+			theTimeOut:timeOut,
+			ifLongTap,
+			longTap:()=>{
+				//显示控制面板
+				showControlPanel([{
+					text:"删除",
+					click:()=>{
+						deleteExitence(type,exitence)
+					}
+				}])
+			},
+			click:()=>{
+				//点击将事物显示在主页面
+				showExitenceOnMain(exitence)
+				hidePage("left")
+			}
+		})
+	}
 	
 	//显示事物的tag
 	let tags = computed(()=>{
@@ -27,12 +63,6 @@ import Status from '@/interfaces/exitenceStatus';
 		return tagsStatus.value??[]
 		
 	})
-	
-	//点击将事物显示在主页面
-	function clickExitence(){
-		showExitenceOnMain(exitence)
-		hidePage("left")
-	}
 	
 </script>
 
