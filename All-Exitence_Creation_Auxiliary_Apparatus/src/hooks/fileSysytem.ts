@@ -1,29 +1,7 @@
 import { BaseDirectory, exists, mkdir, create,  readTextFile, writeTextFile, readDir, remove, rename } from "@tauri-apps/plugin-fs";
-import { initProject } from "./project/project";
-import { initAppSetting } from "./appSetting";
 
-const appData = {baseDir:BaseDirectory.AppLocalData}
-//软件启动，初始化文件系统
-export async function initFileSystem(){
-    //检查是否已经存在需求的data文件夹
-    const ifData = await exists('data',appData)
-    if(!ifData){
-        //初始化数据文件夹
-        await mkdir("data",appData)
-        //初始化软件设置文件
-        const appSettingFile = {
-            lastProjectPath : null
-        }
-        await createFileToPath("data","appSetting.json",JSON.stringify(appSettingFile))
-        //初始化用户项目文件夹
-        await mkdir("data/projects",appData)
-    }
 
-    //初始化软件设置
-    await initAppSetting()
-    //初始化项目
-    await initProject()
-}
+export const appData = {baseDir:BaseDirectory.AppLocalData}
 
 //创建指定路径的文件夹
 export async function createDirByPath(path:string,dirName:string){
@@ -65,13 +43,17 @@ export async function createFileToPath(path:string,fileName:string,inner?:string
 
 //读取指定文件的内容，返回JSON.parse处理后的内容
 export async function readFileFromPath(path:string,fileName:string,ifJSON:boolean=true){
-    const content = await readTextFile(getPath(path,fileName), appData);
-    //读取文件
-    if(ifJSON && content){
-        return JSON.parse(content)
+    try{
+        const content = await readTextFile(getPath(path,fileName), appData);
+        //读取文件
+        if(ifJSON && content){
+            return JSON.parse(content)
+        }
+        return content
     }
-    return content
-    
+    catch{
+        return false
+    }
 }
 
 //读取指定文件夹的内容，返回其中的文件名称组成的数组

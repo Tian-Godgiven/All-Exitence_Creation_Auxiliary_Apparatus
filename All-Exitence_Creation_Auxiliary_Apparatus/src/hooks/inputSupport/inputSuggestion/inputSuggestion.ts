@@ -3,12 +3,13 @@ import { addInputLast } from "@/api/cursorAbility"
 import { Exitence } from "@/class/Exitence";
 import { Type } from "@/class/Type";
 import { exitenceDivStyle } from "@/static/style/exitenceDivStyle";
-import globalInputSuggestionListData from "@/data/list/globalInputSuggestionList.json";
+import { globalInputSuggestionList } from "@/hooks/app/globalInputSuggestion";
 import { nowAllExitence } from "@/hooks/all-exitence/allExitence";
 import { showPopUp } from "@/hooks/pages/popUp";
 import { projectInputSuggestionList } from "@/hooks/project/projectData";
-import { computed, ref, shallowReactive } from "vue";
+import { computed, ref } from "vue";
 
+//输入建议单元
 export interface suggestionItem{
     text:string,
     showText?:string,
@@ -17,8 +18,6 @@ export interface suggestionItem{
     click?:(input:string,item:suggestionItem)=>void, //点击该输入提示项的事件
     target?:any
 }
-
-const globalInputSuggestionList = shallowReactive(globalInputSuggestionListData)
 
 // 输入提示的内容
 export const content = ref<suggestionItem[]>([])

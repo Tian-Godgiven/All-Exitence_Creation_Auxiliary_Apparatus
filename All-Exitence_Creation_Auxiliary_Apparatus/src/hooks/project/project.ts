@@ -1,5 +1,5 @@
 import { ref } from "vue";
-import { appSetting, changeAppSetting } from "../appSetting";
+import { appSetting, changeAppSetting } from "../app/appSetting";
 import { createDirByPath, createFileToPath, deleteAtPath, readDirAsArray, readFileFromPath, renameToAtPath } from "../fileSysytem";
 import { showPopUp } from "../pages/popUp";
 import { nowProjectInfo, nowProjectPath, saveProjectInfo, syncProject } from "./projectData";

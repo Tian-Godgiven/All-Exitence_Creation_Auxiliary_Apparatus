@@ -3,11 +3,15 @@ import { nowAllArticles } from "../all-articles/allArticles";
 import { nowAllExitence } from "../all-exitence/allExitence";
 import { writeFileAtPath } from "../fileSysytem";
 import { nowProjectPath } from "./projectData";
+import { saveGlobalInputSuggestion } from "../app/globalInputSuggestion";
 
 //每隔10秒保存一次当前项目
 export function startAutoSave(){
     setInterval(async ()=>{
+        //保存项目
         const tmp = await saveProject()
+        //保存全局输入建议
+        saveGlobalInputSuggestion()
         if(tmp){
             console.log("已自动保存")
         }
