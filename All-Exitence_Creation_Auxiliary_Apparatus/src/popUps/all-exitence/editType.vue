@@ -88,15 +88,17 @@ import { cloneDeep } from 'lodash';
 	//确认创建分类
 	function confirm(){
 		//分类名称不可为空
+		//返回该分类的内容
 		if(name.value == "" || !name.value){
 			showQuickInfo("分类名不可为空")
 			return false
 		}
-		if(checkTypeNameRepeat(name.value,type)){
+		const tmp = checkTypeNameRepeat(name.value,type)
+		if(tmp){
 			showQuickInfo("分类名不可重复")
 			return false
 		}
-		//返回该分类的内容
+		
         returnValue(name.value,toRaw(typeStatus),toRaw(setting))
 		//关闭弹窗
 		closePopUp(popUp)

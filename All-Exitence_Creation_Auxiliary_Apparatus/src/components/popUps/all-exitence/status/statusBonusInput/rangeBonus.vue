@@ -31,7 +31,7 @@ import Status from '@/interfaces/exitenceStatus';
 import downLineInputVue from '@/components/other/input/downLineInput.vue';
 	const status = inject<Status>('status',<any>{}); 
 	if(!status){
-		alert("没有属性传入")
+		console.error("没有属性传入")
 	}
 	// 范围输入栏
 	let rangeMin = ref(0)

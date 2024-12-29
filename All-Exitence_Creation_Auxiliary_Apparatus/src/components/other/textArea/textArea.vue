@@ -51,6 +51,8 @@ import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expr
         "deleteContent":deleteContent
     })
 
+
+
         
     //显示占位符
     function loadPlaceholder(){
@@ -87,7 +89,6 @@ import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expr
     //向textArea中加载dom
     function loadDom(doms:Node[]){
         //清空
-        console.log("尝试清空",textArea.value)
         textArea.value!.innerText = ""
         doms.forEach((dom:Node) => {
             textArea.value!.appendChild(dom)
@@ -113,7 +114,7 @@ import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expr
     //拼音输入--与输入监听冲突
     let ifIME = false 
     function compositionstart(){
-        console.log("输入监听开始")
+        alert("输入监听开始")
         ifIME = true
     }
     function compositionend(event:any){
@@ -137,10 +138,6 @@ import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expr
         //同步输入位置
         const selection = window.getSelection();
         if(selection) selectionRange = selection.getRangeAt(0);
-        //同步content的内容
-        const newContent = syncContent()
-        //执行input事件，返回新输入的内容
-        emits("input",newContent,newInput)
 
         //如果需要输入建议，则check新输入的内容
         if(inputSuggestionList){
@@ -159,9 +156,7 @@ import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expr
             }
             // 整体不行，则再单独判断新输入的内容
             else{
-                
                 const content2 = checkInputSuggestion(inputSuggestionList,newInput)
-                console.log(newInput)
                 //可行则更新有效输入
                 if(content2){
                     effectInput = newInput
@@ -175,6 +170,11 @@ import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expr
                 }
             }
         }
+
+        //同步content的内容
+        const newContent = syncContent()
+        //执行input事件，返回新输入的内容
+        emits("input",newContent,newInput)
     }
 
     //移动光标到其他位置时清空有效输入,同时记录当前光标位置

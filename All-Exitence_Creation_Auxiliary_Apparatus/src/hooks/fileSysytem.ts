@@ -51,7 +51,8 @@ export async function readFileFromPath(path:string,fileName:string,ifJSON:boolea
         }
         return content
     }
-    catch{
+    catch(err){
+        console.error(err)
         return false
     }
 }

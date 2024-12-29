@@ -23,7 +23,7 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
 //分类相关
     //判断分类名称是否重复
     export function checkTypeNameRepeat(typeName:string,type?:Type){
-        const tmp = nowAllExitence.types.find((type:Type)=>{
+        const tmp = nowAllExitence.types?.find((type:Type)=>{
             if(type.name == typeName){
                 return type
             }
@@ -51,10 +51,7 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
     export function addType(typeName:string,typeStatus:[],typeSetting:{}){
         try{
             const type = new Type(typeName,typeStatus,typeSetting,[],[],nanoid())
-        nowAllExitence.types.push(type)
-
-
-        console.log(nowAllExitence,type)
+            nowAllExitence.types.push(type)
         }
         catch(err){
             console.log(err)

@@ -27,8 +27,8 @@
 ~~~
 /projectName:项目文件夹本身
 	/data:集中存放与项目整体有关的数据，内容参见下方
-	/all-exitence:万物文件夹，参见万物数据结构
-	/all-article:文本文件夹，参见文章数据结构
+	/all-exitence.json:万物文件，参见万物数据结构
+	/all-article.json:文本文件，参见文章数据结构
 	/projectInfo.json:项目信息文件,内容参见下方
 ~~~
 
