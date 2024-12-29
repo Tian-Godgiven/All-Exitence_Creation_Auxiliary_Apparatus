@@ -1,7 +1,9 @@
 <template>
 	<div class="all-articles">
 		<div :key="Symbol()" v-for="(article,index) in articles">
-			<articleVue :article="article"></articleVue>
+			<articleVue 
+				:from="nowAllArticles"
+				:article="article"/>
 			<div class="separator" v-if="index < articles.length-1"></div>
 		</div>
 		

@@ -32,20 +32,14 @@ export function changeNowAllArticles(newAllArticles:any){
     }
 
     //从目标位置删除指定的文本
-    export function deleteArticle(article:Article,chapter?:Chapter){
-        const position = chapter? chapter.name+"中的":""
+    export function deleteArticle(from:any,article:Article){
+        const position = from == nowAllArticles ? from.name+"中的":""
+        const title = article.title=="" ? "<未命名文本>":"文本："+article.title
         showAlert({
-            "info":`删除${position}文本${article.title}？`,
+            "info":`删除${position}${title}？`,
             confirm:()=>{
-                //若不传入或chapter为空，则从认为该文本处于所有文章中
-                if(!chapter){
-                    const index = nowAllArticles.articles.indexOf(article)
-                    nowAllArticles.articles.splice(index,1)
-                }
-                else{
-                    const index = chapter.articles.indexOf(article)
-                    chapter.articles.splice(index,1)
-                }
+                const index = from.articles.indexOf(article)
+                from.articles.splice(index,1)
             }
         })
         

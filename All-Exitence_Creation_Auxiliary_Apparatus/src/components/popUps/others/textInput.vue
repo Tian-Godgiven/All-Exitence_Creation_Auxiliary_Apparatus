@@ -2,6 +2,7 @@
 	<div class="textInput">
 		<div class="input">
 			<textAreaVue
+				:mode="mode"
 				v-model="inputText"
 				placeholder="请输入文本内容">
 			</textAreaVue>
@@ -18,7 +19,9 @@
 	import textAreaVue from '@/components/other/textArea/textArea.vue';
 	import { closePopUp } from '../../../hooks/pages/popUp';
 	const inputText = ref("")
-	const {returnValue,popUp} = defineProps(["returnValue","popUp"])
+	const {props={},returnValue,popUp} = defineProps(["props","returnValue","popUp"])
+	//纯文本or文件文本
+	const mode = props?.mode
 	function confirm(){
 		returnValue(inputText.value)
 		closePopUp(popUp)

@@ -4,6 +4,7 @@
         <div class="top">
             <div class="targetTitle" >
                 <textAreaVue
+                    mode="string"
                     placeholder="输入标题"
                     v-model="article.title"
                     :inputSupport="true">

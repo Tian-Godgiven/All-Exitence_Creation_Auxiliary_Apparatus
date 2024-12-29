@@ -3,6 +3,7 @@
 		<!-- 属性名 -->
 		<div class="name">
 			<textAreaVue
+				mode="string"
 				v-model="status.name"
 				placeholder="属性名">
 			</textAreaVue>

@@ -2,6 +2,7 @@
 	<div class="container">
         <div class="top">
             <textAreaVue class="targetTitle"
+				mode="string"
                 placeholder="输入名称"
                 v-model="exitence.name"
                 :inputSupport="true">

@@ -49,8 +49,17 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
 
     //向万物中添加新的分类
     export function addType(typeName:string,typeStatus:[],typeSetting:{}){
-        const type = new Type(typeName,typeStatus,typeSetting,[],[],nanoid())
+        try{
+            const type = new Type(typeName,typeStatus,typeSetting,[],[],nanoid())
         nowAllExitence.types.push(type)
+
+
+        console.log(nowAllExitence,type)
+        }
+        catch(err){
+            console.log(err)
+        }
+        
     }
 
     // 显示创建分类页面，创建成功时添加该分类

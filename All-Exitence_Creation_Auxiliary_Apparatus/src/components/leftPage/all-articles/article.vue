@@ -5,7 +5,7 @@
 		@mousedown="touchStart"
 		@mouseup="touchEnd"> 
 		<div class="title">{{title}}</div>
-		<!-- <div v-show="ifPreview" class="preview">{{preview}}</div> -->
+		<div v-show="ifPreview" class="preview">{{preview}}</div>
 	</div>
 </template>
 
@@ -15,8 +15,10 @@ import { showArticleOnMain } from '@/hooks/pages/mainPage/showOnMain';
 import { computed,ref } from 'vue';
 import { LongTapAndClickTouchEnd, LongTapAndClickTouchStart } from '@/api/longTapAndClick';
 import { showControlPanel } from '@/hooks/controlPanel';
+import { deleteArticle } from '@/hooks/all-articles/allArticles';
+import { translateToTextContent } from '@/hooks/expression/jumpContent';
 
-	let {article} = defineProps(["article"])
+	let {article,from} = defineProps(["article","from"])
 	const title = computed(()=>{
 		if(article.title == "" || !article.title){
 			return "<未命名文本>"
@@ -26,19 +28,23 @@ import { showControlPanel } from '@/hooks/controlPanel';
 		}
 	})
 	//文章预览
-	// let ifPreview = ref(false)
-	// const preview = computed(()=>{
-	// 	const slice = article.inner.slice(0,100)
-	// 	if(slice.length > 0){
-	// 		ifPreview.value = true
-	// 		return slice
-	// 	}
-	// 	else{
-	// 		ifPreview.value = false
-	// 		return ""
-	// 	}
-	// })
+	let ifPreview = ref(false)
+	const preview = computed(()=>{
+		//先翻译为文本内容
+		const inner = translateToTextContent(article.inner)
+		//截取一部分
+		const slice = inner.slice(0,100)
+		if(slice.length > 0){
+			ifPreview.value = true
+			return slice
+		}
+		else{
+			ifPreview.value = false
+			return ""
+		}
+	})
 
+	//长按和点击事件
 	const ifLongTap = ref(false)
 	let timeOut:any
 	function touchStart(){
@@ -54,7 +60,7 @@ import { showControlPanel } from '@/hooks/controlPanel';
 				showControlPanel([{
 					text:"删除",
 					click:()=>{
-						
+						deleteArticle(from,article)
 					}
 				}])
 			},

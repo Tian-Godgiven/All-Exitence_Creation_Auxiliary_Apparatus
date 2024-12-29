@@ -7,7 +7,10 @@
 		<template v-slot:inner>
 			<!-- 章节内的文本 -->
 			<div v-for="(article,index) in articles">
-				<articleVue :article = "article"></articleVue>
+				<articleVue 
+					:from="chapter" 
+					:article = "article">
+				</articleVue>
 				<div class="separator" v-if="index < articles.length-1"></div>
 			</div>
 			<!-- 章节内的章节 -->
