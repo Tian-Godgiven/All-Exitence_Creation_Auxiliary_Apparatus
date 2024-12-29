@@ -1,22 +1,20 @@
 import { addInputLastDiv, deleteInputLast, getInputPosition } from "@/api/cursorAbility";
 import { addInputLast } from "@/api/cursorAbility"
-import { Exitence } from "@/class/Exitence";
-import { Type } from "@/class/Type";
-import { exitenceDivStyle } from "@/static/style/exitenceDivStyle";
 import { globalInputSuggestionList } from "@/hooks/app/globalInputSuggestion";
-import { nowAllExitence } from "@/hooks/all-exitence/allExitence";
-import { showPopUp } from "@/hooks/pages/popUp";
 import { projectInputSuggestionList } from "@/hooks/project/projectData";
 import { computed, ref } from "vue";
+import { jumpDivHtml } from "./jumpDiv";
+import { Type } from "@/class/Type";
+import { Exitence } from "@/class/Exitence";
 
 //输入建议单元
 export interface suggestionItem{
     text:string,
     showText?:string,
-    type:string,
+    type:"string"|"exitence",
     info?:string,
     click?:(input:string,item:suggestionItem)=>void, //点击该输入提示项的事件
-    target?:any
+    target?:string 
 }
 
 // 输入提示的内容
@@ -43,7 +41,7 @@ export const inputSuggestionList = computed(()=>{
     }
 })
 
-//不同类型的输入提示对象的点击事件
+//根据输入提示对象的类型，为对应的输入提示div提供点击事件
 function getSuggetionItemClick(type:string){
     let click
     switch(type){
@@ -56,8 +54,12 @@ function getSuggetionItemClick(type:string){
         //事物补全div并进行关联
         case "exitence":
             click = (input:string,item:suggestionItem)=>{
-                const domHTML = `<span style = "${exitenceDivStyle}" contenteditable="false" class="jumpExitence" data-exitence="${item.target}">${item.text}</span>`
-                autoCompleteDom(input,domHTML)
+                if(!item.target){
+                    console.error("这个输入提示对象不具备有效的目标值：",item)
+                    return false
+                }
+                //自动补全一个跳转div
+                autoCompleteJumpDiv(input,item.target,"exitence",item.text)
             }
             break;
         default:
@@ -67,19 +69,8 @@ function getSuggetionItemClick(type:string){
 }
 
 
-
 //向输入提示表中新增内容
-export function addInputSuggestion(item:suggestionItem,targetExitence?:Exitence,position?:"global"|"project"){
-    //若类型为exitence，则提取其中的目标事物的__key
-    if(item.type == "exitence"){
-        if(targetExitence){
-            item["target"] = targetExitence.__key
-        }
-        else{
-            console.error("错误：未传入输入提示指向的事物对象")
-        }
-    }
-    
+export function addInputSuggestion(item:suggestionItem,position?:"global"|"project"){
     //若没有指定输入提示表位置，则根据item的类型判断
     if(!position){
         if(item.type == "exitence"){
@@ -94,6 +85,20 @@ export function addInputSuggestion(item:suggestionItem,targetExitence?:Exitence,
     const list:suggestionItem[] = (position == "global"? globalInputSuggestionList : projectInputSuggestionList)
     //向list中添加item内容
     list.push({...item})
+}
+
+//新增事物类型的输入提示
+export function addExitenceInputSuggestion(type:Type,exitence:Exitence){
+    //事物类型的跳转对象是其type和exitence的key组成的数组
+    const target = [type.__key,exitence.__key]
+    const item:suggestionItem = {
+        text:exitence.name,
+        type:"exitence",
+        info:"创建的事物",
+        target:JSON.stringify(target)
+    }
+    //添加这样一个item
+    addInputSuggestion(item,"project")
 }
 
 // 在指定位置显示输入提示
@@ -154,46 +159,17 @@ export function autoCompleteDom(input:string,domHTML:string){
     addInputLastDiv(domHTML)
 }
 
-// 跳转功能：点击一个class为jumpExitence的div，显示该div指向的事物
-document.addEventListener("click",(event)=>{
-    const targetElement = event.target as HTMLElement;
-    // 检查是否点击了 class 为 jumpExitence 的 div
-    if (targetElement && targetElement.classList.contains("jumpExitence")) {
-        // 获取该 div 的 data-target 属性值
-        const target = targetElement.getAttribute("data-exitence");
-        if(!target){
-            console.error("错误，不存在的事物标识符：",targetElement)
-            return false
-        }
-        // 调用 showJumpExitence 函数来显示相关内容
-        showJumpExitence(target);
+// 补全：补全一个跳转div
+export function autoCompleteJumpDiv(input:string,target:any,type:string,inner:string){
+    //获取跳转div的html
+    const domHTML = jumpDivHtml(inner)
+    //绑定在跳转div上的data
+    const data = {
+        type,
+        target
     }
-})
-export function showJumpExitence(exitenceKey:string){
-    //寻找这个事物对象和其所在的type
-    const result = nowAllExitence.types.reduce((acc:any, type: Type) => {
-        if (acc) return acc;  // 已经找到了，不需要继续查找
-        const exitence = type.exitence.find((exitence: Exitence) => exitence.__key === exitenceKey);
-        if (exitence) {
-            return { type, exitence };  // 找到匹配的 exitence，返回包含 type 和 exitence 的对象
-        }
-        return null;  // 没有找到，继续查找
-    }, null);
-    const {type,exitence} = result
-
-
-
-    
-
-    if(exitence){
-        showPopUp({
-            vueName:"showExitence",
-            buttons:[],
-            mask:true,
-            "props":{
-                exitence,
-                type
-            }
-        })
-    }
+    //先删除input内容
+    deleteInputLast(input.length)
+    //再添加dom对象
+    addInputLastDiv(domHTML,null,data)
 }

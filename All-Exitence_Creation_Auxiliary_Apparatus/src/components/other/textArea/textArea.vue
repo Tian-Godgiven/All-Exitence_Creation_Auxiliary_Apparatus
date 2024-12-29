@@ -8,13 +8,13 @@
             :placeholder="placeholder"
             inputmode="text"
             tabindex="0"
+            v-html="showContent"
             @compositionstart="compositionstart"
             @compositionend="compositionend"
             @click="clickEvent"
             @input="onInput"
             @blur="onBlur"
             @focus="onFocus">
-            {{ showText }}
         </div>
         <slot name="scrollSpace"></slot>
     </div>
@@ -23,10 +23,11 @@
 <script setup lang='ts'>
 import { focusOnEnd } from '@/api/focusOnEnd';
 import { showInputSupport } from '@/hooks/inputSupport/inputSupport';
-import { inject, ref } from 'vue';
+import { computed, inject, ref } from 'vue';
 import { checkInputSuggestion, hideInputSuggestion, showInputSuggestion } from '@/hooks/inputSupport/inputSuggestion/inputSuggestion';
 import { addInputLast, addInputLastDiv, deleteInputLast, getInputLast } from '@/api/cursorAbility';
 import { findTargetDivs } from '@/hooks/findTargetDiv';
+import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expression/jumpContent';
 
     const textArea = ref()
     let showPlaceholder = false //当前是否显示placeholder
@@ -53,22 +54,24 @@ import { findTargetDivs } from '@/hooks/findTargetDiv';
 
         
     //初始化值
-    let showText:any
-    //如果是禁用状态，则showText动态
+    let showContent:any
+    //如果是禁用状态，则showText为动态变化
     if(disabled){
-        showText = content
+        showContent = computed(()=>{
+            return translateToFrontEndContent(content.value)
+        })
     }
     else{
-        showText = ref("")
+        showContent = ref("")
         // 未传入内容显示placeholder
         if(content.value == "" || !content.value){
             showPlaceholder = true
-            showText.value = placeholder
+            showContent.value = placeholder
         }
         // 传入content则显示content的值
         else{ 
             showPlaceholder = false
-            showText.value = content.value
+            showContent.value = translateToFrontEndContent(content.value)
         }
     }
 
@@ -78,7 +81,6 @@ import { findTargetDivs } from '@/hooks/findTargetDiv';
     function compositionstart(){
         ifIME = true
     }
-
     function compositionend(event:any){
         const newInput = event.data
         listenInput(event,newInput)
@@ -100,8 +102,8 @@ import { findTargetDivs } from '@/hooks/findTargetDiv';
         const selection = window.getSelection();
         if(selection) selectionRange = selection.getRangeAt(0);
         //同步content的内容
-        const allText = event.target.textContent
-        content.value = allText
+        const allText = event.target.childNodes
+        syncContent(event.target.childNodes)
         //执行input事件，返回新输入的内容
         emits("input",allText,newInput)
 
@@ -138,6 +140,13 @@ import { findTargetDivs } from '@/hooks/findTargetDiv';
         }
     }
 
+    //同步内容到content中
+    function syncContent(nodes:NodeList){
+        //content内应当存储文件内容
+        const fileContent = translateToFileContent(nodes)
+        content.value = fileContent
+    }
+
     //移动光标到其他位置时清空有效输入,同时记录当前光标位置
     let oldPosition:any
     function clickEvent(){
@@ -158,7 +167,7 @@ import { findTargetDivs } from '@/hooks/findTargetDiv';
     function onBlur(){
         // 为空时显示placeholder
         if(content.value == "" || !content.value){
-            showText.value = placeholder
+            showContent.value = placeholder
             showPlaceholder = true
         }
         else{
@@ -171,7 +180,7 @@ import { findTargetDivs } from '@/hooks/findTargetDiv';
         //取消placeholder
         if(showPlaceholder){
             showPlaceholder = false
-            showText.value = ""
+            showContent.value = ""
             //重新聚焦一下
             focusOnEnd(textArea.value)
         }

@@ -70,12 +70,18 @@ export function addInputLast(text:string,range?:any){
 }
 
 //向当前屏幕上的光标后添加一个dom
-export function addInputLastDiv(htmlText:string,range?:any){
+export const divWeakMap = new WeakMap
+export function addInputLastDiv(htmlText:string,range?:any,data?:{[key:string]:any}){
     // 创建一个临时的 DOM 元素并插入 HTML
     let div:any = document.createElement('div');
     div.innerHTML = htmlText; // 将 HTML 转换为 DOM 节点
     div = div.firstChild
     if(!div) return;
+
+    if(data){
+        // 为div绑定Weakmap数据
+        divWeakMap.set(div, data);
+    }
 
     const selection = window.getSelection();
     if (!selection) return;

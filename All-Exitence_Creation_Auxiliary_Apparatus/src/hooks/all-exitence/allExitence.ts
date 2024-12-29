@@ -5,7 +5,7 @@ import { reactive } from "vue";
 import Status from "@/interfaces/exitenceStatus";
 import { Group } from "@/class/Group";
 import { nanoid } from "nanoid";
-import { addInputSuggestion } from "../inputSupport/inputSuggestion/inputSuggestion";
+import { addExitenceInputSuggestion } from "../inputSupport/inputSuggestion/inputSuggestion";
 import { showAlert } from "../alert";
 
 //当前万物
@@ -122,11 +122,7 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
         type.exitence.push(newExitence)
 
         //创建该事物的输入建议
-        addInputSuggestion({
-            text:newExitence.name,
-            type:"exitence",
-            info:"创建的事物"
-        },newExitence,"project")
+        addExitenceInputSuggestion(type,newExitence)
         
         return newExitence
     }

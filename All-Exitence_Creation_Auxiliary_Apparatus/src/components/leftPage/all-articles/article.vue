@@ -5,7 +5,7 @@
 		@mousedown="touchStart"
 		@mouseup="touchEnd"> 
 		<div class="title">{{title}}</div>
-		<div v-show="ifPreview" class="preview">{{preview}}</div>
+		<!-- <div v-show="ifPreview" class="preview">{{preview}}</div> -->
 	</div>
 </template>
 
@@ -26,18 +26,18 @@ import { showControlPanel } from '@/hooks/controlPanel';
 		}
 	})
 	//文章预览
-	let ifPreview = ref(false)
-	const preview = computed(()=>{
-		const slice = article.inner.slice(0,100)
-		if(slice.length > 0){
-			ifPreview.value = true
-			return slice
-		}
-		else{
-			ifPreview.value = false
-			return ""
-		}
-	})
+	// let ifPreview = ref(false)
+	// const preview = computed(()=>{
+	// 	const slice = article.inner.slice(0,100)
+	// 	if(slice.length > 0){
+	// 		ifPreview.value = true
+	// 		return slice
+	// 	}
+	// 	else{
+	// 		ifPreview.value = false
+	// 		return ""
+	// 	}
+	// })
 
 	const ifLongTap = ref(false)
 	let timeOut:any

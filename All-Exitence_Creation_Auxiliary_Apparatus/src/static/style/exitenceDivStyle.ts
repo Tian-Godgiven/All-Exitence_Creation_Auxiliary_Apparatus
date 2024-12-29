@@ -1,3 +1,3 @@
-export const exitenceDivStyle = `
+export const jumpExitenceDivStyle = `
     color:red;
 `
