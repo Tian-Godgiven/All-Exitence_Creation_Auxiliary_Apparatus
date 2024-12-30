@@ -25,6 +25,7 @@ import { ref,inject } from 'vue';
     }
 
     const {statusSetting} = defineProps(['statusSetting'])
+    console.log(statusSetting,"这个功尚未实装")
     const newTag = ref("")
     function addTag(){
         if(newTag.value == ""){

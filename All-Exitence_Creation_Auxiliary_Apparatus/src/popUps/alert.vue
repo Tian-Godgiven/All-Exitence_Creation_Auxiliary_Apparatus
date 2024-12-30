@@ -27,6 +27,10 @@
         }
         closePopUp(popUp)
     }
+
+    if(buttons){
+        console.log("这个alert有buttons，但是相关功能还未实装")
+    }
 </script>
 
 <style scoped lang='scss'>

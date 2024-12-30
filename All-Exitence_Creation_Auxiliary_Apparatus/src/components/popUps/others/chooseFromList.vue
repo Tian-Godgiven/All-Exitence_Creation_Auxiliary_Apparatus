@@ -24,7 +24,7 @@ import { closePopUp } from '../../../hooks/pages/popUp';
 	const {props,returnValue,popUp} = defineProps(["props","returnValue","popUp"])
 	const {list,emptyInfo,info,chooseNum,selectRule,showValue,chooseValue} = props
 	//允许显示的项
-	let showList
+	let showList:any
 	if(selectRule){
 		const tmp = list.reduce((acc:any[],cur:any)=>{
 			// 需要满足selectRule
@@ -38,6 +38,11 @@ import { closePopUp } from '../../../hooks/pages/popUp';
 	else{
 		showList = list
 	}
+
+	if(chooseNum){
+		console.log(chooseNum,"这个功尚未实装")
+	}
+	
 	
 	
 	
@@ -83,9 +88,6 @@ import { closePopUp } from '../../../hooks/pages/popUp';
 			width: 100%;
 			box-sizing: border-box;
 			padding: 20px 40px;
-			.option{
-				
-			}
 			.option.selected{
 				background-color: lightblue;
 			}

@@ -48,7 +48,7 @@ export function changeNowAllArticles(newAllArticles:any){
     //聚焦到指定文章
     export function focusOnArticle(article:Article){
         //将其所处的chapter展开
-
+        console.log(article)
         //在主页面显示该文章
     }
 
@@ -89,7 +89,7 @@ export function changeNowAllArticles(newAllArticles:any){
     //聚焦到指定章节
     export function focusOnChapter(chapter:Chapter){
         //将其展开
-
+        console.log(chapter)
         //将其聚焦
     }
 

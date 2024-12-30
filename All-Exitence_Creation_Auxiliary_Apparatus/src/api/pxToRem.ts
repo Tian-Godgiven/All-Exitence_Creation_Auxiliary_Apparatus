@@ -4,7 +4,9 @@
 	export const setDomFontSize = () => {
 	    let width = document.documentElement.clientWidth || document.body.clientWidth;
 	    let fontsize = (width <= 200 ? 1200 : width) / 100 + 'px';
-	    (document.getElementsByTagName('html')[0].style)['font-size'] = fontsize;
+		// 强制将元素类型转换为 HTMLHtmlElement
+		const htmlElement = document.getElementsByTagName('html')[0] as HTMLHtmlElement;
+	    htmlElement.style.fontSize = fontsize;
 	}
 	
 	// let setDomFontSizeDebounce = _.debounce(setDomFontSize, 400)
