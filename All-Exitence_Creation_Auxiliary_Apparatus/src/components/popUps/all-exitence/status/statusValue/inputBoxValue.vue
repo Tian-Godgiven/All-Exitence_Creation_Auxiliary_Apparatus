@@ -10,10 +10,9 @@
 </template>
 
 <script setup lang="ts" name="">
-import { computed, inject, ref } from 'vue'; 
+import { computed, ref } from 'vue'; 
 import textAreaVue from '@/components/other/textArea/textArea.vue';
-	const status = inject<any>("status")
-	const {statusSetting} = defineProps(["statusSetting"])
+	const {status,statusSetting} = defineProps(["status","statusSetting"])
 
 	// 属性设置：聚焦不显示显示高亮输入框
 	const ifHoverBox = computed(()=>{

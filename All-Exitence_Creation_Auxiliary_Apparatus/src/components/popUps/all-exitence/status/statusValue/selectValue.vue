@@ -16,9 +16,8 @@
 
 <script setup lang="ts" name=""> 
 import { ElSelect,ElOption } from 'element-plus';
-import { computed, inject, ref } from 'vue';
-	const status = inject<any>("status")
-	const {statusSetting} = defineProps(['statusSetting'])
+import { computed, ref } from 'vue';
+	const {status,statusSetting} = defineProps(["status","statusSetting"])
 	if(!Array.isArray(status.value)){
 		status.value = []
 	}

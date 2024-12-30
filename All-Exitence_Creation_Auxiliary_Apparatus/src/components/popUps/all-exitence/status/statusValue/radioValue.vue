@@ -6,10 +6,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed, inject } from 'vue'; 
+import { computed } from 'vue'; 
 import radioVue from '@/components/other/radio.vue';
-	const status = inject<any>("status")
-	const {statusSetting} = defineProps(['statusSetting'])
+	const {status,statusSetting} = defineProps(["status","statusSetting"])
 	const text = computed(()=>{
 		return statusSetting["radio"]
 	})

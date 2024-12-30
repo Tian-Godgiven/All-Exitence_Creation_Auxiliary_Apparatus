@@ -12,10 +12,12 @@
 
 <script setup lang='ts'>
 import downLineInputVue from '@/components/other/input/downLineInput.vue';
-import { ref,inject } from 'vue';
-    let tags
+import { ref } from 'vue';
+    let tags:any[]
 
-    const status = inject<any>("status",null)
+    const {status,statusSetting} = defineProps(["status","statusSetting"])
+    console.log(statusSetting,"这个功尚未实装")
+
     const model = defineModel<any>()
 
     if(!status){
@@ -23,13 +25,10 @@ import { ref,inject } from 'vue';
     }else{
         tags = status.value
     }
-
-    const {statusSetting} = defineProps(['statusSetting'])
-    console.log(statusSetting,"这个功尚未实装")
+    
     const newTag = ref("")
     function addTag(){
         if(newTag.value == ""){
-            
             return false
         }
         if(!status){

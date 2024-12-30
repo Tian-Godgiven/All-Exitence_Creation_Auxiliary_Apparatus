@@ -11,7 +11,7 @@
 			<div class="separator">：</div>
 
 			<!-- 属性值 -->
-			<statusValueVue class="statusValue"></statusValueVue>
+			<statusValueVue :status="status" :typeStatus="typeStatus" class="statusValue"></statusValueVue>
 		</div>
 		
 		<!-- 属性类型与设置 -->
@@ -35,7 +35,7 @@
 		</div>
 
 		<!-- 额外输入栏 -->
-		<component :is="statusBonusInputList[status.valueType]"></component>
+		<component :status="status" :is="statusBonusInputList[status.valueType]"></component>
 
 		<!-- 属性设置栏 -->
 		<setStatusVue ref="setStatus" :show="showSetStatus"></setStatusVue>
@@ -44,7 +44,7 @@
 </template>
 
 <script setup lang="ts" name=""> 
-	import { inject, ref} from 'vue'; 
+	import { inject, ref,watch} from 'vue'; 
 	import { statusValueTypeList } from '@/data/list/statusValueList';
 	import setStatusVue from "@/components/popUps/all-exitence/status/setStatus/setStatus.vue"
 	import statusValueVue from '../status/statusValue/statusValue.vue';
@@ -81,6 +81,10 @@
 		status.setting = {}
 		status.value = null
 	}
+
+	watch(status,()=>{
+		console.log(status)
+	})
 
 	// 属性设置
 	const setStatus = ref()

@@ -11,9 +11,8 @@
 
 <script setup lang="ts" name=""> 
 import { ElSwitch } from 'element-plus';
-import { computed, inject } from 'vue';
-	const status = inject<any>("status")
-	const {statusSetting} = defineProps(['statusSetting'])
+import { computed } from 'vue';
+	const {status,statusSetting} = defineProps(["status","statusSetting"])
 	//默认为false
 	if(!status.value){
 		status.value = false

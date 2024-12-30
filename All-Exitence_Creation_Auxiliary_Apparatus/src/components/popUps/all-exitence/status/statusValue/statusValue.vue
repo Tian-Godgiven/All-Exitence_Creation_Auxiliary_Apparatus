@@ -1,19 +1,16 @@
 <template>
 	<div class="value" :class="disabled?'disabled':''">
-		<component :statusSetting="statusSetting" :is="statusValueVueList[valueType]"></component>
+		<component :status="status" :typeStatus="typeStatus" :statusSetting="statusSetting" :is="statusValueVueList[valueType]"></component>
 	</div>
 </template>
 
 <script setup lang="ts" name="">
-import {computed, inject, provide } from 'vue'; 
+import {computed, provide } from 'vue'; 
 import { statusValueVueList } from '@/data/list/statusValueList';
-	//需要显示的属性对象
-	const status = inject<any>("status")
-	//事物所在的分类属性typeStatus对象，如果是分类则其就是分类的属性
-	const typeStatus = inject<any>("typeStatus")
 
-	//是否禁用属性修改
-	const {disabled} = defineProps(["disabled"])
+	//是否禁用属性修改 , 需要显示的属性对象，事物在分类中对应的属性
+	const {disabled,status,typeStatus} = defineProps(["disabled","status","typeStatus"])
+	//禁用功能需要透传
 	if(disabled){
 		provide("disabled",true)
 	}

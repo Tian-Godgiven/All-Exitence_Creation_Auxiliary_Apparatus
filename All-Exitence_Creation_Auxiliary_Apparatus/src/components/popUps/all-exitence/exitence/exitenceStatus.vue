@@ -7,13 +7,13 @@
             </div>
             <div class="separator">：</div>
             <!-- 属性值 -->
-            <statusValueVue :disabled="disabled" class="value"></statusValueVue>
+            <statusValueVue :status="status" :typeStatus="typeStatus" :disabled="disabled" class="value"></statusValueVue>
         </div>
     </div>
 </template>
 
 <script setup lang='ts'>
-    import { computed, inject, provide, ref} from 'vue';
+    import { computed, inject, ref} from 'vue';
     import statusValueVue from '../status/statusValue/statusValue.vue';
     import { getTypeStatusByKey } from '@/hooks/all-exitence/allExitence';
     import Status from '@/interfaces/exitenceStatus';
@@ -28,9 +28,6 @@
     const statusName = computed(()=>{
         return status.name || typeStatus?.name
     })
-    //提供所需的属性/分类属性
-    provide("status",status)
-    provide("typeStatus",typeStatus)
 
     //长按弹出更新属性
     const allStatus = inject("allStatus")

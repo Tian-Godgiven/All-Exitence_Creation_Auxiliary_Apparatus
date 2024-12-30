@@ -2,16 +2,15 @@
 	<div class="multiValue">
 		<!-- 根据part的类型显示内容 -->
 		<MultiPartValueVue class="part" v-for="(part,index) in parts" :index="index" :part="part"></MultiPartValueVue>
-		<div></div>
 	</div>
 </template>
 
 <script setup lang="ts" name="">
-import { inject, watch, ref, provide } from 'vue'; 
+import { watch, ref, provide } from 'vue'; 
 import MultiPartValueVue from './multiPartValue.vue';
-	const status = inject<any>("status")
+	const {status} = defineProps(["status"])
 	const parts = ref(status.value)
-	watch(status,()=>{
+	watch(()=>status,()=>{
 		parts.value = status.value
 	},{
 		immediate:true,

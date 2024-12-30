@@ -5,7 +5,7 @@ import radioBonusVue from "../../components/popUps/all-exitence/status/statusBon
 import childStatusBonusVue from "../../components/popUps/all-exitence/status/statusBonusInput/childStatusBonus.vue";
 import selectBonusVue from "../../components/popUps/all-exitence/status/statusBonusInput/selectBonus.vue";
 import chooseBonusVue from "../../components/popUps/all-exitence/status/statusBonusInput/chooseBonus.vue";
-
+import relationBonusVue from "@/components/popUps/all-exitence/status/statusBonusInput/relationBonus.vue";
 export let statusBonusInputList:{[key:string]:any} = {
 	"range":rangeBonusVue,
 	"select":selectBonusVue,
@@ -13,5 +13,6 @@ export let statusBonusInputList:{[key:string]:any} = {
 	"multi":multiBonusVue,
 	"switch":switchBonusVue,
 	"radio":radioBonusVue,
+	"relation":relationBonusVue,
 	"status":childStatusBonusVue
 }

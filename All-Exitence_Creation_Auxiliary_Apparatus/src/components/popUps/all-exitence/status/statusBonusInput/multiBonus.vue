@@ -23,7 +23,7 @@
 		</div>
 		<!-- 新建part --> 
 		<div class="buttons">
-			<div @click="showMultiValuePopUp('text')" class="button">添加文本</div>
+			<div @click="showInputTextPopUp()" class="button">添加文本</div>
 			<div @click="showQuoteStatusPopUp()" class="button">引用属性</div>
 			<div @click="createNewPart('换行','enterLine')" class="button">换行</div>
 		</div>
@@ -47,7 +47,6 @@ import { statusValueTypeList } from '@/data/list/statusValueList';
 import { multiStatusPart } from '@/hooks/expression/multiStatusValue';
 	//不同按键对应的各个弹窗对象
 	const multiBonusPopUpList:{[key:string]:any} = {
-		"text":shallowRef(textInputVue),
 		"quoteStatus":shallowRef(chooseFromListVue),
 		"expression":shallowRef(multiStatusExpressionVue)
 	}
@@ -146,10 +145,11 @@ import { multiStatusPart } from '@/hooks/expression/multiStatusValue';
 		changeStatusValue()
 	}
 	// 显示对应的弹窗
-	function showMultiValuePopUp(type:string){		
+	function showMultiValuePopUp(type:string){	
 		showPopUp({
 			vue:multiBonusPopUpList[type],
 			props:{
+				mode:"string",
 				parts:multiValue,
 				typeStatus:allStatus
 			},
@@ -164,7 +164,25 @@ import { multiStatusPart } from '@/hooks/expression/multiStatusValue';
 			}
 		})
 	}
-	// 显示选择已有属性弹窗
+	// 显示输入文本弹窗，只能输入字符串
+	function showInputTextPopUp(){
+		showPopUp({
+			vue:shallowRef(textInputVue),
+			props:{
+				mode:"string",
+			},
+			buttons : [],
+			mask : true,
+			returnValue : (value)=>{
+				createNewPart(value,"text")
+			},
+			size:{
+				width:"600px",
+				height:"auto"
+			}
+		})
+	}
+	// 显示选择列表弹窗，选择已有属性
 	function showQuoteStatusPopUp(){
 		showPopUp({
 			vue:multiBonusPopUpList["quoteStatus"],

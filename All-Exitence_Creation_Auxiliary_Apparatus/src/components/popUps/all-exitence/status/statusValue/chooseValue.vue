@@ -19,11 +19,10 @@
 </template>
 
 <script setup lang="ts" name="">
-import { computed, inject, reactive } from 'vue'; 
+import { computed, reactive } from 'vue'; 
 import radioVue from '@/components/other/radio.vue';
 import { ElCheckboxGroup,ElCheckbox } from 'element-plus';
-	const status = inject<any>("status")
-	const {statusSetting} = defineProps(['statusSetting'])
+	const {status,statusSetting} = defineProps(['status','statusSetting'])
 	//初始化
 	if(!Array.isArray(status.value)){
 		status.value = []

@@ -3,7 +3,7 @@
         <!-- 换行 -->
     </br>
 
-    <statusValueVue class="statusValue"
+    <statusValueVue :status="status" :typeStatus="typeStatus" class="statusValue"
         v-else-if="valueType == 'statusValue'">
         <!-- 属性值 -->
     </statusValueVue>
@@ -12,7 +12,7 @@
         v-else-if="valueType == 'quoteStatus'"
         @click="showInfo">
         <!-- 引用属性值 -->
-        <statusValueVue :disabled="true" class="statusValue"></statusValueVue>
+        <statusValueVue :status="status" :typeStatus="typeStatus" :disabled="true" class="statusValue"></statusValueVue>
     </div>
     
     <div class="quotePart" v-else-if="part && valueType == 'quotePart'"

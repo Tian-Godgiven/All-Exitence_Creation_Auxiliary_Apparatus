@@ -9,11 +9,10 @@
 </template>
 
 <script setup lang="ts" name="">
-import { inject, ref, watch,computed } from 'vue'; 
+import { ref, watch,computed } from 'vue'; 
 import { ElSlider } from 'element-plus';
 
-	const status = inject<any>("status")
-	const {statusSetting} = defineProps(['statusSetting'])
+	const {status,statusSetting} = defineProps(["status","statusSetting"])
 	let min = ref(0)
 	let max = ref(100)
 	let step = ref(1)

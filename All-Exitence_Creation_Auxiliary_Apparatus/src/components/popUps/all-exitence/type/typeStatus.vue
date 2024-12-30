@@ -10,7 +10,7 @@
 		</div>
 		<div class="separator">：</div>
 		<!-- 属性值 -->
-		<statusValueVue class="value"></statusValueVue>
+		<statusValueVue :status="status" :typeStatus="status"  class="value"></statusValueVue>
 		
 		<div class="buttons">
 			<div class="button" @click="showUpdateStatus">编辑</div>
@@ -29,9 +29,7 @@ import Status from '@/interfaces/exitenceStatus';
 	const model = defineModel("status")
 	let status:any = model.value
 	const emits = defineEmits(["deleteStatus"])
-	//对于分类对象来说，其属性就是分类属性
-	provide("status",status)
-	provide("typeStatus",status)
+	//删除属性
 	function deleteStatus(){
 		emits('deleteStatus')
 	}
