@@ -16,15 +16,17 @@ import { computed,ref } from 'vue';
 import { LongTapAndClickTouchEnd, LongTapAndClickTouchStart } from '@/api/longTapAndClick';
 import { showControlPanel } from '@/hooks/controlPanel';
 import { deleteArticle } from '@/hooks/all-articles/allArticles';
-import { translateToTextContent } from '@/hooks/expression/jumpContent';
+import { translateToTextContent } from '@/hooks/expression/textAreaContent';
+import { trim } from 'lodash';
 
 	let {article,from} = defineProps(["article","from"])
 	const title = computed(()=>{
-		if(article.title == "" || !article.title){
+		const tmp = trim(article.title)
+		if(tmp == "" || !article.title){
 			return "<未命名文本>"
 		}
 		else{
-			return article.title
+			return tmp
 		}
 	})
 	//文章预览

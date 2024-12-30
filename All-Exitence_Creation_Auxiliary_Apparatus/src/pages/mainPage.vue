@@ -9,6 +9,7 @@
 	<div class="titleBar">
 		<div class="leftPageShowButton" @click="showLeft()">左侧按键</div>
 		<div class="titleName" @click="switchProjectPage">{{ projectName }}</div>
+		<div @click="clickSaveProject">手动保存</div>
 		<div class="titleButtons">
 			<div v-for="(button) in buttons" 
 				class="button" 
@@ -73,6 +74,7 @@ import showExitenceVue from '@/components/mainPage/showExitence.vue';
 import { showOnMain } from '@/hooks/pages/mainPage/showOnMain';
 import { computed, ref, watch } from 'vue';
 import { nowProjectInfo } from '@/hooks/project/projectData';
+import { saveAll } from '@/hooks/project/saveProject';
 
 // 功能按键
 	const buttons = [
@@ -99,6 +101,10 @@ import { nowProjectInfo } from '@/hooks/project/projectData';
 			}
 		}
 	]
+	//手动保存项目
+	function clickSaveProject(){
+		saveAll()
+	}
 
 // 首页内容栏
 	//项目名称

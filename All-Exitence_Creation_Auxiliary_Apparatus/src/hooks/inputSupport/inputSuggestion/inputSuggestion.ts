@@ -19,10 +19,14 @@ export interface suggestionItem{
 
 // 输入提示的内容
 export const content = ref<suggestionItem[]>([])
+// 是否显示输入提示
 export const ifShow = ref(false)
+// 输入提示的位置
 export const positionCSS = ref({left:0,top:0})
-export const inputText = ref("") //已经输入了的内容
-
+//已经输入了的内容
+export const inputText = ref("")
+// 完成输入提示时的回调事件
+export const onInputSuggestion = ref(()=>{})
 
 // 在应用中使用的输入提示表=项目内的输入提示表+全局输入提示表
 export const inputSuggestionList = computed(()=>{
@@ -102,12 +106,20 @@ export function addExitenceInputSuggestion(type:Type,exitence:Exitence){
 }
 
 // 在指定位置显示输入提示
-export function showInputSuggestion(input:string,suggestionContent:suggestionItem[],position?:any){
+export function showInputSuggestion(tmp:{
+    input:string,
+    suggestionContent:suggestionItem[],
+    onInputSuggestion?:()=>void,
+    position?:any
+}){
     ifShow.value = true;
-    content.value = suggestionContent
-    inputText.value = input //已经输入的内容
-    if(position){
-        positionCSS.value = position
+    content.value = tmp.suggestionContent
+    inputText.value = tmp.input //已经输入的内容
+    if(tmp.onInputSuggestion){
+        onInputSuggestion.value = tmp.onInputSuggestion
+    }
+    if(tmp.position){
+        positionCSS.value = tmp.position
     }
     else{
         const tmp = getInputPosition()

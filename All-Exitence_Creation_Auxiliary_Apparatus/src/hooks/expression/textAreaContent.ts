@@ -94,29 +94,32 @@ export function translateToTextContent(fileContent:any[],short:boolean=false){
     }
     try{
         //遍历文件内容
-    fileContent.forEach((part:any)=>{
-        //如果是字符串
-        if(typeof part == "string"){
-            //短文本加个空格
-            if(part == "\n" && short){
-                textContent += " "
+        fileContent.forEach((part:any)=>{
+            //如果是字符串
+            if(typeof part == "string"){
+                //短文本加个空格
+                if(part == "\n" && short){
+                    textContent += " "
+                }
+                else{
+                    textContent += part
+                }
             }
+            //跳转对象
             else{
-                textContent += part
+                //只要Inner
+                textContent += part.inner
             }
-        }
-        //跳转对象
-        else{
-            //只要Inner
-            textContent += part.inner
-        }
-    })
+        })
     }
     catch(err){
         console.error(err)
-
     }
-    
+
+    //只有一个换行的情况
+    if(textContent == "\n"){
+        return ""
+    }
 
     return textContent
 }

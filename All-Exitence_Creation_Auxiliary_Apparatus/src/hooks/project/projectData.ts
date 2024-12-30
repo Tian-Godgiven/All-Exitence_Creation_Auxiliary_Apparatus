@@ -42,7 +42,7 @@ export async function syncProject(projectPath:string){
     
 }
 
-//保存当前项目信息
+//实时保存当前项目信息，不参与自动保存
 export async function saveProjectInfo(){
     //将项目信息写入
     await writeFileAtPath(`projects/${nowProjectInfo.pathName}`,"projectInfo.json",nowProjectInfo)

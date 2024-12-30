@@ -8,8 +8,6 @@
             :placeholder="placeholder"
             inputmode="text"
             tabindex="0"
-            @compositionstart="compositionstart"
-            @compositionend="compositionend"
             @click="clickEvent"
             @input="onInput"
             @blur="onBlur"
@@ -24,9 +22,9 @@ import { focusOnEnd } from '@/api/focusOnEnd';
 import { showInputSupport } from '@/hooks/inputSupport/inputSupport';
 import { inject, onMounted, ref, useTemplateRef, watch } from 'vue';
 import { checkInputSuggestion, hideInputSuggestion, showInputSuggestion } from '@/hooks/inputSupport/inputSuggestion/inputSuggestion';
-import { addInputLast, addInputLastDiv, deleteInputLast, getInputLast } from '@/api/cursorAbility';
+import { addInputLast, addInputLastDiv, deleteInputLast } from '@/api/cursorAbility';
 import { findTargetDivs } from '@/hooks/findTargetDiv';
-import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expression/jumpContent';
+import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expression/textAreaContent';
 
     const textArea = useTemplateRef('textArea');
     let showPlaceholder = ref(true) //当前是否显示placeholder
@@ -110,71 +108,64 @@ import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expr
         }
     }
 
-
-    //拼音输入--与输入监听冲突
-    let ifIME = false 
-    function compositionstart(){
-        alert("输入监听开始")
-        ifIME = true
-    }
-    function compositionend(event:any){
-        const newInput = event.data
-        console.log(newInput)
-        listenInput(newInput)
-        ifIME = false
-    }
-
     
     //同步输入，判断输入补全提示
-    function onInput(){
-        //拼音输入的过程不进行同步输入
-        if(ifIME){return false}
-        //获取新输入的内容
-        const newInput = getInputLast()
-        listenInput(newInput)
-    }
-    //通用的输入监听
-    function listenInput(newInput:any){
+    function onInput(event:any){
         //同步输入位置
         const selection = window.getSelection();
         if(selection) selectionRange = selection.getRangeAt(0);
 
+        const newInput = event.data
+        listenInput(newInput)
+    }
+    //输入监听
+    function listenInput(newInput:any){
+        //同步content的内容
+        const newContent = syncContent()
         //如果需要输入建议，则check新输入的内容
         if(inputSuggestionList){
             // 将新的输入内容添加到有效输入
             if(newInput){
                 effectInput += newInput
             }
-            else{
-                return false
-            }
+            else{return false}
             //检查是否存在输入建议
             const content = checkInputSuggestion(inputSuggestionList,effectInput)
-            // 有输入建议：显示输入补全框
+            // 有输入建议：显示输入补全框，如果完成了输入提示则进行一次同步
             if(content){
-                showInputSuggestion(effectInput,content)
+                showInputSuggestion({
+                    input:effectInput,
+                    "suggestionContent":content,
+                    "onInputSuggestion":()=>{
+                        syncContent()
+                    }
+                })
+                return;
             }
             // 整体不行，则再单独判断新输入的内容
+            const content2 = checkInputSuggestion(inputSuggestionList,newInput)
+            //可行则更新有效输入
+            if(content2){
+                effectInput = newInput
+                showInputSuggestion({
+                    input:effectInput,
+                    "suggestionContent":content2,
+                    "onInputSuggestion":()=>{
+                        syncContent()
+                    }
+                })
+            }
+            //都还是不行，则清空有效输入
             else{
-                const content2 = checkInputSuggestion(inputSuggestionList,newInput)
-                //可行则更新有效输入
-                if(content2){
-                    effectInput = newInput
-                    showInputSuggestion(effectInput,content2)
-                }
-                //都还是不行，则清空有效输入
-                else{
-                    //否则清空有效输入,关闭输入补全框
-                    hideInputSuggestion()
-                    effectInput = ""
-                }
+                //否则清空有效输入,关闭输入补全框
+                hideInputSuggestion()
+                effectInput = ""
             }
         }
-
-        //同步content的内容
-        const newContent = syncContent()
+        
         //执行input事件，返回新输入的内容
         emits("input",newContent,newInput)
+        
     }
 
     //移动光标到其他位置时清空有效输入,同时记录当前光标位置

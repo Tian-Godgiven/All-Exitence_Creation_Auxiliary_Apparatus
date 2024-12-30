@@ -7,9 +7,7 @@ import { jumpExitenceDivStyle } from "@/static/style/exitenceDivStyle"
 export function jumpDivHtml(inner:string){
     const tmp = `<span style = "${jumpExitenceDivStyle}" 
                 contenteditable="false" 
-                class="jumpDiv">
-                    ${inner}
-                </span>`
+                class="jumpDiv">${inner}</span>`
     return tmp
 }
 

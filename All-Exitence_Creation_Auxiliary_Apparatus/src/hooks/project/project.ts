@@ -124,7 +124,6 @@ function showRememberOnMain(){
 
 //创建一个项目
 export async function createProject(name:string,info:string=""){
-    try{
     //创建项目名称的项目文件夹
     const pathName = await createDirByPath("projects",name)
     const projectPath = `projects/${pathName}`
@@ -169,9 +168,6 @@ export async function createProject(name:string,info:string=""){
         //1.项目输入建议列表
         await createFileToPath(projectDataPath,"inputSuggestionList.json",JSON.stringify([]))
     }
-}catch(err){
-    console.error(err)
-}
 }
 
 //通过弹窗输入信息创建一个新项目

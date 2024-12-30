@@ -13,6 +13,7 @@
     import { computed, ref } from 'vue';
     import downLineInputVue from '@/components/other/input/downLineInput.vue';
     import { closePopUp } from '@/hooks/pages/popUp';
+import { showQuickInfo } from '@/api/showQuickInfo';
 
     const {props={chapter:{name:""},positionChapter:null},popUp,returnValue} = defineProps(["props","popUp","returnValue"])
     const {chapter,positionChapter} = props 
@@ -27,7 +28,14 @@
         }
     })
 
+
+    //确认创建文章
     function confirm(){
+        //验证文章名是否为空
+		if(chapter.name == ""){
+			showQuickInfo("文章名不可为空")
+			return false
+		}
         returnValue(name.value)
         closePopUp(popUp)
     }

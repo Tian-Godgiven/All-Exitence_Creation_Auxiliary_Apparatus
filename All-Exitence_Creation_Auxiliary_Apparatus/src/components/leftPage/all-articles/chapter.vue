@@ -1,5 +1,5 @@
 <template>
-	<expendableContainerVue 
+	<expendableContainerVue
 		class="chapter"
 		@longTap="longtap"
 		:buttons="buttons">
@@ -26,9 +26,10 @@
 import { ref } from "vue";
 import articleVue from "./article.vue"
 import chapterVue from "./chapter.vue"
+import expendableContainerVue from "../expendableContainer.vue";
 import { addArticle, createChapter, focusOnChapter,focusOnArticle, deleteChapter ,updateChapter} from "@/hooks/all-articles/allArticles";
 import { showControlPanel } from "@/hooks/controlPanel";
-import expendableContainerVue from "../expendableContainer.vue";
+
 
 	let {chapter,from} = defineProps(["chapter","from"])
 	let expending = ref(true)
