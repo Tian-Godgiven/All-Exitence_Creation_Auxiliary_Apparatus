@@ -2,7 +2,7 @@ import { toRaw } from "vue";
 import { nowAllArticles } from "../all-articles/allArticles";
 import { nowAllExitence } from "../all-exitence/allExitence";
 import { writeFileAtPath } from "../fileSysytem";
-import { nowProjectPath, projectInputSuggestionList } from "./projectData";
+import { nowProjectPath, projectInputSuggestionListData } from "./projectData";
 import { saveGlobalInputSuggestion } from "../app/globalInputSuggestion";
 
 export async function saveAll(){
@@ -66,6 +66,6 @@ async function saveProject(){
 //自动保存项目数据
 async function saveProjectData(projectPath:string){
     //1.保存项目输入提示表
-    const list = toRaw(projectInputSuggestionList)
+    const list = toRaw(projectInputSuggestionListData)
     await writeFileAtPath(projectPath,"inputSuggestionList.json",list)
 }

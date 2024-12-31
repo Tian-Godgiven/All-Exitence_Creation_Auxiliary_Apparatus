@@ -8,7 +8,7 @@ export const nowProjectPath = ref<string|null>(null)
 //当前项目的信息
 export const nowProjectInfo = reactive<any>({name:"",lastTarget:null})
 //项目中的输入提示表
-export const projectInputSuggestionList = shallowReactive([])
+export const projectInputSuggestionListData = shallowReactive([])
 
 //同步当前项目的数据
 export async function syncProject(projectPath:string){
@@ -22,7 +22,7 @@ export async function syncProject(projectPath:string){
         //修改当前的项目设置
         //1.项目输入提示表
         const inputSuggestionList = await readFileFromPath(dataPath,"inputSuggestionList.json")
-        Object.assign(projectInputSuggestionList,inputSuggestionList)
+        Object.assign(projectInputSuggestionListData,inputSuggestionList)
 
         //修改当前的项目信息
         const tmp = await readFileFromPath(projectPath,"projectInfo.json")

@@ -86,7 +86,6 @@ export let statusSettingList:statusSetOption[] = [
 		"type":"checkBox",
 		"value":true,
 		"select":(status)=>{
-			console.log(status)
 			if(status.valueType == "relation"){
 				return true
 			}
@@ -106,11 +105,44 @@ export let statusSettingList:statusSetOption[] = [
 		}
 	},{
 		"name":"tagsAdd",
-		"text":"显示新增标签",
+		"text":"在末尾显示新增标签",
 		"type":"checkBox",
 		"value":true,
 		"select":(status)=>{
 			if(status.valueType == "tags"){
+				return true
+			}
+			return false
+		}
+	},{
+		"name":"inputPlaceholder",
+		"text":"属性值为空时的显示的占位符",
+		"type":"input",
+		"value":null,
+		select:(status)=>{
+			if(["downLine","inputBox"].includes(status.valueType)){
+				return true
+			}
+			return false
+		}
+	},{
+		"name":"ifGlobalInputSuggestion",
+		"text":"启用全局输入建议",
+		"type":"checkBox",
+		"value":true,
+		select:(status)=>{
+			if(["downLine","inputBox"].includes(status.valueType)){
+				return true
+			}
+			return false
+		}
+	},{
+		"name":"ifProjectInputSuggestion",
+		"text":"启用项目输入建议",
+		"type":"checkBox",
+		"value":true,
+		select:(status)=>{
+			if(["downLine","inputBox"].includes(status.valueType)){
 				return true
 			}
 			return false

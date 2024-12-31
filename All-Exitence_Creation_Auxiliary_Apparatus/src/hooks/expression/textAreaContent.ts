@@ -42,6 +42,10 @@ export function translateToFileContent(frontEndNodes:NodeList){
     catch(err){
         console.error(err)
     }
+    //如果最终里面只有一个换行，则认为其为空
+    if(fileContent.length == 1 && fileContent[0] == "\n"){
+        return ""
+    }
     return fileContent
 }
 

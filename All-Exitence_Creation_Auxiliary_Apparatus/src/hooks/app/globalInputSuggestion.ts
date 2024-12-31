@@ -1,13 +1,13 @@
 import { shallowReactive, toRaw } from "vue"
 import { createFileToPath, readFileFromPath, writeFileAtPath } from "../fileSysytem"
 
-export const globalInputSuggestionList = shallowReactive([])
+export const globalInputSuggestionListData = shallowReactive([])
 
 export async function initGlobalInputSuggestion(){
     //尝试读全局输入建议文件，失败时创建该文件
     const tmp = readFileFromPath("appData","globalInputSuggestionList.json")
     if(tmp){
-        Object.assign(globalInputSuggestionList,tmp)
+        Object.assign(globalInputSuggestionListData,tmp)
     }
     else{
         //失败时创建该文件
@@ -18,6 +18,6 @@ export async function initGlobalInputSuggestion(){
 //保存全局输入建议
 export async function saveGlobalInputSuggestion(){
     //将当前全局输入建议保存到文件中
-    const content = toRaw(globalInputSuggestionList)
+    const content = toRaw(globalInputSuggestionListData)
     await writeFileAtPath("appData","globalInputSuggestionList.json",content)
 }

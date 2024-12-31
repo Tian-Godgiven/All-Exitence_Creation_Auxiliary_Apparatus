@@ -184,6 +184,9 @@ import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expr
     }
     //取消聚焦
     function onBlur(){
+        
+        //先同步内容，再设置placeholder
+        syncContent()
         // 为空时显示placeholder
         if(content.value == "" || !content.value){
             loadPlaceholder()
@@ -192,8 +195,7 @@ import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expr
         else{
             showPlaceholder.value = false
         }
-        //先同步内容，再设置placeholder
-        syncContent()
+        
         emits("blur",content.value)
     }
     //聚焦

@@ -1,7 +1,7 @@
 import { addInputLastDiv, deleteInputLast, getInputPosition } from "@/api/cursorAbility";
 import { addInputLast } from "@/api/cursorAbility"
-import { globalInputSuggestionList } from "@/hooks/app/globalInputSuggestion";
-import { projectInputSuggestionList } from "@/hooks/project/projectData";
+import { globalInputSuggestionListData } from "@/hooks/app/globalInputSuggestion";
+import { projectInputSuggestionListData } from "@/hooks/project/projectData";
 import { computed, ref } from "vue";
 import { jumpDivHtml } from "./jumpDiv";
 import { Type } from "@/class/Type";
@@ -28,22 +28,27 @@ export const inputText = ref("")
 // 完成输入提示时的回调事件
 export const onInputSuggestion = ref(()=>{})
 
-// 在应用中使用的输入提示表=项目内的输入提示表+全局输入提示表
-export const inputSuggestionList = computed(()=>{
-    //读取项目和全局的输入提示表数据信息，并进行处理：为其添加点击事件
-    const projectTmp = completeListData(projectInputSuggestionList)
-    const globalTmp = completeListData(globalInputSuggestionList)
-
-    return [...projectTmp,...globalTmp]
-    //处理原始的输入建议数据列表，返回完善的输入建议列表对象
-    function completeListData(listData:any[]){
-        return listData.reduce((arr:any[],item:suggestionItem)=>{
-            let click = getSuggetionItemClick(item.type)
-            arr.push({...item,click})
-            return arr
-        },[])
-    }
+// 在应用中使用的项目内的输入提示表+全局输入提示表
+export const projectInputSuggestionList = computed(()=>{
+    return completeListData(projectInputSuggestionListData)
 })
+export const globalInputSuggestionList = computed(()=>{
+    return completeListData(globalInputSuggestionListData)
+})
+// 方便你要同时用这两个输入建议表
+export const fullInputSuggestionList = computed(()=>{
+    //读取项目和全局的输入提示表数据信息，并进行处理：为其添加点击事件
+    return [...projectInputSuggestionList.value,...globalInputSuggestionList.value]
+})
+
+//处理原始的输入建议数据列表，返回完善的输入建议列表对象
+function completeListData(listData:any[]){
+    return listData.reduce((arr:any[],item:suggestionItem)=>{
+        let click = getSuggetionItemClick(item.type)
+        arr.push({...item,click})
+        return arr
+    },[])
+}
 
 //根据输入提示对象的类型，为对应的输入提示div提供点击事件
 function getSuggetionItemClick(type:string){
@@ -86,7 +91,7 @@ export function addInputSuggestion(item:suggestionItem,position?:"global"|"proje
     }
 
     //获取目标列表
-    const list:suggestionItem[] = (position == "global"? globalInputSuggestionList : projectInputSuggestionList)
+    const list:suggestionItem[] = (position == "global"? globalInputSuggestionListData : projectInputSuggestionListData)
     //向list中添加item内容
     list.push({...item})
 }
