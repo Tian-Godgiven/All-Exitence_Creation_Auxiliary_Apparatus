@@ -1,5 +1,9 @@
 <template>
     <div class="relationValue">
+        <div class="relationTitle relationUnit" v-if="ifShowTitle" >
+            <div class="titleUnit" v-for="(,key) in relationSource">{{ key }}</div>
+        </div>
+        <div class="relationAdd" @click="addUnit" v-if="ifShowAdd">[+]</div>
         <relationUnitValueVue class="relationUnit" 
             v-for="unit of status.value" 
             :unit="unit"
@@ -15,13 +19,34 @@
     const relationSource = computed(()=>{
         return statusSetting.relationSource
     })
-
+    //是否显示标题:默认为true
+    const ifShowTitle = computed(()=>statusSetting.relationTitle??true)
+    //是否显示新增按键:默认为true
+    const ifShowAdd = computed(()=>statusSetting.relationAdd??true)
+    function addUnit(){
+        status.value.push({})
+    }
 </script>
 
 <style scoped lang='scss'>
-    .relationUnit{
-        width: 100%;
-        display: flex;
-        flex-wrap: wrap; /* 允许子元素换行 */
+    .relationValue{
+        position: relative;
+        .relationUnit{
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap; /* 允许子元素换行 */
+            z-index: 1;
+            .titleUnit{
+                flex: 1 1 30%;
+            }
+        }
+        .relationAdd{
+            position: absolute;
+            top:0px;
+            width: 10%;
+            right: 0px;
+            z-index: 2;
+        }
     }
+    
 </style>

@@ -79,5 +79,30 @@ export let statusSettingList:statusSetOption[] = [
 		name:"insteadOfName",
 		text:"取代属性名显示：",
 		type:"input",
+	},
+	{
+		"name":"relationTitle",
+		"text":"显示关联属性标题",
+		"type":"checkBox",
+		"value":true,
+		"select":(status)=>{
+			console.log(status)
+			if(status.valueType == "relation"){
+				return true
+			}
+			return false
+		}
+	},
+	{
+		"name":"relationAdd",
+		"text":"允许添加新的关联单元",
+		"type":"checkBox",
+		"value":"true",
+		"select":(status)=>{
+			if(status.valueType == "relation"){
+				return true
+			}
+			return false
+		}
 	}
 ]

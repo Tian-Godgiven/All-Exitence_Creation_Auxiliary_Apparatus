@@ -32,7 +32,5 @@
 <style scoped lang='scss'>
     .unitStatus{
         flex: 1 1 30%;
-        min-width: 30%;
-        max-width: 100%;
     }
 </style>
