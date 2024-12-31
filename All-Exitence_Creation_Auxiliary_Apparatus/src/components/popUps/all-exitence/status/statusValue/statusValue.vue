@@ -24,6 +24,7 @@ import { statusValueVueList } from '@/data/list/statusValueList';
 			status.value = null
 		}
 	}
+	console.log("属性值是：",status)
 	//优先使用status中的valueType
 	let valueType = computed(()=>{
 		return status["valueType"] || typeStatus["valueType"]

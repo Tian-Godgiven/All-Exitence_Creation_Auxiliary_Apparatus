@@ -82,10 +82,6 @@
 		status.value = null
 	}
 
-	watch(status,()=>{
-		console.log(status)
-	})
-
 	// 属性设置
 	const setStatus = ref()
 	// 控制显示
