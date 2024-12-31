@@ -38,15 +38,16 @@
 		<component :status="status" :is="statusBonusInputList[status.valueType]"></component>
 
 		<!-- 属性设置栏 -->
-		<setStatusVue :status="status" ref="setStatus" :show="showSetStatus"></setStatusVue>
+		<settingBoxVue :settingProps="settingProps" ref="settingBox" :show="showSettingBox"></settingBoxVue>
 		
 	</div>
 </template>
 
 <script setup lang="ts" name=""> 
-	import { inject, ref } from 'vue'; 
+	import { inject, ref, computed } from 'vue'; 
 	import { statusValueTypeList } from '@/data/list/statusValueList';
-	import setStatusVue from "@/components/all-exitence/status/setStatus/setStatus.vue"
+	import settingBoxVue from '../setting/settingBox.vue';
+	import { statusSettingList } from "@/data/list/statusSettingList.ts";
 	import statusValueVue from '../status/statusValue/statusValue.vue';
 	import { statusBonusInputList } from '@/data/list/statusBonusInputList';
 	import textAreaVue from '@/components/other/textArea/textArea.vue';
@@ -82,12 +83,21 @@
 		status.value = null
 	}
 
-	// 属性设置
-	const setStatus = ref()
+	// 属性设置箱vue
+	const settingBox = ref()
+	//提供给设置项的变量检验的是与typeStatus整合后的结果
+	const settingProps = {
+		target:status,
+		selectTarget:computed(()=>{
+			return {...typeStatus,...status}
+		}),
+		settingValue:{...typeStatus.setting,...status.setting},
+		optionList:statusSettingList
+	}
 	// 控制显示
-	let showSetStatus = ref(false) 
+	let showSettingBox = ref(false) 
 	function switchSetting(){
-		showSetStatus.value = !showSetStatus.value
+		showSettingBox.value = !showSettingBox.value
 	}
 	
 	//确认编辑内容
@@ -99,7 +109,7 @@
 			return false
 		}
 		// 要求属性设置合理
-		if(!setStatus.value.checkSet()){
+		if(!settingBox.value.checkSet()){
 			showQuickInfo("属性设置不正确")
 			return false
 		}

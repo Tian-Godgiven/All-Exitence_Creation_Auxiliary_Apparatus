@@ -1,6 +1,6 @@
 import Status from "@/interfaces/exitenceStatus"
 
-export interface statusSetOption{
+export interface SettingOption{
 	name:string, //设置项名称 aka 关键字
 	value?:any, //设置项值，不为空时，其为默认值
 	text:string, //设置项文本
@@ -12,7 +12,7 @@ export interface statusSetOption{
 }
 
 // 属性设置的内容项表
-export let statusSettingList:statusSetOption[] = [
+export let statusSettingList:SettingOption[] = [
 	{
 		name:"hoverBox",
 		value:true,
