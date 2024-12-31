@@ -12,7 +12,7 @@
 <script setup lang='ts'>
     import { closePopUp } from '@/hooks/pages/popUp';
     import {provide ,reactive} from 'vue';
-    import editGroupVue from '@/components/popUps/all-exitence/group/editGroup.vue';
+    import editGroupVue from '@/components/all-exitence/group/editGroup.vue';
     import { showQuickInfo } from '@/api/showQuickInfo';
     import { cloneDeep } from 'lodash';
     const {props,popUp} = defineProps(["props","popUp"])

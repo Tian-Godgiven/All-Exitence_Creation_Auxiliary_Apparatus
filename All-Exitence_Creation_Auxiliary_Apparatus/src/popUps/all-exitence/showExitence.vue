@@ -22,7 +22,7 @@
 
 <script setup lang='ts'>
 import { provide} from 'vue';
-import exitenceStatusVue from '@/components/popUps/all-exitence/exitence/exitenceStatus.vue';
+import exitenceStatusVue from '@/components/all-exitence/exitence/exitenceStatus.vue';
 import { showExitenceOnMain } from '@/hooks/pages/mainPage/showOnMain';
 import { closePopUp } from '@/hooks/pages/popUp';
     const {props,popUp} = defineProps(["props","popUp","returnValue"])

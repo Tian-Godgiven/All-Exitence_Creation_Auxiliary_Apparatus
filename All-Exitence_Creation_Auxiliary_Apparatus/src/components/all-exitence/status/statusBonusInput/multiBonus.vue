@@ -38,10 +38,10 @@
 import { inject, ref, shallowRef, toRaw } from 'vue'; 
 import draggableListVue from '@/components/other/draggableList/draggableList.vue';
 import { showPopUp } from '@/hooks/pages/popUp';
-import textInputVue from "@/components/popUps/others/textInput.vue";
+import textInputVue from "@/components/popUps/textInput.vue";
 import { showQuickInfo } from '@/api/showQuickInfo';
 import multiStatusExpressionVue from '@/popUps/expression/multiStatusExpression.vue';
-import chooseFromListVue from '@/components/popUps/others/chooseFromList.vue';
+import chooseFromListVue from '@/components/popUps/chooseFromList.vue';
 import inputVue from '@/components/other/input/downLineInput.vue'
 import { statusValueTypeList } from '@/data/list/statusValueList';
 import { multiStatusPart } from '@/hooks/expression/multiStatusValue';

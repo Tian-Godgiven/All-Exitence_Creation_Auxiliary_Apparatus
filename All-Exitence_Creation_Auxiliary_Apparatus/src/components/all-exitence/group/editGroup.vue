@@ -40,9 +40,9 @@
 <script setup lang='ts'>
     import { ref } from 'vue';
     import downLineInputVue from '@/components/other/input/downLineInput.vue';
-    import newGroupRuleVue from '@/components/popUps/all-exitence/group/newGroupRule.vue';
+    import newGroupRuleVue from '@/components/all-exitence/group/newGroupRule.vue';
     import { ElSelect, ElOption } from 'element-plus';
-    import groupRuleVue from '@/components/popUps/all-exitence/group/groupRule.vue';
+    import groupRuleVue from '@/components/all-exitence/group/groupRule.vue';
     
     const group = defineModel<any>()
 

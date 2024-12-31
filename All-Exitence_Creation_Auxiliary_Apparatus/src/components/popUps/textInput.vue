@@ -17,7 +17,7 @@
 <script setup lang="ts" name=""> 
 	import { ref } from 'vue';
 	import textAreaVue from '@/components/other/textArea/textArea.vue';
-	import { closePopUp } from '../../../hooks/pages/popUp';
+	import { closePopUp } from '@/hooks/pages/popUp';
 	const inputText = ref("")
 	const {props={},returnValue,popUp} = defineProps(["props","returnValue","popUp"])
 	//纯文本or文件文本

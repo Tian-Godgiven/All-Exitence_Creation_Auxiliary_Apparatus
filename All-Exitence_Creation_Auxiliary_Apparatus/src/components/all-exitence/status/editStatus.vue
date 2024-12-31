@@ -46,7 +46,7 @@
 <script setup lang="ts" name=""> 
 	import { inject, ref } from 'vue'; 
 	import { statusValueTypeList } from '@/data/list/statusValueList';
-	import setStatusVue from "@/components/popUps/all-exitence/status/setStatus/setStatus.vue"
+	import setStatusVue from "@/components/all-exitence/status/setStatus/setStatus.vue"
 	import statusValueVue from '../status/statusValue/statusValue.vue';
 	import { statusBonusInputList } from '@/data/list/statusBonusInputList';
 	import textAreaVue from '@/components/other/textArea/textArea.vue';

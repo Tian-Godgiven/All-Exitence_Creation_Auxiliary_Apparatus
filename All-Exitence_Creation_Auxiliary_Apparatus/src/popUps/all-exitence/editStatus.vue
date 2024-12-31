@@ -9,7 +9,7 @@
 <script setup lang="ts" name=""> 
 	import { provide, toRaw,reactive } from 'vue'; 
 	import Status from '@/interfaces/exitenceStatus';
-	import editStatusVue from '@/components/popUps/all-exitence/status/editStatus.vue';
+	import editStatusVue from '@/components/all-exitence/status/editStatus.vue';
 	import { closePopUp } from '@/hooks/pages/popUp';
     import { cloneDeep } from 'lodash';
 	// 编辑对象与编辑对象的属性等数据

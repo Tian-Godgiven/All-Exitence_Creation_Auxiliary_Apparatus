@@ -12,7 +12,7 @@
 <script setup lang='ts'>
     import { closePopUp } from '@/hooks/pages/popUp';
     import {provide, reactive, toRaw } from 'vue';
-    import editGroupVue from '@/components/popUps/all-exitence/group/editGroup.vue';
+    import editGroupVue from '@/components/all-exitence/group/editGroup.vue';
     import { showQuickInfo } from '@/api/showQuickInfo';
     import { addGroup } from '@/hooks/all-exitence/allExitence';
     const {props,popUp,returnValue} = defineProps(["props","popUp","returnValue"])

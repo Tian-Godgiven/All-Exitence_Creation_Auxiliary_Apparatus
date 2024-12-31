@@ -27,7 +27,7 @@
 <script setup lang="ts" name="">
 import { provide, ref } from 'vue';
 import textAreaVue from '@/components/other/textArea/textArea.vue';
-import exitenceStatusVue from '../popUps/all-exitence/exitence/exitenceStatus.vue';
+import exitenceStatusVue from '@/components/all-exitence/exitence/exitenceStatus.vue';
 import { nowAllExitence } from '@/hooks/all-exitence/allExitence';	
 import { Type } from '@/class/Type';
 import Status from '@/interfaces/exitenceStatus';

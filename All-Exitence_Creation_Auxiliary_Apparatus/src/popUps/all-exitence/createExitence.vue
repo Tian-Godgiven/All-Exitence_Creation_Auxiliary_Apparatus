@@ -31,7 +31,7 @@
     import downLineInputVue from '@/components/other/input/downLineInput.vue';
     import { closePopUp } from '@/hooks/pages/popUp';
     import { addExitence } from '@/hooks/all-exitence/allExitence';
-    import tagsValueVue from '@/components/popUps/all-exitence/status/statusValue/tagsValue.vue';
+    import tagsValueVue from '@/components/all-exitence/status/statusValue/tagsValue.vue';
     const {props, popUp, returnValue} = defineProps(["props","popUp","returnValue"])
     const name = ref("")
     const tags = reactive([])

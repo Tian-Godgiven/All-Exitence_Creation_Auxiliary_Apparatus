@@ -1,14 +1,14 @@
 
-import chooseValueVue from "@/components/popUps/all-exitence/status/statusValue/chooseValue.vue"
-import downLineValueVue from "@/components/popUps/all-exitence/status/statusValue/downLineValue.vue"
-import inputBoxValueVue from "@/components/popUps/all-exitence/status/statusValue/inputBoxValue.vue"
-import multiValueVue from "@/components/popUps/all-exitence/status/statusValue/multiValue.vue"
-import radioValueVue from "@/components/popUps/all-exitence/status/statusValue/radioValue.vue"
-import rangeValueVue from "@/components/popUps/all-exitence/status/statusValue/rangeValue.vue"
-import relationValueVue from "@/components/popUps/all-exitence/status/statusValue/relationValue.vue"
-import selectValueVue from "@/components/popUps/all-exitence/status/statusValue/selectValue.vue"
-import switchValueVue from "@/components/popUps/all-exitence/status/statusValue/switchValue.vue"
-import tagsValueVue from "@/components/popUps/all-exitence/status/statusValue/tagsValue.vue"
+import chooseValueVue from "@/components/all-exitence/status/statusValue/chooseValue.vue"
+import downLineValueVue from "@/components/all-exitence/status/statusValue/downLineValue.vue"
+import inputBoxValueVue from "@/components/all-exitence/status/statusValue/inputBoxValue.vue"
+import multiValueVue from "@/components/all-exitence/status/statusValue/multiValue.vue"
+import radioValueVue from "@/components/all-exitence/status/statusValue/radioValue.vue"
+import rangeValueVue from "@/components/all-exitence/status/statusValue/rangeValue.vue"
+import relationValueVue from "@/components/all-exitence/status/statusValue/relationValue.vue"
+import selectValueVue from "@/components/all-exitence/status/statusValue/selectValue.vue"
+import switchValueVue from "@/components/all-exitence/status/statusValue/switchValue.vue"
+import tagsValueVue from "@/components/all-exitence/status/statusValue/tagsValue.vue"
 
 // 属性值类型表
 export let statusValueTypeList = [

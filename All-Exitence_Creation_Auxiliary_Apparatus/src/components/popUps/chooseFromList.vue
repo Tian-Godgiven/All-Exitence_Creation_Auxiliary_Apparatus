@@ -20,7 +20,7 @@
 
 <script setup lang="ts" name="">
 import { ref, toRaw } from 'vue';
-import { closePopUp } from '../../../hooks/pages/popUp';
+import { closePopUp } from '../../hooks/pages/popUp';
 	const {props,returnValue,popUp} = defineProps(["props","returnValue","popUp"])
 	const {list,emptyInfo,info,chooseNum,selectRule,showValue,chooseValue} = props
 	//允许显示的项

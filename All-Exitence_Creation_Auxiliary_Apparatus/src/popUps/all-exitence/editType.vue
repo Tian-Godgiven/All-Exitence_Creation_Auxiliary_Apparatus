@@ -39,8 +39,8 @@
 <script setup lang="ts" name="">
 import { provide, reactive, ref, toRaw } from 'vue'; 
 import downLineInputVue from '@/components/other/input/downLineInput.vue';
-import typeStatusVue from '@/components/popUps/all-exitence/type/typeStatus.vue';
-import newTypeStatusVue from '@/components/popUps/all-exitence/type/newTypeStatus.vue';
+import typeStatusVue from '@/components/all-exitence/type/typeStatus.vue';
+import newTypeStatusVue from '@/components/all-exitence/type/newTypeStatus.vue';
 import { closePopUp } from '@/hooks/pages/popUp';
 import { checkTypeNameRepeat } from '@/hooks/all-exitence/allExitence';
 import { showQuickInfo } from '@/api/showQuickInfo';
