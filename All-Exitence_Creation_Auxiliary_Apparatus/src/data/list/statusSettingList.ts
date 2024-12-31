@@ -104,5 +104,16 @@ export let statusSettingList:statusSetOption[] = [
 			}
 			return false
 		}
+	},{
+		"name":"tagsAdd",
+		"text":"显示新增标签",
+		"type":"checkBox",
+		"value":true,
+		"select":(status)=>{
+			if(status.valueType == "tags"){
+				return true
+			}
+			return false
+		}
 	}
 ]

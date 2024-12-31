@@ -3,7 +3,7 @@
         <div class="tag" v-for="tag in tags">
             {{  tag }}
         </div>
-        <div class="addTag tag">
+        <div class="addTag tag" v-if="ifAddTag">
             <downLineInputVue placeholder="新标签" v-model="newTag"/>
             <div @click="addTag">+</div>
         </div>
@@ -12,11 +12,11 @@
 
 <script setup lang='ts'>
 import downLineInputVue from '@/components/other/input/downLineInput.vue';
-import { ref } from 'vue';
+import { isArray } from 'lodash';
+import { computed, ref } from 'vue';
     let tags:any[]
 
     const {status,statusSetting} = defineProps(["status","statusSetting"])
-    console.log(statusSetting,"这个功尚未实装")
 
     const model = defineModel<any>()
 
@@ -25,7 +25,13 @@ import { ref } from 'vue';
     }else{
         tags = status.value
     }
-    
+    //添加新标签
+    const ifAddTag = computed(()=>{
+        if(!statusSetting || statusSetting.tagsAdd == null){
+            return true
+        }
+        return statusSetting.tagsAdd
+    })
     const newTag = ref("")
     function addTag(){
         if(newTag.value == ""){
@@ -35,6 +41,11 @@ import { ref } from 'vue';
             model.value.push(newTag.value)
         }
         else{
+            //防呆
+            if(!isArray(status.value)){
+                status.value = []
+                tags = status.value
+            }
             status.value.push(newTag.value)
         }
         

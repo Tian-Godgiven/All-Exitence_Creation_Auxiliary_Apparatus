@@ -22,17 +22,17 @@
     })
     //是否显示标题:默认为true
     const ifShowTitle = computed(()=>{
-        if(status.setting?.relationTitle == null){
+        if(statusSetting.relationTitle == null){
             return true
         }
-        return status.setting.relationTitle
+        return statusSetting.relationTitle
     })
     //是否显示新增按键:默认为true
     const ifShowAdd = computed(()=>{
-        if(status.setting?.relationAdd == null){
+        if(statusSetting.relationAdd == null){
             return true
         }
-        return status.setting.relationAdd
+        return statusSetting.relationAdd
     })
     function addUnit(){
         status.value.push({})
