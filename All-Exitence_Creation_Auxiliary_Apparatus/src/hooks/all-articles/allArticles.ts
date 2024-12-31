@@ -72,12 +72,20 @@ export function changeNowAllArticles(newAllArticles:any){
 
     //打开创建章节弹窗，获得用户输入的弹窗名称
     export function createChapter(chapter?:Chapter):Promise<Chapter>{
+        //来源的文本，用来生成title
+        const fromText = chapter?chapter.name+"中":"文章底部"
         return new Promise((resolve)=>{
             showPopUp({
                 name:"插入章节",
                 vueName:"createChapter",
                 mask:true,
                 buttons:[],
+                props:{
+                    title:`向${fromText}插入章节`
+                },
+                size:{
+                    height:"auto"
+                },
                 returnValue:(chapterName:string)=>{
                     const newChapter = addChapter(chapterName,chapter)
                     resolve(newChapter)
@@ -109,12 +117,15 @@ export function changeNowAllArticles(newAllArticles:any){
     //更新指定章节的名称
     export function updateChapter(chapter:Chapter){
         showPopUp({
-            name:"编辑文章",
+            name:"重命名章节",
             mask:true,
             buttons:[],
             vueName:"updateChapter",
             props:{
                 chapter
+            },
+            size:{
+                height:"auto"
             },
             returnValue:(newName:string)=>{
                 chapter.name = newName
