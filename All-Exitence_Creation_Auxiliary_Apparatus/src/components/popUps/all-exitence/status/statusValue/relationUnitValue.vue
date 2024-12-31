@@ -8,18 +8,19 @@
 </template>
 
 <script setup lang='ts'>
-    import { computed } from 'vue';
+    import { computed,reactive,ref } from 'vue';
     import statusValueVue from './statusValue.vue';
     const {source,unit} = defineProps(["source","unit"])
     //单元的属性列表
     const unitStatus = computed(()=>{
-        const tmp:any = {}
-        if(JSON.stringify(unit) == "{}"){
-            for(let key in source){
-                tmp[key] = source[key].value
+        for(let key in source){
+            console.log(`unit当中的${key}值是${unit[key]}`)
+            if(!unit[key]){
+                unit[key] = reactive({value:source[key].value})
             }
         }
-        return tmp
+        console.log("unit的内容是:",unit)
+        return unit
     })
 </script>
 
