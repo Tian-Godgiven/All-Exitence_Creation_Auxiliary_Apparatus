@@ -38,13 +38,13 @@
 		<component :status="status" :is="statusBonusInputList[status.valueType]"></component>
 
 		<!-- 属性设置栏 -->
-		<setStatusVue ref="setStatus" :show="showSetStatus"></setStatusVue>
+		<setStatusVue :status="status" ref="setStatus" :show="showSetStatus"></setStatusVue>
 		
 	</div>
 </template>
 
 <script setup lang="ts" name=""> 
-	import { inject, ref,watch} from 'vue'; 
+	import { inject, ref } from 'vue'; 
 	import { statusValueTypeList } from '@/data/list/statusValueList';
 	import setStatusVue from "@/components/popUps/all-exitence/status/setStatus/setStatus.vue"
 	import statusValueVue from '../status/statusValue/statusValue.vue';

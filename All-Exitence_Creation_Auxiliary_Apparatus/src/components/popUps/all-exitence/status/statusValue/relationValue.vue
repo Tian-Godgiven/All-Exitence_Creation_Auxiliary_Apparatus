@@ -20,9 +20,19 @@
         return statusSetting.relationSource
     })
     //是否显示标题:默认为true
-    const ifShowTitle = computed(()=>statusSetting.relationTitle??true)
+    const ifShowTitle = computed(()=>{
+        if(status.setting?.relationTitle == null){
+            return true
+        }
+        return status.setting.relationTitle
+    })
     //是否显示新增按键:默认为true
-    const ifShowAdd = computed(()=>statusSetting.relationAdd??true)
+    const ifShowAdd = computed(()=>{
+        if(status.setting?.relationAdd == null){
+            return true
+        }
+        return status.setting.relationAdd
+    })
     function addUnit(){
         status.value.push({})
     }

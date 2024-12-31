@@ -4,6 +4,7 @@
 		<div class="container"> <!--别删！对css样式有用！-->
 			<setStatusOptionVue 
 				v-for="(option,index) in setOptions" 
+				:status="status"
 				:setOption="option"
 				:ref="`option-${index}`"/>
 		</div>
@@ -15,19 +16,22 @@
 	import { statusSettingList } from "@/data/list/statusSettingList.ts";
     import { ref, inject, computed } from 'vue';
 
-    const status = inject<any>("status")
 	const typeStatus = inject<any>("typeStatus")
-	const {show} = defineProps(["show"])
+	const {show,status} = defineProps(["show","status"])
+
 	defineExpose({
 		"checkSet":checkSetOption
 	})
 
 	//提供给select检验的是与typeStatus整合后的结果
-	const selectStatus = {...typeStatus,...status}
+	const selectStatus = computed(()=>{
+		return {...typeStatus,...status}
+	})
+	//需要显示的选项列表
 	let setOptions = computed(()=>{
 		const tmp = statusSettingList.reduce((acc,option)=>{
 			//满足该设置项的select需求或者该设置项不具备select
-			if(!option.select || option.select(selectStatus) == true){
+			if(!option.select || option.select(selectStatus.value) == true){
 				acc.push(option)
 			}
 			return acc
@@ -37,7 +41,6 @@
 
 	// 选项子组件
 	const optionRefs:any[] = setOptions.value.map((_,) => ref(null));
-
 
 	//检查各个设置选项是否符合需求
 	function checkSetOption(){

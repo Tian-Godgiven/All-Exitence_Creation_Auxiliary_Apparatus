@@ -97,7 +97,7 @@ export let statusSettingList:statusSetOption[] = [
 		"name":"relationAdd",
 		"text":"允许添加新的关联单元",
 		"type":"checkBox",
-		"value":"true",
+		"value":true,
 		"select":(status)=>{
 			if(status.valueType == "relation"){
 				return true

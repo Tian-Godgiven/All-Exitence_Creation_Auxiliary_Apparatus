@@ -36,7 +36,7 @@
 
 <script setup lang="ts" name="">
 import { ElOption, ElSelect } from 'element-plus';
-import { computed, inject, ref, watch } from 'vue'; 
+import { computed, inject, ref, toRaw, watch } from 'vue'; 
 import downLineInputVue from '@/components/other/input/downLineInput.vue';
 
 	defineExpose({
@@ -44,27 +44,16 @@ import downLineInputVue from '@/components/other/input/downLineInput.vue';
 	})
 
 	//该设置项
-	let {setOption} = defineProps(["setOption"])
+	let {setOption,status} = defineProps(["setOption","status"])
 	//设置项类型
 	const type = computed(()=>{
 		return setOption.type
 	})
 
 	//属性对象
-	const status = inject<any>("status")
 	const typeStatus = inject<any>("typeStatus")
+	//以下会使用到的setting的值
 	const setting = {...typeStatus.setting,...status.setting}
-	//可选选项
-	let choices = computed(()=>{
-		const tmp = setOption.choices
-		if(tmp){
-			return tmp
-		}
-		//不设置选项的去情况，将使用status本身的选项
-		else{
-			return status.setting.choices
-		}
-	})
 
 	//绑定到组件上的动态值
 	let setValue = ref()
@@ -73,12 +62,12 @@ import downLineInputVue from '@/components/other/input/downLineInput.vue';
 	watch(()=>setOption,()=>{
 		//如果属性内部已有相关设置
 		if(setting[setOption.name]){
+			console.log("已有相关设置")
 			setValue.value = setting[setOption.name]
 		}
 		//否则使用设置项内的默认值,并将其同步到属性内部
 		else if(setOption.value){
 			setValue.value = setOption.value
-			setStatus()
 		}
 		//否则根据类型使用不同的空值
 		else if(setOption.type == "checkBox"){
@@ -100,12 +89,19 @@ import downLineInputVue from '@/components/other/input/downLineInput.vue';
 		immediate:true
 	})
 	
-	//将用户设置的值传入status的相应设置中
+	//将用户设置的值传入status的设置中
 	function setStatus(){
-		//不会对空内容进行设置
-		if(!setting[setOption.name] && setValue.value == ""){
+		//不会修改属性中并不存在的设置项
+		if(!setting[setOption.name] && setValue.value == null){
 			return false
 		}
+		//也不会在并没有修改设置值时，为其添加默认值
+		// 也就是说此时还没有添加这个设置值，并且也没有实际上地设置这个设置值
+		// 再简单点说：如果只是点了一下输入框，但没有改变输入内容时，不会将默认的值设置上去
+		if(status["setting"][setOption.name]==null && toRaw(setValue.value) == setOption.value){
+			return false
+		}
+		//防呆
 		if(!status.setting){
 			status.setting = {}
 		}
@@ -120,6 +116,18 @@ import downLineInputVue from '@/components/other/input/downLineInput.vue';
 		}
 		return false
 	}
+
+	//choose选择类型的选项
+	let choices = computed(()=>{
+		const tmp = setOption.choices
+		if(tmp){
+			return tmp
+		}
+		//不设置选项的情况，将使用status本身的选项
+		else{
+			return status.setting.choices
+		}
+	})
 </script>
 
 <style lang="scss" scoped>
