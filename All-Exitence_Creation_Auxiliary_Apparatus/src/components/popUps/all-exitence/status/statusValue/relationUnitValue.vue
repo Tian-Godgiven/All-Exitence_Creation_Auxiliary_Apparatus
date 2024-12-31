@@ -1,6 +1,7 @@
 <template>
     <div>
         <statusValueVue class="unitStatus" v-for="(value,key) in source" 
+            :key="Symbol()"
             :status="unitStatus[key]" :typeStatus="value">
         </statusValueVue>
     </div>
@@ -15,6 +16,8 @@
     const unitStatus = computed(()=>{
         const tmp:any = {}
         for(let key in source){
+            console.log(source)
+            console.log(unit)
             if(!unit[key]){
                 unit[key] = source[key].value
             }

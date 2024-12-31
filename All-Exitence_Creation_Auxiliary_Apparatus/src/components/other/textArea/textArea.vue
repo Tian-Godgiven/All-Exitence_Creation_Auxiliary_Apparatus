@@ -48,9 +48,6 @@ import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expr
         "getContentDom":getContentDom,
         "deleteContent":deleteContent
     })
-
-
-
         
     //显示占位符
     function loadPlaceholder(){
@@ -190,10 +187,12 @@ import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expr
         // 为空时显示placeholder
         if(content.value == "" || !content.value){
             loadPlaceholder()
+            return false
         }
         else{
             showPlaceholder.value = false
         }
+        //先同步内容，再设置placeholder
         syncContent()
         emits("blur",content.value)
     }

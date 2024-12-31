@@ -7,6 +7,7 @@
         <relationUnitValueVue class="relationUnit" 
             v-for="unit of status.value" 
             :unit="unit"
+            :key="Symbol()"
             :source="relationSource"/>
     </div>
 </template>
