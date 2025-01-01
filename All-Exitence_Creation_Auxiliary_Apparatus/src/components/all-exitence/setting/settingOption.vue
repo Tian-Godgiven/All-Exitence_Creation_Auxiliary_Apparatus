@@ -22,6 +22,7 @@
 		<!-- 选项式 -->
 		<div class="inner" v-else-if="type == 'choose'">
 			<ElSelect
+				placeholder="请选择"
 				@change="setTarget"
 				v-model="setValue">
 				<ElOption
@@ -31,13 +32,16 @@
 				></ElOption>
 			</ElSelect>
 		</div>
+
+		
 	</div>
 </template>
 
 <script setup lang="ts" name="">
 import { ElOption, ElSelect } from 'element-plus';
-import { computed, ref, toRaw, watch } from 'vue'; 
+import { computed, inject, ref, toRaw, watch } from 'vue'; 
 import downLineInputVue from '@/components/other/input/downLineInput.vue';
+import { isArray } from 'lodash';
 
 	//暴露一个方法用以调用确认值函数
 	defineExpose({
@@ -45,7 +49,14 @@ import downLineInputVue from '@/components/other/input/downLineInput.vue';
 	})
 
 	//该设置项和设置目标
-	let {setOption,target,settingValue} = defineProps(["setOption","target","settingValue"])
+	let {setOption} = defineProps(["setOption"])
+	const settingProps = inject<any>("settingProps")
+	let {target,settingValue,chooseTarget} = settingProps
+
+	if(!settingValue){
+        settingValue = target.setting
+    }
+
 	//设置项类型
 	const type = computed(()=>{
 		return setOption.type
@@ -113,17 +124,34 @@ import downLineInputVue from '@/components/other/input/downLineInput.vue';
 		return false
 	}
 
-	//choose选择类型的选项
+	//choose选择类型所使用的选项
 	let choices = computed(()=>{
+		if(type.value != "choose"){
+			return;
+		}
+		//优先使用定义的选项数组
 		const tmp = setOption.choices
-		if(tmp){
+		if(isArray(tmp)){
 			return tmp
 		}
-		//不设置选项的情况，将使用setting中可能存在的选项
+		//否则使用其执行的结果
 		else{
-			return target.setting?.choices
+			let tmpList = []
+			//防呆
+			if(!isArray(chooseTarget)){
+				tmpList = tmp(target,chooseTarget)
+			}
+			tmpList = tmp(target,...chooseTarget)
+			//如果这个设置项没有默认值，则会在开头添加一个空值选项
+			if(setOption.value == null){
+				tmpList.unshift({text:"无",value:null})
+			}
+			return tmpList
 		}
 	})
+	
+
+	
 </script>
 
 <style lang="scss" scoped>

@@ -38,13 +38,13 @@
 		<component :status="status" :is="statusBonusInputList[status.valueType]"></component>
 
 		<!-- 属性设置栏 -->
-		<settingBoxVue :settingProps="settingProps" ref="settingBox" :show="showSettingBox"></settingBoxVue>
+		<settingBoxVue ref="settingBox" :show="showSettingBox"/>
 		
 	</div>
 </template>
 
 <script setup lang="ts" name=""> 
-	import { inject, ref, computed } from 'vue'; 
+	import { inject, ref, computed, provide } from 'vue'; 
 	import { statusValueTypeList } from '@/data/list/statusValueList';
 	import settingBoxVue from '../setting/settingBox.vue';
 	import { statusSettingList } from "@/data/list/statusSettingList.ts";
@@ -94,6 +94,7 @@
 		settingValue:{...typeStatus.setting,...status.setting},
 		optionList:statusSettingList
 	}
+	provide("settingProps",settingProps)
 	// 控制显示
 	let showSettingBox = ref(false) 
 	function switchSetting(){

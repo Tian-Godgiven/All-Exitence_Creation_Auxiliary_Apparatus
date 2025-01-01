@@ -14,8 +14,8 @@
             </div>
 
             <div class="setting">
-                <div class="text">设置：</div>
-                <div></div>
+                <div class="text" @click="swicthShowSettingBox">事物设置</div>
+                <settingBoxVue :show="showSettingBox" :ref="settingBox"/>
             </div>
         </div>
         
@@ -27,16 +27,40 @@
 </template>
 
 <script setup lang='ts'>
-    import { reactive, ref, toRaw } from 'vue';
+    import { reactive, ref, toRaw, provide } from 'vue';
     import downLineInputVue from '@/components/other/input/downLineInput.vue';
     import { closePopUp } from '@/hooks/pages/popUp';
+    import settingBoxVue from '@/components/all-exitence/setting/settingBox.vue';
     import { addExitence } from '@/hooks/all-exitence/allExitence';
     import tagsValueVue from '@/components/all-exitence/status/statusValue/tagsValue.vue';
+    import { exitenceSettingList } from '@/data/list/exitenceSettingList';
     const {props, popUp, returnValue} = defineProps(["props","popUp","returnValue"])
     const name = ref("")
     const tags = reactive([])
     const type = props.type
 
+    //用于进行设置的临时事物
+    const tmpExitence = {
+        status:type.typeStatus,
+        setting:reactive({})
+    }
+
+    //设置相关
+    const settingProps = {
+        target:tmpExitence,//实际上修改的是事物对象的setting
+        selectTarget:type,//用于筛选的是分类对象
+        chooseTarget:[type],//必须传入一个数组
+        optionList:exitenceSettingList,
+        settingValue:type.setting
+    }
+    provide("settingProps",settingProps)
+    //控制属性框显示
+    const showSettingBox = ref(true)
+    function swicthShowSettingBox(){
+        showSettingBox.value = !showSettingBox.value
+    }
+    //属性框Vue
+    const settingBox = ref()
     //确认创建
     function confirm(){
         const exitence = addExitence(type,name.value,toRaw(tags))

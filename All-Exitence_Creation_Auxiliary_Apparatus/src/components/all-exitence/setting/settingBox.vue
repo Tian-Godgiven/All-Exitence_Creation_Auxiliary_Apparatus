@@ -4,26 +4,30 @@
 		<div class="container"> <!--别删！对css样式有用！-->
 			<settingOptionVue 
 				v-for="(option,index) in options" 
-				:target="target"
 				:setOption="option"
-                :setting-value="settingValue"
 				:ref="`option-${index}`"/>
 		</div>
     </div>
 </template>
 
 <script setup lang='ts'>
-    import { ref,computed } from 'vue';
+    import { ref,computed, inject } from 'vue';
     import settingOptionVue from './settingOption.vue';
-    import { SettingOption } from '@/data/list/statusSettingList';
+    import { SettingOption } from '@/interfaces/SettingOption';
     //控制显示,
-    const {show,settingProps} = defineProps(["show","settingProps"])
+    const {show=true} = defineProps(["show"])
     //设置目标,筛选目标,设置项表
-    let {target,selectTarget=null,optionList,settingValue} = settingProps
+	const settingProps = inject<any>("settingProps",null)
+	if(!settingProps){
+		 console.error(`传递的设置变量不可用:${settingProps}`)
+	}
+
+    let {target,selectTarget=null,optionList} = settingProps
     //请确保筛选目标是一个computed或ref对象
     if(!selectTarget){
         selectTarget = computed(()=>target)
     }
+
 
     //暴露一个检测设置项的值的方法
     defineExpose({
