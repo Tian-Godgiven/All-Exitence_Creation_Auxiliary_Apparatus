@@ -106,25 +106,29 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
 
 // 事物相关
     //向分类中添加新的事物
-    export function addExitence(type:Type,name:string,tags:any[]){
+    export function addExitence(type:Type,name:string,setting:{},tags?:any[]){
         if(!name || name == ""){
             name = "未命名"+type.name
         }
         //创建该事物，并为其分配一个nanoid
-        const newExitence = new Exitence(name,[],type.__key,{},nanoid())
+        const newExitence = new Exitence(name,[],type.__key,setting,nanoid())
         //添加分类的属性
         type.typeStatus.forEach((status:Status)=>{
             newExitence.status.push({
                 __key:status.__key
             })
         })
-        //添加标签属性
-        newExitence.status.push({
-            name:"标签",
-            value:tags,
-            valueType:"tags",
-            setting:{}
-        })
+        if(tags){
+            //添加标签属性
+            newExitence.status.push({
+                name:"标签",
+                value:tags,
+                valueType:"tags",
+                setting:{}
+            })
+        }
+        
+        //向分类中添加该事物
         type.exitence.push(newExitence)
 
         //创建该事物的输入建议

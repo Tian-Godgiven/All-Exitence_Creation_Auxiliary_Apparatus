@@ -158,30 +158,26 @@ import { isArray } from 'lodash';
 	.setOption{
 		width: 100%;
 		display: flex;
-		padding: 5px 0;
+		flex-wrap: wrap;
+		padding: 10px 0;
 		.text{
-			text-wrap: nowrap;
+			line-height: 100%;
+			max-width: 50%;
+			text-wrap: wrap;
 		}
 		.inner{
+			max-width: 50%;
+			min-width: 50%;
 			flex-wrap: nowrap;
 		}
 	}
 	// 输入框类型
 	.input{
 		.inner{
+			margin-top: auto;
 			.multiInput{
 				display: flex;
-				.inputText{
-					flex-shrink: 0;
-				}
 			}
-		}
-	}
-	//选择类型
-	.choose{
-		.inner{
-			min-width: 200px;
-			flex-grow: 0.9;
 		}
 	}
 </style>

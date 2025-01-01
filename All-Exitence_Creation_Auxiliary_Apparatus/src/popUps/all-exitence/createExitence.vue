@@ -14,7 +14,7 @@
             </div>
 
             <div class="setting">
-                <div class="text" @click="swicthShowSettingBox">事物设置</div>
+                <div class="button" @click="swicthShowSettingBox">事物设置</div>
                 <settingBoxVue :show="showSettingBox" :ref="settingBox"/>
             </div>
         </div>
@@ -63,7 +63,8 @@
     const settingBox = ref()
     //确认创建
     function confirm(){
-        const exitence = addExitence(type,name.value,toRaw(tags))
+        //使用分类，名称，设置创建事物
+        const exitence = addExitence(type,name.value,tmpExitence.setting,toRaw(tags))
         returnValue(exitence)
         closePopUp(popUp)
     }
@@ -71,33 +72,43 @@
 
 <style scoped lang='scss'>
     @use "@/static/style/components/popUpButtons.scss";
-    .createExitence{
-        .top{
-            display: flex;
-		    height: 100px;
-		    position: relative;
-            .exitenceName{
-                position: relative;
-                top:-20px;
-                margin-top:auto;
-                font-size: 1.4rem;
-                width: 550px;
-                height: 60px;
-            }
+    .top{
+        display: flex;
+        height: 100px;
+        position: relative;
+        .exitenceName{
+            position: relative;
+            top:-20px;
+            margin-top:auto;
+            font-size: 1.4rem;
+            width: 550px;
+            height: 60px;
         }
-        .inner{
-            width: 100%;
-            height: calc(100% - 200px);
-            overflow: auto;
-            >div{
-                display: flex;
-                >.text{
-                    flex-shrink: 0;
-                }
-            }
-        }
-        
     }
+    .inner{
+        width: 100%;
+        height: calc(100% - 200px);
+        overflow: auto;
+        .tags{
+            display: flex;
+            >.text{
+                flex-shrink: 0;
+            }
+        }
+        .setting{
+            width: 100%;
+            .button{
+                width: 30%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border: 3px solid black;
+                padding: 5px;
+            }
+        }
+    }
+        
+    
     .buttons{
         @extend .buttons
     }
