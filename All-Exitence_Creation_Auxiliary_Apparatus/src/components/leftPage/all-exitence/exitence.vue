@@ -5,8 +5,8 @@
 		@mousedown="touchStart"
 		@mouseup="touchEnd">
 		<div class="name">{{name}}</div>
-		<div class="tags">
-			<div v-for="(tag) in tags">[{{tag}}]</div>
+		<div class="preview">
+			<div>{{ preview }}</div>
 		</div>
 	</div>
 </template>
@@ -15,10 +15,10 @@
 import { hidePage } from '@/hooks/pages/pageChange';
 import { showExitenceOnMain } from '@/hooks/pages/mainPage/showOnMain';
 import { computed, inject, ref } from 'vue'; 
-import Status from '@/interfaces/exitenceStatus';
 import { LongTapAndClickTouchEnd, LongTapAndClickTouchStart } from '@/api/longTapAndClick';
 import { showControlPanel } from '@/hooks/controlPanel';
-import { deleteExitence } from '@/hooks/all-exitence/allExitence';
+import { deleteExitence, getExitenceStatusByKey } from '@/hooks/all-exitence/allExitence';
+import { translateToTextContent } from '@/hooks/expression/textAreaContent';
 	let {exitence} = defineProps(["exitence"])
 	const name = computed(()=>{
 		return exitence.name
@@ -53,15 +53,20 @@ import { deleteExitence } from '@/hooks/all-exitence/allExitence';
 		})
 	}
 	
-	//显示事物的tag
-	let tags = computed(()=>{
-		const tagsStatus = exitence.status.find((status:Status)=>{
-			if(status.__key == exitence.setting.tagStatus){
-				return status
+	//显示事物的预览属性的内容
+	let preview = computed(()=>{
+		const key = exitence.setting?.previewStatus
+		const status = getExitenceStatusByKey(key,exitence.status,type.typeStatus)
+		if(!status){return ""}
+		if(status.valueType == "tags"){
+			let tmp = ""
+			for(let tag of status.value){
+				tmp += `[${translateToTextContent(tag)}] `
 			}
-		})
-		return tagsStatus.value??[]
-		
+			return tmp
+		}
+		const tmp = translateToTextContent(status.value)
+		return tmp.slice(0,100)
 	})
 	
 </script>

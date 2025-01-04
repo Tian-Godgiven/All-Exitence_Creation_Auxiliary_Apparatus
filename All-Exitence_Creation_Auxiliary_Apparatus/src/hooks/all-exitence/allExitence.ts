@@ -5,7 +5,7 @@ import { reactive } from "vue";
 import Status from "@/interfaces/exitenceStatus";
 import { Group } from "@/class/Group";
 import { nanoid } from "nanoid";
-import { addExitenceInputSuggestion } from "../inputSupport/inputSuggestion/inputSuggestion";
+import { addExitenceInputSuggestion, changeExitenceInputSuggestion } from "../inputSupport/inputSuggestion/inputSuggestion";
 import { showAlert } from "../alert";
 
 //当前万物
@@ -54,7 +54,7 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
             nowAllExitence.types.push(type)
         }
         catch(err){
-            console.log(err)
+            console.error(err)
         }
         
     }
@@ -106,7 +106,7 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
 
 // 事物相关
     //向分类中添加新的事物
-    export function addExitence(type:Type,name:string,setting:{},tags?:any[]){
+    export function addExitence(type:Type,name:string,setting:{},tags?:any){
         if(!name || name == ""){
             name = "未命名"+type.name
         }
@@ -118,14 +118,10 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
                 __key:status.__key
             })
         })
+
         if(tags){
-            //添加标签属性
-            newExitence.status.push({
-                name:"标签",
-                value:tags,
-                valueType:"tags",
-                setting:{}
-            })
+            //添加这个标签属性
+            newExitence.status.push(tags)
         }
         
         //向分类中添加该事物
@@ -162,26 +158,21 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
     }
 
     // 获取key对应的事物的属性
-    export function getExitenceStatusByKey(statusKey:any,allStatus:any[],allTypeStatus?:any[],every?:boolean){
+    export function getExitenceStatusByKey(statusKey:any,allStatus:any[],allTypeStatus?:any[]){
         const status = allStatus.find((tmp:Status)=>{
             if(tmp.__key == statusKey){
                 return tmp
             }
         })
-        //不要求所有属性的情况下，直接返回事物的该属性
-        if(!every){
-            return status
-        }
+        //只需要事物属性的值或key时，无需传入allTypeStatus
         if(!allTypeStatus){
-            return false
+            return status
         }
         const typeStatus = allTypeStatus.find((tmp:Status)=>{
             if(tmp.__key == statusKey){
                 return tmp
             }
         })
-        //优先使用status中的valueType
-        let valueType = status["valueType"] || typeStatus["valueType"]
         //优先使用两者覆盖后的setting
         const statusSetting = (function(){
             if(typeStatus){
@@ -190,8 +181,9 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
         })()
 
         return {
-            value:status.value,
-            valueType:valueType,
+            name:status?.name || typeStatus.name,
+            value:("value" in status)? status.value : typeStatus.value,
+            valueType:status["valueType"] || typeStatus["valueType"],
             setting:statusSetting
         }
     }
@@ -208,7 +200,11 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
         })
     }
 
-
+    // 改变事物名称
+    export function changeExitenceName(exitence:Exitence,newName:string){
+        // 改变输入建议列表中的名称
+        changeExitenceInputSuggestion(exitence.__key,"name",newName)
+    }
 
 
 // 分组相关

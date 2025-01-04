@@ -13,7 +13,7 @@
 
 <script setup lang='ts'>
     import managePx from '@/api/managePx';
-    import { ifShow,content,positionCSS, hideInputSuggestion, inputText, suggestionItem, onInputSuggestion } from '@/hooks/inputSupport/inputSuggestion/inputSuggestion';
+    import { ifShow,content,positionCSS, hideInputSuggestion, onInputSuggestion, clickSuggestionItem } from '@/hooks/inputSupport/inputSuggestion/inputSuggestion';
     import { computed, onMounted, onUnmounted, ref } from 'vue';
     const css = computed(()=>{
         //如果left会使其超出，则左移这个差值
@@ -31,15 +31,13 @@
         return {left,top}
     })
     // 点击一个输入提示组件
-    function itemClick(item:suggestionItem){
+    function itemClick(item:any){
         //触发其点击事件
-        if(item.click){
-            item.click(inputText.value,item)
-            //隐藏输入提示
-            hideInputSuggestion()
-            //返回一个输入提示影响
-            onInputSuggestion.value()
-        }
+        clickSuggestionItem(item)
+        //隐藏输入提示
+        hideInputSuggestion()
+        //返回一个输入提示影响
+        onInputSuggestion.value()
     }
 //点击之外的部分隐藏
     const container = ref()

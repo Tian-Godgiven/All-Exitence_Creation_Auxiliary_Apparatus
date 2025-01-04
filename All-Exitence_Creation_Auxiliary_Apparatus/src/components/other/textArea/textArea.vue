@@ -82,7 +82,8 @@ import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expr
         }
     })
     //向textArea中加载dom
-    function loadDom(doms:Node[]){
+    function loadDom(doms:Node[]|undefined){
+        if(!doms){return;}
         //清空
         textArea.value!.innerText = ""
         doms.forEach((dom:Node) => {
@@ -126,6 +127,7 @@ import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expr
                 effectInput += newInput
             }
             else{return false}
+            //防抖
             //检查是否存在输入建议
             const content = checkInputSuggestion(inputSuggestionList,effectInput)
             // 有输入建议：显示输入补全框，如果完成了输入提示则进行一次同步

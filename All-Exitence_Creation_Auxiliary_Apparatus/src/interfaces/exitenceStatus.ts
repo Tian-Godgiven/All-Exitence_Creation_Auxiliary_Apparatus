@@ -3,5 +3,5 @@ export default interface Status{
 	value:any,
 	valueType:string,
 	setting:{[key:string]:any},
-	__key:null | number
+	__key:null | number | string
 }

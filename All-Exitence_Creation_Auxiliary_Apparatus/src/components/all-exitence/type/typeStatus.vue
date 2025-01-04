@@ -16,12 +16,11 @@
 			<div class="button" @click="showUpdateStatus">编辑</div>
 			<div class="button" @click="deleteStatus">删除</div>
 		</div>
-		<div class="statusSetting"></div>
 	</div>
 </template>
 
 <script setup lang="ts" name="typeStatus">
-import { inject, provide } from 'vue';
+import { inject } from 'vue';
 import statusValueVue from '../status/statusValue/statusValue.vue';
 import textAreaVue from '@/components/other/textArea/textArea.vue';
 import { showPopUp } from '@/hooks/pages/popUp';

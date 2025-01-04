@@ -47,7 +47,7 @@
 	import { inject, ref, computed, provide } from 'vue'; 
 	import { statusValueTypeList } from '@/data/list/statusValueList';
 	import settingBoxVue from '../setting/settingBox.vue';
-	import { statusSettingList } from "@/data/list/statusSettingList.ts";
+	import { statusSettingList } from "@/data/list/settingList/statusSettingList";
 	import statusValueVue from '../status/statusValue/statusValue.vue';
 	import { statusBonusInputList } from '@/data/list/statusBonusInputList';
 	import textAreaVue from '@/components/other/textArea/textArea.vue';

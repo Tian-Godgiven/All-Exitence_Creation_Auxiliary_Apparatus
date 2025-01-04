@@ -2,13 +2,15 @@ import { reactive, ref, shallowReactive } from "vue"
 import { readFileFromPath,writeFileAtPath } from "../fileSysytem"
 import { changeNowAllExitence } from "../all-exitence/allExitence"
 import { changeNowAllArticles } from "../all-articles/allArticles"
+import { createInputSuggestionList } from "../inputSupport/inputSuggestion/inputSuggestion"
 
 //当前项目的文件夹路径
 export const nowProjectPath = ref<string|null>(null)
 //当前项目的信息
 export const nowProjectInfo = reactive<any>({name:"",lastTarget:null})
 //项目中的输入提示表
-export const projectInputSuggestionListData = shallowReactive([])
+const defaultList = createInputSuggestionList()
+export const projectInputSuggestionListData = shallowReactive(defaultList)
 
 //同步当前项目的数据
 export async function syncProject(projectPath:string){

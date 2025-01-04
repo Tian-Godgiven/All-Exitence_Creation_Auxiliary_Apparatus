@@ -18,13 +18,7 @@ export async function saveAll(){
 //每隔10秒保存一次当前项目
 export function startAutoSave(){
     setInterval(async ()=>{
-        //保存项目
-        const tmp = await saveProject()
-        //保存全局输入建议
-        saveGlobalInputSuggestion()
-        if(tmp){
-            console.log("已自动保存")
-        }
+        saveAll()
     },10000)
 }
 
@@ -54,7 +48,7 @@ async function saveProject(){
     }
     catch(err){
         alert(err)
-        console.log(err)
+        console.error(err)
         return false
     }
 
@@ -65,7 +59,8 @@ async function saveProject(){
 
 //自动保存项目数据
 async function saveProjectData(projectPath:string){
+    const dataPath = projectPath+"/data"
     //1.保存项目输入提示表
     const list = toRaw(projectInputSuggestionListData)
-    await writeFileAtPath(projectPath,"inputSuggestionList.json",list)
+    await writeFileAtPath(dataPath,"inputSuggestionList.json",list)
 }

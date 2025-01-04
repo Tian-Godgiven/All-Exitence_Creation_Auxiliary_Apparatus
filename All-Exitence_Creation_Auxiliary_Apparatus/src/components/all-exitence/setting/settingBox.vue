@@ -19,7 +19,7 @@
     //设置目标,筛选目标,设置项表
 	const settingProps = inject<any>("settingProps",null)
 	if(!settingProps){
-		 console.error(`传递的设置变量不可用:${settingProps}`)
+		console.error(`传递的设置变量不可用:${settingProps}`)
 	}
 
     let {target,selectTarget=null,optionList} = settingProps

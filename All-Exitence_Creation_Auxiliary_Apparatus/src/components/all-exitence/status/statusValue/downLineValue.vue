@@ -35,16 +35,16 @@ import { globalInputSuggestionList, projectInputSuggestionList } from '@/hooks/i
 	})
 	//属性设置：启用全局输入建议 和 启用项目输入建议
 	const inputSuggestionList = computed(()=>{
-		const list = []
+		let list = {}
 		//全局
 		const ifG = statusSetting.ifGlobalInputSuggestion
 		if(ifG==null || ifG == true){
-			list.push(...globalInputSuggestionList.value)
+			list = {...globalInputSuggestionList.value}
 		}
 		//项目
 		const ifP = statusSetting.ifProjectInputSuggestion
 		if(ifP == null || ifP == true){
-			list.push(...projectInputSuggestionList.value)
+			list = {...list,...projectInputSuggestionList.value}
 		}
 		return list
 	})

@@ -10,6 +10,7 @@ import editProjectInfoVue from '@/popUps/project/editProjectInfo.vue';
 import editChapterVue from '@/popUps/all-articles/editChapter.vue';
 import controlPanelVue from '@/popUps/controlPanel.vue';
 import editTypeVue from '@/popUps/all-exitence/editType.vue';
+import setExitenceVue from '@/popUps/all-exitence/setExitence.vue';
 
 // 用于显示不同Vue组件的弹窗
 export let popUpVueList:{[key:string]:any} = {
@@ -34,6 +35,7 @@ export let popUpVueList:{[key:string]:any} = {
 
 	"createExitence":createExitenceVue,
 	"showExitence":showExitenceVue,
+	"setExitence":setExitenceVue,
 
 	"createStatus":editStatusVue,
 	"updateStatus":editStatusVue,

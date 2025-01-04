@@ -24,16 +24,18 @@ export let exitenceSettingList:SettingOption<Exitence>[] = [
         }
     },
     {
-        name:"showPreview",
+        name:"previewStatus",
         text:"指定属性值作为事物预览内容",
         type:'choose',
         choices:(exitence:Exitence,type:Type)=>{
-            //返回事物的所有属性组成的对象列表
+            //返回事物的输入类或标签类属性组成的对象列表
             const allStatus = exitence.status
             const tmpList:any[] = []
             allStatus.forEach((status:Status)=>{
-                const statusValue = getExitenceStatusByKey(status.__key,allStatus,type.typeStatus)
-                tmpList.push({value:status.__key,text:statusValue.name})
+                const theStatus = getExitenceStatusByKey(status.__key,allStatus,type.typeStatus)
+                if(["tags","inputBox","downLine"].includes(theStatus.valueType)){
+                    tmpList.push({value:status.__key,text:theStatus.name})
+                }
             })
             return tmpList
         }
@@ -69,5 +71,10 @@ export let exitenceSettingList:SettingOption<Exitence>[] = [
         text:"强制修改事物的自动补全内容为：",
         type:"input",
         value:""
+    },{
+        name:"noInputSuggestion",
+        text:"不为事物创建输入提示",
+        type:"checkBox",
+        value:false
     }
 ]

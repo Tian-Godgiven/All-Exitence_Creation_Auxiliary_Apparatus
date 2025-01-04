@@ -43,7 +43,7 @@
     import { ElSelect, ElOption, ElCascader } from 'element-plus';
     import Status from '@/interfaces/exitenceStatus';
     import downLineInputVue from '@/components/other/input/downLineInput.vue';
-    import { exitenceSettingList } from '@/data/list/exitenceSettingList';
+    import { exitenceSettingList } from '@/data/list/settingList/exitenceSettingList';
 import { showQuickInfo } from '@/api/showQuickInfo';
 import { groupRuleSimbolList } from '@/data/list/groupRuleList';
 

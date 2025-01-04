@@ -24,7 +24,10 @@
 
 			<!-- 分类设置 -->
 			<div class="setting">
-				分类设置
+				<div class="button" @click="showSettingBox = !showSettingBox">
+					分类设置
+				</div>
+				<settingBoxVue ref="settingBox" :show="showSettingBox"></settingBoxVue>
 			</div>
 		</div>
 
@@ -45,6 +48,9 @@ import { closePopUp } from '@/hooks/pages/popUp';
 import { checkTypeNameRepeat } from '@/hooks/all-exitence/allExitence';
 import { showQuickInfo } from '@/api/showQuickInfo';
 import { cloneDeep } from 'lodash';
+import settingBoxVue from '@/components/all-exitence/setting/settingBox.vue';
+import { typeSettingList } from '@/data/list/typeSettingList';
+import { nanoid } from 'nanoid';
 
 	const {props={},popUp,returnValue} = defineProps(["props","popUp","returnValue"])
     let {type} = props
@@ -68,16 +74,9 @@ import { cloneDeep } from 'lodash';
 
 	}
 	//向分类中添加指定的属性，给予key标识符
-	function addStatus(newStatus:{[key:string]:any}){
-		let key:number
-		if(typeStatus.length == 0){
-			key = 0
-		}
-		else{
-			key = typeStatus[typeStatus.length-1].__key + 1
-		}
+	function addStatus(newStatus:{[key:string]:any}){		
 		//给予key标识符
-		newStatus["__key"] = key
+		newStatus.__key = nanoid()
 		typeStatus.push(newStatus)
 	}
 	//删除对应的属性
@@ -85,10 +84,20 @@ import { cloneDeep } from 'lodash';
 		typeStatus.splice(index,1)
 	}
 
+	//分类设置
+    const settingProps = {
+        target:tmpType,//实际上修改的是事物对象的setting
+        optionList:typeSettingList,
+        settingValue:tmpType.setting
+    }
+    provide("settingProps",settingProps)
+	const settingBox = ref()
+	//控制分类设置显示
+	const showSettingBox = ref(false)
+
 	//确认创建分类
 	function confirm(){
 		//分类名称不可为空
-		//返回该分类的内容
 		if(name.value == "" || !name.value){
 			showQuickInfo("分类名不可为空")
 			return false
@@ -96,6 +105,11 @@ import { cloneDeep } from 'lodash';
 		const tmp = checkTypeNameRepeat(name.value,type)
 		if(tmp){
 			showQuickInfo("分类名不可重复")
+			return false
+		}
+		// 要求设置合理
+		if(!settingBox.value.checkSet()){
+			showQuickInfo("分类设置不正确")
 			return false
 		}
 		
@@ -134,6 +148,17 @@ import { cloneDeep } from 'lodash';
 		width: 100%;
 		overflow: auto;
 		max-height: calc(100% - 200px);
+		.setting{
+            width: 100%;
+            .button{
+                width: 30%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border: 3px solid black;
+                padding: 5px;
+            }
+        }
 	}
 	.bottom{
 		@extend .buttons;

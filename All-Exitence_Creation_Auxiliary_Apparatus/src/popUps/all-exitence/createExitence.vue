@@ -10,12 +10,12 @@
         <div class="inner">
             <div class="tags">
                 <div class="text">标签：</div>
-                <tagsValueVue v-model="tags"/>
+                <tagsValueVue :status="defaultTagStatus"/>
             </div>
 
             <div class="setting">
                 <div class="button" @click="swicthShowSettingBox">事物设置</div>
-                <settingBoxVue :show="showSettingBox" :ref="settingBox"/>
+                <settingBoxVue :show="showSettingBox" ref="settingBox"/>
             </div>
         </div>
         
@@ -33,38 +33,56 @@
     import settingBoxVue from '@/components/all-exitence/setting/settingBox.vue';
     import { addExitence } from '@/hooks/all-exitence/allExitence';
     import tagsValueVue from '@/components/all-exitence/status/statusValue/tagsValue.vue';
-    import { exitenceSettingList } from '@/data/list/exitenceSettingList';
+    import { exitenceSettingList } from '@/data/list/settingList/exitenceSettingList';
+import { showQuickInfo } from '@/api/showQuickInfo';
+import Status from '@/interfaces/exitenceStatus';
+import { nanoid } from 'nanoid';
     const {props, popUp, returnValue} = defineProps(["props","popUp","returnValue"])
     const name = ref("")
-    const tags = reactive([])
     const type = props.type
+
+    //初始默认的标签属性
+    const tagsKey = nanoid()
+    const defaultTagStatus:Status = reactive({
+        name:"标签",
+        value:[],
+        valueType:"tags",
+        setting:{},
+        __key:tagsKey
+    })
 
     //用于进行设置的临时事物
     const tmpExitence = {
-        status:type.typeStatus,
-        setting:reactive({})
+        status:[...type.typeStatus,defaultTagStatus],
+        //初始默认的预览属性为这个tags
+        setting:reactive({previewStatus:tagsKey})
     }
 
     //设置相关
     const settingProps = {
         target:tmpExitence,//实际上修改的是事物对象的setting
-        selectTarget:type,//用于筛选的是分类对象
         chooseTarget:[type],//必须传入一个数组
         optionList:exitenceSettingList,
-        settingValue:type.setting
+        settingValue:{...type.setting,...tmpExitence.setting}
     }
     provide("settingProps",settingProps)
-    //控制属性框显示
+    //控制设置框的显示
     const showSettingBox = ref(true)
     function swicthShowSettingBox(){
         showSettingBox.value = !showSettingBox.value
     }
-    //属性框Vue
+    //设置框Vue
     const settingBox = ref()
+
     //确认创建
     function confirm(){
+        //检查设置项的值
+		if(!settingBox.value.checkSet()){
+			showQuickInfo("事物设置不正确")
+			return false
+		}
         //使用分类，名称，设置创建事物
-        const exitence = addExitence(type,name.value,tmpExitence.setting,toRaw(tags))
+        const exitence = addExitence(type,name.value,tmpExitence.setting,toRaw(defaultTagStatus))
         returnValue(exitence)
         closePopUp(popUp)
     }

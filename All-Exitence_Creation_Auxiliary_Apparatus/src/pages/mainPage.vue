@@ -21,9 +21,9 @@
 	
 	<!-- 首页内容 -->
 	<div class="mainInner" :key="refreshKey">
-		<showInfoVue :target="showOnMain.target" v-if="showOnMain.type=='info'"></showInfoVue>
-		<showArticleVue :article="showOnMain.target" v-else-if="showOnMain.type == 'article'"/>
-		<showExitenceVue :exitence="showOnMain.target" v-else-if="showOnMain.type == 'exitence'"/>
+		<showInfoOnMainVue :target="showOnMain.target" v-if="showOnMain.type=='info'"/>
+		<showArticleOnMainVue :article="showOnMain.target" v-else-if="showOnMain.type == 'article'"/>
+		<showExitenceOnMainVue :exitence="showOnMain.target" v-else-if="showOnMain.type == 'exitence'"/>
 	</div>
 
 	<!-- 项目页面 -->
@@ -67,9 +67,9 @@ import inputSuggestionVue from '@/components/other/inputSuggestion.vue';
 import popUpVue from './popUp.vue';
 import popUpMaskVue from '@/components/mainPage/popUpMask.vue'
 
-import showInfoVue from '@/components/mainPage/showInfo.vue';
-import showArticleVue from '@/components/mainPage/showArticle.vue';
-import showExitenceVue from '@/components/mainPage/showExitence.vue';
+import showInfoOnMainVue from '@/components/mainPage/showInfoOnMain.vue';
+import showArticleOnMainVue from '@/components/mainPage/showArticleOnMain.vue';
+import showExitenceOnMainVue from '@/components/mainPage/showExitenceOnMain.vue';
 
 import { showOnMain } from '@/hooks/pages/mainPage/showOnMain';
 import { computed, ref, watch } from 'vue';

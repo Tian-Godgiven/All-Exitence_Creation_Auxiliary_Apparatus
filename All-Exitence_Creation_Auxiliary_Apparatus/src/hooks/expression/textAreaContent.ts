@@ -11,13 +11,11 @@ export function translateToFileContent(frontEndNodes:NodeList){
         frontEndNodes.forEach((node:any) => {
             //jumpDiv类型
             if(node.classList && node.classList.contains("jumpDiv")){
+                //获取div的数据
                 const data = divWeakMap.get(node)
-                const jumpContent = {
-                    target:data.target,
-                    type:data.type,
-                    inner:node.innerText,
-                }
-                fileContent.push(jumpContent)
+                //额外存储node的文本内容为text
+                data.text = node.innerText
+                fileContent.push(data)
             }
             //文本类型
             else{
@@ -58,34 +56,36 @@ export function translateToFrontEndContent(fileContent:any[]|string){
     }
     const frontEndContent:any[] = []
     //遍历文件内容
-    fileContent.forEach((part:any)=>{
+    for(let data of fileContent){
         //如果是字符串
-        if(typeof part == "string"){
-            if(part == "\n"){
+        if(typeof data == "string"){
+            if(data == "\n"){
                 const brNode = document.createElement("br")
                 frontEndContent.push(brNode)
             }
             else{
                 //作为text放入
-                const textNode = document.createTextNode(part)
+                const textNode = document.createTextNode(data)
                 frontEndContent.push(textNode)
             }
         }
         //跳转对象
         else{
-            //作为跳转div放入
-            const divHtml = jumpDivHtml(part.inner)
             //获取跳转div
+            const divHtml = jumpDivHtml(data)
+            if(divHtml==false){
+                continue;
+            }
             let div:any = document.createElement('div');
             div.innerHTML = divHtml; // 将 HTML 转换为 DOM 节点
             div = div.firstChild
             if(!div) return;
             // 为div绑定Weakmap数据
-            divWeakMap.set(div, {type:part.type,target:part.target});
+            divWeakMap.set(div, data);
             // 添加这个跳转div
             frontEndContent.push(div)
         }
-    })
+    }
 
     return frontEndContent
 }
@@ -112,7 +112,7 @@ export function translateToTextContent(fileContent:any[],short:boolean=false){
             //跳转对象
             else{
                 //只要Inner
-                textContent += part.inner
+                textContent += part.text
             }
         })
     }

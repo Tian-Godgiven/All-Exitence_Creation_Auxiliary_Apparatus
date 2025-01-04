@@ -6,6 +6,7 @@ import { nowProjectInfo, nowProjectPath, saveProjectInfo, syncProject } from "./
 import { showAlert } from "../alert";
 import { hidePage } from "../pages/pageChange";
 import { showInitialAppOnMain, showInitialProjectOnMain, showOnMain, showTargetOnMain } from "../pages/mainPage/showOnMain";
+import { createInputSuggestionList } from "../inputSupport/inputSuggestion/inputSuggestion";
 
 export interface ProjectInfo{
     name:string,
@@ -166,7 +167,8 @@ export async function createProject(name:string,info:string=""){
         const projectDataPath = projectPath + "/data" 
         //创建基础设置
         //1.项目输入建议列表
-        await createFileToPath(projectDataPath,"inputSuggestionList.json",JSON.stringify([]))
+        const list = createInputSuggestionList()
+        await createFileToPath(projectDataPath,"inputSuggestionList.json",JSON.stringify(list))
     }
 }
 

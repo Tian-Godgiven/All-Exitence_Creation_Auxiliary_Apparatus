@@ -90,7 +90,7 @@ import { isArray } from 'lodash';
 			}
 		}
 		else if(setOption.type == "choose"){
-			setValue.value = null
+			setValue.value = ""
 		}
 	},{
 		immediate:true
@@ -141,10 +141,12 @@ import { isArray } from 'lodash';
 			if(!isArray(chooseTarget)){
 				tmpList = tmp(target,chooseTarget)
 			}
-			tmpList = tmp(target,...chooseTarget)
+			else{
+				tmpList = tmp(target,...chooseTarget)
+			}
 			//如果这个设置项没有默认值，则会在开头添加一个空值选项
 			if(setOption.value == null){
-				tmpList.unshift({text:"无",value:null})
+				tmpList.unshift({text:"无",value:""})
 			}
 			return tmpList
 		}

@@ -29,7 +29,7 @@
     import { computed } from 'vue';
     import textAreaVue from '@/components/other/textArea/textArea.vue';
     import { fullInputSuggestionList } from '@/hooks/inputSupport/inputSuggestion/inputSuggestion';
-import { translateToTextContent } from '@/hooks/expression/textAreaContent';
+    import { translateToTextContent } from '@/hooks/expression/textAreaContent';
     const {article} = defineProps(["article"])
     // 内容栏字符数量
 	let textNum = computed(()=>{

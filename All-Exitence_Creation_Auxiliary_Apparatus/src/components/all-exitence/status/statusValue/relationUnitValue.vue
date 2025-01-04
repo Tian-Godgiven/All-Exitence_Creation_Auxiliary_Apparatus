@@ -16,8 +16,6 @@
     const unitStatus = computed(()=>{
         const tmp:any = {}
         for(let key in source){
-            console.log(source)
-            console.log(unit)
             if(!unit[key]){
                 unit[key] = source[key].value
             }
