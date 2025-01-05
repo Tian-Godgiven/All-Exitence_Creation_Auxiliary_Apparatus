@@ -1,6 +1,6 @@
 import { Exitence } from "@/class/Exitence"
 import { Type } from "@/class/Type"
-import { getExitenceStatusByKey } from "@/hooks/all-exitence/allExitence"
+import { changeExitenceName, changeExitenceNickName, getExitenceStatusByKey } from "@/hooks/all-exitence/allExitence"
 import Status from "@/interfaces/exitenceStatus"
 import { SettingOption } from "@/interfaces/SettingOption"
 
@@ -26,13 +26,14 @@ export let exitenceSettingList:SettingOption<Exitence>[] = [
             //将旧的属性的setting去除
             const oldStatus = getExitenceStatusByKey(oldValue,exitence.status)
             if(oldStatus){
-                delete oldStatus.setting["syncWithName"]
+                delete oldStatus.setting["exitenceSetting-syncWithName"]
             }
             //给新的属性这个setting,值为事物和分类的key数组
             if(!newValue){return;}
             const newStatus = getExitenceStatusByKey(newValue,exitence.status)
             newStatus.setting ??= {}
-            newStatus.setting["syncWithName"] = [exitence.typeKey,exitence.__key]
+            newStatus.setting["exitenceSetting-syncWithName"] = [exitence.typeKey,exitence.__key]
+            changeExitenceName(exitence,newStatus.value)
         }
     },
     {
@@ -66,6 +67,20 @@ export let exitenceSettingList:SettingOption<Exitence>[] = [
                 }
             })
             return tmpList
+        },
+        change:(oldValue,newValue,exitence)=>{
+            //将旧的属性的setting去除
+            const oldStatus = getExitenceStatusByKey(oldValue,exitence.status)
+            if(oldStatus){
+                delete oldStatus.setting["exitenceSetting-nickName"]
+            }
+            //给新的属性这个setting,值为事物和分类的key数组
+            if(!newValue){return;}
+            const newStatus = getExitenceStatusByKey(newValue,exitence.status)
+            newStatus.setting ??= {}
+            newStatus.setting["exitenceSetting-nickName"] = [exitence.typeKey,exitence.__key]
+            //改变事物的别名为目标属性值
+            changeExitenceNickName(exitence,newStatus.value)
         }
     },{
         name:"autoCompleteNickName",

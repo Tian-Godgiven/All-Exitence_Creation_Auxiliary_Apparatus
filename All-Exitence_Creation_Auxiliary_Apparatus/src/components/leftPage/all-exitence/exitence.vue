@@ -17,7 +17,7 @@ import { showExitenceOnMain } from '@/hooks/pages/mainPage/showOnMain';
 import { computed, inject, ref } from 'vue'; 
 import { LongTapAndClickTouchEnd, LongTapAndClickTouchStart } from '@/api/longTapAndClick';
 import { showControlPanel } from '@/hooks/controlPanel';
-import { deleteExitence, getExitenceStatusByKey } from '@/hooks/all-exitence/allExitence';
+import { deleteExitencePopUp, getExitenceStatusByKey } from '@/hooks/all-exitence/allExitence';
 import { translateToTextContent } from '@/hooks/expression/textAreaContent';
 	let {exitence} = defineProps(["exitence"])
 	const name = computed(()=>{
@@ -44,7 +44,7 @@ import { translateToTextContent } from '@/hooks/expression/textAreaContent';
 				showControlPanel([{
 					text:"删除",
 					click:()=>{
-						deleteExitence(type,exitence)
+						deleteExitencePopUp(type,exitence)
 					}
 				}])
 			},

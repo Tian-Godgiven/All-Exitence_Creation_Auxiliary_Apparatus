@@ -5,7 +5,7 @@ import { reactive } from "vue";
 import Status from "@/interfaces/exitenceStatus";
 import { Group } from "@/class/Group";
 import { nanoid } from "nanoid";
-import { addExitenceInputSuggestion, changeExitenceInputSuggestion } from "../inputSupport/inputSuggestion/inputSuggestion";
+import { addExitenceInputSuggestion, changeExitenceInputSuggestion, deleteExitenceInputSuggestion } from "../inputSupport/inputSuggestion/inputSuggestion";
 import { showAlert } from "../alert";
 
 //当前万物
@@ -189,17 +189,25 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
         }
     }
 
-    // 从分类中删除指定事物
-    export function deleteExitence(type:Type,exitence:Exitence){
+    // 弹出弹窗，选择是否删除指定事物
+    export function deleteExitencePopUp(type:Type,exitence:Exitence){
         showAlert({
             "info":`删除${type.name}中的事物${exitence.name}？\n
                 这会使得所有指向该事物的索引失效！`,
             confirm:()=>{
-                const index = type.exitence.indexOf(exitence)
-                type.exitence.splice(index,1)
+                deleteExitence(type,exitence)
             }
         })
     }
+    // 删除指定事物
+    export function deleteExitence(type:Type,exitence:Exitence){
+        const index = type.exitence.indexOf(exitence)
+        type.exitence.splice(index,1)
+        //删除事物的输入建议
+        deleteExitenceInputSuggestion(exitence.__key)
+    }
+
+
 
     // 改变事物名称
     export function changeExitenceName(exitence:Exitence,newName:string,sync?:boolean){
@@ -214,6 +222,11 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
             const status = getExitenceStatusByKey(syncStatusKey,exitence.status)
             status.value = newName
         }
+    }
+    // 改变事物别名
+    export function changeExitenceNickName(exitence:Exitence,newNickName:string[]){
+        //改变输入建议中的别名
+        changeExitenceInputSuggestion(exitence.__key,"nickName",newNickName)
     }
 
 

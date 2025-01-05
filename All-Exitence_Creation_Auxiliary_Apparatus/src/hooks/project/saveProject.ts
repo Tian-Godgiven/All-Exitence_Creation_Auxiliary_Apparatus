@@ -17,9 +17,9 @@ export async function saveAll(){
 
 //每隔10秒保存一次当前项目
 export function startAutoSave(){
-    // setInterval(async ()=>{
-    //     saveAll()
-    // },10000)
+    setInterval(async ()=>{
+        saveAll()
+    },10000)
 }
 
 //软件退出前保存一次当前项目

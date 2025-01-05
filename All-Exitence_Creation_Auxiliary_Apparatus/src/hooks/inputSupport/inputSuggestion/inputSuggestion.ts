@@ -162,6 +162,13 @@ export function changeExitenceInputSuggestion(exitenceKey:string,type:"name"|"ni
     }
 }
 
+//删除事物的输入提示
+export function deleteExitenceInputSuggestion(exitenceKey:string){
+    const list = getTargetList("exitence")
+    if(!list.exitence[exitenceKey])return false
+    delete list.exitence[exitenceKey]
+}
+
 // 在指定位置显示输入提示
 export function showInputSuggestion(tmp:{
     input:string,
@@ -193,7 +200,6 @@ export function hideInputSuggestion(){
 
 // 判断是否需要输入提示
 export function checkInputSuggestion(inputSuggestionList:InputSuggestionList,input:string){
-    try{
     if(input == ""){
         return false
     }
@@ -213,7 +219,7 @@ export function checkInputSuggestion(inputSuggestionList:InputSuggestionList,inp
         }
         //再判断是否在手动别名中
         const manual = item?.manual
-        if(!manual){continue}
+        if(manual){
         for(let i of manual){
             if(i.text.startsWith(input)){
                 arr.push({
@@ -223,11 +229,11 @@ export function checkInputSuggestion(inputSuggestionList:InputSuggestionList,inp
                     info:i.info??`${item.text}的别名`
                 })
             }
-        }
-         
+        }}
+
         //再判断其是否在别名中
-        const nickName = item.nickName
-        if(!nickName){continue}
+        const nickName = item?.nickName
+        if(nickName){
         for(let i of nickName){
             if(i.startsWith(input)){
                 arr.push({
@@ -238,7 +244,7 @@ export function checkInputSuggestion(inputSuggestionList:InputSuggestionList,inp
                     attr:"nickName" //标识别名
                 })
             }
-        }
+        }}
     }
     //再判断字符串类型的item
     for(let item of inputSuggestionList.string){
@@ -253,12 +259,6 @@ export function checkInputSuggestion(inputSuggestionList:InputSuggestionList,inp
         return arr
     }
     return false
-}
-catch(err){
-    console.error(err)
-}
-    
-    
 }
 
 // 补全功能: 在当前光标后补全text的内容

@@ -7,7 +7,7 @@
 <script setup lang="ts" name="">
 import {computed, provide, watch } from 'vue'; 
 import { statusValueVueList } from '@/data/list/statusValueList';
-import { changeExitenceName, nowAllExitence } from '@/hooks/all-exitence/allExitence';
+import { changeExitenceName, changeExitenceNickName, nowAllExitence } from '@/hooks/all-exitence/allExitence';
 import { translateToTextContent } from '@/hooks/expression/textAreaContent';
 
 	//是否禁用属性修改 , 需要显示的属性对象，事物在分类中对应的属性
@@ -45,7 +45,7 @@ import { translateToTextContent } from '@/hooks/expression/textAreaContent';
 	//监听属性值的改变
 	watch(()=>status.value,(value:any)=>{
 		//事物设置：指定属性值与事物名称同步
-		const syncWithName = statusSetting.value?.syncWithName
+		const syncWithName = statusSetting.value?.["exitenceSetting-syncWithName"]
 		if(syncWithName){
 			const [typeKey,exitenceKey] = syncWithName
 			const type = nowAllExitence.types.find((type)=>type.__key == typeKey)
@@ -55,6 +55,18 @@ import { translateToTextContent } from '@/hooks/expression/textAreaContent';
 				changeExitenceName(exitence,newName,true)
 			}
 		}
+		//事物设置：指定属性值为事物的别名
+		const nickName = statusSetting.value?.["exitenceSetting-nickName"]
+		if(nickName){
+			const [typeKey,exitenceKey] = nickName
+			const type = nowAllExitence.types.find((type)=>type.__key == typeKey)
+			const exitence = type?.exitence.find((exitence)=>exitence.__key == exitenceKey)
+			if(exitence){
+				changeExitenceNickName(exitence,value)
+			}
+		}
+	},{
+		deep:true,
 	})
 
 	

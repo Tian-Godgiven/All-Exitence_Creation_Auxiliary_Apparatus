@@ -113,10 +113,9 @@ import { nanoid } from 'nanoid';
 			showQuickInfo("事物设置不正确")
 			return false
 		}
-        //创建事物并改名
-        var exitence
-        exitence = addExitence(type,toRaw(tmpExitence))
-        exitence.name = name.value
+        //改名并添加事物
+        tmpExitence.name = name.value
+        const exitence = addExitence(type,toRaw(tmpExitence))
         
         returnValue(exitence)
         closePopUp(popUp)
