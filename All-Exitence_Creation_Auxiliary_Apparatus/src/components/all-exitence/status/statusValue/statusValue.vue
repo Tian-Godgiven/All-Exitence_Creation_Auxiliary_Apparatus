@@ -5,8 +5,10 @@
 </template>
 
 <script setup lang="ts" name="">
-import {computed, provide } from 'vue'; 
+import {computed, provide, watch } from 'vue'; 
 import { statusValueVueList } from '@/data/list/statusValueList';
+import { changeExitenceName, nowAllExitence } from '@/hooks/all-exitence/allExitence';
+import { translateToTextContent } from '@/hooks/expression/textAreaContent';
 
 	//是否禁用属性修改 , 需要显示的属性对象，事物在分类中对应的属性
 	const {disabled,status,typeStatus} = defineProps(["disabled","status","typeStatus"])
@@ -39,6 +41,23 @@ import { statusValueVueList } from '@/data/list/statusValueList';
 			return status.setting || {}
 		}
 	})
+
+	
+	//事物设置：指定属性值与事物名称同步
+	const tmp = statusSetting.value?.syncWithName
+	if(tmp){
+		const [typeKey,exitenceKey] = tmp
+		const type = nowAllExitence.types.find((type)=>type.__key == typeKey)
+		const exitence = type?.exitence.find((exitence)=>exitence.__key == exitenceKey)
+		if(exitence){
+			//监听属性值的改变
+			watch(()=>status.value,(value:any)=>{
+				const newName = translateToTextContent(value)
+				changeExitenceName(exitence,newName,true)
+			})
+		}
+	}
+
 </script>
 
 <style lang="scss" scoped>

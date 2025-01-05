@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang='ts'>
-    import { computed, inject, ref} from 'vue';
+    import { computed,onMounted, inject, ref} from 'vue';
     import statusValueVue from '../status/statusValue/statusValue.vue';
     import { getTypeStatusByKey } from '@/hooks/all-exitence/allExitence';
     import Status from '@/interfaces/exitenceStatus';

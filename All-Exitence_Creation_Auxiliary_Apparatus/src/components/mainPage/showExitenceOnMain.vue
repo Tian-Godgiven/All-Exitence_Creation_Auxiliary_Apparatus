@@ -2,7 +2,7 @@
 	<div class="container">
         <div class="top">
             <textAreaVue class="targetTitle"
-				@blur="changeName"
+				@input="changeName"
 				mode="string"
                 placeholder="输入名称"
                 v-model="exitence.name"
@@ -15,9 +15,9 @@
         </div>
         <div class="targetInner" ref="inner">
             <exitenceStatusVue 
-				:key="Symbol()"
-				v-for="(,index) in exitence.status" 
-				:status="exitence.status[index]">
+				:key="status.__key"
+				v-for="(status) in exitenceStatus" 
+				:status="status">
 			</exitenceStatusVue>
 
 			<div class="scrollSpace"></div>
@@ -27,14 +27,19 @@
 </template>
 
 <script setup lang="ts" name="">
-import { provide, ref } from 'vue';
+import { computed, provide, ref } from 'vue';
 import textAreaVue from '@/components/other/textArea/textArea.vue';
 import exitenceStatusVue from '@/components/all-exitence/exitence/exitenceStatus.vue';
 import { changeExitenceName, nowAllExitence } from '@/hooks/all-exitence/allExitence';	
 import { Type } from '@/class/Type';
 import Status from '@/interfaces/exitenceStatus';
 import { showPopUp } from '@/hooks/pages/popUp';
+
 	let {exitence} = defineProps(["exitence"])
+
+	const exitenceStatus = computed(()=>{
+		return exitence.status
+	})
 	
 	//事物所属的分类
 	const type = nowAllExitence.types.find((type:Type)=>{
@@ -44,12 +49,16 @@ import { showPopUp } from '@/hooks/pages/popUp';
     })
 	
 	//显示事物的属性数量
-	const statusNum = exitence.status.length
+	const statusNum = computed(()=>{
+		return exitence.status.length
+	}) 
 
 	//改变名称
 	function changeName(newName:string){
+		console.log(newName)
 		changeExitenceName(exitence,newName)
 	}
+	
 
 	//打开设置弹窗
 	function setExitence(){

@@ -21,6 +21,9 @@ import { deleteExitence, getExitenceStatusByKey } from '@/hooks/all-exitence/all
 import { translateToTextContent } from '@/hooks/expression/textAreaContent';
 	let {exitence} = defineProps(["exitence"])
 	const name = computed(()=>{
+		if(exitence.name.trim() == "" || !exitence.name){
+			return `未命名${type.name}`
+		}
 		return exitence.name
 	})
 
@@ -56,6 +59,7 @@ import { translateToTextContent } from '@/hooks/expression/textAreaContent';
 	//显示事物的预览属性的内容
 	let preview = computed(()=>{
 		const key = exitence.setting?.previewStatus
+		if(!key){return ""}
 		const status = getExitenceStatusByKey(key,exitence.status,type.typeStatus)
 		if(!status){return ""}
 		if(status.valueType == "tags"){

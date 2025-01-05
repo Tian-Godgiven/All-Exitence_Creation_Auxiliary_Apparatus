@@ -9,8 +9,9 @@
 
         <div class="inner">
             <div class="tags">
-                <div class="text">标签：</div>
-                <tagsValueVue :status="defaultTagStatus"/>
+                <input type="checkbox" v-model="ifDefaultTags" @change="changeIfDefaultTags">
+                <div class="text">标签<span v-show="ifDefaultTags">：</span></div>
+                <tagsValueVue v-show="ifDefaultTags" :status="defaultTagStatus"/>
             </div>
 
             <div class="setting">
@@ -31,7 +32,7 @@
     import downLineInputVue from '@/components/other/input/downLineInput.vue';
     import { closePopUp } from '@/hooks/pages/popUp';
     import settingBoxVue from '@/components/all-exitence/setting/settingBox.vue';
-    import { addExitence } from '@/hooks/all-exitence/allExitence';
+    import { addExitence, createNewExitence } from '@/hooks/all-exitence/allExitence';
     import tagsValueVue from '@/components/all-exitence/status/statusValue/tagsValue.vue';
     import { exitenceSettingList } from '@/data/list/settingList/exitenceSettingList';
 import { showQuickInfo } from '@/api/showQuickInfo';
@@ -41,7 +42,31 @@ import { nanoid } from 'nanoid';
     const name = ref("")
     const type = props.type
 
-    //初始默认的标签属性
+    //是否创建默认的标签属性
+    const ifDefaultTags = ref(true)
+
+    //默认的标签属性
+    function changeIfDefaultTags(){
+        //要创建则将事物设置中的预览属性在为空的情况下设置为该属性
+        if(ifDefaultTags.value){
+            //向临时事物内添加这个属性
+            const index = tmpExitence.status.indexOf(defaultTagStatus)
+            if(index == -1){
+                tmpExitence.status.push(defaultTagStatus)
+            }
+            //为空才设置，不为空不覆盖
+            if(!tmpExitence.setting.previewStatus){
+                tmpExitence.setting.previewStatus = tagsKey
+            }
+        }
+        //取消创建
+        else{
+            //从临时事物里删除这个属性
+            const index = tmpExitence.status.indexOf(defaultTagStatus)
+            tmpExitence.status.splice(index,1)
+            tmpExitence.setting.previewStatus = null
+        }
+    }
     const tagsKey = nanoid()
     const defaultTagStatus:Status = reactive({
         name:"标签",
@@ -52,10 +77,17 @@ import { nanoid } from 'nanoid';
     })
 
     //用于进行设置的临时事物
-    const tmpExitence = {
-        status:[...type.typeStatus,defaultTagStatus],
-        //初始默认的预览属性为这个tags
-        setting:reactive({previewStatus:tagsKey})
+    const tmpExitence = reactive(createNewExitence(
+        "",
+        [defaultTagStatus],
+        {previewStatus:tagsKey},
+        type
+    ))
+
+    //分类设置：不为事物创建标签属性
+    if(type.setting["noDefaultTags"] == true){
+        ifDefaultTags.value = false
+        changeIfDefaultTags()
     }
 
     //设置相关
@@ -81,8 +113,11 @@ import { nanoid } from 'nanoid';
 			showQuickInfo("事物设置不正确")
 			return false
 		}
-        //使用分类，名称，设置创建事物
-        const exitence = addExitence(type,name.value,tmpExitence.setting,toRaw(defaultTagStatus))
+        //创建事物并改名
+        var exitence
+        exitence = addExitence(type,toRaw(tmpExitence))
+        exitence.name = name.value
+        
         returnValue(exitence)
         closePopUp(popUp)
     }

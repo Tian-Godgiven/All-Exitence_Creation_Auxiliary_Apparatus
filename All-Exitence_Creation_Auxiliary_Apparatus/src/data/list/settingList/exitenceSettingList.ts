@@ -21,6 +21,17 @@ export let exitenceSettingList:SettingOption<Exitence>[] = [
                 }
             })
             return tmpList
+        },
+        change:(oldValue:string,newValue:string,exitence:Exitence)=>{
+            //将旧的属性的setting去除
+            const oldStatus = getExitenceStatusByKey(oldValue,exitence.status)
+            if(oldStatus){
+                delete oldStatus.setting["syncWithName"]
+            }
+            //给新的属性这个setting,值为事物和分类的key数组
+            const newStatus = getExitenceStatusByKey(newValue,exitence.status)
+            newStatus.setting ??= {}
+            newStatus.setting["syncWithName"] = [exitence.typeKey,exitence.__key]
         }
     },
     {
@@ -39,12 +50,6 @@ export let exitenceSettingList:SettingOption<Exitence>[] = [
             })
             return tmpList
         }
-    },
-    {
-        name:"noDefaultTags",
-        text:"不创建默认的标签属性",
-        type:'checkBox',
-        value:false,
     },{
         name:"nickName",
         text:"指定标签类属性值为事物的别名",
@@ -71,10 +76,5 @@ export let exitenceSettingList:SettingOption<Exitence>[] = [
         text:"强制修改事物的自动补全内容为：",
         type:"input",
         value:""
-    },{
-        name:"noInputSuggestion",
-        text:"不为事物创建输入提示",
-        type:"checkBox",
-        value:false
     }
 ]

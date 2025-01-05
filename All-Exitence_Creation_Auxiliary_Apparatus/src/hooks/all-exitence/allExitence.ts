@@ -106,30 +106,30 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
 
 // 事物相关
     //向分类中添加新的事物
-    export function addExitence(type:Type,name:string,setting:{},tags?:any){
+    export function addExitence(type:Type,exitence:Exitence){
+        //向分类中添加该事物
+        type.exitence.push(exitence)
+        //创建该事物的输入建议
+        addExitenceInputSuggestion(type,exitence)
+        
+        return exitence
+    }
+
+    // 创建一个新的事物
+    export function createNewExitence(name:string,status:any[],setting:any,type:Type){
         if(!name || name == ""){
             name = "未命名"+type.name
         }
-        //创建该事物，并为其分配一个nanoid
-        const newExitence = new Exitence(name,[],type.__key,setting,nanoid())
-        //添加分类的属性
+        //创建该事物，并为其分配key
+        const newExitence = new Exitence(name,status,type.__key,setting,nanoid())
+        //添加分类中的属性
+        const tmp:any[] = []
         type.typeStatus.forEach((status:Status)=>{
-            newExitence.status.push({
+            tmp.push({
                 __key:status.__key
             })
         })
-
-        if(tags){
-            //添加这个标签属性
-            newExitence.status.push(tags)
-        }
-        
-        //向分类中添加该事物
-        type.exitence.push(newExitence)
-
-        //创建该事物的输入建议
-        addExitenceInputSuggestion(type,newExitence)
-        
+        newExitence.status.unshift(...tmp) //这里要求让分类中的属性优先放置在顶部
         return newExitence
     }
 
@@ -159,6 +159,7 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
 
     // 获取key对应的事物的属性
     export function getExitenceStatusByKey(statusKey:any,allStatus:any[],allTypeStatus?:any[]){
+        if(!statusKey)return false
         const status = allStatus.find((tmp:Status)=>{
             if(tmp.__key == statusKey){
                 return tmp
@@ -201,9 +202,18 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
     }
 
     // 改变事物名称
-    export function changeExitenceName(exitence:Exitence,newName:string){
+    export function changeExitenceName(exitence:Exitence,newName:string,sync?:boolean){
+        exitence.name = newName
         // 改变输入建议列表中的名称
         changeExitenceInputSuggestion(exitence.__key,"name",newName)
+
+        if(sync){return}//如果本来就是因为同步，则不继续
+        // 事物设置：指定属性与事物名称同步
+        const syncStatusKey = exitence.setting.syncWithName
+        if(syncStatusKey){
+            const status = getExitenceStatusByKey(syncStatusKey,exitence.status)
+            status.value = newName
+        }
     }
 
 

@@ -7,4 +7,5 @@ export interface SettingOption<T=any>{
 	confrimValue?:(value:any)=>boolean  //设置项值确认条件
 	inputs?:any, //输入性设置项的内容
 	choices?:any[]|((target:T,...chooseTarget:any[])=>{value:any,text:string}[]), //选项性设置项的选项或生成选项的目标
+	change?:(oldValue,newValue,target:T)=>void
 }

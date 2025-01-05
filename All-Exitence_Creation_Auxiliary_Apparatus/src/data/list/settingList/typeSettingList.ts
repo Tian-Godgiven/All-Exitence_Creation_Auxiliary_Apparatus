@@ -35,7 +35,7 @@ export let typeSettingList:SettingOption<Type>[] = [
     },
     {
         name:"noDefaultTags",
-        text:"不创建默认的标签属性",
+        text:"不为事物创建默认的标签属性",
         type:'checkBox',
         value:false,
     },{

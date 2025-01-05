@@ -95,6 +95,17 @@ import { isArray } from 'lodash';
 	},{
 		immediate:true
 	})
+
+	//设置的旧值
+	let oldValue = setValue.value
+
+	//同时还会监听target的属性变化
+	watch(()=>target.setting[setOption.name],()=>{
+		const value = target.setting[setOption.name]
+		if(value != setValue.value){
+			setValue.value = value
+		}
+	})
 	
 	//将用户设置的值传入target的设置中
 	function setTarget(){
@@ -113,6 +124,11 @@ import { isArray } from 'lodash';
 			target.setting = {}
 		}
 		target["setting"][setOption.name] = setValue.value
+		//触发该设置的改变事件
+		if(setOption.change){
+			setOption.change(oldValue,setValue.value,target)
+		}
+		oldValue = setValue.value
 	}
 
 	// 确认该设置项的值是否符合要求

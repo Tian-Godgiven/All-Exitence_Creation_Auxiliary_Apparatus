@@ -193,7 +193,7 @@ export function hideInputSuggestion(){
 
 // 判断是否需要输入提示
 export function checkInputSuggestion(inputSuggestionList:InputSuggestionList,input:string){
-    console.log(inputSuggestionList)
+    try{
     if(input == ""){
         return false
     }
@@ -249,11 +249,16 @@ export function checkInputSuggestion(inputSuggestionList:InputSuggestionList,inp
             })
         }
     }
-    
     if(arr.length > 0){
         return arr
     }
     return false
+}
+catch(err){
+    console.error(err)
+}
+    
+    
 }
 
 // 补全功能: 在当前光标后补全text的内容

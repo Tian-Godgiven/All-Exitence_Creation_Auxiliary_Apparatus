@@ -20,7 +20,7 @@
 <script setup lang='ts'>
 import { focusOnEnd } from '@/api/focusOnEnd';
 import { showInputSupport } from '@/hooks/inputSupport/inputSupport';
-import { inject, onMounted, ref, useTemplateRef, watch } from 'vue';
+import { onMounted, ref, useTemplateRef, watch } from 'vue';
 import { checkInputSuggestion, hideInputSuggestion, showInputSuggestion } from '@/hooks/inputSupport/inputSuggestion/inputSuggestion';
 import { addInputLast, addInputLastDiv, deleteInputLast } from '@/api/cursorAbility';
 import { findTargetDivs } from '@/hooks/findTargetDiv';
@@ -34,8 +34,6 @@ import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expr
     //占位符，是否启用输入辅助，输入建议列表
     const {placeholder,inputSupport,inputSuggestionList,mode} = defineProps(
         ["placeholder","inputSupport","inputSuggestionList","mode"])
-    //是否禁用修改
-    const disabled = inject("disabled",false)
     //初始值
     const content = defineModel<any>()
     const emits = defineEmits(["input","blur","focus"])
@@ -57,53 +55,66 @@ import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expr
         showPlaceholder.value = true
     }    
 
+
+
     //初始化内容
     onMounted(()=>{
-        //如果是禁用状态，则监听content变化
-        if(disabled){
-            watch(content,()=>{
-                const doms = translateToFrontEndContent(content.value)
-                loadDom(doms)
-            },{
-                immediate:true,
-            })
+        // 未传入内容时显示placeholder
+        if(content.value == "" || content.value?.length==0 || !content.value){
+            loadPlaceholder()
         }
-        else{
-            // 未传入内容时显示placeholder
-            if(content.value == "" || content.value?.length==0 || !content.value){
-                loadPlaceholder()
-            }
-            // 否则显示content的值
-            else{ 
-                showPlaceholder.value = false
-                const doms = translateToFrontEndContent(content.value)
-                loadDom(doms)
-            }
+        // 否则显示content的值
+        else{ 
+            showPlaceholder.value = false
+            const doms = translateToFrontEndContent(content.value)
+            loadDom(doms)
         }
+        //默认开始监听
+        unWatch = watch(content,()=>{ 
+            const doms = translateToFrontEndContent(content.value)
+            loadDom(doms)
+        })
+
+        
     })
     //向textArea中加载dom
     function loadDom(doms:Node[]|undefined){
-        if(!doms){return;}
+        if(!doms){
+            return;
+        }
         //清空
         textArea.value!.innerText = ""
         doms.forEach((dom:Node) => {
             textArea.value!.appendChild(dom)
         });
+        //如果内容为空
+        const text = textArea.value!.innerText
+        if(text.trim() == ""){
+            loadPlaceholder()
+        }
+        else{
+            showPlaceholder.value = false
+        }
     }
 
     //同步前端内容到content中
     function syncContent(){
+        var newContent
         //如果是字符串模式则同步字符串内容
         if(mode=="string"){
-            content.value = textArea.value!.innerText
+            newContent = textArea.value?.innerText
+            content.value = newContent
         }
         //否则向其中同步文件内容
         else{
+            if(!textArea.value)return;
             const nodes = textArea.value!.childNodes
             //content内应当存储文件内容
             const fileContent = translateToFileContent(nodes)
             content.value = fileContent
+            newContent = fileContent
         }
+        return newContent
     }
 
     
@@ -112,7 +123,6 @@ import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expr
         //同步输入位置
         const selection = window.getSelection();
         if(selection) selectionRange = selection.getRangeAt(0);
-
         const newInput = event.data
         listenInput(newInput)
     }
@@ -167,6 +177,9 @@ import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expr
         
     }
 
+    //内容监听
+    let unWatch:any
+
     //移动光标到其他位置时清空有效输入,同时记录当前光标位置
     let oldPosition:any
     function clickEvent(){
@@ -186,9 +199,6 @@ import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expr
     }
     //取消聚焦
     function onBlur(){
-        
-        //先同步内容，再设置placeholder
-        syncContent()
         // 为空时显示placeholder
         if(content.value == "" || !content.value){
             loadPlaceholder()
@@ -197,11 +207,18 @@ import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expr
         else{
             showPlaceholder.value = false
         }
-        
+        //开始监听
+        unWatch = watch(content,()=>{ 
+            const doms = translateToFrontEndContent(content.value)
+            loadDom(doms)
+        })
         emits("blur",content.value)
     }
     //聚焦
     function onFocus(){
+        //取消监听
+        if(unWatch){unWatch()}
+        
         //取消placeholder
         if(showPlaceholder.value){
             //清空placeholder
@@ -216,7 +233,6 @@ import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expr
         }
         // 重置有效输入
         effectInput = ""
-        syncContent()
         emits("focus",content.value)
     }
     //向该输入区中添加一个dom元素
