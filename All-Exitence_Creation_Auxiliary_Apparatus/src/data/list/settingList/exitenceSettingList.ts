@@ -28,7 +28,6 @@ export let exitenceSettingList:SettingOption<Exitence>[] = [
             if(oldStatus){
                 delete oldStatus.setting["syncWithName"]
             }
-            console.log(oldStatus,exitence.status)
             //给新的属性这个setting,值为事物和分类的key数组
             if(!newValue){return;}
             const newStatus = getExitenceStatusByKey(newValue,exitence.status)

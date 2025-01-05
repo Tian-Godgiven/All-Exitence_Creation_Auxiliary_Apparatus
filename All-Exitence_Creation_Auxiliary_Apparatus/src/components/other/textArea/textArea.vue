@@ -49,9 +49,16 @@ import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expr
         
     //显示占位符
     function loadPlaceholder(){
-        const dom = document.createElement('text')
-        dom.innerHTML = placeholder??""
-        loadDom([dom])
+        if(placeholder && placeholder.trim() != ""){
+            const dom = document.createElement('text')
+            dom.innerHTML = placeholder??""
+            loadDom([dom])
+        }
+        //如果占位符为空，则显示空内容
+        else{
+            textArea.value!.innerText = ""
+        }
+        
         showPlaceholder.value = true
     }    
 
@@ -79,15 +86,13 @@ import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expr
     })
     //向textArea中加载dom
     function loadDom(doms:Node[]|undefined){
-        if(!doms){
-            return;
-        }
+        if(!doms){return;}
         //清空
         textArea.value!.innerText = ""
         doms.forEach((dom:Node) => {
             textArea.value!.appendChild(dom)
         });
-        //如果内容为空
+        //如果加载的内容为空，则会尝试加载占位符
         const text = textArea.value!.innerText
         if(text.trim() == ""){
             loadPlaceholder()

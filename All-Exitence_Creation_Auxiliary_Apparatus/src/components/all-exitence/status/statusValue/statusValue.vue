@@ -16,8 +16,6 @@ import { translateToTextContent } from '@/hooks/expression/textAreaContent';
 	if(disabled){
 		provide("disabled",true)
 	}
-
-	console.log(status)
 	
 	//如果status中的值为空，则使用typeStatus中的默认值
 	if(!status.value || status.value == undefined){
@@ -48,7 +46,6 @@ import { translateToTextContent } from '@/hooks/expression/textAreaContent';
 	watch(()=>status.value,(value:any)=>{
 		//事物设置：指定属性值与事物名称同步
 		const syncWithName = statusSetting.value?.syncWithName
-		console.log(status)
 		if(syncWithName){
 			const [typeKey,exitenceKey] = syncWithName
 			const type = nowAllExitence.types.find((type)=>type.__key == typeKey)
