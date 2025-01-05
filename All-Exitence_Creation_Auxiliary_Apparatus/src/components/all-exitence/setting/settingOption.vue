@@ -176,15 +176,16 @@ import { isArray } from 'lodash';
 	.setOption{
 		width: 100%;
 		display: flex;
-		flex-wrap: wrap;
 		padding: 10px 0;
 		.text{
+			flex-shrink: 0;
 			line-height: 100%;
 			max-width: 50%;
 			text-wrap: wrap;
 		}
 		.inner{
-			max-width: 50%;
+			flex-shrink: 0;
+			flex-grow: 1;
 			min-width: 50%;
 			flex-wrap: nowrap;
 		}
@@ -195,6 +196,10 @@ import { isArray } from 'lodash';
 			margin-top: auto;
 			.multiInput{
 				display: flex;
+				.inputText{
+					line-height: 100%;
+					flex-shrink: 0;
+				}
 			}
 		}
 	}
