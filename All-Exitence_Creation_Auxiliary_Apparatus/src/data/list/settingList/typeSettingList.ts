@@ -5,6 +5,12 @@ import { SettingOption } from "@/interfaces/SettingOption"
 // 属性设置的内容项表
 export let typeSettingList:SettingOption<Type>[] = [
     {
+        name:"noDefaultTags",
+        text:"不为事物创建默认的标签属性",
+        type:'checkBox',
+        value:false,
+    },
+    {
         name:"syncWithName",
         text:"指定输入类属性值与事物名称同步",
         type:'choose',
@@ -34,11 +40,6 @@ export let typeSettingList:SettingOption<Type>[] = [
         }
     },
     {
-        name:"noDefaultTags",
-        text:"不为事物创建默认的标签属性",
-        type:'checkBox',
-        value:false,
-    },{
         name:"nickName",
         text:"指定标签类属性值为事物的别名",
         type:"choose",

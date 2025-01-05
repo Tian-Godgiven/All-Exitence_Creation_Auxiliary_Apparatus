@@ -3,7 +3,9 @@
 		class="type"
 		@longTap="longTap"
 		:buttons="buttons">
-		<template #title>{{ type.name }}</template>
+		<template #title>
+			<div class="text">{{ type.name }}</div>
+		</template>
 		<template #inner>
 			<groupVue v-for="(group) in type.groups" :group="group"></groupVue>
 			<div v-for="(exitence,index) in noGroupExitence">
@@ -85,11 +87,12 @@ import { showControlPanel } from "@/hooks/controlPanel";
 
 <style lang="scss" scoped>
 @use "@/static/style/leftPage.scss";
-	.titleBar{
-		@extend .leftPageMidTitleBar;
+	.type{
+		>:deep(.titleBar){
+			@extend .leftPageMidTitleBar;
+		}
 	}
 	.separator{
 		@extend .leftPageSeparator;
-		
 	}
 </style>

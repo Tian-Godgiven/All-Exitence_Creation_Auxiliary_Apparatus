@@ -57,8 +57,4 @@ import { ref } from 'vue';
 </script>
 
 <style scoped lang='scss'>
-@use "@/static/style/leftPage.scss";
-	.titleBar{
-		@extend .leftPageMidTitleBar;
-	}
 </style>

@@ -92,6 +92,10 @@ import { isArray } from 'lodash';
 		else if(setOption.type == "choose"){
 			setValue.value = ""
 		}
+		//使用初始值进行一次change
+		if(setOption.change){
+			setOption.change(null,setValue.value,target)
+		}
 	},{
 		immediate:true
 	})

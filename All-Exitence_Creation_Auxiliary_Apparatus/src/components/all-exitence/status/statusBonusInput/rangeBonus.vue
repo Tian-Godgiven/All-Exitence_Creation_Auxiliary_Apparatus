@@ -64,7 +64,7 @@ import downLineInputVue from '@/components/other/input/downLineInput.vue';
 	changeStatus()
 </script>
  
-<style lang="scss">
+<style lang="scss" scoped>
 	@use "@/static/style/components/inputs.scss";
 	.range{
 		.top{

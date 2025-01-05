@@ -3,7 +3,7 @@
 		class="chapter"
 		@longTap="longtap"
 		:buttons="buttons">
-		<template v-slot:title>{{ chapter.name }}</template>
+		<template v-slot:title><div class="text">{{ chapter.name }}</div></template>
 		<template v-slot:inner>
 			<!-- 章节内的文本 -->
 			<div v-for="(article,index) in articles">
@@ -86,7 +86,7 @@ import { showControlPanel } from "@/hooks/controlPanel";
 <style lang="scss" scoped>
 @use "@/static/style/leftPage.scss";
 	.chapter{
-		.titleBar{
+		>:deep(.titleBar){
 			@extend .leftPageMidTitleBar;
 		}
 	}

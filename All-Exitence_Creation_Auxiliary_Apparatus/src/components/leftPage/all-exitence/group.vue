@@ -71,8 +71,12 @@ import { showControlPanel } from '@/hooks/controlPanel';
 
 <style lang="scss" scoped>
 @use "@/static/style/leftPage.scss";
+@use "@/static/style/global.scss" as global;
 	.group{
-		@extend .leftPageGroup;
+		border: global.$antiBgColor 5px solid;
+		:deep(.titleBar){
+			@extend .leftPageGroup;
+		}
 	}
 	.separator{
 		@extend .leftPageSeparator;

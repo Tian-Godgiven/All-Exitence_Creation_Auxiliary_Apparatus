@@ -80,16 +80,13 @@
 
 // 用于分组
 .leftPageGroup{
-	border: global.$antiBgColor 5px solid;
-	.titleBar{
-		background-color: global.$bgColor70;
-		height: 60px;
-		@extend .titleBar;
-		.titleName{
-			height: 55px;
-			font-style: italic;
-			font-size: global.$smallFontSize;
-		}
+	background-color: global.$bgColor70;
+	height: 60px;
+	@extend .titleBar;
+	.titleName{
+		height: 55px;
+		font-style: italic;
+		font-size: global.$smallFontSize;
 	}
 }
 
