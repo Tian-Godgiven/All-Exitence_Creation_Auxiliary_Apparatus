@@ -41,6 +41,9 @@
             mask:false,
             vueName:"updateStatus",
             buttons:[],
+            size:{
+                height:"60%"
+            },
             props:{
                 status,
                 typeStatus,

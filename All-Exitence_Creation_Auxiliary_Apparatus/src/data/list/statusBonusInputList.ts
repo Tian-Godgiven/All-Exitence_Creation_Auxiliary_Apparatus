@@ -6,6 +6,7 @@ import childStatusBonusVue from "@/components/all-exitence/status/statusBonusInp
 import selectBonusVue from "@/components/all-exitence/status/statusBonusInput/selectBonus.vue";
 import chooseBonusVue from "@/components/all-exitence/status/statusBonusInput/chooseBonus.vue";
 import relationBonusVue from "@/components/all-exitence/status/statusBonusInput/relationBonus.vue";
+import tagsBonusVue from "@/components/all-exitence/status/statusBonusInput/tagsBonus.vue";
 export let statusBonusInputList:{[key:string]:any} = {
 	"range":rangeBonusVue,
 	"select":selectBonusVue,
@@ -14,5 +15,6 @@ export let statusBonusInputList:{[key:string]:any} = {
 	"switch":switchBonusVue,
 	"radio":radioBonusVue,
 	"relation":relationBonusVue,
-	"status":childStatusBonusVue
+	"status":childStatusBonusVue,
+	"tags":tagsBonusVue
 }
