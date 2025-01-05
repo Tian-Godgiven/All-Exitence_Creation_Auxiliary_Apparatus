@@ -38,7 +38,7 @@ import { nanoid } from 'nanoid';
 	// 确认编辑属性
 	function confirm(newStatus:Status){
 		// 返回这些属性,并给新属性添加__key
-		if(!status.__key){status.__key == nanoid()}
+		if(!tmpStatus.__key){tmpStatus.__key = nanoid()}
 		const newTypeStatus = JSON.parse(JSON.stringify(toRaw(newStatus)))
 		returnValue(newTypeStatus)
 		closePopUp(popUp)

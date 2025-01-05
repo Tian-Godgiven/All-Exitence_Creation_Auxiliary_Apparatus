@@ -55,7 +55,6 @@ import { showPopUp } from '@/hooks/pages/popUp';
 
 	//改变名称
 	function changeName(newName:string){
-		console.log(newName)
 		changeExitenceName(exitence,newName)
 	}
 	
@@ -71,8 +70,8 @@ import { showPopUp } from '@/hooks/pages/popUp';
 				exitence:exitence,
 				type:type
 			},
-			returnValue(newSetting){
-				exitence.setting = newSetting
+			returnValue(newExitence){
+				Object.assign(exitence,newExitence)
 			}
 		})
 	}

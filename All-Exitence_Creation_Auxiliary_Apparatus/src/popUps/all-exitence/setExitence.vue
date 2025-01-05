@@ -19,7 +19,7 @@ import { cloneDeep } from 'lodash';
     import { ref, provide } from 'vue';
     const {props,popUp,returnValue} = defineProps(["props","popUp","returnValue"])
     const {exitence,type} = props
-    //临时修改的对象
+    //临时的修改对象
     const tmpExitence = cloneDeep(exitence)
     //设置箱
     const settingBox = ref()
@@ -32,14 +32,14 @@ import { cloneDeep } from 'lodash';
     }
     provide("settingProps",settingProps)
 
-    //返回这个设置值
+    //确认时，返回这样一个修改对象
     function confirm(){
         // 要求属性设置合理
 		if(!settingBox.value.checkSet()){
 			showQuickInfo("属性设置不正确")
 			return false
 		}
-        returnValue(tmpExitence.setting)
+        returnValue(tmpExitence)
         closePopUp(popUp)
     }
 </script>

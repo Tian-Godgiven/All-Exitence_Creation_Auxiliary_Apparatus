@@ -28,7 +28,6 @@
         selectTarget = computed(()=>target)
     }
 
-
     //暴露一个检测设置项的值的方法
     defineExpose({
 		"checkSet":checkSetOption

@@ -16,6 +16,8 @@ import { translateToTextContent } from '@/hooks/expression/textAreaContent';
 	if(disabled){
 		provide("disabled",true)
 	}
+
+	console.log(status)
 	
 	//如果status中的值为空，则使用typeStatus中的默认值
 	if(!status.value || status.value == undefined){
@@ -42,21 +44,23 @@ import { translateToTextContent } from '@/hooks/expression/textAreaContent';
 		}
 	})
 
-	
-	//事物设置：指定属性值与事物名称同步
-	const tmp = statusSetting.value?.syncWithName
-	if(tmp){
-		const [typeKey,exitenceKey] = tmp
-		const type = nowAllExitence.types.find((type)=>type.__key == typeKey)
-		const exitence = type?.exitence.find((exitence)=>exitence.__key == exitenceKey)
-		if(exitence){
-			//监听属性值的改变
-			watch(()=>status.value,(value:any)=>{
+	//监听属性值的改变
+	watch(()=>status.value,(value:any)=>{
+		//事物设置：指定属性值与事物名称同步
+		const syncWithName = statusSetting.value?.syncWithName
+		console.log(status)
+		if(syncWithName){
+			const [typeKey,exitenceKey] = syncWithName
+			const type = nowAllExitence.types.find((type)=>type.__key == typeKey)
+			const exitence = type?.exitence.find((exitence)=>exitence.__key == exitenceKey)
+			if(exitence){
 				const newName = translateToTextContent(value)
 				changeExitenceName(exitence,newName,true)
-			})
+			}
 		}
-	}
+	})
+
+	
 
 </script>
 
