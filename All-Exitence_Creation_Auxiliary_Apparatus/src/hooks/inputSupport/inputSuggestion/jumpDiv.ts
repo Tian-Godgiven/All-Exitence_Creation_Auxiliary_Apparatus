@@ -31,7 +31,8 @@ export function jumpDivHtml(data:any){
             const tmp2 = setting?.autoCompleteNickName
             if(tmp2 == true && data?.nickName == true){
                 //判断该别名是否存在于别名属性中
-                const status = getExitenceStatusByKey(tmp2,exitence.status,type.typeStatus)
+                const statusKey = setting?.nickName
+                const status = getExitenceStatusByKey(statusKey,exitence.status,type.typeStatus)
                 if(isArray(status.value) && status.value.includes(data.text)){
                     return data.text
                 }

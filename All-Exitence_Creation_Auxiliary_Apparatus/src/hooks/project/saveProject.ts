@@ -38,10 +38,10 @@ async function saveProject(){
         const projectPath = "projects/"+ nowProjectPath.value
         //当前万物
         const allExitence = nowAllExitence
-        await writeFileAtPath(projectPath,"all-exitence.json",JSON.stringify(toRaw(allExitence)))
+        await writeFileAtPath(projectPath,"all-exitence.json",toRaw(allExitence))
         //文章
         const allArticles = nowAllArticles
-        await writeFileAtPath(projectPath,"all-articles.json",JSON.stringify(toRaw(allArticles)))
+        await writeFileAtPath(projectPath,"all-articles.json",toRaw(allArticles))
         //保存项目data
         await saveProjectData(projectPath)
         //项目设置

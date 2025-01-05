@@ -75,7 +75,7 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
     }
 
     // 显示编辑分类页面
-    export function updateType(type:Type){
+    export function updateTypePopUp(type:Type){
         showPopUp({
             vueName:"updateType",
             mask:true,
@@ -92,16 +92,23 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
     }
 
     // 删除分类
-    export function deleteType(type:Type){
+    export function deleteTypePopUp(type:Type){
         //进行提示
         showAlert({
             info:`删除分类${type.name}及其中的所有内容？`,
             "confirm":()=>{
-                //从项目中删除该分类
-                const index = nowAllExitence.types.indexOf(type)
-                nowAllExitence.types.splice(index,1)
+                deleteType(type)
             }
         })
+    }
+    export function deleteType(type:Type){
+        //分别删除其中的事物
+        type.exitence.forEach((exitence:Exitence)=>{
+            deleteExitence(exitence)
+        })
+        //再从项目中删除该分类
+        const index = nowAllExitence.types.indexOf(type)
+        nowAllExitence.types.splice(index,1)
     }
 
 // 事物相关
@@ -165,6 +172,7 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
                 return tmp
             }
         })
+        if(!status){return false}
         //只需要事物属性的值或key时，无需传入allTypeStatus
         if(!allTypeStatus){
             return status
@@ -182,7 +190,7 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
         })()
 
         return {
-            name:status?.name || typeStatus.name,
+            name:status?.name || typeStatus?.name || null,
             value:("value" in status)? status.value : typeStatus.value,
             valueType:status["valueType"] || typeStatus["valueType"],
             setting:statusSetting
@@ -195,14 +203,16 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
             "info":`删除${type.name}中的事物${exitence.name}？\n
                 这会使得所有指向该事物的索引失效！`,
             confirm:()=>{
-                deleteExitence(type,exitence)
+                deleteExitence(exitence,type)
             }
         })
     }
     // 删除指定事物
-    export function deleteExitence(type:Type,exitence:Exitence){
-        const index = type.exitence.indexOf(exitence)
-        type.exitence.splice(index,1)
+    export function deleteExitence(exitence:Exitence,type?:Type){
+        if(type){
+            const index = type.exitence.indexOf(exitence)
+            type.exitence.splice(index,1)
+        }
         //删除事物的输入建议
         deleteExitenceInputSuggestion(exitence.__key)
     }
