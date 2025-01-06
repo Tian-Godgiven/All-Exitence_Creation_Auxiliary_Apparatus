@@ -64,6 +64,7 @@ import { isArray } from 'lodash';
 
 	//绑定到组件上的动态值
 	let setValue = ref()
+	let beginValue:any
 	//设置其初始值，优先顺序为：
 	//给出的setting中该设置项的值 → 设置项的默认值 → null
 	//由于切换属性类型时，并不会重新创建设置项，因此需要监听设置项的变化从而重置绑定值
@@ -83,7 +84,7 @@ import { isArray } from 'lodash';
 		else if(setOption.type == "input"){
 			//如果存在inputs，则为多项输入框
 			if(setOption.inputs){
-				setValue.value = []
+				setValue.value = new Array(setOption.inputs.length).fill(null)
 			}
 			else{
 				setValue.value = ""
@@ -96,6 +97,8 @@ import { isArray } from 'lodash';
 		if(setOption.change){
 			setOption.change(null,setValue.value,target)
 		}
+		//设置初始值
+		beginValue = setValue.value
 	},{
 		immediate:true
 	})
@@ -103,36 +106,40 @@ import { isArray } from 'lodash';
 	//设置的旧值
 	let oldValue = setValue.value
 
-	//同时还会监听target的属性变化
-	watch(()=>target.setting[setOption.name],()=>{
-		const value = target.setting[setOption.name]
-		if(value != setValue.value){
-			setValue.value = value
-		}
-	})
+	//测试：这东西有用吗？ //同时还会监听target的设置值的外界变化
+	// watch(()=>target.setting,()=>{
+	// 	const value = target.setting[setOption.name]
+	// 	if(value && value != setValue.value){
+	// 		setValue.value = value
+	// 	}
+	// },{
+	// 	deep:true,
+	// })
 	
 	//将用户设置的值传入target的设置中
 	function setTarget(){
-		// 不会修改属性中并不存在的设置项
-		if(!settingValue[setOption.name] && setValue.value == null){
-			return false
-		}
-		// 也不会在并没有修改设置值时，为其添加默认值
-		// 也就是说此时还没有添加这个设置值，并且也没有实际上地设置这个设置值
-		// 再简单点说：如果只是点了一下输入框，但没有改变输入内容时，不会将默认的值设置上去
-		if(target["setting"][setOption.name]==null && toRaw(setValue.value) == setOption.value){
-			return false
-		}
 		//防呆
 		if(!target.setting){
 			target.setting = {}
 		}
+		// 不会修改属性中并不存在的设置项
+		if(!settingValue[setOption.name] && setValue.value == null){
+			return false
+		}
+
+		// 如果没有改变值时，不会将默认的值设置上去
+		if(setValue.value == beginValue){
+			return false
+		}
+
 		target["setting"][setOption.name] = setValue.value
 		//触发该设置的改变事件
 		if(setOption.change){
 			setOption.change(oldValue,setValue.value,target)
 		}
 		oldValue = setValue.value
+
+		console.log(target["setting"])
 	}
 
 	// 确认该设置项的值是否符合要求

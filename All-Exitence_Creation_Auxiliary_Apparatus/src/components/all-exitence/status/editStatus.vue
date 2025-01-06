@@ -2,14 +2,7 @@
 	<div class="editStatus">
 		<div class="statusInfo">
 			<!-- 属性名 -->
-			<div class="statusName">
-				<textAreaVue
-					mode="string"
-					v-model="status.name"
-					placeholder="属性名"/>
-			</div>
-			<div class="separator">：</div>
-
+			<statusNameVue :status="status" :typeStatus="typeStatus" ></statusNameVue>
 			<!-- 属性值 -->
 			<statusValueVue :status="status" :typeStatus="typeStatus" class="statusValue"></statusValueVue>
 		</div>
@@ -50,13 +43,14 @@
 	import { statusSettingList } from "@/data/list/settingList/statusSettingList";
 	import statusValueVue from '../status/statusValue/statusValue.vue';
 	import { statusBonusInputList } from '@/data/list/statusBonusInputList';
-	import textAreaVue from '@/components/other/textArea/textArea.vue';
+	import statusNameVue from './statusName.vue';
 	import { showQuickInfo } from '@/api/showQuickInfo';
 	import { ElOption, ElSelect } from 'element-plus';
 	import { cloneDeep } from 'lodash';
 
 	// 需要编辑的属性初值
     let status = inject<any>("status")
+	console.log(status)
     let typeStatus = inject<any>("typeStatus")
     if(!status.name){
         status.name = cloneDeep(typeStatus.name);
@@ -133,13 +127,6 @@
 			display: flex;
 			min-height: 40px;
 			width: 100%;
-			.statusName{
-				width: calc(150px - 1rem);
-				box-sizing: border-box;
-			}
-			.separator{
-				min-width: 1rem;
-			}
 			.statusValue{
 				width: calc(100% - 150px);
 			}

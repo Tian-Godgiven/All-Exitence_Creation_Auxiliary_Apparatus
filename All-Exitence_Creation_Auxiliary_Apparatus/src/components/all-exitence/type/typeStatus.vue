@@ -1,14 +1,7 @@
 <template>
 	<div class="status">
 		<!-- 属性名 -->
-		<div class="name">
-			<textAreaVue
-				mode="string"
-				v-model="status.name"
-				placeholder="属性名">
-			</textAreaVue>
-		</div>
-		<div class="separator">：</div>
+		<statusNameVue :status="status"></statusNameVue>
 		<!-- 属性值 -->
 		<statusValueVue :status="status" :typeStatus="status"  class="value"></statusValueVue>
 		
@@ -21,12 +14,12 @@
 
 <script setup lang="ts" name="typeStatus">
 import { inject } from 'vue';
+import statusNameVue from '../status/statusName.vue';
 import statusValueVue from '../status/statusValue/statusValue.vue';
-import textAreaVue from '@/components/other/textArea/textArea.vue';
 import { showPopUp } from '@/hooks/pages/popUp';
 import Status from '@/interfaces/exitenceStatus';
-	const model = defineModel("status")
-	let status:any = model.value
+	let {status} = defineProps(["status"])
+	console.log(status)
 	const emits = defineEmits(["deleteStatus"])
 	//删除属性
 	function deleteStatus(){
@@ -47,7 +40,7 @@ import Status from '@/interfaces/exitenceStatus';
                 allTypeStatus
             },
             returnValue:(newStatus:Status)=>{
-				status = newStatus
+				Object.assign(status,newStatus)
 			}
         })
 	}
@@ -56,13 +49,6 @@ import Status from '@/interfaces/exitenceStatus';
 <style lang="scss" scoped>
 	.status{
 		display: flex;
-		.name{
-			width:calc(150px - 1rem);
-			box-sizing: border-box;
-		}
-		.separator{
-			min-width: 1rem;
-		}
 		.value{
 			width: calc(100% - 200px);
 		}

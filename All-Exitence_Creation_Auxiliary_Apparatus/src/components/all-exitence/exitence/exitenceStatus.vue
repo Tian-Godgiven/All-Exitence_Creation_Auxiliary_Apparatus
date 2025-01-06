@@ -2,10 +2,7 @@
     <div>
         <!-- 显示属性 -->
         <div :key="key" class="exitenceStatus" v-touch:longtap="showUpdateStatus">
-            <div class="name">
-                {{ statusName }}
-            </div>
-            <div class="separator">：</div>
+            <statusNameVue v-if="!ifNoName" :status="status" :typeStatus="typeStatus" :disabled="true"></statusNameVue>
             <!-- 属性值 -->
             <statusValueVue :status="status" :typeStatus="typeStatus" :disabled="disabled" class="value"></statusValueVue>
         </div>
@@ -14,6 +11,7 @@
 
 <script setup lang='ts'>
     import { computed, inject, ref} from 'vue';
+    import statusNameVue from '../status/statusName.vue';
     import statusValueVue from '../status/statusValue/statusValue.vue';
     import { getTypeStatusByKey } from '@/hooks/all-exitence/allExitence';
     import Status from '@/interfaces/exitenceStatus';
@@ -25,9 +23,17 @@
     const type = inject<any>("type")
     //获取事物所在的分类的属性
 	let typeStatus = getTypeStatusByKey(status.__key,type.typeStatus)
-    const statusName = computed(()=>{
-        return status.name || typeStatus?.name
+
+    //属性设置：在事物中不显示属性名
+    const ifNoName = computed(()=>{
+        const setting = {...typeStatus?.setting,...status?.setting}
+        const tmp2 = setting?.noStatusNameInExitence
+        if(tmp2 == true){
+            return true
+        }
+        return false
     })
+
 
     //长按弹出更新属性
     const allStatus = inject("allStatus")

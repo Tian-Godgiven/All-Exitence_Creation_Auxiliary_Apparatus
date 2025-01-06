@@ -12,9 +12,9 @@
 		<div class="inner">
 			<typeStatusVue 
 				@deleteStatus="deleteStatus(index)" 
-				v-for="(,index) in typeStatus" 
-				:key="index"
-				v-model:status="typeStatus[index]">
+				v-for="(status,index) in typeStatus" 
+				:key="status.__key"
+				:status="status">
 			</typeStatusVue>
 
 			<!-- 创建新属性 -->
@@ -56,11 +56,11 @@ import { nanoid } from 'nanoid';
     let {type} = props
 
 	//type存在则创建深拷贝，不存在则创建空type
-	const tmpType = type? reactive(cloneDeep(type)) : {
+	const tmpType = type? reactive(cloneDeep(type)) : reactive({
 		name:"",
 		typeStatus:reactive([]),
 		setting:reactive({})
-	}
+	})
 	
 	const {typeStatus,setting} = tmpType
 	const name = ref(tmpType.name)

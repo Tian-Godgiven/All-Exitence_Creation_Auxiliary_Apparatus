@@ -7,6 +7,7 @@ import { jumpDivHtml } from "./jumpDiv";
 import { Type } from "@/class/Type";
 import { Exitence } from "@/class/Exitence";
 import { getExitenceStatusByKey } from "@/hooks/all-exitence/allExitence";
+import { translateToTextContent } from "@/hooks/expression/textAreaContent";
 
 //输入建议单元in前端
 export interface suggestionItem{
@@ -152,6 +153,11 @@ export function addExitenceInputSuggestion(type:Type,exitence:Exitence){
 export function changeExitenceInputSuggestion(exitenceKey:string,type:"name"|"nickName",value:any){
     const list = getTargetList("exitence")
     if(!list.exitence[exitenceKey])return false
+
+    //防呆
+    if(typeof value != "string"){
+        value = translateToTextContent(value)
+    }
     //改变事物的名称
     if(type == "name"){
         list.exitence[exitenceKey].text = value
@@ -209,6 +215,7 @@ export function checkInputSuggestion(inputSuggestionList:InputSuggestionList,inp
     for(let key in allExitence){
         //先判断是否符合事物本身的text
         const item = allExitence[key]
+        console.log(item,item.text)
         if(item.text.startsWith(input)){
             arr.push({
                 text:item.text,

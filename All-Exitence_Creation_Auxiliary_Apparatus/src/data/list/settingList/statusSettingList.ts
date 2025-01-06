@@ -69,7 +69,13 @@ export let statusSettingList:SettingOption<Status>[] = [
 	{
 		name:"insteadOfName",
 		text:"取代属性名显示：",
-		type:"input",
+		type:"input"
+	},
+	{
+		name:"noStatusNameInExitence",
+		text:"在事物中不显示属性名",
+		type:"checkBox",
+		value:false
 	},
 	{
 		"name":"relationTitle",
