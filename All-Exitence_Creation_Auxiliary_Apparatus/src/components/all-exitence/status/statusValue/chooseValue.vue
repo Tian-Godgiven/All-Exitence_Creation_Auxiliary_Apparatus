@@ -29,14 +29,14 @@ import { ElCheckboxGroup,ElCheckbox } from 'element-plus';
 	}
 	// 选项数组
 	const choiceList = computed(()=>{
-		return statusSetting['choices'] ?? []
+		return statusSetting.choices ?? []
 	})
 	// 选择数量
 	const min = computed(()=>{
-		return statusSetting['chooseNum'][0]
+		return statusSetting.chooseNum[0]
 	})
 	const max = computed(()=>{
-		return statusSetting['chooseNum'][1]
+		return statusSetting.chooseNum[1]
 	})
 
 	//属性设置：使用灯开关表示选项

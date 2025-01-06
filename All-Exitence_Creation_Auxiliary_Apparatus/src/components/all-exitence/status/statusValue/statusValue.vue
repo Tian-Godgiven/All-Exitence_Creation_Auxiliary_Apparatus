@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts" name="">
-import {computed, provide, reactive, watch } from 'vue'; 
+import {computed, provide, watch } from 'vue'; 
 import { statusValueVueList } from '@/data/list/statusValueList';
 import { changeExitenceName, changeExitenceNickName, nowAllExitence } from '@/hooks/all-exitence/allExitence';
 import { translateToTextContent } from '@/hooks/expression/textAreaContent';
@@ -31,18 +31,15 @@ import { translateToTextContent } from '@/hooks/expression/textAreaContent';
 		return status["valueType"] || typeStatus["valueType"]
 	})
 	//优先使用两者覆盖后的setting
-	const statusSetting:any = reactive({})
-	watch(status.setting,()=>{
+	const statusSetting:any = computed(()=>{
 		//如果两者不同，则使用覆盖后的setting
 		if(typeStatus && typeStatus != status){
-			Object.assign(statusSetting,{...typeStatus.setting,...status?.setting})
+			return {...typeStatus.setting,...status?.setting}
 		}
 		//否则使用status中的setting
 		else{
-			Object.assign(statusSetting,status.setting || {})
+			return status.setting || {}
 		}
-	},{
-		deep:true,
 	})
 
 	//监听属性值的改变

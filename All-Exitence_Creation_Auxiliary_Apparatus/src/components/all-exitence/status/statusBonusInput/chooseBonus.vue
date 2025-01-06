@@ -51,6 +51,7 @@ import inputVue from '@/components/other/input/downLineInput.vue';
 	})
 	const setChooseNum = ()=>{
 		status['setting']['chooseNum'] = [chooseMin.value,chooseMax.value]
+		console.log(status.setting)
 	}
 	setChooseNum()
 	// 选项
