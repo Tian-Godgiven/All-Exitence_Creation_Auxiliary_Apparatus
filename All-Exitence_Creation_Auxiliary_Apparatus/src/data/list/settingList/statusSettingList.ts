@@ -16,13 +16,13 @@ export let statusSettingList:SettingOption<Status>[] = [
 			return false
 		}
 	},
-	{
-		name:"exitenceBox",
-		value:["[","]"],
-		text:"事物",
-		type:"input",
-		inputs:["左侧：","右侧："],
-	},
+	// {做不出来啊！
+	// 	name:"exitenceBox",
+	// 	value:["[","]"],
+	// 	text:"事物",
+	// 	type:"input",
+	// 	inputs:["左侧：","右侧："],
+	// },
 	{
 		name:"unit",
 		value:null,

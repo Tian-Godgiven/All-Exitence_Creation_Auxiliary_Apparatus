@@ -17,7 +17,7 @@ import textAreaVue from '@/components/other/textArea/textArea.vue';
 import { globalInputSuggestionList, projectInputSuggestionList } from '@/hooks/inputSupport/inputSuggestion/inputSuggestion';
 	const {status,statusSetting} = defineProps(["status","statusSetting"])
 
-	// 属性设置：聚焦不显示显示高亮输入框
+	// 属性设置：聚焦不显示高亮输入框
 	const ifHoverBox = computed(()=>{
 		if(statusSetting.hoverBox == false){
 			return false

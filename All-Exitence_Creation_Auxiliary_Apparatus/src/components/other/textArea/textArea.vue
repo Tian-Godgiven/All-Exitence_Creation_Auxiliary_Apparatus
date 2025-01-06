@@ -84,12 +84,13 @@ import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expr
 
         
     })
+
     //向textArea中加载dom
     function loadDom(doms:Node[]|undefined){
         if(!doms){return;}
         //清空
         textArea.value!.innerText = ""
-        doms.forEach((dom:Node) => {
+        doms.forEach((dom:any) => {
             textArea.value!.appendChild(dom)
         });
         //如果加载的内容为空，则会尝试加载占位符
@@ -274,8 +275,6 @@ import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expr
         const contentDom = findTargetDivs(textArea.value,[],domClass,getRule)
         return contentDom
     }
-    
-    
     
 </script>
 

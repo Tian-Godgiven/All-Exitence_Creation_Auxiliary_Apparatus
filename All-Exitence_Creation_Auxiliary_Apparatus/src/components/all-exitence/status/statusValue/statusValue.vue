@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts" name="">
-import {computed, provide, watch } from 'vue'; 
+import {computed, provide, reactive, watch } from 'vue'; 
 import { statusValueVueList } from '@/data/list/statusValueList';
 import { changeExitenceName, changeExitenceNickName, nowAllExitence } from '@/hooks/all-exitence/allExitence';
 import { translateToTextContent } from '@/hooks/expression/textAreaContent';
@@ -31,21 +31,24 @@ import { translateToTextContent } from '@/hooks/expression/textAreaContent';
 		return status["valueType"] || typeStatus["valueType"]
 	})
 	//优先使用两者覆盖后的setting
-	const statusSetting = computed(()=>{
+	const statusSetting:any = reactive({})
+	watch(status.setting,()=>{
 		//如果两者不同，则使用覆盖后的setting
 		if(typeStatus && typeStatus != status){
-			return {...typeStatus.setting,...status?.setting}
+			Object.assign(statusSetting,{...typeStatus.setting,...status?.setting})
 		}
 		//否则使用status中的setting
 		else{
-			return status.setting || {}
+			Object.assign(statusSetting,status.setting || {})
 		}
+	},{
+		deep:true,
 	})
 
 	//监听属性值的改变
 	watch(()=>status.value,(value:any)=>{
 		//事物设置：指定属性值与事物名称同步
-		const syncWithName = statusSetting.value?.["exitenceSetting-syncWithName"]
+		const syncWithName = statusSetting?.["exitenceSetting-syncWithName"]
 		if(syncWithName){
 			const [typeKey,exitenceKey] = syncWithName
 			const type = nowAllExitence.types.find((type)=>type.__key == typeKey)
@@ -56,7 +59,7 @@ import { translateToTextContent } from '@/hooks/expression/textAreaContent';
 			}
 		}
 		//事物设置：指定属性值为事物的别名
-		const nickName = statusSetting.value?.["exitenceSetting-nickName"]
+		const nickName = statusSetting?.["exitenceSetting-nickName"]
 		if(nickName){
 			const [typeKey,exitenceKey] = nickName
 			const type = nowAllExitence.types.find((type)=>type.__key == typeKey)

@@ -98,7 +98,7 @@ import { isArray } from 'lodash';
 			setOption.change(null,setValue.value,target)
 		}
 		//设置初始值
-		beginValue = setValue.value
+		beginValue = toRaw(setValue.value)
 	},{
 		immediate:true
 	})
@@ -127,8 +127,8 @@ import { isArray } from 'lodash';
 			return false
 		}
 
-		// 如果没有改变值时，不会将默认的值设置上去
-		if(setValue.value == beginValue){
+		// 如果没有改变输入值，并且目标内部不具备该设置，不会将默认的值设置上去
+		if(target["setting"][setOption.name] == null && setValue.value == beginValue){
 			return false
 		}
 
@@ -138,8 +138,6 @@ import { isArray } from 'lodash';
 			setOption.change(oldValue,setValue.value,target)
 		}
 		oldValue = setValue.value
-
-		console.log(target["setting"])
 	}
 
 	// 确认该设置项的值是否符合要求
