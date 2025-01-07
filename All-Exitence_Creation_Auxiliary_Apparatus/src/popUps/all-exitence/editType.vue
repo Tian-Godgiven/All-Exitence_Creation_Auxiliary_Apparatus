@@ -12,6 +12,7 @@
 		<div class="inner">
 			<!-- 修改顺序 -->
 			<draggableListVue 
+				:drag-handle="true"
 				:list="typeStatus" 
 				v-slot="{element:status,index}">
 				<typeStatusVue 

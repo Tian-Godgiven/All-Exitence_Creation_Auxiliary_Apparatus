@@ -1,14 +1,16 @@
 <template>
 	<div class="all-exitence">
-		<typeVue :key="Symbol()" v-for="type in nowTypes" :type="type"></typeVue>
+		<draggableListVue :list="nowTypes" v-slot="{element:type}">
+			<typeVue :key="type.__key" :type="type"/>
+		</draggableListVue>
 	</div>
 </template>
 
 <script setup lang="ts" name=""> 
 import { computed } from 'vue';
 import typeVue from './type.vue';
+import draggableListVue from '@/components/other/draggableList/draggableList.vue';
 	import { nowAllExitence } from '@/hooks/all-exitence/allExitence';
-
 	const nowTypes = computed(()=>{
 		return nowAllExitence.types
 	})

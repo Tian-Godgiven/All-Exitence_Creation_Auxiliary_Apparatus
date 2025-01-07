@@ -9,7 +9,6 @@
 
         <div class="inner">
             <!-- 已存在的分组规则 -->
-            
             <div class="groupRules">
                 <draggableListVue :list="group.rules" v-slot="{element:rule,index}">
                     <groupRuleVue 

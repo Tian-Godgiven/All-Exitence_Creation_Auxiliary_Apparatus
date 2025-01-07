@@ -4,6 +4,7 @@
         <div class="simbol">{{ ruleSimbol }}</div>
         <div class="value">{{ ruleValue}}</div>
         <div class="delete" @click="deleteRule">删除</div>
+        <div class="dragHandle">拖</div>
     </div>
 </template>
 

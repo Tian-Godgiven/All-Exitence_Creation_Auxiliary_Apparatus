@@ -3,7 +3,7 @@
 	<div class="leftPage" :style="{left:leftWidth}">
 		<div class="titleBar">
 			<div class="titleButtons">
-				<div class="button">管理</div>
+				<div class="button" @click="switchManage">管理</div>
 				<div class="button">搜索</div>
 				<div class="button">展开收起</div>
 				<div class="button" @click="createNew">新建</div>
@@ -16,7 +16,8 @@
 				</div>
 			</div>
 			
-			<div class="titleName" @click="changeModel">{{model?"万物":"文本"}}</div>
+			<div class="titleName manageName" @click="switchManage" v-show="manageMode">结束管理</div>
+			<div class="titleName" @click="changeModel" v-show="!manageMode">{{model?"万物":"文本"}}</div>
 			
 		</div>
 		
@@ -38,7 +39,7 @@
 import { leftMaxWidth, leftShowWidth } from '@/hooks/pages/pageChange';
 import allExitenceVue from '@/components/leftPage/all-exitence/all-exitence.vue';
 import allArticlesVue from '@/components/leftPage/all-articles/all-articles.vue';
-import { computed, ref } from "vue"
+import { computed, provide, ref } from "vue"
 
 import { createType } from '@/hooks/all-exitence/allExitence';
 import { createChapter } from '@/hooks/all-articles/allArticles';
@@ -52,12 +53,21 @@ import { createChapter } from '@/hooks/all-articles/allArticles';
 	function changeModel(){
 		model.value = !model.value
 	}
-	
+
+	//点击切换管理模式
+	const manageMode = ref(false)
+	provide("manageMode",manageMode)
+	function switchManage(){
+		manageMode.value = !manageMode.value;
+	}
+
+	//点击显示更多
 	const showMore = ref(false)
 	function showMoreButton(){
 		showMore.value = !showMore.value
 	}
 	
+	//创建新对象
 	function createNew(){
 		//万物类
 		if(model.value){
@@ -75,7 +85,6 @@ import { createChapter } from '@/hooks/all-articles/allArticles';
 	@use "@/static/style/leftPage.scss";
 	.leftPage{
 		@extend .leftPage;
-		
 	}
 
 </style>

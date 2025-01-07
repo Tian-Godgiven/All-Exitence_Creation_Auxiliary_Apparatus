@@ -10,12 +10,12 @@
 				<div class="dragNode">
 					<div class="dragInner">
 						<!-- 插槽回传element -->
-						<slot class="dragInner" :element="element" :index="index">
+						<slot :class="dragHandle??'fullInner'" class="dragInner" :element="element" :index="index">
 							<!-- 默认显示 element 的字符串表示 -->
 							<div>{{ element }}</div>
 						</slot>
 					</div>
-					<div class="dragHandle">拖</div>
+					<div class="dragHandle" v-if="dragHandle" v-show="showHandle==true">拖</div>
 				</div>
 			</template>
 		</draggable>
@@ -24,14 +24,13 @@
 
 <script setup lang="ts" name=""> 
 import draggable from "vuedraggable";
-	const {list} = defineProps(["list"])
+	const {list,showHandle=true,dragHandle=false} = defineProps(["list","showHandle","dragHandle"])
 	const emits = defineEmits(['dragStart','dragEnd'])
+	//控制是否显示Handle
 	function startDrag(){
-		console.log("拖拽开始")
 		emits("dragStart",list)
 	}
 	function endDrag(){
-		console.log("拖拽结束")
 		emits("dragEnd",list)
 	}
 </script>
@@ -43,7 +42,8 @@ import draggable from "vuedraggable";
 			width: 100%;
 			display: flex;
 			.dragInner{
-				width: calc(100% - 50px);
+				max-width: 100%;
+				flex-grow: 1; 
 			}
 			.dragHandle{
 				background-color: lightGray;

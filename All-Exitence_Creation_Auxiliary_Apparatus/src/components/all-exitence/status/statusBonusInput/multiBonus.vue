@@ -9,6 +9,7 @@
 			<draggableListVue 
 				@dragEnd="changeStatusValue" 
 				v-slot="{element:part,index}" 
+				:dragHandle="true"
 				:list = "multiValue">
 				<div class="part">
 					<div class="value">{{showPartValue(part,index)}}</div>

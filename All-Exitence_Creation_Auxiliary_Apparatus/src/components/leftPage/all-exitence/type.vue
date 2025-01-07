@@ -7,11 +7,14 @@
 			<div class="text">{{ type.name }}</div>
 		</template>
 		<template #inner>
-			<groupVue v-for="(group) in type.groups" :group="group"></groupVue>
-			<div v-for="(exitence,index) in noGroupExitence">
-				<exitenceVue :exitence="exitence"></exitenceVue>
+			<draggableList :list="type.groups" v-slot="{element:group}">
+				<groupVue :key="group.__key" :group="group" :groupExitence="getGroupExitence(group)"></groupVue>
+			</draggableList>
+			<div v-for="exitence,index in noGroupExitence">
+				<exitenceVue :key="exitence.__key" :exitence="exitence"></exitenceVue>
 				<div class="separator" v-if="index < noGroupExitence.length-1"></div>
 			</div>
+			
 		</template>
 	</expendableContainerVue>
 </template>
@@ -25,6 +28,9 @@ import { showExitenceOnMain } from "@/hooks/pages/mainPage/showOnMain";
 import { hidePage } from "@/hooks/pages/pageChange";
 import expendableContainerVue from "../expendableContainer.vue";
 import { showControlPanel } from "@/hooks/controlPanel";
+import draggableList from "@/components/other/draggableList/draggableList.vue";
+import { Group } from "@/class/Group";
+import { filterExitenceByRule } from "@/hooks/expression/groupRule";
 	let {type} = defineProps(["type"])
 	provide("type",type)
 	//功能按键
@@ -49,15 +55,30 @@ import { showControlPanel } from "@/hooks/controlPanel";
 	const exitenceIndex = computed(()=>{
 		return reactive(new Array(allExitence.length).fill(true))
 	})
-	provide("exitenceIndex",exitenceIndex)
+
+	//获取分组中的事物
+	function getGroupExitence(group:Group){
+		//遍历所有事物，获取满足条件的部分
+		const tmp = type.exitence.reduce((arr:any[],exitence:any)=>{
+			if(filterExitenceByRule(exitence,group.rules)){
+				arr.push(exitence)
+			}
+			return arr
+		},[])
+		return tmp
+	}
 	
 	// 没有分组的事物
 	let noGroupExitence = computed(()=>{
-		const tmp = allExitence.filter((exitence:any,index:number)=>{
-			//去除在exitenceIndex中标记为false的
-			if(exitenceIndex.value[index]!=false){
-				return exitence
+		//让所有事物分别遍历一次分组规则，返回没有满足任何一个规则的事物数组
+		const tmp = allExitence.filter((exitence:any)=>{
+			for(let group of type.groups){
+				//满足任意一个分组的事物不要
+				if(filterExitenceByRule(exitence,group.rules)){
+					return false
+				}
 			}
+			return true
 		})
 		return tmp
 	})

@@ -9,16 +9,23 @@
                 :inputSupport="true">
             </textAreaVue>
 			<div class="exitenceAbility">
+				<div class="button" @click="switchControlMode">属性管理</div>
 				<div class="button" @click="setExitence">事物设置</div>
 				<div class="button" @click="addNewStatus">新增属性</div>
 			</div>
         </div>
         <div class="targetInner" ref="inner">
-            <exitenceStatusVue 
-				:key="status.__key"
-				v-for="(status) in exitenceStatus" 
-				:status="status">
-			</exitenceStatusVue>
+			<draggableListVue
+				:dragHandle="true"
+				:showHandle="showDrag"
+				v-slot="{element:status}"
+				:list="exitenceStatus">
+				<exitenceStatusVue 
+					:key="status.__key"
+					:status="status">
+				</exitenceStatusVue>
+			</draggableListVue>
+            
 
 			<div class="scrollSpace"></div>
         </div>
@@ -30,7 +37,8 @@
 import { computed, provide, ref } from 'vue';
 import textAreaVue from '@/components/other/textArea/textArea.vue';
 import exitenceStatusVue from '@/components/all-exitence/exitence/exitenceStatus.vue';
-import { changeExitenceName, nowAllExitence } from '@/hooks/all-exitence/allExitence';	
+import { changeExitenceName, nowAllExitence } from '@/hooks/all-exitence/allExitence';
+import draggableListVue from '../other/draggableList/draggableList.vue';	
 import { Type } from '@/class/Type';
 import Status from '@/interfaces/exitenceStatus';
 import { showPopUp } from '@/hooks/pages/popUp';
@@ -56,6 +64,12 @@ import { showPopUp } from '@/hooks/pages/popUp';
 	//改变名称
 	function changeName(newName:string){
 		changeExitenceName(exitence,newName)
+	}
+
+	//切换管理模式
+	const showDrag = ref(false)
+	function switchControlMode(){
+		showDrag.value = !showDrag.value
 	}
 	
 

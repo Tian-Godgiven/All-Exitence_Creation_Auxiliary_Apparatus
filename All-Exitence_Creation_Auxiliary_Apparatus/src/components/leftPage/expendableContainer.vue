@@ -7,6 +7,7 @@
 					@click="clickButton($event,button)">
 					{{ button.text }}
 				</div>
+				<div class="dragHandle" v-show="manageMode">拖</div>
 			</div>
 			<div class="titleName" 			
 				@touchstart="touchStart"
@@ -24,11 +25,14 @@
 
 <script setup lang='ts'>
     import { LongTapAndClickTouchEnd, LongTapAndClickTouchStart } from '@/api/longTapAndClick';
-import { ref } from 'vue';
+	import { ref,inject } from 'vue';
 	const expending = ref(true)
 	const {buttons} = defineProps(["buttons"])
 	const emits = defineEmits(["longTap"])
 
+	//管理模式
+	const manageMode = inject("manageMode",false)
+	//长按和点击
 	const ifLongTap = ref(false)
 	let timeout:any 
 	//处理点击和长按事件

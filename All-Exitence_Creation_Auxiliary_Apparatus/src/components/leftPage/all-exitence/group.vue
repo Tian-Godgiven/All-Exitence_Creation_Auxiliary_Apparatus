@@ -7,47 +7,31 @@
 			<div class="text">{{ group.name }}</div>
 		</template>
 		<template #inner>
-			<div v-for="(exitence,index) in groupExitence">
-				<exitenceVue :exitence="exitence"></exitenceVue>
-				<div class="separator" v-if="index < groupExitence.length-1"></div>
-			</div>
+			<draggableListVue :list="groupExitence" v-slot="{element:exitence,index}">
+				<div>
+					<exitenceVue :exitence="exitence"></exitenceVue>
+					<div class="separator" v-if="index < groupExitence.length-1"></div>
+				</div>
+			</draggableListVue>
 		</template>
 	</expendableContainerVue>
 </template>
 
 <script setup lang="ts" name=""> 
-import { inject, computed } from 'vue';
+import { inject } from 'vue';
 import exitenceVue from './exitence.vue';
 import { deleteGroup, updateGroupPopUp } from '@/hooks/all-exitence/allExitence';
-import { filterExitenceByRule } from '@/hooks/expression/groupRule';
 import expendableContainerVue from '../expendableContainer.vue';
 import { showControlPanel } from '@/hooks/controlPanel';
+import draggableListVue from '@/components/other/draggableList/draggableList.vue';
 	
-	let {group} = defineProps(["group","exitenceIndex"]) 
-	const exitenceIndex = inject<any>("exitenceIndex")
+	let {group,groupExitence} = defineProps(["group","groupExitence"]) 
 	const type = inject<any>("type")
 
 	const buttons = [{
 		text:"编辑",
 		click:()=>{updateGroupPopUp(type,group)}
 	}]
-
-	// 分组中的事物
-	const groupExitence = computed(()=>{
-		//遍历所有事物
-		const tmp = type.exitence.reduce((arr:any[],exitence:any,index:number)=>{
-			if(filterExitenceByRule(exitence,group.rules)){
-				//去除这个index
-				exitenceIndex.value[index] = false
-				arr.push(exitence)
-			}
-			else{
-				exitenceIndex.value[index] = true
-			}
-			return arr
-		},[])
-		return tmp
-	})
 
 	// 长按显示控制面板
 	function longTap(){
