@@ -6,13 +6,15 @@
 		<template #title>
 			<div class="text">{{ group.name }}</div>
 		</template>
+		<template #manageMode>
+			<div class="button" @click="deleteGroup(type,group)">删除</div>
+			<div class="button dragHandle">拖拽</div>
+		</template>
 		<template #inner>
-			<draggableListVue :list="groupExitence" v-slot="{element:exitence,index}">
-				<div>
-					<exitenceVue :exitence="exitence"></exitenceVue>
-					<div class="separator" v-if="index < groupExitence.length-1"></div>
-				</div>
-			</draggableListVue>
+			<div v-show="!manageMode" v-for="(exitence,index) in groupExitence">
+				<exitenceVue :exitence="exitence"></exitenceVue>
+				<div class="separator" v-if="index < groupExitence.length-1"></div>
+			</div>
 		</template>
 	</expendableContainerVue>
 </template>
@@ -23,10 +25,12 @@ import exitenceVue from './exitence.vue';
 import { deleteGroup, updateGroupPopUp } from '@/hooks/all-exitence/allExitence';
 import expendableContainerVue from '../expendableContainer.vue';
 import { showControlPanel } from '@/hooks/controlPanel';
-import draggableListVue from '@/components/other/draggableList/draggableList.vue';
 	
 	let {group,groupExitence} = defineProps(["group","groupExitence"]) 
 	const type = inject<any>("type")
+
+	const manageMode = inject("manageMode",false)
+	console.log(manageMode)
 
 	const buttons = [{
 		text:"编辑",

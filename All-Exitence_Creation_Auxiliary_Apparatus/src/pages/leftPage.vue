@@ -20,7 +20,7 @@
 			<div class="titleName" @click="changeModel" v-show="!manageMode">{{model?"万物":"文本"}}</div>
 			
 		</div>
-		
+
 		<div class="inner">
 			<!-- 万物区 -->
 			<allExitenceVue v-show="model"></allExitenceVue>
@@ -29,7 +29,7 @@
 			<!-- 底部填充区 -->
 			<div class="scrollBottom"></div>
 		</div>
-	</div>
+		</div>
 
 
 </div>
@@ -40,11 +40,12 @@ import { leftMaxWidth, leftShowWidth } from '@/hooks/pages/pageChange';
 import allExitenceVue from '@/components/leftPage/all-exitence/all-exitence.vue';
 import allArticlesVue from '@/components/leftPage/all-articles/all-articles.vue';
 import { computed, provide, ref } from "vue"
-
 import { createType } from '@/hooks/all-exitence/allExitence';
 import { createChapter } from '@/hooks/all-articles/allArticles';
 	//左侧宽度
 	const leftWidth = computed(()=>{
+		//出现变化时关闭管理模式
+		manageMode.value = false
 		return (leftShowWidth.value - leftMaxWidth)+'px'
 	})
 

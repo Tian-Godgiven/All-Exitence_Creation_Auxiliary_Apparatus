@@ -3,11 +3,14 @@
         <div class="titleBar">
 			<div class="titleButtons">
 				<div class="button" 
+					v-show="!manageMode"
 					v-for="button in buttons" 
 					@click="clickButton($event,button)">
 					{{ button.text }}
 				</div>
-				<div class="dragHandle" v-show="manageMode">拖</div>
+				<div class="titleButtons" v-show="manageMode">
+					<slot name="manageMode"></slot>
+				</div>
 			</div>
 			<div class="titleName" 			
 				@touchstart="touchStart"

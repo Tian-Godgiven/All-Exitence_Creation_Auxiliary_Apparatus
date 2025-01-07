@@ -6,7 +6,7 @@
 		@mouseup="touchEnd">
 		<div class="name">
 			{{name}}
-			<div class="manageButtons" v-if="manageMode"> 
+			<div class="manageButtons" v-if="0"> 
 				<div>删除</div>
 				<div class="dragHandle">拖</div>
 			</div>
@@ -32,9 +32,6 @@ import { translateToTextContent } from '@/hooks/expression/textAreaContent';
 		}
 		return exitence.name
 	})
-
-	//管理模式
-	const manageMode = inject("manageMode",false)
 
 	const type:any = inject("type")
 

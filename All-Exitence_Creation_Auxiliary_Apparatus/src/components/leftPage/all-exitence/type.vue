@@ -6,15 +6,18 @@
 		<template #title>
 			<div class="text">{{ type.name }}</div>
 		</template>
+		<template #manageMode>
+			<div class="button" @click="deleteTypePopUp(type)">删除</div>
+			<div class="button dragHandle">拖拽</div>
+		</template>
 		<template #inner>
 			<draggableList :list="type.groups" v-slot="{element:group}">
 				<groupVue :key="group.__key" :group="group" :groupExitence="getGroupExitence(group)"></groupVue>
 			</draggableList>
-			<div v-for="exitence,index in noGroupExitence">
+			<div v-show="!manageMode" v-for="exitence,index in noGroupExitence">
 				<exitenceVue :key="exitence.__key" :exitence="exitence"></exitenceVue>
 				<div class="separator" v-if="index < noGroupExitence.length-1"></div>
 			</div>
-			
 		</template>
 	</expendableContainerVue>
 </template>
@@ -22,7 +25,7 @@
 <script setup lang="ts" name=""> 
 import groupVue from "./group.vue"
 import exitenceVue from "./exitence.vue"
-import { computed, reactive, provide } from "vue";
+import { computed, provide, inject } from "vue";
 import { createExitence,createGroupPopUp, deleteTypePopUp, updateTypePopUp } from "@/hooks/all-exitence/allExitence";
 import { showExitenceOnMain } from "@/hooks/pages/mainPage/showOnMain";
 import { hidePage } from "@/hooks/pages/pageChange";
@@ -49,12 +52,8 @@ import { filterExitenceByRule } from "@/hooks/expression/groupRule";
 		}
 	]
 
-	// 分类中的事物
-	const allExitence = reactive(type.exitence)
-	// 获取一个数组对应分类中的事物的index
-	const exitenceIndex = computed(()=>{
-		return reactive(new Array(allExitence.length).fill(true))
-	})
+	//管理模式：不显示事物
+	const manageMode = inject("manageMode",false)
 
 	//获取分组中的事物
 	function getGroupExitence(group:Group){
@@ -71,7 +70,7 @@ import { filterExitenceByRule } from "@/hooks/expression/groupRule";
 	// 没有分组的事物
 	let noGroupExitence = computed(()=>{
 		//让所有事物分别遍历一次分组规则，返回没有满足任何一个规则的事物数组
-		const tmp = allExitence.filter((exitence:any)=>{
+		const tmp = type.exitence.filter((exitence:any)=>{
 			for(let group of type.groups){
 				//满足任意一个分组的事物不要
 				if(filterExitenceByRule(exitence,group.rules)){

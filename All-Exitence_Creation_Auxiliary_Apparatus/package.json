@@ -17,6 +17,7 @@
     "lodash": "^4.17.21",
     "nanoid": "^5.0.9",
     "postcss-plugin-px2rem": "^0.8.1",
+    "simplebar-vue": "^2.4.0",
     "sortable": "^2.0.0",
     "vue": "^3.3.4",
     "vue3-touch-events": "^4.2.0",

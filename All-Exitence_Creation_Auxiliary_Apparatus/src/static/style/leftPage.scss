@@ -6,7 +6,6 @@
 	height: 100%;
 	width: 650px;
 	background-color: global.$bgColor;
-	overflow: auto;
 	position: absolute;
 	z-index: 5;
 	> .titleBar{
@@ -20,6 +19,8 @@
 		}
 	}
 	> .inner{
+		overflow: auto;
+		scrollbar-width: none;
 		height: calc(100% - 110px);
 		scroll-p{
 			height: 100%;
