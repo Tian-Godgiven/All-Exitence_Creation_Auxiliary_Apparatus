@@ -6,7 +6,10 @@
 				<div class="value">值</div>
 				<div class="key">关键字</div>
 			</div>
-			<draggableListVue @dragEnd="changeStatusValue" v-slot="{element:part,index}" :list = "multiValue">
+			<draggableListVue 
+				@dragEnd="changeStatusValue" 
+				v-slot="{element:part,index}" 
+				:list = "multiValue">
 				<div class="part">
 					<div class="value">{{showPartValue(part,index)}}</div>
 					<div class="key">
@@ -54,7 +57,7 @@ import { multiStatusPart } from '@/hooks/expression/multiStatusValue';
 	const allStatus = inject<any>("allStatus")
 	const allTypeStatus = inject<any>("allTypeStatus")
 	// 当前复合属性的值，数组内依次保存各个复合属性对象
-	const multiValue = ref(status.value ? status.value : [])
+	const multiValue = ref(status.value ?? [])
 	// 将值同步回属性上
 	function changeStatusValue(){
 		status.value = toRaw(multiValue.value)

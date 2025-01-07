@@ -9,12 +9,14 @@
 
         <div class="inner">
             <!-- 已存在的分组规则 -->
+            
             <div class="groupRules">
-                <groupRuleVue 
-                    v-for="(rule,index) in group.rules" 
-                    :key="Symbol()"
-                    :rule="rule"
-                    @deleteRule="deleteRule(index)"></groupRuleVue>
+                <draggableListVue :list="group.rules" v-slot="{element:rule,index}">
+                    <groupRuleVue 
+                        :key="Symbol()"
+                        :rule="rule"
+                        @deleteRule="deleteRule(index)"/>
+                </draggableListVue>
             </div>
 
             <!-- 连接分组规则，默认为并且 -->
@@ -41,6 +43,7 @@
     import { ref } from 'vue';
     import downLineInputVue from '@/components/other/input/downLineInput.vue';
     import newGroupRuleVue from '@/components/all-exitence/group/newGroupRule.vue';
+    import draggableListVue from '@/components/other/draggableList/draggableList.vue';
     import { ElSelect, ElOption } from 'element-plus';
     import groupRuleVue from '@/components/all-exitence/group/groupRule.vue';
     

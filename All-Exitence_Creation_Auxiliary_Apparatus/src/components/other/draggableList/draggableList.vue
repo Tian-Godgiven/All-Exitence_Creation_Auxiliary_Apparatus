@@ -1,6 +1,7 @@
 <template>
 	<div class="draggableList">
-		<draggable :list = "list" 
+		<draggable 
+			:list = "list" 
 			itemKey=""
 			@start="startDrag" 
 			@end="endDrag"
@@ -26,9 +27,11 @@ import draggable from "vuedraggable";
 	const {list} = defineProps(["list"])
 	const emits = defineEmits(['dragStart','dragEnd'])
 	function startDrag(){
+		console.log("拖拽开始")
 		emits("dragStart",list)
 	}
 	function endDrag(){
+		console.log("拖拽结束")
 		emits("dragEnd",list)
 	}
 </script>

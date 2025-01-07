@@ -19,7 +19,6 @@ import statusValueVue from '../status/statusValue/statusValue.vue';
 import { showPopUp } from '@/hooks/pages/popUp';
 import Status from '@/interfaces/exitenceStatus';
 	let {status} = defineProps(["status"])
-	console.log(status)
 	const emits = defineEmits(["deleteStatus"])
 	//删除属性
 	function deleteStatus(){

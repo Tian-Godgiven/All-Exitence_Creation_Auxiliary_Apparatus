@@ -1,6 +1,6 @@
 <template>
-    <div class="createGroup">
-        <editGroupVue v-model="newGroup"></editGroupVue>
+    <div class="updateGroup">
+        <editGroupVue v-model="tmpGroup"></editGroupVue>
 
         <div class="buttons">
             <div class="button" @click="confirm">确认</div>
@@ -11,17 +11,17 @@
 
 <script setup lang='ts'>
     import { closePopUp } from '@/hooks/pages/popUp';
-    import {provide, reactive, toRaw } from 'vue';
+    import {provide ,reactive, toRaw} from 'vue';
     import editGroupVue from '@/components/all-exitence/group/editGroup.vue';
     import { showQuickInfo } from '@/api/showQuickInfo';
-    import { addGroup } from '@/hooks/all-exitence/allExitence';
+    import { cloneDeep } from 'lodash';
     const {props,popUp,returnValue} = defineProps(["props","popUp","returnValue"])
-    //分组所在的分类
-    const {type} = props
+    //分组所在的分类,已经分组本身
+    const {type,group=null} = props
     provide("type",type)
 
-    //新分组
-    const newGroup = reactive({
+    //创建一个group的深拷贝
+    const tmpGroup = group ? reactive(cloneDeep(group)) : reactive({
         name:"",
         rules:[],
         setting:{}
@@ -30,18 +30,18 @@
     //点击确认返回该分组
     function confirm(){
         //分类名称不可为空
-		if(newGroup.name == "" || !newGroup.name){
+		if(tmpGroup.name == "" || !tmpGroup.name){
 			showQuickInfo("分组名不可为空")
 			return false
 		}
         //分组规则不能为空
-        if(newGroup.rules.length == 0){
+        if(tmpGroup.rules.length == 0){
             showQuickInfo("分组需要至少一条规则")
             return false
         }
-		//添加该分组
-        addGroup(type,toRaw(newGroup))
-        returnValue(newGroup)
+        
+        //返回tmpGroup
+        returnValue(toRaw(tmpGroup))
 		//关闭弹窗
         closePopUp(popUp)
     }

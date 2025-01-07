@@ -10,12 +10,17 @@
 
 		<!-- 内容 -->
 		<div class="inner">
-			<typeStatusVue 
-				@deleteStatus="deleteStatus(index)" 
-				v-for="(status,index) in typeStatus" 
-				:key="status.__key"
-				:status="status">
-			</typeStatusVue>
+			<!-- 修改顺序 -->
+			<draggableListVue 
+				:list="typeStatus" 
+				v-slot="{element:status,index}">
+				<typeStatusVue 
+					@deleteStatus="deleteStatus(index)" 
+					:key="status.__key"
+					:status="status">
+				</typeStatusVue>
+			</draggableListVue>
+			
 
 			<!-- 创建新属性 -->
 			<newTypeStatusVue 
@@ -42,6 +47,7 @@
 <script setup lang="ts" name="">
 import { provide, reactive, ref, toRaw } from 'vue'; 
 import downLineInputVue from '@/components/other/input/downLineInput.vue';
+import draggableListVue from '@/components/other/draggableList/draggableList.vue';
 import typeStatusVue from '@/components/all-exitence/type/typeStatus.vue';
 import newTypeStatusVue from '@/components/all-exitence/type/newTypeStatus.vue';
 import { closePopUp } from '@/hooks/pages/popUp';

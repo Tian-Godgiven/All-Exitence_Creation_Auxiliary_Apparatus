@@ -18,7 +18,7 @@
 <script setup lang="ts" name=""> 
 import { inject, computed } from 'vue';
 import exitenceVue from './exitence.vue';
-import { deleteGroup, updateGroup } from '@/hooks/all-exitence/allExitence';
+import { deleteGroup, updateGroupPopUp } from '@/hooks/all-exitence/allExitence';
 import { filterExitenceByRule } from '@/hooks/expression/groupRule';
 import expendableContainerVue from '../expendableContainer.vue';
 import { showControlPanel } from '@/hooks/controlPanel';
@@ -29,7 +29,7 @@ import { showControlPanel } from '@/hooks/controlPanel';
 
 	const buttons = [{
 		text:"编辑",
-		click:()=>{updateGroup(type,group)}
+		click:()=>{updateGroupPopUp(type,group)}
 	}]
 
 	// 分组中的事物
@@ -55,7 +55,7 @@ import { showControlPanel } from '@/hooks/controlPanel';
 			{
 				text:"编辑分组",
 				click:()=>{
-					updateGroup(type,group)
+					updateGroupPopUp(type,group)
 				}
 			},
 			{

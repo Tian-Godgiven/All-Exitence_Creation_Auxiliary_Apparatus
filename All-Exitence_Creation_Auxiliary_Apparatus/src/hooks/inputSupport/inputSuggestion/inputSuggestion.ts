@@ -215,7 +215,6 @@ export function checkInputSuggestion(inputSuggestionList:InputSuggestionList,inp
     for(let key in allExitence){
         //先判断是否符合事物本身的text
         const item = allExitence[key]
-        console.log(item,item.text)
         if(item.text.startsWith(input)){
             arr.push({
                 text:item.text,

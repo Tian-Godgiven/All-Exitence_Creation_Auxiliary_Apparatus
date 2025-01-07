@@ -50,7 +50,6 @@
 
 	// 需要编辑的属性初值
     let status = inject<any>("status")
-	console.log(status)
     let typeStatus = inject<any>("typeStatus")
     if(!status.name){
         status.name = cloneDeep(typeStatus.name);

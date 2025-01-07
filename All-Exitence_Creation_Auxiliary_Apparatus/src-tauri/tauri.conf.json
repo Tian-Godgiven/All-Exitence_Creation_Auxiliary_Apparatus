@@ -14,7 +14,10 @@
       {
         "title": "all-exitence_creation_auxiliary_apparatus",
         "width": 350,
-        "height": 700
+        "height": 700,
+        "resizable": false,
+        "fullscreen": false,
+        "dragDropEnabled": false
       }
     ],
     "security": {

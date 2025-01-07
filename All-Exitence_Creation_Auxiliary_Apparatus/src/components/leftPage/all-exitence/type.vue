@@ -20,7 +20,7 @@
 import groupVue from "./group.vue"
 import exitenceVue from "./exitence.vue"
 import { computed, reactive, provide } from "vue";
-import { createExitence,createGroup, deleteTypePopUp, updateTypePopUp } from "@/hooks/all-exitence/allExitence";
+import { createExitence,createGroupPopUp, deleteTypePopUp, updateTypePopUp } from "@/hooks/all-exitence/allExitence";
 import { showExitenceOnMain } from "@/hooks/pages/mainPage/showOnMain";
 import { hidePage } from "@/hooks/pages/pageChange";
 import expendableContainerVue from "../expendableContainer.vue";
@@ -32,7 +32,7 @@ import { showControlPanel } from "@/hooks/controlPanel";
 		{
 			text:"创建分组",
 			click:()=>{
-				createGroup(type)
+				createGroupPopUp(type)
 			}
 		},
 		{

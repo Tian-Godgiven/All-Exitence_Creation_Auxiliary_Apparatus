@@ -242,7 +242,7 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
 
 // 分组相关
     // 显示创建分组页面，创建成功时添加该分组并通过resolve返回
-    export async function createGroup(type:Type):Promise<Group>{
+    export async function createGroupPopUp(type:Type):Promise<Group>{
         return new Promise((resolve,reject)=>{
             // 显示创建事物页面
             showPopUp({
@@ -255,15 +255,17 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
                 mask:true,
                 returnValue:(newGroup)=>{
                     if(!newGroup){
-                        reject("未能成功创建事物")
+                        reject("未能成功创建分组")
                     }
+                    //创建该分组
+                    addGroup(type,newGroup)
                     resolve(newGroup)
                 }
             })
         })
     }
     // 显示编辑分组页面，显示该分组
-    export async function updateGroup(type:Type,group:Group){
+    export async function updateGroupPopUp(type:Type,group:Group){
         return new Promise((resolve,reject)=>{
             // 显示编辑分组页面
             showPopUp({
@@ -279,6 +281,8 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
                     if(!newGroup){
                         reject("未能成功编辑事物")
                     }
+                    //修改group
+                    Object.assign(group,newGroup)
                     resolve(newGroup)
                 }
             })
