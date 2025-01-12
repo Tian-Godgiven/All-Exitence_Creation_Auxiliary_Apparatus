@@ -9,7 +9,7 @@ import { addExitenceInputSuggestion, changeExitenceInputSuggestion, deleteExiten
 import { showAlert } from "../alert";
 
 //当前万物
-export const nowAllExitence = reactive<{[types:string]:Type[]}>({types:[]})
+export const nowAllExitence = reactive<{types:Type[]}>({types:[]})
 
 //修改当前万物
 export function changeNowAllExitence(newAllExitence:{types:Type[]}){

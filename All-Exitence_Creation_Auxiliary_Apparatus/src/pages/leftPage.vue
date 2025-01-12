@@ -5,7 +5,7 @@
 			<div class="titleButtons">
 				<div class="button" @click="switchManage">管理</div>
 				<div class="button">搜索</div>
-				<div class="button">展开收起</div>
+				<div class="button" @click="switchExpending">展开收起</div>
 				<div class="button" @click="createNew">新建</div>
 				<div class="moreButton" @click="showMoreButton">
 					显示更多
@@ -40,8 +40,10 @@ import { leftMaxWidth, leftShowWidth } from '@/hooks/pages/pageChange';
 import allExitenceVue from '@/components/leftPage/all-exitence/all-exitence.vue';
 import allArticlesVue from '@/components/leftPage/all-articles/all-articles.vue';
 import { computed, provide, ref } from "vue"
-import { createType } from '@/hooks/all-exitence/allExitence';
-import { createChapter } from '@/hooks/all-articles/allArticles';
+import { createType, nowAllExitence } from '@/hooks/all-exitence/allExitence';
+import { createChapter, nowAllArticles } from '@/hooks/all-articles/allArticles';
+import { Type } from '@/class/Type';
+import { Chapter } from '@/class/Chapter';
 	//左侧宽度
 	const leftWidth = computed(()=>{
 		//出现变化时关闭管理模式
@@ -60,6 +62,39 @@ import { createChapter } from '@/hooks/all-articles/allArticles';
 	provide("manageMode",manageMode)
 	function switchManage(){
 		manageMode.value = !manageMode.value;
+	}
+
+	//点击展开/收起当前所有内容
+	const allExpending = ref(true) //展开全部状态
+	function switchExpending(){
+		//展开or收起万物
+		if(model.value){
+			nowAllExitence.types.forEach((type:Type) => {
+				//将其展开or收起
+				type.expending = allExpending.value;
+				//将其中的分组展开or收起
+				type.groups.forEach((group)=>{
+					group.expending = allExpending.value;
+				})
+			});
+		}
+		//展开or收起文章
+		else{
+			nowAllArticles.chapters.forEach((chapter)=>{
+				//递归展开or收起所有章节
+				expandingChapter(chapter)
+			})
+			function expandingChapter(chapter:Chapter){
+				//将其展开or收起
+				chapter.expending = allExpending.value;
+				//将其中的章节展开or收起
+				chapter.chapters.forEach((chapter)=>{
+					expandingChapter(chapter)
+				})
+			}
+		}
+		//切换状态
+		allExpending.value = !allExpending.value;
 	}
 
 	//点击显示更多
