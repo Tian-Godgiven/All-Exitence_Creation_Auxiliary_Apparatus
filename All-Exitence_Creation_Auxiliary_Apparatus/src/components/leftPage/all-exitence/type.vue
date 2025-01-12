@@ -1,60 +1,73 @@
 <template>
-	<expendableContainerVue
-		class="type"
-		@longTap="longTap"
-		:buttons="buttons">
-		<template #title>
-			<div class="text">{{ type.name }}</div>
-		</template>
-		<template #manageMode>
-			<div class="button" @click="deleteTypePopUp(type)">删除</div>
-			<div class="button dragHandle">拖拽</div>
-		</template>
-		<template #inner>
-			<draggableList :list="type.groups" v-slot="{element:group}">
-				<groupVue :key="group.__key" :group="group" :groupExitence="getGroupExitence(group)"></groupVue>
-			</draggableList>
-			<div v-show="!manageMode" v-for="exitence,index in noGroupExitence">
-				<exitenceVue :key="exitence.__key" :exitence="exitence"></exitenceVue>
-				<div class="separator" v-if="index < noGroupExitence.length-1"></div>
+	<div class="type">
+		<div class="titleBar" ref="typeRef" 
+			:class="[(dragState.type=='dragging' ? 'dragging':'')]">
+			<div class="titleButtons" v-show="!manageMode">
+				<div class="button" @click="createGroupPopUp(type)">插入分组</div>
+				<div class="button" @click="clickCreateExitence">插入事物</div>
 			</div>
-		</template>
-	</expendableContainerVue>
+
+			<div class="titleButtons manageButtons" v-show="manageMode">
+				<div @click="deleteTypePopUp(type)">删除</div>
+				<div ref="handlerRef">拖动</div>
+			</div>
+			
+			<longTapContainerVue class="titleName" @longtap = "longtap" @click="swicthExpending()">
+				<div class="text">{{type.name }}</div>
+			</longTapContainerVue>
+		</div>
+
+		<div class="inner" v-show="expending">
+			<groupVue v-for="group in type.groups" 
+				:key="group.__key" 
+				:group="group" 
+				:groupExitence="getGroupExitence(group)">
+			</groupVue>
+
+			<div v-for="exitence,index in showExitence">
+				<exitenceVue :key="exitence.__key" :exitence="exitence"></exitenceVue>
+				<div class="separator" v-if="index < showExitence.length-1"></div>
+			</div>
+		</div>
+
+		<indicatorVue v-if="dragState.type === 'be-dragging-edge' 
+			&& dragState.edge!=null" :edge="dragState.edge"
+			gap="0px" />
+	</div>
+	<Teleport v-if="dragState.type=='preview'" :to="dragState.container">
+		<div class="shadow">{{ type.name }}</div>
+	</Teleport>
 </template>
 
 <script setup lang="ts" name=""> 
 import groupVue from "./group.vue"
 import exitenceVue from "./exitence.vue"
-import { computed, provide, inject } from "vue";
+import { computed, provide, inject,ref, onMounted, onUnmounted, Ref } from "vue";
 import { createExitence,createGroupPopUp, deleteTypePopUp, updateTypePopUp } from "@/hooks/all-exitence/allExitence";
 import { showExitenceOnMain } from "@/hooks/pages/mainPage/showOnMain";
 import { hidePage } from "@/hooks/pages/pageChange";
-import expendableContainerVue from "../expendableContainer.vue";
 import { showControlPanel } from "@/hooks/controlPanel";
-import draggableList from "@/components/other/draggableList/draggableList.vue";
 import { Group } from "@/class/Group";
 import { filterExitenceByRule } from "@/hooks/expression/groupRule";
-	let {type} = defineProps(["type"])
+import { Type } from "@/class/Type";
+import longTapContainerVue from "../longTapContainer.vue";
+import { DragState } from "@/interfaces/dragState";
+import indicatorVue from '@/components/other/indicator.vue';
+import { getCombine } from "@/api/dragToSort";
+
+	let {type} = defineProps<{type:Type}>()
 	provide("type",type)
-	//功能按键
-	const buttons = [
-		{
-			text:"创建分组",
-			click:()=>{
-				createGroupPopUp(type)
-			}
-		},
-		{
-			text:"创建事物",
-			click:()=>{
-				clickCreateExitence()
-			}
-		}
-	]
 
-	//管理模式：不显示事物
-	const manageMode = inject("manageMode",false)
+	//切换展开
+	const expending = computed(()=>{
+		return type.expending
+	})
+	function swicthExpending(){
+		type.expending = !expending.value
+	}
 
+	//管理模式：不显示分组内的事物，并且显示所有事物
+	const manageMode:Ref<boolean> = inject("manageMode",ref(false))
 	//获取分组中的事物
 	function getGroupExitence(group:Group){
 		//遍历所有事物，获取满足条件的部分
@@ -66,7 +79,6 @@ import { filterExitenceByRule } from "@/hooks/expression/groupRule";
 		},[])
 		return tmp
 	}
-	
 	// 没有分组的事物
 	let noGroupExitence = computed(()=>{
 		//让所有事物分别遍历一次分组规则，返回没有满足任何一个规则的事物数组
@@ -81,16 +93,23 @@ import { filterExitenceByRule } from "@/hooks/expression/groupRule";
 		})
 		return tmp
 	})
-	
+	//显示在页面上的事物
+	const showExitence = computed(()=>{
+		if(manageMode.value){
+			return type.exitence
+		}
+		else{
+			return noGroupExitence.value
+		}
+	})
 	//点击创建事物并显示
 	async function clickCreateExitence(){
 		const exitence = await createExitence(type)
 		hidePage("left")
 		showExitenceOnMain(type,exitence)
 	}
-
 	//长按显示控制面板
-	function longTap(){
+	function longtap(){
 		showControlPanel([
 			{
 				text:"编辑分类",
@@ -103,12 +122,47 @@ import { filterExitenceByRule } from "@/hooks/expression/groupRule";
 			}
 		])
 	}
+
+	//拖动功能的实现
+	const typeRef = ref<HTMLElement | null>(null)
+	const handlerRef = ref<HTMLElement | null>(null)
+
+	const idle:DragState = {type:"idle"}//初始拖拽状态
+	const dragState = ref<DragState>(idle)//拖拽状态
+	//获取数据
+	function getTypeData(){
+		return {
+			type:"type",
+			__key:type.__key
+		}
+	}
+
+let cleanup = ()=>{}
+onMounted(()=>{
+	if(typeRef.value == null || handlerRef.value==null)return;
+	cleanup = getCombine({
+		element:typeRef.value,
+		dragHandle:handlerRef.value,
+		idle,
+		dragState,
+		getData:getTypeData,
+		"canDrop":(source)=>{
+			return source.data.type == "type"
+		},
+	})
+})
+
+onUnmounted(()=>{
+	cleanup()
+})
+
 </script>
 
 <style lang="scss" scoped>
 @use "@/static/style/leftPage.scss";
 	.type{
-		>:deep(.titleBar){
+		position: relative;
+		.titleBar{
 			@extend .leftPageMidTitleBar;
 		}
 	}

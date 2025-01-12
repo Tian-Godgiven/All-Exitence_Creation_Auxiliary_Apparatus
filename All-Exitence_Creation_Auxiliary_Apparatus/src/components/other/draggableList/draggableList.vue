@@ -1,8 +1,10 @@
 <template>
 	<div class="draggableList">
 		<draggable 
+			:group="group"
 			:list = "list" 
 			itemKey=""
+			:move = "move"
 			@start="startDrag" 
 			@end="endDrag"
 			handle='.dragHandle'>
@@ -24,7 +26,7 @@
 
 <script setup lang="ts" name=""> 
 import draggable from "vuedraggable";
-	const {list,showHandle=true,dragHandle=false} = defineProps(["list","showHandle","dragHandle"])
+	const {list,showHandle=true,dragHandle=false,group=null,move=null} = defineProps(["list","showHandle","dragHandle","group","move"])
 	const emits = defineEmits(['dragStart','dragEnd'])
 	//控制是否显示Handle
 	function startDrag(){

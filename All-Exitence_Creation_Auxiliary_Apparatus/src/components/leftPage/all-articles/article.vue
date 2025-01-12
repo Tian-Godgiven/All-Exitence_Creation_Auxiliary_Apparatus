@@ -1,25 +1,46 @@
 <template>
-	<div class="article" 
-		@touchstart="touchStart" 
-		@touchend="touchEnd"
-		@mousedown="touchStart"
-		@mouseup="touchEnd"> 
-		<div class="title">{{title}}</div>
-		<div v-show="ifPreview" class="preview">{{preview}}</div>
+	
+	<div class="article" ref="articleRef" 
+		:class="[ (dragState.type=='dragging' ? 'dragging':'')]"> 
+
+		<div class="manageButtons" v-show="manageMode">
+			<div class="button" @click="clickDeleteArticle($event)">删除</div>
+			<div class="button" ref="handlerRef">拖动</div>
+		</div>
+
+		<longTapContainerVue @longtap="longtap" @click="click">
+			<div class="title">{{title}}</div>
+			<div v-show="ifPreview" class="preview">{{preview}}</div>
+		</longTapContainerVue>
+
+		<indicatorVue v-if="dragState.type === 'be-dragging-edge' 
+			&& dragState.edge!=null" :edge="dragState.edge"
+			gap="0px" />
 	</div>
+	
+
+	<Teleport v-if="dragState.type=='preview'" :to="dragState.container">
+		<div class="chapterShadow">{{ article.title }}</div>
+	</Teleport>
 </template>
 
 <script setup lang="ts" name="article">
 import { hidePage } from '@/hooks/pages/pageChange';
 import { showArticleOnMain } from '@/hooks/pages/mainPage/showOnMain';
-import { computed,ref } from 'vue';
-import { LongTapAndClickTouchEnd, LongTapAndClickTouchStart } from '@/api/longTapAndClick';
+import { computed,ref,onMounted,onUnmounted, inject } from 'vue';
 import { showControlPanel } from '@/hooks/controlPanel';
 import { deleteArticle } from '@/hooks/all-articles/allArticles';
 import { translateToTextContent } from '@/hooks/expression/textAreaContent';
 import { trim } from 'lodash';
+import longTapContainerVue from "../longTapContainer.vue";
+import { DragState } from '@/interfaces/dragState';
+import { Article } from '@/class/Article';
+import indicatorVue from '@/components/other/indicator.vue';
+import { getCombine } from '@/api/dragToSort';
 
-	let {article,from} = defineProps(["article","from"])
+	let {article,from} = defineProps<{article:Article,from:any}>()
+	const manageMode = inject("manageMode",false)
+	//显示的标题
 	const title = computed(()=>{
 		const tmp = trim(article.title)
 		if(tmp == "" || !article.title){
@@ -29,7 +50,7 @@ import { trim } from 'lodash';
 			return tmp
 		}
 	})
-	//文章预览
+	//显示的文章预览
 	let ifPreview = ref(false)
 	const preview = computed(()=>{
 		//先翻译为文本内容
@@ -45,40 +66,76 @@ import { trim } from 'lodash';
 			return ""
 		}
 	})
-
 	//长按和点击事件
-	const ifLongTap = ref(false)
-	let timeOut:any
-	function touchStart(){
-		timeOut = LongTapAndClickTouchStart(ifLongTap)
+	const longtap = ()=>{
+		//显示控制面板
+		showControlPanel([{
+			text:"删除",
+			click:()=>{
+				deleteArticle(from,article)
+			}
+		}])
+	}
+	const click = ()=>{
+		//点击将文章显示在主页面
+		showArticleOnMain(article)
+		hidePage("left")
+	}
+	function clickDeleteArticle(event:Event){
+		event.stopPropagation()
+		deleteArticle(from,article)
 	}
 
-	function touchEnd(){
-		LongTapAndClickTouchEnd({
-			theTimeOut:timeOut,
-			ifLongTap,
-			longTap:()=>{
-				//显示控制面板
-				showControlPanel([{
-					text:"删除",
-					click:()=>{
-						deleteArticle(from,article)
-					}
-				}])
-			},
-			click:()=>{
-				//点击将文章显示在主页面
-				showArticleOnMain(article)
-				hidePage("left")
-			}
-		})
+	//拖拽功能的实现
+	const articleRef = ref<HTMLElement | null>(null)
+	const handlerRef = ref<HTMLElement | null>(null)
+
+	const idle:DragState = {type:"idle"}//初始拖拽状态
+	const dragState = ref<DragState>(idle)//拖拽状态
+	//获取数据
+	function getArticleData(){
+		return {
+			type:"article",
+			article,
+			from,
+			__key:article.__key
+		}
 	}
+
+let cleanup = ()=>{}
+onMounted(()=>{
+	if(articleRef.value == null || handlerRef.value==null)return;
+	cleanup = getCombine({
+		element:articleRef.value,
+		dragHandle:handlerRef.value,
+		idle,
+		dragState,
+		getData:getArticleData,
+		"canDrop":(source)=>{
+			return source.data.type == "article"
+		},
+	})
+})
+
+onUnmounted(()=>{
+	cleanup()
+})
+	
+
 	
 </script>
 
 <style lang="scss" scoped>
 	@use "@/static/style/leftPage.scss";
 	.article{
+		position: relative;
 		@extend .leftPageArticle;
+		.manageButtons{
+			float: right;
+			display: flex;
+		}
+	}
+	.dragging{
+		opacity: 0.5;
 	}
 </style>

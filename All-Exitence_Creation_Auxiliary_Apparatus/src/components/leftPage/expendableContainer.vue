@@ -34,12 +34,15 @@
 	const emits = defineEmits(["longTap"])
 
 	//管理模式
-	const manageMode = inject("manageMode",false)
+	const manageMode:any = inject("manageMode",false)
 	//长按和点击
 	const ifLongTap = ref(false)
 	let timeout:any 
 	//处理点击和长按事件
 	function touchStart(){
+		if(manageMode.value){
+			return;
+		}
 		timeout = LongTapAndClickTouchStart(ifLongTap)
 	}
 	function touchEnd(){

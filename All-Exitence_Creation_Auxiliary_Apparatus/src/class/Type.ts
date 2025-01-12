@@ -11,6 +11,7 @@ export class Type{
 		public setting:{}, //分类设置
 		public groups:Group[], //分组数组
 		public exitence:Exitence[], //存在数组 
-		public __key:any
+		public __key:any,
+		public expending:boolean = true,
 	){}
 }

@@ -55,7 +55,7 @@ import { createChapter } from '@/hooks/all-articles/allArticles';
 		model.value = !model.value
 	}
 
-	//点击切换管理模式
+	//点击切换管理模式:管理万物中的分类/分组+管理章节
 	const manageMode = ref(false)
 	provide("manageMode",manageMode)
 	function switchManage(){

@@ -6,6 +6,7 @@ export class Chapter{
         public articles:Article[],
         public chapters:Chapter[],
         public from:string[],
-        public __key:string
+        public __key:string,
+        public expending:boolean=true,
     ){}
 }
