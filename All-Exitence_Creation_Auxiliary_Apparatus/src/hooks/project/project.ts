@@ -1,6 +1,6 @@
 import { ref } from "vue";
 import { appSetting, changeAppSetting } from "../app/appSetting";
-import { createDirByPath, createFileToPath, deleteAtPath, readDirAsArray, readFileFromPath, renameToAtPath } from "../fileSysytem";
+import { createDirByPath, createFileToPath, deleteAtPath, ifExists, readDirAsArray, readFileFromPath, renameToAtPath } from "../fileSysytem";
 import { showPopUp } from "../pages/popUp";
 import { nowProjectInfo, nowProjectPath, saveProjectInfo, syncProject } from "./projectData";
 import { showAlert } from "../alert";
@@ -21,8 +21,9 @@ export const nowProjectList = ref<any>([])
 export async function initProject(){
     //打开上一次的项目文件
     const lastProjectPath = appSetting?.lastProjectPath
-    //若为空则显示软件初始页面
-    if(!lastProjectPath){
+    const tmp = await ifExists("projects",lastProjectPath)
+    //若为空或该项目不存在则显示软件初始页面
+    if(!lastProjectPath || !tmp){
         onNoProject()
     }
     //否则移动到上一次打开的项目文件
@@ -34,7 +35,7 @@ export async function initProject(){
     const projectList = await readDirAsArray("data","projects")
     //依次获取项目信息
     nowProjectList.value = await projectList.reduce(async (arr: any[], projectPath: string) => {
-        const currentArr = await arr; // 等待上一个循环的 Promise 完成，确保 `arr` 是一个数组
+        const currentArr = arr; // 等待上一个循环的 Promise 完成，确保 `arr` 是一个数组
         const projectInfo = await readFileFromPath(`projects/${projectPath}`, "projectInfo.json");
         currentArr.push(projectInfo); // 将新的 `projectInfo` 添加到数组中
         return currentArr; // 返回更新后的数组
@@ -68,9 +69,12 @@ export async function moveToProject(projectPath:string){
         changeAppSetting("lastProjectPath",projectPath)
     }
     else{
-        //同步失败，认为该项目已不存在，尝试移动到第一个项目
-        changeAppSetting("lastProjectPath",null)
-        moveToNextProject(0)
+        //同步失败，认为该项目已不存在，弹出提示后移动到初始页面
+        onNoProject()
+        showAlert({
+            "info":"同步项目信息失败，该项目可能已经被删除！",
+            "confirm":()=>{}
+        })
     }
 }
 

@@ -1,36 +1,6 @@
 @use "@/static/style/rightPage.scss";
 @use "@/static/style/global.scss" as global;
 
-// 标题栏
-.mainPageTitleBar{
-	width: 100%;
-	height: 110px;
-	display: flex;
-	.leftPageShowButton{
-		width: 100px;
-	}
-	.titleName{
-		width: 425px;
-	}
-	.titleButtons{
-		width: 225px;
-		display: flex;
-		view{
-			width: 75px;
-		}
-	}
-}
-		
-// 内容栏
-.mainPageInner {
-	width: calc(100% - 50px);
-	height: calc(100% - 110px);
-	background-color: global.$bgColor;
-	position: relative;
-	margin: 0px 25px;
-	overflow: hidden;
-}
-
 // mainPage中显示不同对象的统一基础样式
 .targetContainer{
 	width: 100%;
@@ -83,13 +53,3 @@
 	
 }
 
-//弹窗容器
-.mainPagePopUp{
-	z-index: 6;
-	position: absolute;
-	height: 100%;
-	width: 100%;
-	top:0;
-	left:0;
-	pointer-events: none;
-}

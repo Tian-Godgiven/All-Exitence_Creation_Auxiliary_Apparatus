@@ -1,43 +1,53 @@
 <template>
 	<div class="rightPage">
-		<div class="buttons" :style="{right:rightWidth}">
-			<div class="button" v-for="(ability,index) in abilities" :key="index">
-				<div>{{ability}}</div>
-			</div>
-		</div>
-		
 		<!-- 右侧切换键 -->
-		<div class="rightPageSwitchButton" 
-			:style="{top:rightPageSwitchButtonTop+'px'}" 
-			@click="switchRight()">
+		<buttonVue class="rightPageSwitchButton" 
+			:style="ifRotate?{transform: 'rotate(' + rotateDegree + 'deg)'}:null"
+			name="switchRight"
+			icon="rightUp"
+			@click="clickSwitch()">
+		</buttonVue>
+
+		<div class="buttons" :style="{right:rightWidth}">
+			<buttonVue 
+				:key="Symbol()"
+				:icon="null"
+				:name="abilitiy.name"
+				@click="abilitiy.click"
+				v-for="(abilitiy) in abilities">
+			</buttonVue>
 		</div>
+
+		
+		
 	</div>
 	
 </template>
 
 <script setup lang="ts" name="RightPage">
 import { rightMaxWidth, rightShowWidth, switchRight } from '@/hooks/pages/pageChange';
-import { computed } from 'vue';
+import { computed,ref } from 'vue';
+import buttonVue from '@/components/global/button.vue';
+import { rightAbilityList } from '@/data/list/rightAbilityList';
 	// 由于右侧页面是从右往左的，因此实际设定的是该页面的right属性
 	let rightWidth = computed(()=>{
 		return (rightShowWidth.value - rightMaxWidth) +"px"
 	})
 	
-	let abilities = ["1","2","3"]
-	// 功能按键的数量
-	// let rightPageHeight = window.innerHeight - 550
-	// let rightPageButtonNum = rightPageHeight / 150
-
-	// 控制右侧页面切换按键的位置
-	let rightPageHeight = window.innerHeight - 550
-	let rightPageButtonNum = (rightPageHeight / 150) - 1
-	let rightPageSwitchButtonTop = 350 + (rightPageButtonNum * 150)
-	
+	//功能按键列表
+	let abilities = rightAbilityList
+	const rotateDegree = ref(0)
+	const ifRotate = ref(true)
+	//点击切换右侧，同时旋转按钮
+	function clickSwitch(){
+		rotateDegree.value += 180		
+		switchRight()
+	}
 	
 </script>
 
 <style lang="scss" scoped>
-	
+	@use "@/static/style/global.scss" as global;
 	// 右侧页面按键通用样式
 	.rightPage{
 		pointer-events: none;
@@ -49,24 +59,38 @@ import { computed } from 'vue';
 		position: absolute;
 		z-index: 1;
 		overflow: hidden;
+		display: flex;
+		flex-direction: column-reverse;
 	}
 	.buttons{
-		position: absolute;
+		overflow: auto;
+		position: relative;
+		max-height: calc(100% - 100px);
 		width: 100%;
+		display: flex;
+		flex-direction: column-reverse;
+	}
+	.buttons::-webkit-scrollbar {
+		display: none; /* Chrome, Safari */
 	}
 	.button{
-			pointer-events: all;
-			height: 100px;
-			width: 100px;
-			border-radius: 50%;
-			background-color: red;
-			margin-bottom: 30px;
-			z-index: 2;
-		}
+		box-sizing: border-box;
+		pointer-events: all;
+		height: 100px;
+		width: 100px;
+		border-radius: 50%;
+		background-color: global.$rightButtonColor;
+		box-shadow: 0px 3px 6px 1px rgb(99, 99, 99);
+		margin:15px;
+		margin-top: 20px;
+		z-index: 2;
+		flex-shrink: 0
+	}
 	
 	.rightPageSwitchButton{
 		@extend .button;
-		position: absolute;
+		position: relative;
 		z-index: 2;
+		transition: transform 0.5s ease;
 	}
 </style>

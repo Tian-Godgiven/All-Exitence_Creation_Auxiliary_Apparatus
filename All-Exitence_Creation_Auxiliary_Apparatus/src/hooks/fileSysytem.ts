@@ -3,6 +3,12 @@ import { BaseDirectory, exists, mkdir, create,  readTextFile, writeTextFile, rea
 
 export const appData = {baseDir:BaseDirectory.AppLocalData}
 
+//返回指定路径的文件或文件夹是否存在
+export async function ifExists(path:string,name:string):Promise<boolean>{
+    let ifExists = await exists(getPath(path,name),appData)
+    return ifExists
+}
+
 //创建指定路径的文件夹
 export async function createDirByPath(path:string,dirName:string){
     //判断该路径下是否存在重名

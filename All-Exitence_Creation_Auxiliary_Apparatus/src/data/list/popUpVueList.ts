@@ -1,4 +1,4 @@
-import questionListVue from '@/popUps/supportAbility/questionList.vue';
+import missionListVue from '@/popUps/supportAbility/missionList.vue';
 import createCalendarVue from '@/popUps/supportAbility/createCalendar.vue';
 import createExitenceVue from '@/popUps/all-exitence/createExitence.vue';
 import editStatusVue from '@/popUps/all-exitence/editStatus.vue';
@@ -13,7 +13,7 @@ import setExitenceVue from '@/popUps/all-exitence/setExitence.vue';
 
 // 用于显示不同Vue组件的弹窗
 export let popUpVueList:{[key:string]:any} = {
-	"questionList":questionListVue,
+	"missionList":missionListVue,
 	"createCanlendar":createCalendarVue,
 
 	"showAlert":alertVue,

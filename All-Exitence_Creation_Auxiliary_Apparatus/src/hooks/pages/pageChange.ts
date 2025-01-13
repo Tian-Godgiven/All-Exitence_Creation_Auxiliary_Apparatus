@@ -58,13 +58,13 @@ const showAnimateTime = 10 //动画持续时间（单位帧）
 export function hidePage(pageName:'left'|'right'|'project') {
 	switch(pageName){
 		case "left":
-			leftShowing = true
+			leftShowing = false
 			var changeTarget = leftShowWidth
 			var maxValue = leftMaxWidth
 			var whileAnimating = ()=>changePageMask('left');
 			break;
 		case 'right':
-			rightShowing = true
+			rightShowing = false
 			var changeTarget = rightShowWidth
 			var maxValue = rightMaxWidth
 			break;
