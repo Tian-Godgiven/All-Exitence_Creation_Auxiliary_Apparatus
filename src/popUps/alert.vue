@@ -34,13 +34,13 @@
 </script>
 
 <style scoped lang='scss'>
-    @use "@/static/style/components/popUpButtons";
+    @use "@/static/style/popUp.scss";
     .alert{
         .info{
             white-space: pre-wrap;
         }
         .buttons{
-            @extend .buttons
+            @extend .finalButtons
         }
     }
 </style>

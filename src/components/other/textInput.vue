@@ -29,7 +29,7 @@
 </script>
 
 <style lang="scss" scoped>
-	@use "@/static/style/components/popUpButtons.scss";
+	@use "@/static/style/popUp.scss";
 	.textInput{
 		width: 100%;
 		max-height: 300px;
@@ -37,7 +37,7 @@
 			width: 100%;
 		}
 		.buttons{
-			@extend .buttons
+			@extend .finalButtons;
 		}
 	}
 	

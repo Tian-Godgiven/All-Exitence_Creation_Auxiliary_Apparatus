@@ -32,7 +32,7 @@
 </script>
 
 <style scoped lang='scss'>
-@use "@/static/style/components/popUpButtons.scss";
+@use "@/static/style/popUp.scss";
     .chapterName{
 			position: relative;
 			margin-top:auto;
@@ -41,6 +41,6 @@
 			height: 60px;
 		}
     .buttons{
-        @extend .buttons;
+        @extend .finalButtons;
     }
 </style>

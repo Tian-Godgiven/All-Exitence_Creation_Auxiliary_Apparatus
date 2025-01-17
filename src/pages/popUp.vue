@@ -6,9 +6,9 @@
 	}">
 		<!-- 标题 -->
 		<div class="titleName" v-if="name">{{ name }}</div>
-		<div class="titleSpace" v-else></div>
+		<div class="titleSpace" v-else-if="buttons!=null"></div>
 		<!-- 按键 -->
-		<div class="titleButtons" >
+		<div class="titleButtons" v-if="buttons!=null">
 			<div v-for="(button) in buttons" 
 				class="button" 
 				:name="button.name" 
@@ -56,7 +56,7 @@ import { popUpVueList } from '../data/list/popUpVueList';
 </script>
 
 <style lang="scss" scoped>
-	@use "@/static/style/global.scss" as global;
+@use "@/static/style/global.scss" as global;
 	.popUp{
 		background-color: global.$bgColor;
 		max-width: 650px;
@@ -68,7 +68,7 @@ import { popUpVueList } from '../data/list/popUpVueList';
 		transform: translate(-50%, -50%);
 		padding: 20px 20px;
 		box-sizing: border-box;
-		border-radius: 2%;
+		border-radius: 10px;
 		pointer-events: auto;
 		overflow-x: visible;
 		overflow-y:auto;

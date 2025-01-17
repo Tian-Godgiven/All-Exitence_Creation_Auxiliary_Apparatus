@@ -18,10 +18,11 @@ import { ref } from 'vue';
 
     const value = defineModel()
     const {placeholder,type} = defineProps(['placeholder','type'])
-    const emits = defineEmits(["blur","input"])
+    const emits = defineEmits(["focus","blur","input"])
     const ifFocusing = ref(false)
     function onFocus(){
         ifFocusing.value = true
+        emits('focus',value.value)
     }
     function onBlur(){
         ifFocusing.value = false

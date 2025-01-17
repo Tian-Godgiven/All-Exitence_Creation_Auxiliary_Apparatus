@@ -45,8 +45,8 @@ import { cloneDeep } from 'lodash';
 </script>
 
 <style scoped lang='scss'>
-@use "@/static/style/components/popUpButtons.scss";
+@use "@/static/style/popUp.scss";
     .bottom{
-		@extend .buttons;
+		@extend .finalButtons;
 	}
 </style>

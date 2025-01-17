@@ -7,7 +7,7 @@ export let maskIndex = ref(0)
 
 export interface PopUp{
 	name?:string, //弹窗的标题名称,默认为无
-	buttons:Button[], //弹窗中，需要在右上角显示的按钮以及这些按钮的点击事件
+	buttons:Button[]|null, //弹窗中，需要在右上角显示的按钮以及这些按钮的点击事件
 	props?:{}, //弹窗的组件中需要使用的数据
 	vueName?:string, //弹窗对应的vue对象名称
 	vue?:any, //弹窗中显示的vue组件
@@ -34,7 +34,7 @@ export function showPopUp(popUp:PopUp){
 		popUp["name"] = ""
 	}
 	// 默认具备关闭按键
-	if(popUp.buttons.length == 0){
+	if(popUp.buttons && popUp.buttons.length == 0){
 		popUp.buttons.push({
 			name:"关闭",
 			click:()=>{

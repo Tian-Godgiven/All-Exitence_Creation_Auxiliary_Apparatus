@@ -43,7 +43,7 @@
 <script setup lang="ts" name="">
 	import { onMounted, onUnmounted, ref, shallowRef } from 'vue'; 
 	import { closePopUp, showPopUp } from '@/hooks/pages/popUp';
-	import chooseFromListVue from '@/components/popUps/chooseFromList.vue';
+	import chooseFromListVue from '@/components/other/chooseFromList.vue';
 	import textAreaVue from '@/components/other/textArea/textArea.vue';
 	import { showQuickInfo } from '@/api/showQuickInfo';
 	import { suggestionItem } from '@/hooks/inputSupport/inputSuggestion/inputSuggestion';
@@ -287,7 +287,7 @@ import { explainExpression, multiStatusPart } from '@/hooks/expression/multiStat
 </script>
 
 <style lang="scss" scoped>
-	@use "@/static/style/components/popUpButtons.scss";
+	@use "@/static/style/popUp.scss";
 
 	.showArea{
 		width: 100%;
@@ -348,7 +348,7 @@ import { explainExpression, multiStatusPart } from '@/hooks/expression/multiStat
 	}
 
 	.buttons{
-		@extend .buttons;
+		@extend .finalButtons;
 	}
 	
 </style>

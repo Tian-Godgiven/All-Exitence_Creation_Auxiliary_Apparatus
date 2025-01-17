@@ -82,7 +82,7 @@ import { closePopUp } from '../../hooks/pages/popUp';
 </script>
 
 <style lang="scss" scoped>
-	@use "@/static/style/components/popUpButtons.scss";
+	@use "@/static/style/popUp.scss";
 	.chooseFromList{
 		.showList{
 			width: 100%;
@@ -93,7 +93,7 @@ import { closePopUp } from '../../hooks/pages/popUp';
 			}
 		}
 		.buttons{
-			@extend .buttons
+			@extend .finalButtons;
 		}
 	}
 </style>

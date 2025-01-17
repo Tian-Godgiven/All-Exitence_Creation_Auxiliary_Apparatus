@@ -16,8 +16,6 @@ import { computed, ref } from 'vue';
 import textAreaVue from '@/components/other/textArea/textArea.vue';
 import { globalInputSuggestionList, projectInputSuggestionList } from '@/hooks/inputSupport/inputSuggestion/inputSuggestion';
 	const {status,statusSetting} = defineProps(["status","statusSetting"])
-
-	
 	// 属性设置：单位
 	const unit = ref()
 	const ifUnit = computed(()=>{

@@ -18,13 +18,13 @@ export async function createDirByPath(path:string,dirName:string){
     //存在重名则不断添加数字
     while(ifExists){
         newDirName = dirName + "_" + i
-        ifExists = await exists(`data/${path}/${newDirName}`,appData)
+        ifExists = await exists(getPath(path,newDirName),appData)
         i+=1
     }
     //存在重名时使用新名称
     if(newDirName){dirName = newDirName}
     //初始化数据文件夹
-    await mkdir(`data/${path}/${dirName}`,appData)
+    await mkdir(getPath(path,dirName),appData)
     //返回新的文件夹名称
     return newDirName || dirName
 }

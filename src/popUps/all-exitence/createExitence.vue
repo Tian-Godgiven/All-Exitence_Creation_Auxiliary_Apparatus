@@ -123,7 +123,7 @@ import { nanoid } from 'nanoid';
 </script>
 
 <style scoped lang='scss'>
-    @use "@/static/style/components/popUpButtons.scss";
+    @use "@/static/style/popUp.scss";
     .top{
         display: flex;
         height: 100px;
@@ -162,6 +162,6 @@ import { nanoid } from 'nanoid';
         
     
     .buttons{
-        @extend .buttons
+        @extend .finalButtons;
     }
 </style>

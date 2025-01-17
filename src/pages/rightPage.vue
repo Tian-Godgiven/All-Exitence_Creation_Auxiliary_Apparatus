@@ -15,6 +15,7 @@
 				:name="abilitiy.name"
 				@click="abilitiy.click"
 				v-for="(abilitiy) in abilities">
+				{{ abilitiy.name }}
 			</buttonVue>
 		</div>
 	</div>
@@ -41,7 +42,7 @@ import { rightAbilityList } from '@/data/list/rightAbilityList';
 </script>
 
 <style lang="scss" scoped>
-	@use "@/static/style/global.scss" as global;
+@use "@/static/style/global.scss" as global;
 	// 右侧页面按键通用样式
 	.rightPage{
 		pointer-events: none;

@@ -6,17 +6,21 @@ export type ButtonIcon =
     "canlendar"|
     "handSave"|
     "showLeft"|
-    "rightUp"
+    "rightUp"|
+    "time"|
+    "repeat"
 
 export const buttonIconList:Record<ButtonIcon,string>= {
     "close":"",
-    "add":"",
+    "add":"plus.png",
     "delete":"",
     "missionList":"missionList.png",
     "canlendar":"calendar.png",
     "handSave":"handSave.png",
     "showLeft":"showLeft.png",
-    "rightUp":"rightUp.png"
+    "rightUp":"rightUp.png",
+    "time":"time.png",
+    "repeat":"repeat.png"
 }
 
 

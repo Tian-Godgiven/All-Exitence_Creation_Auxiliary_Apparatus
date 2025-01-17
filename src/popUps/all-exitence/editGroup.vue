@@ -48,8 +48,8 @@
 </script>
 
 <style scoped lang='scss'>
- @use "@/static/style/components/popUpButtons.scss";
+ @use "@/static/style/popUp.scss";
     .buttons{
-        @extend .buttons;
+        @extend .finalButtons;
     }
 </style>

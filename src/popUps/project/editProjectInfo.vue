@@ -41,11 +41,11 @@ import { showQuickInfo } from '@/api/showQuickInfo';
 </script>
 
 <style scoped lang='scss'>
-    @use "@/static/style/components/popUpButtons.scss";
+    @use "@/static/style/popUp.scss";
     .editProjectInfo{
         width: 100%;
         .buttons{
-            @extend .buttons
+            @extend .finalButtons;
         }
     }
 </style>

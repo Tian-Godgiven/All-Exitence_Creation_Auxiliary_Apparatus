@@ -2,13 +2,14 @@ import { addToRightPage } from "@/data/list/rightAbilityList"
 import { createDirByPath, createFileToPath, readFileFromPath } from "@/hooks/fileSysytem"
 import { showPopUp } from "@/hooks/pages/popUp"
 import { nanoid } from "nanoid"
-import { reactive } from "vue"
+import { reactive, shallowRef } from "vue"
 import MissionList from "./missionList.vue"
+import EditMission from "./editMission.vue"
 
 export class Mission{
     constructor(
         public title:string,//任务标题
-	    public inner:Text,//任务内容，为软件文本结构
+	    public inner:any,//任务内容
 	    public timeLimit:Date | null, //限时时间，若为null则表示不限时
 	    public repeatable:boolean, //是否可重复
 	    public repeatTime:number, //已重复次数
@@ -44,13 +45,25 @@ export async function initMissionList(){
 //显示任务列表弹窗
 export function showMissionListPopUp(){
     showPopUp({
-        "vue":MissionList,
-        buttons:[],
+        "vue":shallowRef(MissionList),
+        buttons:null,
         mask:true
     })
 }
 
 //创建任务
 export function createNewMission(){
-    
+    //弹出创建新任务弹窗
+    showPopUp({
+        vue:shallowRef(EditMission),
+        mask:true,
+        buttons:[],
+        props:{
+            mission:null,
+        },
+        returnValue(newMission:Mission){
+            //将其添加到任务列表中
+            nowMissionList.push(newMission)
+        }
+    })
 }
