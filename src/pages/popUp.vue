@@ -1,22 +1,17 @@
 <template>
-	<div class="popUp" :style="{
+	<div class="popUp" :class="!popUp.position?'center':''" :style="{
 		zIndex:index,
-		height:height,
-		width:width
+		height:popUp.size?.height,
+		width:popUp.size?.width,
+		left:popUp.position?.x,
+		top:popUp.position?.y
 	}">
 		<!-- 标题 -->
 		<div class="titleName" v-if="name">{{ name }}</div>
 		<div class="titleSpace" v-else-if="buttons!=null"></div>
 		<!-- 按键 -->
 		<div class="titleButtons" v-if="buttons!=null">
-			<div v-for="(button) in buttons" 
-				class="button" 
-				:name="button.name" 
-				@click="button.click"
-			>
-				<image v-if="button.icon" :src="button.icon" mode="aspectFill"></image>
-				<text v-else>{{button.name}}</text>
-			</div>
+			<Button :icon="button.icon" :name="button.name" @click="button.click" v-for="(button) in buttons"></Button>
 		</div>
 		<div class="inner">
 			<component :is="innerVue" 
@@ -29,12 +24,14 @@
 </template>
 
 <script setup lang="ts" name="">
-import { ref, shallowRef } from 'vue';
+import { shallowRef } from 'vue';
 import { PopUp } from '../hooks/pages/popUp'; 
 import { popUpVueList } from '../data/list/popUpVueList';
+import Button from '@/components/global/button.vue';
 	let tmp = defineProps(["popUp"])
 	let popUp:PopUp = tmp.popUp
 	let {name,buttons,vueName,index} = popUp
+
 	let innerVue = shallowRef()
 	if(popUp.vue){
 		innerVue = popUp.vue
@@ -42,30 +39,18 @@ import { popUpVueList } from '../data/list/popUpVueList';
 	else if(vueName){
 		innerVue = popUpVueList[vueName]
 	}
-	//尺寸
-	let width = ref("650px")
-	let height = ref("80%")
-	if(popUp.size){
-		if(popUp.size.width){
-			width.value = popUp.size.width
-		}
-		if(popUp.size.height){
-			height.value = popUp.size.height
-		}
-	}
 </script>
 
 <style lang="scss" scoped>
 @use "@/static/style/global.scss" as global;
 	.popUp{
 		background-color: global.$bgColor;
+		width: 650px;
+		height: 80%;
 		max-width: 650px;
 		max-height: 80%;
 		box-shadow: black 0px 0px 50px;
 		position: absolute;
-		left:50%;
-		top:50%;
-		transform: translate(-50%, -50%);
 		padding: 20px 20px;
 		box-sizing: border-box;
 		border-radius: 10px;
@@ -99,5 +84,11 @@ import { popUpVueList } from '../data/list/popUpVueList';
 			width: 100%;
 			box-sizing: border-box;
 		}
+	}
+	//居中显示
+	.popUp.center{
+		left:50%;
+		top:50%;
+		transform: translate(-50%, -50%);
 	}
 </style>

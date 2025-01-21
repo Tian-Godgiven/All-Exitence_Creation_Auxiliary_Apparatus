@@ -12,6 +12,11 @@
                 v-model="tmpMission.title">
             </DownLineInput>
         </div>
+
+        <div class="info">
+            <div v-if="tmpMission.repeatTime&&tmpMission.repeatTime>0">已重复：{{ tmpMission.repeatTime }}次</div>
+            <div></div>
+        </div>
         
         <div class="inner">
             <MissionTime v-if="tmpMission.timeLimit" :time="tmpMission.timeLimit"></MissionTime>
@@ -35,10 +40,10 @@
     import { closePopUp, PopUp, showPopUp } from '@/hooks/pages/popUp';
     import { nanoid } from 'nanoid';
     import { cloneDeep } from 'lodash';
-    import EditTimer from './editTime.vue';
-    import MissionTime from './components/missionTime.vue';
-    import MissionTagBar from './components/missionTagBar.vue';
-    import { Mission } from './missionList';
+    import EditTime from './editTime.vue';
+    import MissionTime from '../components/missionTime.vue';
+    import MissionTagBar from '../components/missionTagBar.vue';
+    import { Mission } from '../missionList';
 
     const {popUp,returnValue,props={}} = defineProps<{popUp:PopUp,returnValue:(...args:any[])=>void,props:any}>()
     let {mission=null} = props
@@ -59,7 +64,7 @@
     //修改任务计时
     function editTime(){
         showPopUp({
-            vue:shallowRef(EditTimer),
+            vue:shallowRef(EditTime),
             mask:false,
             buttons:[],
             props:{
@@ -67,6 +72,9 @@
             },
             returnValue:(newTime)=>{
                 tmpMission.timeLimit = newTime
+            },
+            size:{
+                height:"auto"
             }
         })
     }
@@ -84,7 +92,7 @@
 </script>
 
 <style scoped lang='scss'>
-@use "@/static/style/components/titleDownLine.scss";
+@use "@/static/style/globalStyle.scss";
 @use "@/static/style/popUp.scss";
 .editMission{
     height: 100%;

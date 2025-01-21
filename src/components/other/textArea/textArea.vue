@@ -4,7 +4,7 @@
             :class="showPlaceholder ? 'showPlaceholder':null"
             :inputSupport = "inputSupport"
             ref="textArea"
-            contenteditable="true"
+            :contenteditable="mode != 'disabled'?true:false"
             :placeholder="placeholder"
             inputmode="text"
             tabindex="0"
@@ -31,9 +31,13 @@ import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expr
     let effectInput = "" //有效输入
     let selectionRange:any //记录光标上一次聚焦的位置
 
-    //占位符，是否启用输入辅助，输入建议列表
-    const {placeholder,inputSupport,inputSuggestionList,mode} = defineProps(
-        ["placeholder","inputSupport","inputSuggestionList","mode"])
+    //占位符，是否启用输入辅助，输入建议列表，输入模式
+    const {placeholder,inputSupport=false,inputSuggestionList,mode} = defineProps<{
+        placeholder?:string,
+        inputSupport?:boolean,
+        inputSuggestionList?:any,
+        mode?:"string"|"all"|"disabled"
+    }>()
     //初始值
     const content = defineModel<any>()
     const emits = defineEmits(["input","blur","focus"])
@@ -81,8 +85,6 @@ import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expr
             const doms = translateToFrontEndContent(content.value)
             loadDom(doms)
         })
-
-        
     })
 
     //向textArea中加载dom

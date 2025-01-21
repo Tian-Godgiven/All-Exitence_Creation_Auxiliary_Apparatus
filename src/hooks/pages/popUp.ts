@@ -1,13 +1,14 @@
 import { reactive, ref } from "vue"
 import { hideMask, showMask } from "./masks/popUpMask"
 import { disableChangePage, enableChangePage } from "./pageChange"
+import { ButtonIcon } from "@/data/list/buttonIconList"
 
 export let popUpList = reactive<PopUp[]>([])
 export let maskIndex = ref(0)
 
 export interface PopUp{
 	name?:string, //弹窗的标题名称,默认为无
-	buttons:Button[]|null, //弹窗中，需要在右上角显示的按钮以及这些按钮的点击事件
+	buttons:Button[]|null, //弹窗中，需要在右上角显示的按钮
 	props?:{}, //弹窗的组件中需要使用的数据
 	vueName?:string, //弹窗对应的vue对象名称
 	vue?:any, //弹窗中显示的vue组件
@@ -17,12 +18,16 @@ export interface PopUp{
 	size?:{
 		width?:string,
 		height?:string,
+	},
+	position?:{
+		x?:string,
+		y?:string
 	}
 }
 interface Button{
 	name:string,
 	click:()=>void,
-	icon?:string
+	icon?:ButtonIcon
 }
 
 // 显示弹窗
@@ -39,7 +44,8 @@ export function showPopUp(popUp:PopUp){
 			name:"关闭",
 			click:()=>{
 				closePopUp()
-			}
+			},
+			icon:"close"
 		})
 	}
 	

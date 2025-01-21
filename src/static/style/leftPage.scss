@@ -1,5 +1,6 @@
 // 页面尺寸
 @use "@/static/style/global.scss" as global;
+@use "@/static/style/globalStyle.scss";
 
 .leftPage{
 	top:0; 
@@ -44,9 +45,7 @@
 		align-items: center;
 		>.text{
 			width: 100%;
-			white-space:nowrap;
-			overflow: hidden;
-			text-overflow: ellipsis;
+			@extend .dontShowMoreText;
 		}
 	}
 

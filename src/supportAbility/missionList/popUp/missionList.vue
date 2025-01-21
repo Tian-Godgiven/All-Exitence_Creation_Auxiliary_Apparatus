@@ -28,7 +28,7 @@
 			</div>
 		</div>
 
-		<div class="missionList">
+		<div class="missions">
 			<missionVue 
 				v-for="mission in showMissions"
 				:key="mission.__key"
@@ -38,11 +38,11 @@
 </template>
 
 <script setup lang="ts" name=""> 
-	import { computed, Ref, ref } from 'vue';
-	import missionVue from './components/mission.vue';
-	import MissionTag from './components/missionTag.vue';
+	import { computed, reactive, Ref, ref } from 'vue';
+	import missionVue from '../components/mission.vue';
+	import MissionTag from '../components/missionTag.vue';
 	import Button from '@/components/global/button.vue';
-	import { createNewMission, Mission, nowMissionList } from './missionList';
+	import { createNewMission, Mission, nowMissionList } from '../missionList';
 	const missionList = nowMissionList
 	//用于筛选的标签库
 	const selectTags:Ref<{tag:string,num:number,chosen:boolean}[]> = computed(()=>{
@@ -64,9 +64,9 @@
 		},[])
 		//数量越多的排在越前面
 		tmp.sort((a,b)=>{
-			return a.num - b.num
+			return b.num - a.num
 		})
-		return tmp
+		return reactive(tmp)
 	})
 	//已选择的标签
 	const chosenTags:Ref<string[]> = ref([])
@@ -82,14 +82,14 @@
 			//状态筛选
 			if(mission.state == state.value){
 				//标签筛选
-				if(selectTags.value.length>0){
-					selectTags.value.forEach((theTag)=>{
+				if(chosenTags.value.length>0){
+					for(let theTag of chosenTags.value){
 						//包含任意一个tag则返回
-						if(mission.tags.includes(theTag.tag)){
+						if(mission.tags.includes(theTag)){
 							arr.push(mission)
 							return arr
 						}
-					})
+					}
 				}
 				else{
 					arr.push(mission)
@@ -98,7 +98,6 @@
 			}
 			return arr
 		},[])
-		console.log(tmp)
 		return tmp
 	})
 	function switchType(type:"doing"|"completed"|"failed"){
@@ -129,6 +128,7 @@
 
 <style lang="scss" scoped>
 	.missionList{
+		height: 100%;
 		.switchBar{
 			height: 100px;
 			width: 100%;
@@ -175,7 +175,9 @@
 			transition:1s;//自行设定动画时间
 			.container{
 				min-height: 50px;
+				display: flex;
 				.tags{
+					width: calc(100% - 90px);
 					display: flex;
 					flex-wrap: wrap;
 					.missionNum{
@@ -190,9 +192,11 @@
 					}
 				}
 				.switchSelectBar{
+					width: 90px;
+					height: 1rem;
 					position: absolute;
 					right: 0;
-					border-radius: 50%;
+					border-radius: 10px;
 					background-color: gray;
 				}
 			}
@@ -200,7 +204,13 @@
 		.selectBar.expend{
 			grid-template-rows:1fr;
 		}
-
+		.missions{
+			max-height: 90%;
+			overflow: hidden;
+		}
+		.missions::-webkit-scrollbar{
+			width: 0;
+		}
 	}
 
 	.missionTag.chosen{

@@ -19,7 +19,8 @@ prop属性
 ~~~
 placeholder string 占位符,输入内容为空时显示;
 inputSupport bool 是否显示输入辅助,为true时会在输入框聚焦时显示输入辅助，点击不具备InputSupport的区域时会隐藏输入辅助栏
-checkList [] 输入补全列表，只有给出输入补全列表，才会在该textArea中提供输入补全功能，详见上方输入补全
+checkList [] 输入补全列表，只有给出输入补全列表，才会在该textArea中提供输入补全功能，详见上方输入补全，
+mode:"string"|"" 输入模式
 ~~~
 
 ~~~

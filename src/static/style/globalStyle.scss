@@ -1,0 +1,13 @@
+.titleDownLine{
+    margin-top:auto;
+    font-size: 1.4rem;
+    width: 550px;
+    height: 60px;
+}
+
+//限制文本内容显示长度，仅作用于一行内
+.dontShowMoreText{
+    white-space:nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
