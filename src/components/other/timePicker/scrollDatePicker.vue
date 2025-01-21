@@ -1,20 +1,16 @@
 <template>
-    <div class="datePicker">
-        <VueScrollPicker :options="years" v-model="currentYear" />
-        <VueScrollPicker :options="months" v-model="currentMonth" />
-        <VueScrollPicker :options="days" v-model="currentDay" />
+    <div class="picker">
+        <VueScrollPicker :options="years" v-model="time.year" @update:model-value="onChange" />
+        <VueScrollPicker :options="months" v-model="time.month" @update:model-value="onChange"/>
+        <VueScrollPicker :options="days" v-model="time.day" @update:model-value="onChange"/>
     </div>
 </template>
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue'
+import { computed, Reactive } from 'vue'
 import { VueScrollPicker } from 'vue-scroll-picker';
 
-    const {currentDate=Date.now()} = defineProps<{currentDate:number}>()
+    const {time} = defineProps<{time:Reactive<{year:number,month:number,day:number}>}>()
     const emits = defineEmits(["onChange"])
-    const date = new Date(currentDate)
-    const currentYear = ref(date.getFullYear())
-    const currentMonth = ref(date.getMonth())
-    const currentDay = ref(date.getDate())
 
     const years = computed(()=>{
         //年份范围
@@ -26,18 +22,17 @@ import { VueScrollPicker } from 'vue-scroll-picker';
         return Array.from({ length: 12 }, (_, index) => index+1)
     })
     const days = computed(()=>{
-        const lastDay = new Date(currentYear.value, currentMonth.value, 0).getDate()
+        const lastDay = new Date(time.year, time.month, 0).getDate()
         return Array.from({ length: lastDay }, (_, index) => index + 1)
     })
 
-    //监听值变化
-    watch([currentYear,currentMonth,currentDay],()=>{
-        emits("onChange",currentYear.value,currentMonth.value-1,currentDay.value)
-    })
-
+    function onChange(){
+        emits("onChange")
+    }
+ 
 </script>
 <style scoped lang="scss">
-.datePicker {
+.picker {
     display: flex;
     .vue-scroll-picker{
         width: 100%;

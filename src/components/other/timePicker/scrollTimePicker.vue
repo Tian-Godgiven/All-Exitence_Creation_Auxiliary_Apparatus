@@ -1,24 +1,22 @@
 <template>
     <div class="picker">
-        <VueScrollPicker :options="hours" v-model="time.hour" />
-        <VueScrollPicker :options="minutes" v-model="time.minute" />
+        <VueScrollPicker :options="hours" v-model="time.hour" @update:model-value="onChange"/>
+        <VueScrollPicker :options="minutes" v-model="time.minute" @update:model-value="onChange"/>
     </div>
 </template>
 <script lang="ts" setup>
-import { watch, Reactive } from 'vue'
+import { Reactive } from 'vue'
 import { VueScrollPicker } from 'vue-scroll-picker';
 
     const {time} = defineProps<{time:Reactive<{hour:number,minute:number}>}>()
-    console.log(time.hour)
     const emits = defineEmits(["onChange"])
 
     const hours = Array.from({ length: 24 }, (_, index) => String(index).padStart(2, '0'))
     const minutes = Array.from({ length: 60 }, (_, index) => String(index).padStart(2, '0'))
 
-    //监听值变化
-    watch(()=>time,()=>{
+    function onChange(){
         emits("onChange",time.hour,time.minute)
-    },{deep:true})
+    }
 
 
 </script>

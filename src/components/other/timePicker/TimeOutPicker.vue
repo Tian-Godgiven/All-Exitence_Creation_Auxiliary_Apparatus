@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang='ts'>
-    import { computed, reactive, ref, } from 'vue';
+    import { computed, reactive } from 'vue';
     import { addHours, addMinutes, differenceInDays, differenceInHours, differenceInMinutes } from 'date-fns';
     import { ElPopover } from 'element-plus';
     import ScrollTimePicker from './scrollTimePicker.vue';
@@ -19,36 +19,38 @@
     const {startTime = Date.now()} = defineProps<{startTime:number}>()
 
     //时间差
-    const diffMinute = ref(0)
-    const diffHour = ref(0)
     const timeoutText = computed(()=>{
         if(targetTime.value < startTime){
             return "0分钟"
         }
         const days = differenceInDays(targetTime.value,startTime)
-        diffMinute.value = differenceInMinutes(targetTime.value,startTime) % 60
-        diffHour.value = differenceInHours(targetTime.value,startTime) % 24
+        const diffMinute = differenceInMinutes(targetTime.value,startTime) % 60
+        const diffHour = differenceInHours(targetTime.value,startTime) % 24
         let str = ""
         if(days>0){
             str += (days+"天")
         }
-        if(diffHour.value > 0 || days>0){
-            str += (diffHour.value + "小时")
+        if(diffHour > 0 || days>0){
+            str += (diffHour + "小时")
         }
-        str += diffMinute.value + "分钟"
+        str += diffMinute + "分钟"
+        //同步到选择器
+        timePickerItem.hour = diffHour;
+        timePickerItem.minute = diffMinute
         return str
     })
 
     //选择器对象
     const timePickerItem = reactive({
-        hour:diffHour,
-        minute:diffMinute
+        hour:0,
+        minute:0
     })
     function onChange(newHour:number,newMinute:number){
         //把targetTime修改为startTime+newTimeout
         let newDate = new Date(startTime)
         newDate = addHours(newDate,newHour)
         newDate = addMinutes(newDate,newMinute)
+        
         targetTime.value = newDate.getTime()
     }
 </script>

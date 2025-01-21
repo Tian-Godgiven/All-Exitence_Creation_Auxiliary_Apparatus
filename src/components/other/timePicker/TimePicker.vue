@@ -11,7 +11,7 @@
 
 <script setup lang='ts'>
     import Time from '@/components/global/time.vue';
-    import { reactive, watchEffect} from 'vue';
+    import { reactive,computed, watch } from 'vue';
     import { ElPopover } from 'element-plus';
     import ScrollTimePicker from './scrollTimePicker.vue';
     const date = defineModel<number>({default:Date.now()})
@@ -25,11 +25,12 @@
         hour:0,
         minute:0
     })
-    watchEffect(()=>{
-        timeItem.hour = new Date(date.value).getHours()
-        timeItem.minute = new Date(date.value).getMinutes()
+    watch(date,()=>{
+        const theDate = new Date(date.value)
+        timeItem.hour = theDate.getHours()
+        timeItem.minute = theDate.getMinutes()
     })
-    //监听值变化
+    //值变化函数
     function onChange(){
         const newDate = new Date(date.value)
         newDate.setHours(timeItem.hour,timeItem.minute)
