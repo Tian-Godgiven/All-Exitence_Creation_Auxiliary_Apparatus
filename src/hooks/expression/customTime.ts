@@ -1,6 +1,3 @@
-import { ElStep } from "element-plus"
-import { includes } from "lodash"
-
 //自定义时间表达式
 export type TimeRule = 
     "date"//地球时间
@@ -108,7 +105,7 @@ function getDateArrByUnit(time:number,unitFrom?:DateUnit,unitEnd?:DateUnit){
                 break;
             case "month":
                 unit="月",
-                number=date.getMonth() + 1
+                number=date.getMonth() + 1//从0开始
                 break;
             case "day":
                 unit="日",

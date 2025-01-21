@@ -1,6 +1,6 @@
 <template>
     <div class="missionTime">直到
-        <Time :time-value="timeValue" time-rule="date"></Time>
+        <Time :time-value="timeValue" time-rule="date" unit-end="minute"></Time>
     </div>
 </template>
 

@@ -30,9 +30,9 @@
     watch(date,()=>{
         const theDate = new Date(date.value)
         timeItem.year = theDate.getFullYear()
-        timeItem.month = theDate.getMonth(),
+        timeItem.month = theDate.getMonth()+1,
         timeItem.day = theDate.getDate()
-    })
+    },{immediate:true})
     //选择器的值发生变化时
     function onChange(){
         const newDate = new Date(date.value)

@@ -11,7 +11,7 @@
 
 <script setup lang='ts'>
     import Time from '@/components/global/time.vue';
-    import { reactive,computed, watch } from 'vue';
+    import { reactive,watch } from 'vue';
     import { ElPopover } from 'element-plus';
     import ScrollTimePicker from './scrollTimePicker.vue';
     const date = defineModel<number>({default:Date.now()})
