@@ -51,9 +51,7 @@ export function showPopUp(popUp:PopUp){
 	
 	//弹窗显示mask
 	if(popUp.mask){
-		showMask(()=>{
-			closePopUp(popUp)
-		})
+		showMask(popUp)
 		maskIndex.value += 1
 	}
 	
@@ -71,13 +69,14 @@ export function closePopUp(popUp?:PopUp){
 	}
 	// 删除指定弹窗
 	else{
+		//找到指定的popUp的index
 		const index = popUpList.indexOf(popUp)
 		if(index != -1){
-			//找到指定的popUp
 			popUpList.splice(index,1)
 		}
 	}
 	
+	//如果指定了弹窗并且该弹窗显示了mask
 	if(popUp && popUp.mask){
 		maskIndex.value -= 1
 	}
@@ -89,3 +88,5 @@ export function closePopUp(popUp?:PopUp){
 		enableChangePage()
 	}
 }
+
+//点击到当前聚焦弹窗之外时，关闭该弹窗

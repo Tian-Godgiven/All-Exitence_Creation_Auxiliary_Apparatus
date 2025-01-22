@@ -15,6 +15,7 @@
     import { addHours, addMinutes, differenceInDays, differenceInHours, differenceInMinutes } from 'date-fns';
     import { ElPopover } from 'element-plus';
     import ScrollTimePicker from './scrollTimePicker.vue';
+import { getDateDistanceDHM } from '@/hooks/expression/customTime';
     const targetTime = defineModel<number>({default:Date.now()})
     const {startTime = Date.now()} = defineProps<{startTime:number}>()
 
@@ -23,20 +24,19 @@
         if(targetTime.value < startTime){
             return "0分钟"
         }
-        const days = differenceInDays(targetTime.value,startTime)
-        const diffMinute = differenceInMinutes(targetTime.value,startTime) % 60
-        const diffHour = differenceInHours(targetTime.value,startTime) % 24
+        const dateDHM = getDateDistanceDHM(startTime,targetTime.value)
         let str = ""
-        if(days>0){
-            str += (days+"天")
+        const {day,hour,minute} = dateDHM
+        if(day>0){
+            str += (day+"天")
         }
-        if(diffHour > 0 || days>0){
-            str += (diffHour + "小时")
+        if(hour > 0 || day>0){
+            str += (hour + "小时")
         }
-        str += diffMinute + "分钟"
+        str += minute + "分钟"
         //同步到选择器
-        timePickerItem.hour = diffHour;
-        timePickerItem.minute = diffMinute
+        timePickerItem.hour = hour;
+        timePickerItem.minute = minute
         return str
     })
 

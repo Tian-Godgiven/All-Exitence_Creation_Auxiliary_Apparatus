@@ -5,8 +5,8 @@
                 <TimeOutPicker v-model.number="tmpTime" :start-time="now"></TimeOutPicker>
             </div>
             <div class="clock">直到：
-                <DatePicker v-model="tmpTime"></DatePicker>
-                <TimePicker v-model="tmpTime"></TimePicker>
+                <DatePicker v-model.number="tmpTime"></DatePicker>
+                <TimePicker v-model.number="tmpTime"></TimePicker>
             </div>
         </div>
         <div class="finalButtons">
@@ -26,17 +26,24 @@
     import TimePicker from '@/components/other/timePicker/TimePicker.vue';
     
     import TimeOutPicker from '@/components/other/timePicker/TimeOutPicker.vue';
-    const {popUp,returnValue,props={}} = defineProps<{popUp:PopUp,returnValue:(a:number)=>void,props:any}>()
-    let {time} = props
+    const {popUp,returnValue,props={}} = defineProps<{popUp:PopUp,returnValue:(a:number,b:number)=>void,props:any}>()
+    let {planTime,limitTime} = props
+    let time
     const now = Date.now()
-    if(!time){
+    if(planTime){
+        time = planTime
+    }
+    else if(limitTime){
+        time = now + limitTime
+    }
+    else{
         time = now
     }
-
+    //显示的时间：优先显示planTime
     const tmpTime:Ref<number> = ref(cloneDeep(time)) 
-        console.log(new Date(tmpTime.value))
     function confirm(){
-        returnValue(tmpTime.value)
+        //返回tmpTime和时间差值
+        returnValue(tmpTime.value,tmpTime.value-now)
         closePopUp(popUp)
     }
 

@@ -29,7 +29,7 @@
         const theDate = new Date(date.value)
         timeItem.hour = theDate.getHours()
         timeItem.minute = theDate.getMinutes()
-    })
+    },{immediate:true})
     //值变化函数
     function onChange(){
         const newDate = new Date(date.value)

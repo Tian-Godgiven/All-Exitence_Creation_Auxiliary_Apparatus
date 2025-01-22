@@ -46,7 +46,9 @@
 	const missionList = nowMissionList
 	//用于筛选的标签库
 	const selectTags:Ref<{tag:string,num:number,chosen:boolean}[]> = computed(()=>{
-		const tmp = missionList.reduce((arr:{tag:string,num:number,chosen:boolean}[],mission)=>{
+		//三个列表合在一起
+		const tmpList:Mission[] = missionList[state.value]
+		const tmp = tmpList.reduce((arr:{tag:string,num:number,chosen:boolean}[],mission)=>{
 			mission.tags.forEach((tag)=>{
 				const index = arr.findIndex((arrTag)=>arrTag.tag == tag)
 				if(index>-1){
@@ -71,38 +73,38 @@
 	//已选择的标签
 	const chosenTags:Ref<string[]> = ref([])
 	//切换显示的任务类型
-	const state = ref("doing")
+	const state = ref<"doing"|"completed"|"failed">("doing")
 	const stateMap = {
         doing: '进行中',
         completed: '已完成',
         failed: '失败',
     }
 	const showMissions = computed(()=>{
-		const tmp = missionList.reduce((arr:Mission[],mission:Mission)=>{
-			//状态筛选
-			if(mission.state == state.value){
-				//标签筛选
-				if(chosenTags.value.length>0){
-					for(let theTag of chosenTags.value){
-						//包含任意一个tag则返回
-						if(mission.tags.includes(theTag)){
-							arr.push(mission)
-							return arr
-						}
+		//获取相应状态的列表
+		const list = missionList[state.value]
+		const tmp = list.reduce((arr:Mission[],mission:Mission)=>{
+			//标签筛选
+			if(chosenTags.value.length>0){
+				for(let theTag of chosenTags.value){
+					//包含任意一个tag则返回
+					if(mission.tags.includes(theTag)){
+						arr.push(mission)
+						return arr
 					}
 				}
-				else{
-					arr.push(mission)
-					return arr
-				}
+			}
+			else{
+				arr.push(mission)
+				return arr
 			}
 			return arr
 		},[])
 		return tmp
 	})
 	function switchType(type:"doing"|"completed"|"failed"){
-		if(type != state.value)
-		state.value = type
+		if(type != state.value){
+			state.value = type
+		}
 	}
 	//点击标签进行筛选
 	function switchChoseTag(missionTag:{tag:string,num:number,chosen:boolean}){

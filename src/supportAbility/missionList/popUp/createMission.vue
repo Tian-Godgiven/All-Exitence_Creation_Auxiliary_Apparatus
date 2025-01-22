@@ -15,11 +15,10 @@
 
         <div class="info">
             <div v-if="tmpMission.repeatTime&&tmpMission.repeatTime>0">已重复：{{ tmpMission.repeatTime }}次</div>
-            <div></div>
         </div>
         
         <div class="inner">
-            <MissionTime v-if="tmpMission.timeLimit" :time="tmpMission.timeLimit"></MissionTime>
+            <MissionTime v-if="tmpMission.planTime" :mission="tmpMission"></MissionTime>
             <TextArea class="missionInner" v-model="tmpMission.inner" placeholder="输入内容"></TextArea>
             <div class="separator"></div>
             <MissionTagBar :tags="tmpMission.tags"></MissionTagBar>
@@ -40,18 +39,21 @@
     import { closePopUp, PopUp, showPopUp } from '@/hooks/pages/popUp';
     import { nanoid } from 'nanoid';
     import { cloneDeep } from 'lodash';
-    import EditTime from './editTime.vue';
+    import EditMissionTime from './editMissionTime.vue';
     import MissionTime from '../components/missionTime.vue';
     import MissionTagBar from '../components/missionTagBar.vue';
     import { Mission } from '../missionList';
 
     const {popUp,returnValue,props={}} = defineProps<{popUp:PopUp,returnValue:(...args:any[])=>void,props:any}>()
-    let {mission=null} = props
+    let {mission=null}:{mission:Mission|null} = props
     if(!mission){
         mission = {
             title:"",
             inner:"",
-            timeLimit:null, //限时时间，若为null则表示不限时
+            startTime:Date.now(),
+            endTime:0,
+            planTime:null,
+            timeLeft:null, //限时时间，若为null则表示不限时
 	        repeatable:false, //是否可重复
 	        repeatTime:0, //已重复次数
 	        tags: [], //标签
@@ -61,17 +63,23 @@
     }
     //创建临时任务对象
     const tmpMission:Reactive<Mission> = reactive(cloneDeep(mission))
+
     //修改任务计时
     function editTime(){
         showPopUp({
-            vue:shallowRef(EditTime),
+            vue:shallowRef(EditMissionTime),
             mask:false,
             buttons:[],
             props:{
-                time:tmpMission.timeLimit,
+                planTime:tmpMission.planTime,
+                leftTime:tmpMission.timeLeft,
             },
-            returnValue:(newTime)=>{
-                tmpMission.timeLimit = newTime
+            returnValue:(planTime,distantTime)=>{
+                console.log(planTime,distantTime)
+                //预计结束时间
+                tmpMission.planTime = planTime
+                //限时时间
+                tmpMission.timeLeft = distantTime
             },
             size:{
                 height:"auto"

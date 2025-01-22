@@ -1,10 +1,10 @@
 <template>
     <div class="mission">
         <LongTapContainer @longtap="longTap" @click="click" class="contentBar">
-            <div >
+            <div>
                 <div class="title">{{ mission.title }}</div>
                 <div class="inner">
-                    <MissionTime v-if="mission.timeLimit" :time="mission.timeLimit"/>
+                    <MissionTime v-if="mission.timeLeft" :mission="mission"/>
                     <TextArea 
                         v-if="mission.inner" 
                         class="missionInner" 
