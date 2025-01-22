@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div>该任务的限时时间到了，请结算任务！</div>
+        <div>{{ info }}</div>
         <MissionVue :mission="mission"></MissionVue>
     </div>
 </template>
@@ -9,7 +9,7 @@
     import MissionVue from '../components/mission.vue';
     import { Mission } from '../missionList';
     const {props} = defineProps<{props:any}>()
-    const mission:Mission = props.mission
+    const {mission,info=""}:{mission:Mission,info?:string} = props
 </script>
 
 <style scoped lang='scss'>

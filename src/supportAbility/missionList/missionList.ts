@@ -259,24 +259,30 @@ function updateMissionTime(mission:Mission){
                 info:`距离任务${missionTitle}结束还有10分钟`,
                 confirm:null,
                 buttons:[
-                    {"buttonName":"查看任务",func:()=>{showMissionListPopUp()}},
+                    {"buttonName":"查看任务",func:()=>{showMissionAlert(mission)}},
                     {"buttonName":"我知道了",func:()=>{}}
                 ]
             })
         }
         //小于0时显示结算弹窗
         else if(mission.timeLeft <=0 ){
-            showPopUp({
-                vue:shallowRef(ShowMissionAlert),
-                buttons:null,
-                mask:true,
-                props:{
-                    mission
-                }
-            })
+            showMissionAlert(mission,"任务时间到，请结算任务！")
         }
     }
-    
+}
 
-
+//显示单个的任务信息弹窗
+function showMissionAlert(mission:Mission,info?:string){
+    showPopUp({
+        vue:shallowRef(ShowMissionAlert),
+        buttons:null,
+        mask:true,
+        props:{
+            mission,
+            info
+        },
+        size:{
+            height:"auto"
+        }
+    })
 }

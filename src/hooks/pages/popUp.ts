@@ -1,5 +1,4 @@
 import { reactive, ref } from "vue"
-import { hideMask, showMask } from "./masks/popUpMask"
 import { disableChangePage, enableChangePage } from "./pageChange"
 import { ButtonIcon } from "@/data/list/buttonIconList"
 
@@ -32,6 +31,13 @@ interface Button{
 
 // 显示弹窗
 export function showPopUp(popUp:PopUp){
+	//如果该弹窗已经显示，则不变
+	const index = popUpList.indexOf(popUp)
+	if(index>0){
+		return;
+	}
+
+
 	// 阻止页面滑动切换
 	disableChangePage()
 	// 默认名称为null
@@ -56,8 +62,7 @@ export function showPopUp(popUp:PopUp){
 	}
 	
 	// 添加弹窗
-	let index = popUpList.length
-	popUp["index"] = index
+	popUp["index"] = popUpList.length
 	popUpList.push(popUp)
 }
 
@@ -78,6 +83,9 @@ export function closePopUp(popUp?:PopUp){
 	
 	//如果指定了弹窗并且该弹窗显示了mask
 	if(popUp && popUp.mask){
+		//从maskPopUp中删除
+		const index = maskPopUp.indexOf(popUp)
+		maskPopUp.splice(index,1)
 		maskIndex.value -= 1
 	}
 
@@ -89,4 +97,20 @@ export function closePopUp(popUp?:PopUp){
 	}
 }
 
-//点击到当前聚焦弹窗之外时，关闭该弹窗
+// 弹窗的遮罩层
+export let ifMask = ref(false)
+export let maskAlpha = 0.3
+export const maskPopUp:PopUp[] = [] //mask对应的popUp堆栈，每次点击mask都会关闭最外层的popUp
+
+function showMask(popUp:PopUp){
+	ifMask.value = true
+	maskPopUp.push(popUp)
+}
+function hideMask(){
+	ifMask.value = false
+}
+//关闭最外层的弹窗
+export function clickMask(){
+	const tmp = maskPopUp.pop()
+	closePopUp(tmp)
+}

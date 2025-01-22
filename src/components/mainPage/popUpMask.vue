@@ -12,7 +12,7 @@
 
 <script setup lang="ts" name="mask">
 import { computed } from 'vue';
-import { ifMask,maskAlpha,clickMask } from '@/hooks/pages/masks/popUpMask';
+import { ifMask,maskAlpha,clickMask } from '@/hooks/pages/popUp';
 import { maskIndex } from '@/hooks/pages/popUp';
 // 注释：该mask存在z-index的变化，因此不能与pageMask共同
 	let zIndex = computed(()=>{
