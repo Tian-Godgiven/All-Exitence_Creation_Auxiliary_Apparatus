@@ -14,7 +14,7 @@
 			@click="createNewMission" class="createNew" 
 			icon="add"/>
 
-		<div class="selectBar" :class="expendSelectBar?'expend':''">
+		<div v-show="!manageMode" class="selectBar" :class="expendSelectBar?'expend':''">
 			<div class="container">
 				<div class="tags">
 					<MissionTag 
@@ -52,7 +52,7 @@
 	import missionVue from '../components/mission.vue';
 	import MissionTag from '../components/missionTag.vue';
 	import Button from '@/components/global/button.vue';
-	import { createNewMission, ifShowEditMission, Mission, MissionState, nowMissionList } from '../missionList';
+	import { createNewMission, ifShowEditMission, Mission, MissionState, nowMissionList, manageMode } from '../missionList';
 	const missionList = nowMissionList
 	//用于筛选的标签库
 	const selectTags:Ref<{tag:string,num:number,chosen:boolean}[]> = computed(()=>{
@@ -139,6 +139,7 @@
 	function swicthShowAllTags(){
 		expendSelectBar.value = !expendSelectBar.value
 	}
+	
 </script>
 
 <style lang="scss" scoped>

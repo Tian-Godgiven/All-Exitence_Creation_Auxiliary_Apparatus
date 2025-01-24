@@ -4,7 +4,7 @@
         <Button class="button" name="返回任务列表" @click="cancel" icon="leftArrow"></Button>
         <div class="right">
             <Button class="right button" name="任务限时"  
-                @click="editTime" 
+                @click="editTime()" 
                 icon="time"/>
             <Button class="right button" 
                 :class="tmpMission.repeatable?'turnOn':''" 
@@ -52,12 +52,11 @@
     import { editMissionReturn, editTarget, ifShowEditMission, Mission } from '../missionList';
     //获取编辑对象，若为null则为创建任务
     let mission = editTarget
-    console.log(mission.value)
     if(!mission.value){
         mission.value = {
             title:"",
             inner:"",
-            startTime:Date.now(),
+            startTime:0,
             endTime:0,
             planTime:null,
             timeLeft:null, //限时时间，若为null则表示不限时
@@ -81,7 +80,6 @@
                 leftTime:tmpMission.timeLeft,
             },
             returnValue:(planTime,distantTime)=>{
-                console.log(planTime,distantTime)
                 //预计结束时间
                 tmpMission.planTime = planTime
                 //限时时间

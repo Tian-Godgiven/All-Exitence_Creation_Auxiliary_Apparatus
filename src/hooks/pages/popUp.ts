@@ -32,9 +32,15 @@ interface Button{
 // 显示弹窗
 export function showPopUp(popUp:PopUp){
 	//如果该弹窗已经显示，则不变
-	const ifShowing = popUpList.some(thePopUp=>
-		popUp.vue == thePopUp.vue || popUp.vueName == thePopUp.vueName
-	)
+	const ifShowing = popUpList.some(thePopUp=>{
+		//vue对象相同
+		if((popUp.vue && popUp.vue.value == thePopUp.vue) || 
+			popUp.vueName && popUp.vueName == thePopUp.vueName
+		){
+			
+			return true
+		}
+	})
 	if(ifShowing)return;
 
 

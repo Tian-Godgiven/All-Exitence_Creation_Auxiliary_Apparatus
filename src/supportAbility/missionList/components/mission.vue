@@ -17,8 +17,10 @@
         
         <div class="controlBar">
             <div class="confirmButton" 
+                v-show="!manageMode"
                 :style="{backgroundColor:confirmItem.color}" 
                 @click="confirmItem.click">{{ confirmItem.text }}</div>
+
             <div class="dragHandler"></div>
         </div>
     </div>
@@ -29,14 +31,15 @@
     import MissionTime from './missionTime.vue';
     import MissionTag from './missionTag.vue';
     import LongTapContainer from '@/components/leftPage/longTapContainer.vue';
-    import { deleteMission, finishMission, Mission, repeatMission, tryAgain, editMission } from '../missionList';
+    import { manageMode,deleteMission, finishMission, Mission, repeatMission, tryAgain, editMission} from '../missionList';
     import { computed, ref } from 'vue';
     import { showControlPanel } from '@/hooks/controlPanel';
 
     const {mission} = defineProps<{mission:Mission}>()
     //长按显示控制面板
     function longTap(){
-        showControlPanel([{
+        showControlPanel([
+        {
             "text":"编辑/详情",
             click:()=>{editMission(mission)},
         },{

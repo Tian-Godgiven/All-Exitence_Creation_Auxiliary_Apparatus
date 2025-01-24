@@ -91,17 +91,26 @@ export function showEditMission(mission:Mission|null,returnValue:(newMission:Mis
     editMissionReturn = returnValue
 }
 
+//切换管理模式
+export const manageMode = ref(false)
+export function switchManageMode(bool?:boolean){
+    if(bool != undefined){
+        manageMode.value = bool
+    }
+    else{
+        manageMode.value = !manageMode.value
+    }
+}
 
 //编辑并创建新任务
 export function createNewMission(){
     showEditMission(null,(newMission)=>{
         if(newMission){
-            //将任务添加到对应类型的列表中
-            nowMissionList.doing.push(newMission)
+            //改变状态为doing
+            changeMissionState(newMission,"doing")
         }
     })
 }
-
 
 //删除任务
 export function deleteMission(mission:Mission){
@@ -119,21 +128,41 @@ function changeMissionState(mission:Mission,newState:MissionState){
     //从原本的数组中移除
     const oldArr = nowMissionList[mission.state]
     const index = oldArr.indexOf(mission)
-    oldArr.splice(index,1)
+    //新任务不需要移除
+    if(index != -1){
+        oldArr.splice(index,1)
+    }
     //添加到新数组的开头
     nowMissionList[newState].unshift(mission)
     //修改状态
     mission.state = newState
+    //如果状态为结束，则设定其结束时间
+    const now = Date.now()
+    if(newState == "failed" || newState == "completed"){
+        mission.endTime = now
+    }
+    //若状态为开始，则设定其开始时间和预计结束时间
+    else if(newState == "doing"){
+        const oldStartTime = mission.startTime
+        mission.startTime = now
+        //如果预计时间不为0，则还会重新安排任务时间
+        if(mission.planTime){
+            if(oldStartTime == 0){
+                mission.timeLeft = mission.planTime - now
+            }
+            else{
+                mission.timeLeft = mission.planTime - oldStartTime
+            }
+            mission.planTime = now + mission.timeLeft
+        }
+    }
 }
 
 //修改任务内容，成功修改时，修改任务的state
-export function editMission(mission:Mission,state?:MissionState){
+export function editMission(mission:Mission){
     showEditMission(mission,(newMission)=>{
         if(newMission){
             Object.assign(mission,newMission)
-            if(state){
-                changeMissionState(mission,state)
-            }
         }
     })
 
@@ -187,7 +216,6 @@ export function completeMission(mission:Mission){
         mission.repeatTime +=1
     }
     changeMissionState(mission,"completed")
-    console.log(mission)
 }
 
 //任务失败
@@ -207,11 +235,11 @@ export function repeatMission(mission:Mission){
         buttons:[{
             'buttonName':"好！",
             func:()=>{
-                //修改任务状态，重复次数+1，确认时间
+                //修改任务状态，重复次数+1
                 changeMissionState(mission,"doing")
                 mission.repeatTime += 1;
                 //编辑任务内容
-                editMission(mission,"doing")
+                editMission(mission)
             }
         },{
             'buttonName':'不了！',
@@ -230,10 +258,11 @@ export function tryAgain(mission:Mission){
             confirm:null,
             buttons:[{
                 "buttonName":"再来！",
-                func:async ()=>{
-                    resolve(true)
+                func:()=>{
+                    changeMissionState(mission,"doing")
                     //编辑任务内容,成功时修改为doing
-                    editMission(mission,"doing")
+                    editMission(mission)
+                    resolve(true)
                 }
             },{
                 "buttonName":"算了……！",
@@ -245,7 +274,6 @@ export function tryAgain(mission:Mission){
         })
     })
 }
-
 
 //任务定时器
 export function startMissionListTimeout(){
@@ -288,7 +316,7 @@ function updateMissionTime(mission:Mission){
     }
 }
 
-//显示单个的任务信息弹窗
+//显示指定任务信息的弹窗
 function showMissionAlert(mission:Mission,info?:string){
     showPopUp({
         vue:shallowRef(ShowMissionAlert),

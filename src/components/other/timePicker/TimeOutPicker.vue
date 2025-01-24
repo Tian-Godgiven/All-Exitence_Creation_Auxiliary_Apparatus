@@ -12,7 +12,7 @@
 
 <script setup lang='ts'>
     import { computed, reactive } from 'vue';
-    import { addHours, addMinutes, differenceInDays, differenceInHours, differenceInMinutes } from 'date-fns';
+    import { addHours, addMinutes } from 'date-fns';
     import { ElPopover } from 'element-plus';
     import ScrollTimePicker from './scrollTimePicker.vue';
 import { getDateDistanceDHM } from '@/hooks/expression/customTime';

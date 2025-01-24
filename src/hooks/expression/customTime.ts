@@ -156,7 +156,6 @@ export function translateTimeOut({
         const timeOutArr = getDateTimeOutArrByUnit(startTime,endTime,unitFrom,unitEnd)
         //链接起来
         const str = linkUnit(timeOutArr,showUnit,linker)
-        console.log(str)
         return str
     }
     //自定义时间
