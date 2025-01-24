@@ -2,12 +2,11 @@
     <div class="mission">
         <LongTapContainer @longtap="longTap" @click="click" class="contentBar">
             <div class="title">{{ mission.title }}</div>
-            <div class="inner">
+            <div class="inner" :class="innerExpend?'expend':'unexpend'">
                 <MissionTime v-if="mission.timeLeft" :mission="mission"/>
                 <TextArea 
                     v-if="mission.inner" 
                     class="missionInner" 
-                    :class="innerExpend?'expend':'unexpend'"
                     v-model="mission.inner" 
                     mode="disabled"/>
                 <div class="tags">
@@ -92,7 +91,7 @@
 }
 
 .contentBar{
-    width: calc(100% - 100px);
+    width: calc(100% - 150px);
     
 }
 .title{
@@ -101,26 +100,45 @@
     @extend .dontShowMoreText;
 }
 .inner{
-    //原本只显示3行
+    width: 100%;
+    //原本只显示3行内容+1行标签
     .missionInner{
         color: global.$bgColor40;
-    }
-    .missionInner.unexpend{
-        max-height: 4rem;
-        overflow: hidden;
-        @extend .dontShowMoreText;
-    }
-    .missionInner.expend{
-        max-height: 600px;
-        overflow: auto;
     }
     .missionInner::-webkit-scrollbar{
         width: 0;
     }
     .tags{
+        width: 100%;
         display: flex;
+        flex-wrap: wrap; /* 允许换行 */
+    }
+    .tags::-webkit-scrollbar{
+        width: 0;
     }
 }
+.inner.unexpend{
+    .missionInner{
+        max-height: 4rem;
+        overflow: hidden;
+        @extend .dontShowMoreText;
+    }
+    .tags{
+        max-height: 1.5rem;
+        overflow: hidden; /* 超出的部分隐藏 */
+    }
+}
+.inner.expend{
+    .missionInner{
+        max-height: 600px;
+        overflow: auto;
+    }
+    .tags{
+        overflow: auto;
+        max-height: 5rem;
+    }
+}
+
 
 .controlBar{
     width: 150px;

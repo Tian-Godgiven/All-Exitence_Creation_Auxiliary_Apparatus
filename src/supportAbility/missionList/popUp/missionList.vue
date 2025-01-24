@@ -5,14 +5,14 @@
 			<div v-for="(label, type) in stateMap" 
 				:key="type" 
 				:class="{ chosenType: state === type }" 
-				@click="switchType(type)">
+				@click="switchState(type)">
 				{{ label }}
 			</div>
 		</div>
 
 		<Button name="创建新任务" 
 			@click="createNewMission" class="createNew" 
-			icon="add"></Button>
+			icon="add"/>
 
 		<div class="selectBar" :class="expendSelectBar?'expend':''">
 			<div class="container">
@@ -52,7 +52,7 @@
 	import missionVue from '../components/mission.vue';
 	import MissionTag from '../components/missionTag.vue';
 	import Button from '@/components/global/button.vue';
-	import { createNewMission, ifShowEditMission, Mission, nowMissionList } from '../missionList';
+	import { createNewMission, ifShowEditMission, Mission, MissionState, nowMissionList } from '../missionList';
 	const missionList = nowMissionList
 	//用于筛选的标签库
 	const selectTags:Ref<{tag:string,num:number,chosen:boolean}[]> = computed(()=>{
@@ -83,12 +83,20 @@
 	//已选择的标签
 	const chosenTags:Ref<string[]> = ref([])
 	//切换显示的任务类型
-	const state = ref<"doing"|"completed"|"failed">("doing")
+	const state = ref<MissionState>("doing")
 	const stateMap = {
         doing: '进行中',
         completed: '已完成',
         failed: '失败',
     }
+	function switchState(type:MissionState){
+		if(type != state.value){
+			state.value = type
+			//清空已选择的标签
+			chosenTags.value = []
+		}
+	}
+	//当前显示的任务列表
 	const showMissions = computed(()=>{
 		//获取相应状态的列表
 		const list = missionList[state.value]
@@ -111,11 +119,6 @@
 		},[])
 		return tmp
 	})
-	function switchType(type:"doing"|"completed"|"failed"){
-		if(type != state.value){
-			state.value = type
-		}
-	}
 	//点击标签进行筛选
 	function switchChoseTag(missionTag:{tag:string,num:number,chosen:boolean}){
 		//该标签已选中
@@ -248,7 +251,7 @@
 	}
 	.missionTag.unchosen{
 		color:rgb(31, 31, 31);
-		background-color: rgb(98, 98, 98);
+		background-color: rgb(208, 208, 208);
 	}
 
 	.slide-enter-active, .slide-leave-active {
