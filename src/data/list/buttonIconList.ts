@@ -8,12 +8,14 @@ export type ButtonIcon =
     "showLeft"|
     "rightUp"|
     "time"|
-    "repeat"
+    "repeat"|
+    "leftArrow"
 
 export const buttonIconList:Record<ButtonIcon,string>= {
     "close":"",
     "add":"plus.png",
     "delete":"",
+    "leftArrow":"leftArrow.svg",
     "missionList":"missionList.png",
     "canlendar":"calendar.png",
     "handSave":"handSave.png",

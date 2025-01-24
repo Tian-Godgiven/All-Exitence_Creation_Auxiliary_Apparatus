@@ -1,19 +1,17 @@
 <template>
     <div class="mission">
         <LongTapContainer @longtap="longTap" @click="click" class="contentBar">
-            <div>
-                <div class="title">{{ mission.title }}</div>
-                <div class="inner">
-                    <MissionTime v-if="mission.timeLeft" :mission="mission"/>
-                    <TextArea 
-                        v-if="mission.inner" 
-                        class="missionInner" 
-                        :class="innerExpend?'expend':'unexpend'"
-                        v-model="mission.inner" 
-                        mode="disabled"/>
-                    <div class="tags">
-                        <MissionTag v-for="tag in mission.tags" :tag="tag"/>
-                    </div>
+            <div class="title">{{ mission.title }}</div>
+            <div class="inner">
+                <MissionTime v-if="mission.timeLeft" :mission="mission"/>
+                <TextArea 
+                    v-if="mission.inner" 
+                    class="missionInner" 
+                    :class="innerExpend?'expend':'unexpend'"
+                    v-model="mission.inner" 
+                    mode="disabled"/>
+                <div class="tags">
+                    <MissionTag v-for="tag in mission.tags" :tag="tag"/>
                 </div>
             </div>
         </LongTapContainer>
@@ -32,17 +30,16 @@
     import MissionTime from './missionTime.vue';
     import MissionTag from './missionTag.vue';
     import LongTapContainer from '@/components/leftPage/longTapContainer.vue';
-    import { deleteMission, finishMission, Mission, repeatMission, tryAgain } from '../missionList';
+    import { deleteMission, finishMission, Mission, repeatMission, tryAgain, editMission } from '../missionList';
     import { computed, ref } from 'vue';
     import { showControlPanel } from '@/hooks/controlPanel';
 
     const {mission} = defineProps<{mission:Mission}>()
-
     //长按显示控制面板
     function longTap(){
         showControlPanel([{
             "text":"编辑/详情",
-            click:()=>{},
+            click:()=>{editMission(mission)},
         },{
             text:"删除",
             click:()=>{deleteMission(mission)}
@@ -96,38 +93,38 @@
 
 .contentBar{
     width: calc(100% - 100px);
-    .title{
-        width: calc(100% - 150px);
-        font-size: 1.2rem;
+    
+}
+.title{
+    width: calc(100% - 150px);
+    font-size: 1.2rem;
+    @extend .dontShowMoreText;
+}
+.inner{
+    //原本只显示3行
+    .missionInner{
+        color: global.$bgColor40;
+    }
+    .missionInner.unexpend{
+        max-height: 4rem;
+        overflow: hidden;
         @extend .dontShowMoreText;
     }
-    .inner{
-        //原本只显示3行
-        .missionInner{
-            color: global.$bgColor40;
-        }
-        .missionInner .unexpend{
-            max-height: 4em;
-            overflow: hidden;
-            @extend .dontShowMoreText;
-        }
-        .missionInner .expend{
-            max-height: 600px;
-            overflow: auto;
-        }
-        .missionInner::-webkit-scrollbar{
-            width: 0;
-        }
-        .tags{
-            display: flex;
-        }
+    .missionInner.expend{
+        max-height: 600px;
+        overflow: auto;
+    }
+    .missionInner::-webkit-scrollbar{
+        width: 0;
+    }
+    .tags{
+        display: flex;
     }
 }
 
 .controlBar{
     width: 150px;
     display: flex;
-    align-items: center;
     justify-content: center;
     .confirmButton{
         white-space: pre;

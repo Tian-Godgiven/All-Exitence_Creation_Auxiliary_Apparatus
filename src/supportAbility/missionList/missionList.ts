@@ -1,9 +1,8 @@
 import { addToRightPage } from "@/data/list/rightAbilityList"
 import { createDirByPath, createFileToPath, readFileFromPath } from "@/hooks/fileSysytem"
 import { showPopUp } from "@/hooks/pages/popUp"
-import { reactive, shallowRef } from "vue"
+import { reactive, ref, shallowRef } from "vue"
 import MissionList from "./popUp/missionList.vue"
-import CreateMission from "./popUp/createMission.vue"
 import { showAlert } from "@/hooks/alert"
 import { showQuickInfo } from "@/api/showQuickInfo"
 import ShowMissionAlert from "./popUp/showMissionAlert.vue"
@@ -17,10 +16,11 @@ export type Mission = {
     timeLeft:number | null, //距离任务结束的剩余时间，若为null则表示无限时
     repeatable:boolean, //是否可重复
     repeatTime:number, //已重复次数
-    state: "doing"|"completed"|"failed", //当前状态:正在执行，已完成，失败
+    state: MissionState, //当前状态:正在执行，已完成，失败
     tags: string[], //标签
     __key: string,
 }
+export type MissionState = "doing" | "completed" | "failed"
 
 //初始化任务列表系统
 export const nowMissionList = reactive<{
@@ -77,22 +77,24 @@ export function showMissionListPopUp(){
     })
 }
 
-//创建任务
-export function createNewMission(){
-    //弹出创建新任务弹窗
-    showPopUp({
-        vue:shallowRef(CreateMission),
-        mask:true,
-        buttons:[],
-        props:{
-            mission:null,
-        },
-        returnValue(newMission:Mission){
-            //将其添加到正在进行任务列表中
-            newMission.startTime = Date.now()
-            nowMissionList.doing.push(newMission)
-        }
-    })
+//显示编辑任务面板
+export const ifShowEditMission = ref(false)
+export const editTarget = ref<Mission|null>(null)
+export let editMissionReturn:(newMission:Mission|boolean)=>void = ()=>{}
+export function showEditMission(mission:Mission|null,returnValue:(newMission:Mission|boolean)=>void){
+    //显示编辑任务页面
+    ifShowEditMission.value = true 
+    //传入mission
+    editTarget.value = mission
+    //传入回调函数
+    editMissionReturn = returnValue
+}
+
+
+//创建新任务
+export function createMission(mission:Mission){
+    //将任务添加到对应类型的列表中
+    nowMissionList.doing.push(mission)
 }
 
 //删除任务
@@ -107,7 +109,7 @@ export function deleteMission(mission:Mission){
 }
 
 //修改任务状态
-function changeMissionState(mission:Mission,newState:'doing'|'completed'|'failed'){
+function changeMissionState(mission:Mission,newState:MissionState){
     //从原本的数组中移除
     const oldArr = nowMissionList[mission.state]
     const index = oldArr.indexOf(mission)
@@ -116,6 +118,19 @@ function changeMissionState(mission:Mission,newState:'doing'|'completed'|'failed
     nowMissionList[newState].unshift(mission)
     //修改状态
     mission.state = newState
+}
+
+//修改任务内容，成功修改时，修改任务的state
+export function editMission(mission:Mission,state?:MissionState){
+    showEditMission(mission,(newMission)=>{
+        if(newMission){
+            Object.assign(mission,newMission)
+            if(state){
+                changeMissionState(mission,state)
+            }
+        }
+    })
+
 }
 
 //结算任务
@@ -166,6 +181,7 @@ export function completeMission(mission:Mission){
         mission.repeatTime +=1
     }
     changeMissionState(mission,"completed")
+    console.log(mission)
 }
 
 //任务失败
@@ -189,7 +205,7 @@ export function repeatMission(mission:Mission){
                 changeMissionState(mission,"doing")
                 mission.repeatTime += 1;
                 //编辑任务内容
-                editMission(mission)
+                editMission(mission,"doing")
             }
         },{
             'buttonName':'不了！',
@@ -208,11 +224,10 @@ export function tryAgain(mission:Mission){
             confirm:null,
             buttons:[{
                 "buttonName":"再来！",
-                func:()=>{
+                func:async ()=>{
                     resolve(true)
-                    changeMissionState(mission,"doing")
-                    //编辑任务内容
-                    editMission(mission)
+                    //编辑任务内容,成功时修改为doing
+                    editMission(mission,"doing")
                 }
             },{
                 "buttonName":"算了……！",
@@ -225,10 +240,6 @@ export function tryAgain(mission:Mission){
     })
 }
 
-//编辑任务
-export function editMission(mission:Mission){
-
-}
 
 //任务定时器
 export function startMissionListTimeout(){

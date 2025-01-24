@@ -1,4 +1,5 @@
 <template>
+<div class="container">
 	<div class="missionList">
 		<div class="switchBar">
 			<div v-for="(label, type) in stateMap" 
@@ -29,20 +30,29 @@
 		</div>
 
 		<div class="missions">
+			<div v-if="showMissions.length==0">
+				还没有这个类型的任务哦！<br>点击[+]即可创建新任务！
+			</div>
 			<missionVue 
 				v-for="mission in showMissions"
 				:key="mission.__key"
 				:mission="mission" />
 		</div>
 	</div>
+	<transition name="slide">
+		<EditMission class="editMission" v-if="ifShowEditMission"></EditMission>
+	</transition>
+</div>
+	
 </template>
 
 <script setup lang="ts" name=""> 
 	import { computed, reactive, Ref, ref } from 'vue';
+	import EditMission from '../components/EditMission.vue';
 	import missionVue from '../components/mission.vue';
 	import MissionTag from '../components/missionTag.vue';
 	import Button from '@/components/global/button.vue';
-	import { createNewMission, Mission, nowMissionList } from '../missionList';
+	import { createMission, showEditMission, ifShowEditMission, Mission, nowMissionList } from '../missionList';
 	const missionList = nowMissionList
 	//用于筛选的标签库
 	const selectTags:Ref<{tag:string,num:number,chosen:boolean}[]> = computed(()=>{
@@ -126,11 +136,25 @@
 	function swicthShowAllTags(){
 		expendSelectBar.value = !expendSelectBar.value
 	}
+	//创建新任务
+	function createNewMission(){
+		showEditMission(null,(newMission:Mission)=>{
+			createMission(newMission)
+		})
+	}
 </script>
 
 <style lang="scss" scoped>
+	.container{
+		position: relative;
+		width: 100%;
+		height: 100%;
+		overflow: hidden;
+	}
 	.missionList{
 		height: 100%;
+		position: relative;
+		z-index: 1;
 		.switchBar{
 			height: 100px;
 			width: 100%;
@@ -215,6 +239,15 @@
 		}
 	}
 
+	.editMission{
+		position: absolute;
+		left: 0;
+		top: 0;
+		height: 100%;
+		width: 100%;
+		z-index: 2;
+	}
+
 	.missionTag.chosen{
 		color: black;
 		background-color: white;
@@ -222,5 +255,17 @@
 	.missionTag.unchosen{
 		color:rgb(31, 31, 31);
 		background-color: rgb(98, 98, 98);
+	}
+
+	.slide-enter-active, .slide-leave-active {
+		transition: transform 0.5s ease;
+	}
+
+	.slide-enter-from, .slide-leave-to /* .slide-leave-active in <2.1.8 */ {
+		transform: translateX(100%); /* 初始状态在右侧外面 */
+	}
+
+	.slide-enter-to, .slide-leave-from /* .slide-leave-active in <2.1.8 */ {
+		transform: translateX(0); /* 最终状态显示在父元素内 */
 	}
 </style>

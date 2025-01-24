@@ -1,53 +1,59 @@
 <template>
-    <div class="editMission">
-        <div class="topBar">
-            <div class="topButtons">
-                <Button class="missionTime" name="任务限时"  @click="editTime" icon="time"></Button>
-		        <Button class="missionRepeat" :class="tmpMission.repeatable?'turnOn':''" name="任务重复"
-                    @click="switchRepeat" icon="repeat"></Button>
-            </div>
-
-            <DownLineInput class="title" 
-                placeholder="输入任务标题" 
-                v-model="tmpMission.title">
-            </DownLineInput>
+<div class="editMission">
+    <div class="topButtons">
+        <Button class="button" name="返回任务列表" @click="cancel" icon="leftArrow"></Button>
+        <div class="right">
+            <Button class="right button" name="任务限时"  
+                @click="editTime" 
+                icon="time"/>
+            <Button class="right button" 
+                :class="tmpMission.repeatable?'turnOn':''" 
+                name="任务重复"
+                @click="switchRepeat" 
+                icon="repeat"/>
         </div>
-
-        <div class="info">
-            <div v-if="tmpMission.repeatTime&&tmpMission.repeatTime>0">已重复：{{ tmpMission.repeatTime }}次</div>
-        </div>
-        
-        <div class="inner">
-            <MissionTime v-if="tmpMission.planTime" :mission="tmpMission"></MissionTime>
-            <TextArea class="missionInner" v-model="tmpMission.inner" placeholder="输入内容"></TextArea>
-            <div class="separator"></div>
-            <MissionTagBar :tags="tmpMission.tags"></MissionTagBar>
-        </div>
-        
-        <div class="finalButtons">
-            <Button @click="confirm" name="确认">确认</Button>
-            <Button @click="closePopUp(popUp)" name="取消">取消</Button>
-        </div>
+       
     </div>
+
+    <DownLineInput class="title" 
+        placeholder="输入任务标题" 
+        v-model="tmpMission.title">
+    </DownLineInput>
+
+    <div class="info">
+        <div v-if="tmpMission.repeatTime&&tmpMission.repeatTime>0">已重复：{{ tmpMission.repeatTime }}次</div>
+    </div>
+    
+    <div class="inner">
+        <MissionTime v-if="tmpMission.planTime" :mission="tmpMission"></MissionTime>
+        <TextArea class="missionInner" v-model="tmpMission.inner" placeholder="输入内容"></TextArea>
+        <div class="separator"></div>
+        <MissionTagBar :tags="tmpMission.tags"></MissionTagBar>
+    </div>
+    
+    <div class="finalButtons">
+        <Button @click="confirm" name="确认">确认</Button>
+        <Button @click="cancel" name="取消">取消</Button>
+    </div>
+</div>
 </template>
 
 <script setup lang='ts'>
     import DownLineInput from '@/components/other/input/downLineInput.vue';
     import TextArea from '@/components/other/textArea/textArea.vue';
     import Button from '@/components/global/button.vue';
-    import { Reactive, reactive, shallowRef, toRaw } from 'vue';
-    import { closePopUp, PopUp, showPopUp } from '@/hooks/pages/popUp';
+    import { reactive, shallowRef, } from 'vue';
+    import { showPopUp } from '@/hooks/pages/popUp';
     import { nanoid } from 'nanoid';
     import { cloneDeep } from 'lodash';
-    import EditMissionTime from './editMissionTime.vue';
+    import EditMissionTime from '../popUp/editMissionTime.vue';
     import MissionTime from '../components/missionTime.vue';
     import MissionTagBar from '../components/missionTagBar.vue';
-    import { Mission } from '../missionList';
-
-    const {popUp,returnValue,props={}} = defineProps<{popUp:PopUp,returnValue:(...args:any[])=>void,props:any}>()
-    let {mission=null}:{mission:Mission|null} = props
-    if(!mission){
-        mission = {
+    import { editMissionReturn, editTarget, ifShowEditMission, Mission } from '../missionList';
+    //获取编辑对象，若为null则为创建任务
+    let mission = editTarget
+    if(!mission.value){
+        mission.value = {
             title:"",
             inner:"",
             startTime:Date.now(),
@@ -62,8 +68,7 @@
         }
     }
     //创建临时任务对象
-    const tmpMission:Reactive<Mission> = reactive(cloneDeep(mission))
-
+    const tmpMission = reactive<Mission>(cloneDeep(mission.value))
     //修改任务计时
     function editTime(){
         showPopUp({
@@ -92,10 +97,14 @@
     }
     //确认
     function confirm(){
-        //返回临时任务对象的值
-        returnValue(toRaw(tmpMission))
-        //关闭弹窗
-        closePopUp(popUp)
+        //返回临时对象
+        editMissionReturn(tmpMission)
+        ifShowEditMission.value = false
+    }
+    //取消
+    function cancel(){
+        editMissionReturn(false)
+        ifShowEditMission.value = false
     }
 </script>
 
@@ -103,32 +112,35 @@
 @use "@/static/style/globalStyle.scss";
 @use "@/static/style/popUp.scss";
 .editMission{
+    background-color: white;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
     height: 100%;
-    .topBar{
+    .topButtons{
         width: 100%;
-        .title{
-            width: calc(100% - 150px);
-            @extend .titleDownLine;
+        display: flex;
+        justify-content: space-between;
+        .button{
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
         }
-        .topButtons{
-            margin-left: auto;
-            width: 130px;
-            float: right;
+        >.right{
             display: flex;
-            gap: 10px;
-            >div{
-                box-sizing: border-box;
-                width: 60px;
-                height: 60px;
-                border: 4px solid black;
-                border-radius: 10px;
-            }
-            >.turnOn{
-                background-color: lightgreen;
-            }
+            gap:10px;
         }
-        
+        .turnOn{
+            background-color: lightgreen;
+        }
     }
+    .title{
+        width: 100%;
+        margin-top: 6px;
+        @extend .titleDownLine;
+    }
+    
     .inner{
         margin-top: 15px;
         width: 100%; 
