@@ -52,7 +52,7 @@
 	import missionVue from '../components/mission.vue';
 	import MissionTag from '../components/missionTag.vue';
 	import Button from '@/components/global/button.vue';
-	import { createMission, showEditMission, ifShowEditMission, Mission, nowMissionList } from '../missionList';
+	import { createNewMission, ifShowEditMission, Mission, nowMissionList } from '../missionList';
 	const missionList = nowMissionList
 	//用于筛选的标签库
 	const selectTags:Ref<{tag:string,num:number,chosen:boolean}[]> = computed(()=>{
@@ -135,12 +135,6 @@
 	const expendSelectBar = ref(false)
 	function swicthShowAllTags(){
 		expendSelectBar.value = !expendSelectBar.value
-	}
-	//创建新任务
-	function createNewMission(){
-		showEditMission(null,(newMission:Mission)=>{
-			createMission(newMission)
-		})
 	}
 </script>
 

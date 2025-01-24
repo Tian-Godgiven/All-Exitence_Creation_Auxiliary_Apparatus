@@ -80,8 +80,9 @@ export function showMissionListPopUp(){
 //显示编辑任务面板
 export const ifShowEditMission = ref(false)
 export const editTarget = ref<Mission|null>(null)
-export let editMissionReturn:(newMission:Mission|boolean)=>void = ()=>{}
-export function showEditMission(mission:Mission|null,returnValue:(newMission:Mission|boolean)=>void){
+export let editMissionReturn:(newMission:Mission|false)=>void = ()=>{}
+export function showEditMission(mission:Mission|null,returnValue:(newMission:Mission|false)=>void){
+    showMissionListPopUp()
     //显示编辑任务页面
     ifShowEditMission.value = true 
     //传入mission
@@ -91,11 +92,16 @@ export function showEditMission(mission:Mission|null,returnValue:(newMission:Mis
 }
 
 
-//创建新任务
-export function createMission(mission:Mission){
-    //将任务添加到对应类型的列表中
-    nowMissionList.doing.push(mission)
+//编辑并创建新任务
+export function createNewMission(){
+    showEditMission(null,(newMission)=>{
+        if(newMission){
+            //将任务添加到对应类型的列表中
+            nowMissionList.doing.push(newMission)
+        }
+    })
 }
+
 
 //删除任务
 export function deleteMission(mission:Mission){

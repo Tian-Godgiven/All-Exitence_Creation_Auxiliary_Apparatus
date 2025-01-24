@@ -32,10 +32,10 @@ interface Button{
 // 显示弹窗
 export function showPopUp(popUp:PopUp){
 	//如果该弹窗已经显示，则不变
-	const index = popUpList.indexOf(popUp)
-	if(index>0){
-		return;
-	}
+	const ifShowing = popUpList.some(thePopUp=>
+		popUp.vue == thePopUp.vue || popUp.vueName == thePopUp.vueName
+	)
+	if(ifShowing)return;
 
 
 	// 阻止页面滑动切换

@@ -52,6 +52,7 @@
     import { editMissionReturn, editTarget, ifShowEditMission, Mission } from '../missionList';
     //获取编辑对象，若为null则为创建任务
     let mission = editTarget
+    console.log(mission.value)
     if(!mission.value){
         mission.value = {
             title:"",
