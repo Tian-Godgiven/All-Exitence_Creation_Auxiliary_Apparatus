@@ -222,6 +222,7 @@ export function completeMission(mission:Mission){
 export async function failMission(mission:Mission){
     //再次挑战？
     const result = await tryAgain(mission)
+    console.log(result)
     if(!result){
         changeMissionState(mission,"failed")
     }

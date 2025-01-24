@@ -24,7 +24,7 @@ import { TimeValue } from '@/hooks/expression/customTime';
         if(!timeLeft)return ""
         const day = Math.floor(timeLeft / (24 * 60 * 60 * 1000));
         const hour = Math.floor((timeLeft % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000))
-        const minute = Math.floor((timeLeft % (60 * 60 * 1000)) / (60 * 1000));
+        const minute = Math.ceil((timeLeft % (60 * 60 * 1000)) / (60 * 1000));
         let str = ""
         if(day>0){
             str += (day+"天")
