@@ -1,8 +1,8 @@
 import { exists, mkdir } from "@tauri-apps/plugin-fs"
 import { initAppSetting } from "./appSetting"
 import { appData, createDirByPath, createFileToPath, ifExists } from "../fileSysytem"
-import { initGlobalInputSuggestion } from "./globalInputSuggestion"
-import { initSupportAbilityList } from "@/data/list/supportAbilityList"
+import { initGlobalInputSuggestion } from "../../supportAbility/inputSuggestion/globalInputSuggestion"
+import { supportAbilityList } from "@/data/list/supportAbilityList"
 
 //初始化应用程序
 export async function initApp(){
@@ -41,8 +41,16 @@ async function initSupportAbility(){
         await createDirByPath("data","supportAbility")
     }
     //遍历执行列表中的辅助功能初始化项目
-    const list = initSupportAbilityList
+    const list = supportAbilityList
     list.forEach((ability)=>{
         ability.init()
+    })
+}
+
+//应用程序保存
+export async function saveApp(){
+    //保存辅助功能
+    supportAbilityList.forEach(ability=>{
+        ability.save()
     })
 }

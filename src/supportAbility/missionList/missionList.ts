@@ -1,5 +1,5 @@
 import { addToRightPage } from "@/data/list/rightAbilityList"
-import { createDirByPath, createFileToPath, readFileFromPath } from "@/hooks/fileSysytem"
+import { createDirByPath, createFileToPath, readFileFromPath, writeFileAtPath } from "@/hooks/fileSysytem"
 import { showPopUp } from "@/hooks/pages/popUp"
 import { reactive, ref, shallowRef } from "vue"
 import MissionList from "./popUp/missionList.vue"
@@ -66,6 +66,11 @@ export async function initMissionList(){
         click:()=>showMissionListPopUp(),
         iconName:"missionList"
     })
+}
+
+//保存任务列表
+export async function saveMissionList(){
+    await writeFileAtPath("supportAbility/missionList","missionList.json",nowMissionList)
 }
 
 //显示任务列表弹窗

@@ -3,13 +3,13 @@ import { nowAllArticles } from "../all-articles/allArticles";
 import { nowAllExitence } from "../all-exitence/allExitence";
 import { writeFileAtPath } from "../fileSysytem";
 import { nowProjectPath, projectInputSuggestionListData } from "./projectData";
-import { saveGlobalInputSuggestion } from "../app/globalInputSuggestion";
+import { saveApp } from "../app/app";
 
 export async function saveAll(){
     //保存项目
     const tmp = await saveProject()
-    //保存全局输入建议
-    await saveGlobalInputSuggestion()
+    //保存App
+    await saveApp()
     if(tmp){
         console.log("已完成保存")
     }

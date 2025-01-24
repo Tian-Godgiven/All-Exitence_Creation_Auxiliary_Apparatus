@@ -1,11 +1,23 @@
-import { initMissionList } from "@/supportAbility/missionList/missionList";
+import { initGlobalInputSuggestion, saveGlobalInputSuggestion } from "@/supportAbility/inputSuggestion/globalInputSuggestion";
+import { initMissionList, saveMissionList } from "@/supportAbility/missionList/missionList";
 
-export const initSupportAbilityList:{
+export const supportAbilityList:{
     name:string,
-    init:()=>void
+    init:()=>void,
+    save:()=>void
 }[] = [
     {
+        name:"inputSuggestion",
+        init:()=>{
+            initGlobalInputSuggestion()
+        },
+        save:()=>{
+            saveGlobalInputSuggestion()
+        }
+    },
+    {
         name:"missionList",
-        init:()=>initMissionList()
+        init:()=>initMissionList(),
+        save:()=>saveMissionList()
     }
 ]
