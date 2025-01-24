@@ -149,9 +149,14 @@
 		height: 100%;
 		overflow: hidden;
 	}
+	.container::-webkit-scrollbar{
+		width: 0;
+	}
 	.missionList{
 		height: 100%;
 		position: relative;
+		display: flex;
+		flex-direction: column;
 		z-index: 1;
 		.switchBar{
 			height: 100px;
@@ -229,13 +234,15 @@
 			grid-template-rows:1fr;
 		}
 		.missions{
-			max-height: 90%;
-			overflow: hidden;
+			flex-grow: 1;
+			height: auto;
+			overflow: auto;
 		}
 		.missions::-webkit-scrollbar{
 			width: 0;
 		}
 	}
+	
 
 	.editMission{
 		position: absolute;

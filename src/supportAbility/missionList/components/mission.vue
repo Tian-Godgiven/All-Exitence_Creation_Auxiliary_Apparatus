@@ -89,7 +89,7 @@
     border: 3px solid black;
     border-radius: 10px;
     padding: 15px;
-    margin-bottom: 15px; 
+    margin-bottom: 10px; 
     display: flex;
 }
 
@@ -98,7 +98,7 @@
     
 }
 .title{
-    width: calc(100% - 150px);
+    width: 100%;
     font-size: 1.2rem;
     @extend .dontShowMoreText;
 }

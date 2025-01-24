@@ -34,11 +34,11 @@ export async function initProject(){
     //读取所有的项目列表
     const projectList = await readDirAsArray("data","projects")
     //依次获取项目信息
-    nowProjectList.value = await projectList.reduce(async (arr: any[], projectPath: string) => {
-        const currentArr = arr; // 等待上一个循环的 Promise 完成，确保 `arr` 是一个数组
+    nowProjectList.value = await projectList.reduce(async (arrPromise: Promise<any[]>, projectPath: string) => {
+        const arr = await arrPromise; // 等待上一个循环的 Promise 完成，获取当前的数组
         const projectInfo = await readFileFromPath(`projects/${projectPath}`, "projectInfo.json");
-        currentArr.push(projectInfo); // 将新的 `projectInfo` 添加到数组中
-        return currentArr; // 返回更新后的数组
+        arr.push(projectInfo); // 将新的 `projectInfo` 添加到数组中
+        return arr; // 返回更新后的数组
     }, Promise.resolve([])); // 初始值为一个 resolved 的空数组
 }
 

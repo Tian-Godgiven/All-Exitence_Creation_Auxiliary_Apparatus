@@ -290,6 +290,9 @@ import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expr
         outline: none;
         word-break: break-all;
         z-index: 1;
+        overflow: inherit;
+        text-overflow: inherit;
+        white-space: inherit;
         :focus{
             border: none;
         }
