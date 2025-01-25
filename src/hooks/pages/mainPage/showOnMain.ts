@@ -4,10 +4,37 @@ import { Exitence } from "@/class/Exitence"
 import { Type } from "@/class/Type"
 import { nowAllArticles } from "@/hooks/all-articles/allArticles"
 import { nowAllExitence } from "@/hooks/all-exitence/allExitence"
+import { ProjectLastTarget } from "@/hooks/project/project"
 import { reactive } from "vue"
 
+export type ShowOnMainItem = 
+    //事物
+    {
+        target:Exitence
+        from:string,
+        type:"exitence"
+    }|
+    //文章
+    {
+        target:Article,
+        from:string[],
+        type:"article"
+    }|
+    //信息
+    {
+        target:"app"|"project",//分别对应初始应用页面和初始项目页面
+        from:null,
+        type:"info"
+    }|
+    //空状态
+    {
+        target:null,
+        from:null,
+        type:null
+    }
+
 //当前显示在主页面中的对象,这里写的是初始app对象
-export const showOnMain:any = reactive<{target:any,from:any,type:"article"|"exitence"|"info"|null}>({
+export const showOnMain = reactive<ShowOnMainItem>({
     target:null,
     from:null,
     type:null
@@ -39,25 +66,27 @@ export function showInitialProjectOnMain(){
     showOnMain.type = "info"
 }
 
-// 显示目标对象在主页面
-export function showTargetOnMain({from,target,type}:{from:string|string[],target:string,type:"exitence"|"article"}){
+// 显示项目目标对象在主页面
+export function showTargetOnMain({from,targetKey,type}:
+    ProjectLastTarget
+){
     //先找到该对象
     if(type == "exitence"){
         const targetType = nowAllExitence.types.find((type)=>type.__key == from)
-        const targetExitence = targetType?.exitence.find((exitence)=>exitence.__key == target)
+        const targetExitence = targetType?.exitence.find((exitence)=>exitence.__key == targetKey)
         //找不到对象返回false
         if(!targetType || !targetExitence){
             return false
         }
         showExitenceOnMain(targetType,targetExitence)
     }
-    else{
+    else if(type == "article"){
         //根据文章的from,从最外层找起
         let targetFrom:any = nowAllArticles
         for(let key of from){
             targetFrom = targetFrom.chapters.find((chapter:Chapter)=>chapter.__key == key)
         }
-        const targetArticle = targetFrom?.articles.find((article:Article)=>article.__key == target)
+        const targetArticle = targetFrom?.articles.find((article:Article)=>article.__key == targetKey)
         if(!targetArticle){
             return false
         }

@@ -1,17 +1,6 @@
-export type ButtonIcon = 
-    "close"|
-    "add"|
-    "delete"|
-    "missionList"|
-    "canlendar"|
-    "handSave"|
-    "showLeft"|
-    "rightUp"|
-    "time"|
-    "repeat"|
-    "leftArrow"
+export type ButtonIcon = keyof typeof buttonIconList;
 
-export const buttonIconList:Record<ButtonIcon,string>= {
+export const buttonIconList:Record<string,string>= {
     "close":"",
     "add":"plus.png",
     "delete":"",
@@ -22,7 +11,8 @@ export const buttonIconList:Record<ButtonIcon,string>= {
     "showLeft":"showLeft.png",
     "rightUp":"rightUp.png",
     "time":"time.png",
-    "repeat":"repeat.png"
+    "repeat":"repeat.png",
+    "quickDraft":"quickDraft.png"
 }
 
 

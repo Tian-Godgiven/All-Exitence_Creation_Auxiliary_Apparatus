@@ -1,3 +1,4 @@
+import { JumpData } from "@/hooks/inputSupport/inputSuggestion/jumpDiv";
 
 //获取当前屏幕上的光标底部的视口位置
 export function getInputPosition(){
@@ -69,9 +70,9 @@ export function addInputLast(text:string,range?:any){
     return selection.getRangeAt(0)
 }
 
-//向当前屏幕上的光标后添加一个dom
-export const divWeakMap = new WeakMap
-export function addInputLastDiv(htmlText:string,range?:any,data?:{[key:string]:any}){
+//向当前屏幕上的光标后添加一个dom,并存储可能存在的跳转目标数据
+export const divWeakMap:WeakMap<HTMLElement,JumpData> = new WeakMap
+export function addInputLastDiv(htmlText:string,range?:any,data?:JumpData){
     // 创建一个临时的 DOM 元素并插入 HTML
     let div:any = document.createElement('div');
     div.innerHTML = htmlText; // 将 HTML 转换为 DOM 节点

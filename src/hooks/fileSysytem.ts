@@ -48,7 +48,8 @@ export async function createFileToPath(path:string,fileName:string,inner?:string
 }
 
 //读取指定文件的内容，返回JSON.parse处理后的内容
-export async function readFileFromPath(path:string,fileName:string,ifJSON:boolean=true):Promise<false | string | Record<string,any>>{
+export async function readFileFromPath(path:string,fileName:string,ifJSON:boolean=true)
+:Promise<false | string | Record<string,any>>{
     try{
         const content = await readTextFile(getPath(path,fileName), appData);
         //读取文件

@@ -51,6 +51,16 @@ async function initSupportAbility(){
 export async function saveApp(){
     //保存辅助功能
     supportAbilityList.forEach(ability=>{
-        ability.save()
+        if(ability.save){
+            ability.save()
+        }
     })
+}
+
+//响应辅助功能
+export function callSupportAbility(name:string){
+    const tmp = supportAbilityList.find(ability=>ability.name == name)
+    if(tmp?.call){
+        tmp.call()
+    }
 }

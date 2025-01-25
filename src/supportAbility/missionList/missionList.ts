@@ -1,4 +1,4 @@
-import { addToRightPage } from "@/data/list/rightAbilityList"
+import { addToRightPage } from "@/hooks/pages/rightPage"
 import { createDirByPath, createFileToPath, readFileFromPath, writeFileAtPath } from "@/hooks/fileSysytem"
 import { showPopUp } from "@/hooks/pages/popUp"
 import { reactive, ref, shallowRef } from "vue"

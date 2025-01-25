@@ -4,6 +4,22 @@ import { showPopUp } from "@/hooks/pages/popUp";
 import { jumpExitenceDivStyle } from "@/static/style/exitenceDivStyle"
 import { isArray } from "lodash";
 
+//跳转Div所使用到的数据对象
+export type JumpData = { 
+    type:string,//跳转类型
+    text:string,
+    target:string[], //跳转目标
+    info?:string//跳转div信息，目前仅用于提示该div存储事物别名
+}
+export type ExitenceJumpData = {
+    type:string,//跳转类型
+    text:string,
+    target:string[], //跳转目标
+    nickName?:boolean, //该跳转对象是否为别名
+
+}
+
+
 //跳转div的html内容
 export function jumpDivHtml(data:any){
     const inner = getJumpDivInner(data)
@@ -46,15 +62,13 @@ export function jumpDivHtml(data:any){
     }
 }
 
-
-
 // 跳转功能：点击一个class为jumpDiv的div，将跳转至该div指向的目标
 document.addEventListener("click",(event)=>{
     const targetElement = event.target as HTMLElement;
     // 检查是否点击了 class 为 jumpDiv 的 div
     if (targetElement && targetElement.classList.contains("jumpDiv")) {
         // 获取该 div 绑定的跳转类型和跳转目标
-        const data = divWeakMap.get(targetElement)
+        const data = divWeakMap.get(targetElement) as JumpData
         const {target,type} = data
         if(!target || !type){
             console.error("错误，跳转div没有成功绑定跳转目标或跳转类型：",targetElement)
@@ -97,6 +111,12 @@ function findExitenceByTarget(target:any[]){
     else{
         return false
     }
+}
+
+//判断是否是一个跳转div
+export function isJumpDiv(node:Node):node is HTMLElement{
+    return node instanceof HTMLElement && node.classList.contains("jumpDiv")
+
 }
 
 

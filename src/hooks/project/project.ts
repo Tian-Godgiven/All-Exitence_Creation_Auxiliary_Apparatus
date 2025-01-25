@@ -6,14 +6,17 @@ import { nowProjectInfo, nowProjectPath, saveProjectInfo, syncProject } from "./
 import { showAlert } from "../alert";
 import { hidePage } from "../pages/pageChange";
 import { showInitialAppOnMain, showInitialProjectOnMain, showOnMain, showTargetOnMain } from "../pages/mainPage/showOnMain";
-import { createInputSuggestionList } from "../inputSupport/inputSuggestion/inputSuggestion";
+import { supportAbilityList } from "@/data/list/supportAbilityList";
 
+export type ProjectLastTarget = 
+    {from:string,targetKey:string,type:"exitence"}|//事物
+    {from:string[],targetKey:string,type:"article"}//或是文章
 export interface ProjectInfo{
     name:string,
     pathName:string,
     time:Date | number,
     info?:string,
-    lastTarget:{}|null //该项目在切换前主页面所显示的对象的信息
+    lastTarget:ProjectLastTarget|null //该项目在切换前主页面所显示的对象的信息
 }
 
 export const nowProjectList = ref<any>([])
@@ -98,14 +101,17 @@ async function rememberMainTarget(){
     }
     //注意当前主页面可能是初始页面
     if(!showOnMain.from){return false}
-    //记录当前主页面的内容
-    const remenber = {
-        type:showOnMain.type,
-        from:showOnMain.from,
-        target:showOnMain.target.__key
+    //记录当前主页面的对象内容
+    if(["article","exitence"].includes(showOnMain.type)){
+        const remenber = {
+            type:showOnMain.type,
+            from:showOnMain.from,
+            targetKey:showOnMain.target.__key
+        } as ProjectLastTarget
+        //写进项目信息中
+        nowProjectInfo.lastTarget = remenber
     }
-    //写进项目信息中
-    nowProjectInfo.lastTarget = remenber
+    
     //保存这个项目信息
     await saveProjectInfo()
 }
@@ -168,11 +174,14 @@ export async function createProject(name:string,info:string=""){
     async function createProjectData(){
         //创建data文件夹
         await createDirByPath(projectPath,"data")
-        const projectDataPath = projectPath + "/data" 
         //创建基础设置
-        //1.项目输入建议列表
-        const list = createInputSuggestionList()
-        await createFileToPath(projectDataPath,"inputSuggestionList.json",JSON.stringify(list))
+    
+        //辅助功能的同步创建事件
+        supportAbilityList.forEach(ability=>{
+            if(ability.createProject){
+                ability.createProject(projectPath)
+            }
+        })
     }
 }
 

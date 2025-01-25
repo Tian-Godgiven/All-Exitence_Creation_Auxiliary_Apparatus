@@ -3,13 +3,13 @@ import { addInputLast } from "@/api/cursorAbility"
 import { globalInputSuggestionListData } from "@/supportAbility/inputSuggestion/globalInputSuggestion";
 import { projectInputSuggestionListData } from "@/hooks/project/projectData";
 import { computed, ref } from "vue";
-import { jumpDivHtml } from "./jumpDiv";
+import { ExitenceJumpData, jumpDivHtml } from "./jumpDiv";
 import { Type } from "@/class/Type";
 import { Exitence } from "@/class/Exitence";
 import { getExitenceStatusByKey } from "@/hooks/all-exitence/allExitence";
 import { translateToTextContent } from "@/hooks/expression/textAreaContent";
 
-//输入建议单元in前端
+//前端页面中的通用输入建议单元
 export interface suggestionItem{
     text:string,
     type:string,
@@ -19,7 +19,7 @@ export interface suggestionItem{
     attr?:any
 }
 
-//输入建议单元in文件:字符串
+//文件中存储的字符串输入建议单元
 export interface stringItem{
     text:string,//字符串文本
     showText?:string,//显示在输入建议的标题内容
@@ -84,8 +84,8 @@ export function clickSuggestionItem(item:suggestionItem){
             break
         //事物补全div并创建跳转div
         case "exitence":
-            //跳转div的data
-            const exitenceData:any = {
+            //事物跳转对象的跳转数据
+            const exitenceData:ExitenceJumpData = {
                 text:item.text,
                 target:item.target,
                 type:"exitence",
@@ -104,7 +104,7 @@ export function clickSuggestionItem(item:suggestionItem){
 
 
 //获取目标列表
-function getTargetList(type:any,position?:"global"|"project"):InputSuggestionList{
+function getTargetList(type:string,position?:"global"|"project"):InputSuggestionList{
     //若没有指定输入提示表位置，则根据类型判断
     if(!position){
         if(type == "exitence"){
@@ -209,7 +209,7 @@ export function checkInputSuggestion(inputSuggestionList:InputSuggestionList,inp
     if(input == ""){
         return false
     }
-    const arr:suggestionItem[] = []
+    const arr:suggestionItem[] = [] //存储所有的输入提示
     //先判断事物类型的item
     const allExitence = inputSuggestionList.exitence
     for(let key in allExitence){

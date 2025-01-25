@@ -3,11 +3,16 @@ import { readFileFromPath,writeFileAtPath } from "../fileSysytem"
 import { changeNowAllExitence } from "../all-exitence/allExitence"
 import { changeNowAllArticles } from "../all-articles/allArticles"
 import { createInputSuggestionList } from "../inputSupport/inputSuggestion/inputSuggestion"
+import { Type } from "@/class/Type"
+import { supportAbilityList } from "@/data/list/supportAbilityList"
+import { ProjectInfo } from "./project"
 
 //当前项目的文件夹路径
 export const nowProjectPath = ref<string|null>(null)
 //当前项目的信息
-export const nowProjectInfo = reactive<any>({name:"",lastTarget:null})
+export const nowProjectInfo = reactive<ProjectInfo>(
+    {name:"",lastTarget:null,pathName:"",time:0}
+)
 //项目中的输入提示表
 const defaultList = createInputSuggestionList()
 export const projectInputSuggestionListData = shallowReactive(defaultList)
@@ -19,22 +24,27 @@ export async function syncProject(projectPath:string){
         nowProjectPath.value = projectPath
         //真实路径
         projectPath = `projects/${projectPath}`
-        const dataPath = `${projectPath}/data`
 
-        //修改当前的项目设置
-        //1.项目输入提示表
-        const inputSuggestionList = await readFileFromPath(dataPath,"inputSuggestionList.json")
-        Object.assign(projectInputSuggestionListData,inputSuggestionList)
+        //同步项目设置
+        
 
         //修改当前的项目信息
         const tmp = await readFileFromPath(projectPath,"projectInfo.json")
         Object.assign(nowProjectInfo,tmp)
 
         //修改当前的万物和文章
-        let nowAllExitence = await readFileFromPath(projectPath,"all-exitence.json")
+        let nowAllExitence = await readFileFromPath(projectPath,"all-exitence.json") as {types:Type[]}
         changeNowAllExitence(nowAllExitence)
         const nowAllArticles = await readFileFromPath(projectPath,"all-articles.json")
         changeNowAllArticles(nowAllArticles)
+
+        //同步辅助功能
+        supportAbilityList.forEach(ability=>{
+            if(ability.syncProject){
+                ability.syncProject(projectPath)
+            }
+        })
+
         return true
     }
     catch(err){

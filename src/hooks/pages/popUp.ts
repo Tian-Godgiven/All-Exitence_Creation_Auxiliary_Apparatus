@@ -1,4 +1,4 @@
-import { reactive, ref } from "vue"
+import { reactive, ref, ShallowRef } from "vue"
 import { disableChangePage, enableChangePage } from "./pageChange"
 import { ButtonIcon } from "@/data/list/buttonIconList"
 
@@ -10,7 +10,7 @@ export interface PopUp{
 	buttons:Button[]|null, //弹窗中，需要在右上角显示的按钮
 	props?:{}, //弹窗的组件中需要使用的数据
 	vueName?:string, //弹窗对应的vue对象名称
-	vue?:any, //弹窗中显示的vue组件
+	vue?:ShallowRef<any>, //弹窗中显示的vue组件
 	mask:boolean, //是否显示遮罩层
 	returnValue?:(...args: any[])=> any, //用于在弹窗中使用的返回回调事件
 	index?:number, //弹窗的位置，一般来说不需要设置,
