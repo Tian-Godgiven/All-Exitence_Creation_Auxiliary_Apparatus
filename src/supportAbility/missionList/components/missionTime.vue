@@ -2,13 +2,13 @@
     <div class="missionTime" v-if="mission.state == 'doing'">
         <div>限时：{{ timeDistance }}</div>
         <div>
-            截止：<Time :time-value="getTimeValue(mission.planTime as number)" 
-                time-rule="date" unit-end="minute"></Time>
+            截止：<Time :value="getTimeValue(mission.planTime as number)" 
+                rule="date" unit-end="minute"></Time>
         </div>
     </div>
     <div class="missionTime" v-else>
-        <div>开始：<Time :time-value="getTimeValue(mission.startTime)" time-rule="date" unit-end="minute"></Time></div>
-        <div>截止：<Time :time-value="getTimeValue(mission.endTime)" time-rule="date" unit-end="minute"></Time></div>
+        <div>开始：<Time :value="getTimeValue(mission.startTime)" rule="date" unit-end="minute"></Time></div>
+        <div>截止：<Time :value="getTimeValue(mission.endTime)" rule="date" unit-end="minute"></Time></div>
     </div>
 </template>
 

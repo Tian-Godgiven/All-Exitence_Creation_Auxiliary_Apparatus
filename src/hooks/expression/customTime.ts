@@ -23,8 +23,10 @@ export type TimeValue = {
 export type TimeLinker = 
     null|//不需要链接符
     "/"|//下划线
-    "-"//分隔线
+    "-"|//分隔线
+    ":"
 
+export type TimeItem = translateObject
 
 /**
  * 通过时间表达式翻译时间值
@@ -66,14 +68,15 @@ export function translateCustomTime({
 //使用指定的linker链接时间对象
 function linkUnit(timeArr:{unit:string,number:number}[],showUnit:boolean=true,linker:TimeLinker=null){
     let str = ""
-    timeArr.forEach(item => {
+    const maxIndex = timeArr.length-1
+    timeArr.forEach((item,index) => {
         str += item.number
         //是否显示单位
         if(showUnit){
             str += item.unit
         }
         //linker链接的字符串
-        if(linker){
+        if(linker && index != maxIndex){
             str += linker
         }   
     });

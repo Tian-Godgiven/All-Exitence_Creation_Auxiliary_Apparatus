@@ -14,7 +14,6 @@
 <script setup lang="ts" name="">
 import { computed, ref } from 'vue'; 
 import textAreaVue from '@/components/other/textArea/textArea.vue';
-import { globalInputSuggestionList, projectInputSuggestionList } from '@/hooks/inputSupport/inputSuggestion/inputSuggestion';
 	const {status,statusSetting} = defineProps(["status","statusSetting"])
 	// 属性设置：单位
 	const unit = ref()
@@ -35,18 +34,16 @@ import { globalInputSuggestionList, projectInputSuggestionList } from '@/hooks/i
 	})
 	//属性设置：启用全局输入建议 和 启用项目输入建议
 	const inputSuggestionList = computed(()=>{
-		let list = {}
-		//全局
 		const ifG = statusSetting.ifGlobalInputSuggestion
-		if(ifG==null || ifG == true){
-			list = {...globalInputSuggestionList.value}
-		}
-		//项目
 		const ifP = statusSetting.ifProjectInputSuggestion
-		if(ifP == null || ifP == true){
-			list = {...list,...projectInputSuggestionList.value}
-		}
-		return list
+		//都不要
+		if(ifG == false && ifP == false){return null}
+		//仅项目
+		if(ifP != false && ifG == false){return "project"}
+		//仅全局
+		if(ifP == false && ifG != false){return "global"}
+		//全局+项目
+		return "all"
 	})
 
 

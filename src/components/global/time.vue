@@ -3,17 +3,16 @@
 </template>
 
 <script setup lang='ts'>
-    import { TimeRule, TimeValue, translateCustomTime } from '@/hooks/expression/customTime';
+    import { TimeItem, translateCustomTime } from '@/hooks/expression/customTime';
     import { computed } from 'vue';
-    const {timeRule,timeValue,unitFrom,unitEnd} = defineProps<{
-        timeRule:TimeRule,timeValue:TimeValue,unitFrom?:string,unitEnd?:string}
+    const {rule,value,unitFrom,unitEnd,linker=null,showUnit} = defineProps<TimeItem
     >()
     const time:any = computed(()=>{
         return translateCustomTime({
-            value:timeValue,
-            rule:timeRule,
-            linker:null,
-            showUnit:true,
+            value,
+            rule,
+            linker,
+            showUnit,
             unitFrom,
             unitEnd
         })

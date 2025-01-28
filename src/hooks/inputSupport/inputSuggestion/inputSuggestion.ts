@@ -8,6 +8,7 @@ import { Type } from "@/class/Type";
 import { Exitence } from "@/class/Exitence";
 import { getExitenceStatusByKey } from "@/hooks/all-exitence/allExitence";
 import { translateToTextContent } from "@/hooks/expression/textAreaContent";
+import { isString } from "lodash";
 
 //前端页面中的通用输入建议单元
 export interface suggestionItem{
@@ -60,17 +61,25 @@ export const projectInputSuggestionList = computed(()=>{
 export const globalInputSuggestionList = computed(()=>{
     return globalInputSuggestionListData
 })
-// 方便你要同时用这两个输入建议表
-export const fullInputSuggestionList = computed(()=>{
-    const tmp = {...globalInputSuggestionListData,...projectInputSuggestionListData}
-    return tmp
-})
 
 //创建一张空的输入建议表 
 export function createInputSuggestionList(){
     return {
         string:[],
         exitence:{}
+    }
+}
+
+//根据名称获取目标输入建议表
+export function getInputSuggestionList(name:"project"|"global"|"all"):InputSuggestionList{
+    //分别返回项目/全局/所有的输入建议表
+    switch(name){
+        case "project":
+            return projectInputSuggestionList.value;
+        case "global":
+            return globalInputSuggestionList.value;
+        case "all":
+            return {...globalInputSuggestionList.value,...projectInputSuggestionList}
     }
 }
 
@@ -101,7 +110,6 @@ export function clickSuggestionItem(item:suggestionItem){
             console.error("错误：未定义的输入建议类型")
     }
 }
-
 
 //获取目标列表
 function getTargetList(type:string,position?:"global"|"project"):InputSuggestionList{
@@ -205,10 +213,15 @@ export function hideInputSuggestion(){
 }
 
 // 判断是否需要输入提示
-export function checkInputSuggestion(inputSuggestionList:InputSuggestionList,input:string){
+export function checkInputSuggestion(
+    inputSuggestionList:InputSuggestionList|"all"|"global"|"project",
+    input:string){
     if(input == ""){
         return false
     }
+    if(isString(inputSuggestionList)){
+        inputSuggestionList = getInputSuggestionList(inputSuggestionList)
+    }   
     const arr:suggestionItem[] = [] //存储所有的输入提示
     //先判断事物类型的item
     const allExitence = inputSuggestionList.exitence

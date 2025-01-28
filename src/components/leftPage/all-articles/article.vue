@@ -32,7 +32,7 @@ import { showControlPanel } from '@/hooks/controlPanel';
 import { deleteArticle } from '@/hooks/all-articles/allArticles';
 import { translateToTextContent } from '@/hooks/expression/textAreaContent';
 import { trim } from 'lodash';
-import longTapContainerVue from "../longTapContainer.vue";
+import longTapContainerVue from "../../other/longTapContainer.vue";
 import { DragState } from '@/interfaces/dragState';
 import { Article } from '@/class/Article';
 import indicatorVue from '@/components/other/indicator.vue';

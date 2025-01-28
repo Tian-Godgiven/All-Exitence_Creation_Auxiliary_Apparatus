@@ -21,7 +21,7 @@
 import { focusOnEnd } from '@/api/focusOnEnd';
 import { showInputSupport } from '@/hooks/inputSupport/inputSupport';
 import { onMounted, ref, useTemplateRef, watch } from 'vue';
-import { checkInputSuggestion, hideInputSuggestion, showInputSuggestion } from '@/hooks/inputSupport/inputSuggestion/inputSuggestion';
+import { checkInputSuggestion, hideInputSuggestion, InputSuggestionList, showInputSuggestion } from '@/hooks/inputSupport/inputSuggestion/inputSuggestion';
 import { addInputLast, addInputLastDiv, deleteInputLast } from '@/api/cursorAbility';
 import { findTargetDivs } from '@/hooks/findTargetDiv';
 import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expression/textAreaContent';
@@ -32,10 +32,10 @@ import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expr
     let selectionRange:any //记录光标上一次聚焦的位置
 
     //占位符，是否启用输入辅助，输入建议列表，输入模式
-    const {placeholder,inputSupport=false,inputSuggestionList,mode} = defineProps<{
+    let {placeholder,inputSupport=false,inputSuggestionList,mode} = defineProps<{
         placeholder?:string,
         inputSupport?:boolean,
-        inputSuggestionList?:any,
+        inputSuggestionList?:InputSuggestionList|"project"|"global"|"all"|null,
         mode?:"string"|"all"|"disabled"
     }>()
     //初始值
@@ -80,11 +80,7 @@ import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expr
             const doms = translateToFrontEndContent(content.value)
             loadDom(doms)
         }
-        //默认开始监听
-        unWatch = watch(content,()=>{ 
-            const doms = translateToFrontEndContent(content.value)
-            loadDom(doms)
-        })
+        startWatch()
     })
 
     //向textArea中加载dom
@@ -138,47 +134,43 @@ import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expr
     function listenInput(newInput:any){
         //同步content的内容
         const newContent = syncContent()
-        //如果需要输入建议，则check新输入的内容
-        if(inputSuggestionList){
-            // 将新的输入内容添加到有效输入
-            if(newInput){
-                effectInput += newInput
-            }
-            else{return false}
-            //防抖
-            //检查是否存在输入建议
-            const content = checkInputSuggestion(inputSuggestionList,effectInput)
-            // 有输入建议：显示输入补全框，如果完成了输入提示则进行一次同步
-            if(content){
-                showInputSuggestion({
-                    input:effectInput,
-                    "suggestionContent":content,
-                    "onInputSuggestion":()=>{
-                        syncContent()
-                    }
-                })
-                return;
-            }
-            // 整体不行，则再单独判断新输入的内容
-            const content2 = checkInputSuggestion(inputSuggestionList,newInput)
-            //可行则更新有效输入
-            if(content2){
-                effectInput = newInput
-                showInputSuggestion({
-                    input:effectInput,
-                    "suggestionContent":content2,
-                    "onInputSuggestion":()=>{
-                        syncContent()
-                    }
-                })
-            }
-            //都还是不行，则清空有效输入
-            else{
-                //否则清空有效输入,关闭输入补全框
-                hideInputSuggestion()
-                effectInput = ""
-            }
+        //如果需要输入建议，则检查有效输入的内容是否存在输入建议
+        if(!inputSuggestionList)return;
+        // 将新的输入内容添加到有效输入
+        if(!newInput)return false;
+        effectInput += newInput
+        //检查是否存在输入建议
+        const content = checkInputSuggestion(inputSuggestionList,effectInput)
+        // 有输入建议：显示输入补全框，如果完成了输入提示则进行一次同步
+        if(content){
+            showInputSuggestion({
+                input:effectInput,
+                "suggestionContent":content,
+                "onInputSuggestion":()=>{
+                    syncContent()
+                }
+            })
+            return;
         }
+        // 整体不行，则再单独判断新输入的内容
+        const content2 = checkInputSuggestion(inputSuggestionList,newInput)
+        //可行则更新有效输入
+        if(content2){
+            effectInput = newInput
+            showInputSuggestion({
+                input:effectInput,
+                "suggestionContent":content2,
+                "onInputSuggestion":()=>{
+                    syncContent()
+                }
+            })
+        }
+        //都还是不行，则清空有效输入并关闭输入建议框
+        else{
+            hideInputSuggestion()
+            effectInput = ""
+        }
+        
         
         //执行input事件，返回新输入的内容
         emits("input",newContent,newInput)
@@ -187,6 +179,19 @@ import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expr
 
     //内容监听
     let unWatch:any
+    function startWatch(){
+        unWatch = watch(content,()=>{ 
+            const doms = translateToFrontEndContent(content.value)
+            loadDom(doms)
+        },{
+            immediate:true
+        })
+    }
+    function stopWatch(){
+        if(unWatch && mode!='disabled'){
+            unWatch()
+        }
+    }
 
     //移动光标到其他位置时清空有效输入,同时记录当前光标位置
     let oldPosition:any
@@ -207,7 +212,7 @@ import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expr
     }
     //取消聚焦
     function onBlur(){
-        // 为空时显示placeholder
+        //内容为空时显示placeholder
         if(content.value == "" || !content.value){
             loadPlaceholder()
             return false
@@ -216,19 +221,16 @@ import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expr
             showPlaceholder.value = false
         }
         //开始监听
-        unWatch = watch(content,()=>{ 
-            const doms = translateToFrontEndContent(content.value)
-            loadDom(doms)
-        })
+        startWatch()
         emits("blur",content.value)
     }
     //聚焦
     function onFocus(){
         //取消监听
-        if(unWatch){unWatch()}
+        stopWatch()
         
-        //取消placeholder
-        if(showPlaceholder.value){
+        //取消placeholder，如果是禁用模式就不清空
+        if(showPlaceholder.value && mode != "disabled"){
             //清空placeholder
             textArea.value!.innerHTML = ""
             showPlaceholder.value = false

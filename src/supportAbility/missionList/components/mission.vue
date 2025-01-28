@@ -30,7 +30,7 @@
     import TextArea from '@/components/other/textArea/textArea.vue';
     import MissionTime from './missionTime.vue';
     import MissionTag from './missionTag.vue';
-    import LongTapContainer from '@/components/leftPage/longTapContainer.vue';
+    import LongTapContainer from '@/components/other/longTapContainer.vue';
     import { manageMode,deleteMission, finishMission, Mission, repeatMission, tryAgain, editMission} from '../missionList';
     import { computed, ref } from 'vue';
     import { showControlPanel } from '@/hooks/controlPanel';

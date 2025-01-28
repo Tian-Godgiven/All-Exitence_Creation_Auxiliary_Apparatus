@@ -50,7 +50,7 @@ import { showControlPanel } from "@/hooks/controlPanel";
 import { Group } from "@/class/Group";
 import { filterExitenceByRule } from "@/hooks/expression/groupRule";
 import { Type } from "@/class/Type";
-import longTapContainerVue from "../longTapContainer.vue";
+import longTapContainerVue from "../../other/longTapContainer.vue";
 import { DragState } from "@/interfaces/dragState";
 import indicatorVue from '@/components/other/indicator.vue';
 import { getCombine } from "@/api/dragToSort";

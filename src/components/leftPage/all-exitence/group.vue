@@ -40,7 +40,7 @@ import { deleteGroup, updateGroupPopUp } from '@/hooks/all-exitence/allExitence'
 import { showControlPanel } from '@/hooks/controlPanel';
 import { Group } from '@/class/Group';
 import { Exitence } from '@/class/Exitence';
-import longTapContainerVue from "../longTapContainer.vue";
+import longTapContainerVue from "../../other/longTapContainer.vue";
 import { DragState } from "@/interfaces/dragState";
 import indicatorVue from '@/components/other/indicator.vue';
 import { getCombine } from "@/api/dragToSort";

@@ -2,7 +2,7 @@ import { addToRightPage } from "@/hooks/pages/rightPage"
 import { TextAreaContent } from "@/hooks/expression/textAreaContent"
 import { createFileToPath, readFileFromPath } from "@/hooks/fileSysytem"
 import { showPopUp } from "@/hooks/pages/popUp"
-import { reactive, shallowRef } from "vue"
+import { reactive, ref, shallowRef } from "vue"
 import QuickDraft from "./popUp/quickDraft.vue"
 
 export type QuickDraftItem = {
@@ -52,4 +52,30 @@ export async function showQuickDraftPopUp(){
         "buttons":null,
         "mask":true,
     })
+}
+
+//创建暂记块
+export function createQuickDraftItem(){
+    const quickDraftItem:QuickDraftItem = {
+        inner:[""],
+        time:Date.now()
+    }
+    return quickDraftItem
+}
+//添加暂记快
+export function addQuickDraftItem(item:QuickDraftItem,index?:number){
+    if(!index){
+        nowQuickDraft.push(item)
+        return;
+    }
+    nowQuickDraft.splice(index,0,item)
+}
+
+//显示聚焦页面
+export const ifFocusing = ref(false)
+export const focusingItem = ref<QuickDraftItem|null>(null)
+export function showFocusingPage(item:QuickDraftItem){
+    ifFocusing.value = true
+    focusingItem.value = item
+    console.log(focusingItem,item)
 }

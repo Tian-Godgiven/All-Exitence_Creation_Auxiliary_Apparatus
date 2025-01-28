@@ -2,7 +2,7 @@
     <div class="datePicker">
         <ElPopover trigger="click" class="popover" width="80%">
             <template #reference>
-                <Time class="time" :time-value="timeValue" time-rule="date" unit-from="year" unit-end="day"></Time>
+                <Time class="time" :value="timeValue" rule="date" unit-from="year" unit-end="day"></Time>
             </template>
             <ScrollDatePicker :time="timeItem" @on-change="onChange"></ScrollDatePicker>
         </ElPopover>

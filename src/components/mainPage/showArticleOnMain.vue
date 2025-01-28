@@ -15,7 +15,7 @@
         <div class="targetInner">
             <textAreaVue 
                 class="articleText"
-                :inputSuggestionList="fullInputSuggestionList"
+                inputSuggestionList="all"
                 v-model="article.inner"
                 :inputSupport="true"> 
             </textAreaVue>
@@ -28,7 +28,6 @@
 <script setup lang='ts'>
     import { computed } from 'vue';
     import textAreaVue from '@/components/other/textArea/textArea.vue';
-    import { fullInputSuggestionList } from '@/hooks/inputSupport/inputSuggestion/inputSuggestion';
     import { translateToTextContent } from '@/hooks/expression/textAreaContent';
     const {article} = defineProps(["article"])
     // 内容栏字符数量

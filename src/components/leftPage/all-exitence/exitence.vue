@@ -27,7 +27,7 @@
 import { hidePage } from '@/hooks/pages/pageChange';
 import { showExitenceOnMain } from '@/hooks/pages/mainPage/showOnMain';
 import { computed, inject, onMounted, onUnmounted, ref } from 'vue'; 
-import longTapContainerVue from '../longTapContainer.vue';
+import longTapContainerVue from '../../other/longTapContainer.vue';
 import { showControlPanel } from '@/hooks/controlPanel';
 import { deleteExitencePopUp, getExitenceStatusByKey } from '@/hooks/all-exitence/allExitence';
 import { translateToTextContent } from '@/hooks/expression/textAreaContent';

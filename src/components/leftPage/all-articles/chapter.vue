@@ -70,7 +70,7 @@ import {
     attachInstruction,
     extractInstruction,
 } from '@atlaskit/pragmatic-drag-and-drop-hitbox/tree-item';
-import longTapContainerVue from "../longTapContainer.vue";
+import longTapContainerVue from "../../other/longTapContainer.vue";
 import indicatorVue from "@/components/other/indicator.vue";
 import { type DragState } from "@/interfaces/dragState";
 
