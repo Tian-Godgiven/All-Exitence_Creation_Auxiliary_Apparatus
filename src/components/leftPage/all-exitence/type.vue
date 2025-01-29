@@ -12,12 +12,12 @@
 				<div ref="handlerRef">拖动</div>
 			</div>
 			
-			<longTapContainerVue class="titleName" @longtap = "longtap" @click="swicthExpending()">
+			<longTapContainerVue class="titleName" :disabled="manageMode" @longtap = "longtap" @click="swicthExpending()">
 				<div class="text">{{type.name }}</div>
 			</longTapContainerVue>
 		</div>
 
-		<div class="inner" v-show="expending">
+		<div class="inner" v-show="expending && !manageMode">
 			<groupVue v-for="group in type.groups" 
 				:key="group.__key" 
 				:group="group" 
@@ -51,9 +51,8 @@ import { Group } from "@/class/Group";
 import { filterExitenceByRule } from "@/hooks/expression/groupRule";
 import { Type } from "@/class/Type";
 import longTapContainerVue from "../../other/longTapContainer.vue";
-import { DragState } from "@/interfaces/dragState";
 import indicatorVue from '@/components/other/indicator.vue';
-import { getCombine } from "@/api/dragToSort";
+import { DragState, getCombine } from '@/api/dragToSort';
 
 	let {type} = defineProps<{type:Type}>()
 	provide("type",type)

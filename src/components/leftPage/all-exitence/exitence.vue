@@ -6,7 +6,7 @@
 			<div class="button" ref="handlerRef">拖动</div>		
 		</div>
 
-		<longTapContainerVue @longtap="longtap" @click="click">
+		<longTapContainerVue :disabled="manageMode" @longtap="longtap" @click="click">
 			<div class="name">{{name}}</div>
 			<div class="preview">
 				<div>{{ preview }}</div>
@@ -31,10 +31,8 @@ import longTapContainerVue from '../../other/longTapContainer.vue';
 import { showControlPanel } from '@/hooks/controlPanel';
 import { deleteExitencePopUp, getExitenceStatusByKey } from '@/hooks/all-exitence/allExitence';
 import { translateToTextContent } from '@/hooks/expression/textAreaContent';
-import { DragState } from '@/interfaces/dragState';
-
 import indicatorVue from '@/components/other/indicator.vue';
-import { getCombine } from '@/api/dragToSort';
+import { DragState, getCombine } from '@/api/dragToSort';
 import { Exitence } from '@/class/Exitence';
 
 	let {exitence} = defineProps<{exitence:Exitence}>()

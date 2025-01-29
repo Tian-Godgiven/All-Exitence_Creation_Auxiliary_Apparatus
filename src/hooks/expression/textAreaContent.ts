@@ -57,6 +57,7 @@ export function translateToFileContent(frontEndNodes:NodeListOf<ChildNode>){
 
 //将文件内容翻译为前端内容数组
 export function translateToFrontEndContent(fileContent:any[]|string){
+    if(!fileContent)return [];
     //如果文件里只保存了一个字符串，则直接返回它
     if(typeof fileContent == "string"){
         const textNode = document.createTextNode(fileContent)

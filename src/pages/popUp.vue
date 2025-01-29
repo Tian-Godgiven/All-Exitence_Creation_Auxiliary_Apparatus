@@ -7,12 +7,15 @@
 		top:popUp.position?.y
 	}">
 		<!-- 标题 -->
-		<div class="titleName" v-if="name">{{ name }}</div>
-		<div class="titleSpace" v-else-if="buttons!=null"></div>
-		<!-- 按键 -->
-		<div class="titleButtons" v-if="buttons!=null">
-			<Button :icon="button.icon" :name="button.name" @click="button.click" v-for="(button) in buttons"></Button>
+		<div class="title">
+			<div class="titleName" v-if="name">{{ name }}</div>
+			<div class="titleSpace" v-else-if="buttons!=null"></div>
+			<!-- 按键 -->
+			<div class="titleButtons" v-if="buttons!=null">
+				<Button :icon="button.icon" :name="button.name" @click="button.click" v-for="(button) in buttons"></Button>
+			</div>
 		</div>
+		
 		<div class="inner">
 			<component :is="innerVue" 
 				:popUp="popUp" 
@@ -47,16 +50,18 @@ import Button from '@/components/global/button.vue';
 		background-color: global.$bgColor;
 		width: 650px;
 		height: 80%;
-		max-width: 650px;
+		max-width: 100%;
 		max-height: 80%;
 		box-shadow: black 0px 0px 50px;
 		position: absolute;
-		padding: 20px 20px;
 		box-sizing: border-box;
 		border-radius: 10px;
 		pointer-events: auto;
 		overflow-x: visible;
 		overflow-y:auto;
+		.title{
+			padding:0 20px;
+			padding-top: 20px;
 			.titleName{
 				position: relative;
 				height: 70px;
@@ -79,10 +84,16 @@ import Button from '@/components/global/button.vue';
 				flex-direction: row-reverse;
 			}
 		
+		}
+			
 		.inner{
 			height: calc(100% - 90px);
 			width: 100%;
-			box-sizing: border-box;
+			>div{
+				box-sizing: border-box;
+				padding: 20px;
+				padding-top: 0;
+			}
 		}
 	}
 	//居中显示

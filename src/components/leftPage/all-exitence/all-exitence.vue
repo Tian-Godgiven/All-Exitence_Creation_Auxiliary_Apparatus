@@ -79,7 +79,6 @@ onMounted(()=>{
 				closestEdgeOfTarget:edge, //边界
 				axis: "vertical", //排列方式
 			});
-			
 		}	
 	})
 })

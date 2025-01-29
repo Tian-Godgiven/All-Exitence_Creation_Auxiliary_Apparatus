@@ -11,7 +11,7 @@
 				<div ref="handlerRef">拖动</div>
 			</div>
 			
-			<longTapContainerVue class="titleName" @longtap = "longtap" @click="swicthExpending()">
+			<longTapContainerVue class="titleName" :disabled="manageMode" @longtap = "longtap" @click="swicthExpending()">
 				<div class="text">{{ group.name }}</div>
 			</longTapContainerVue>
 		</div>
@@ -41,9 +41,8 @@ import { showControlPanel } from '@/hooks/controlPanel';
 import { Group } from '@/class/Group';
 import { Exitence } from '@/class/Exitence';
 import longTapContainerVue from "../../other/longTapContainer.vue";
-import { DragState } from "@/interfaces/dragState";
 import indicatorVue from '@/components/other/indicator.vue';
-import { getCombine } from "@/api/dragToSort";
+import { DragState, getCombine } from '@/api/dragToSort';
 	
 	let {group,groupExitence} = defineProps<{group:Group,groupExitence:Exitence[]}>() 
 	const type = inject<any>("type")

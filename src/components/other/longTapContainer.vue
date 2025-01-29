@@ -10,21 +10,20 @@
 
 <script setup lang='ts'>
     import { LongTapAndClickTouchEnd, LongTapAndClickTouchStart } from '@/api/longTapAndClick';
-    import { ref,inject } from 'vue';
+    import { ref,Ref, unref} from 'vue';
     const emits = defineEmits(["longtap","click"])
-    //管理模式
-	const manageMode:any = inject("manageMode",false)
+    //禁用模式
+	const {disabled=false} = defineProps<{disabled?:Ref<boolean>|boolean}>()
     //长按和点击
 	const ifLongTap = ref(false)
 	let timeout:any 
 	//处理点击和长按事件
 	function touchStart(){
-		if(manageMode.value){
-			return;
-		}
+		if(unref(disabled)){return;}
 		timeout = LongTapAndClickTouchStart(ifLongTap)
 	}
 	function touchEnd(){
+		if(unref(disabled)){return;}
 		LongTapAndClickTouchEnd({
 			theTimeOut:timeout,
 			ifLongTap,

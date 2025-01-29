@@ -15,7 +15,10 @@
 				<div ref="handlerRef">拖动</div>
 			</div>
 			
-			<longTapContainerVue class="titleName" @longtap = "longtap" @click="swicthExpending()">
+			<longTapContainerVue class="titleName" 
+				:disabled="manageMode"
+				@longtap = "longtap" 
+				@click="swicthExpending()">
 				<div class="text">{{chapter.name }}</div>
 			</longTapContainerVue>
 		</div>
@@ -72,7 +75,7 @@ import {
 } from '@atlaskit/pragmatic-drag-and-drop-hitbox/tree-item';
 import longTapContainerVue from "../../other/longTapContainer.vue";
 import indicatorVue from "@/components/other/indicator.vue";
-import { type DragState } from "@/interfaces/dragState";
+import { DragState } from '@/api/dragToSort';
 
 	let {chapter,from,level} = defineProps<{chapter:Chapter,from:any,level:number}>()
 	//展开与切换展开

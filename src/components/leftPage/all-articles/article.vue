@@ -1,14 +1,13 @@
 <template>
-	
 	<div class="article" ref="articleRef" 
-		:class="[ (dragState.type=='dragging' ? 'dragging':'')]"> 
+		:class="[(dragState.type=='dragging' ? 'dragging':'')]"> 
 
 		<div class="manageButtons" v-show="manageMode">
 			<div class="button" @click="clickDeleteArticle($event)">删除</div>
 			<div class="button" ref="handlerRef">拖动</div>
 		</div>
 
-		<longTapContainerVue @longtap="longtap" @click="click">
+		<longTapContainerVue :disabled="manageMode" @longtap="longtap" @click="click">
 			<div class="title">{{title}}</div>
 			<div v-show="ifPreview" class="preview">{{preview}}</div>
 		</longTapContainerVue>
@@ -33,10 +32,9 @@ import { deleteArticle } from '@/hooks/all-articles/allArticles';
 import { translateToTextContent } from '@/hooks/expression/textAreaContent';
 import { trim } from 'lodash';
 import longTapContainerVue from "../../other/longTapContainer.vue";
-import { DragState } from '@/interfaces/dragState';
 import { Article } from '@/class/Article';
 import indicatorVue from '@/components/other/indicator.vue';
-import { getCombine } from '@/api/dragToSort';
+import { DragState, getCombine } from '@/api/dragToSort';
 
 	let {article,from} = defineProps<{article:Article,from:any}>()
 	const manageMode = inject("manageMode",false)

@@ -1,11 +1,13 @@
 <template>
     <mainPage/>
+    <FloatWindows></FloatWindows>
 </template>
 
 <script setup lang="ts">
 import { initApp } from "./hooks/app/app";
 import { initProject } from "./hooks/project/project";
 import { startAutoSave } from "./hooks/project/saveProject";
+import FloatWindows from "./pages/FloatWindows.vue";
 import mainPage from "./pages/mainPage.vue";
 
 

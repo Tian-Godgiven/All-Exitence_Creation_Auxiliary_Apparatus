@@ -48,7 +48,7 @@ lastTarget:{from,target,type} //记录该项目在切换前显示的目标，若
 
 ~~~
 /data
-	/setting.json : 与该项目关联设置信息
+	/setting.json : 与该项目关联设置信息,辅助功能的设置也包含在其中
 	/inputSuggestionList.json : 与该项目关联的输入提示表
 	/quickDraft.json : 与该项目关联的暂记版对象，参见辅助功能
 ~~~

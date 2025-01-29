@@ -7,9 +7,9 @@
                 name="上一暂记对象" 
                 @click="focusLastItem"/>
             <Button icon="leftArrow" name="管理页面" @click="ifFocusing = false"/>
-            <Button icon="fold" name="收起暂记版" @click="foldQuickDraft"/>
+            <Button icon="fold" name="切换展开" @click="foldQuickDraft"/>
             <Button 
-                :class="index == nowQuickDraft.length ? 'disabled':''"
+                :class="index == nowQuickDraft.length-1 ? 'disabled':''"
                 icon="rightArrow" 
                 name="下一暂记对象" 
                 @click="focusNextItem"/>
@@ -64,11 +64,11 @@
     }
     //聚焦到下一个暂记对象
     function focusNextItem(){
-        if(index.value == null || index.value == nowQuickDraft.length)return;
+        if(index.value == null || index.value == nowQuickDraft.length-1)return;
         const newFocusingItem = nowQuickDraft[index.value+1]
         focusingItem.value = newFocusingItem
     }
-    //收起暂记版
+    //切换暂记版的展开or半展开状态
     function foldQuickDraft(){
 
     }
@@ -93,6 +93,8 @@
         position: absolute;
         top: 0;
         left: 0;
+        box-sizing: border-box;
+        padding: 20px;
         z-index: 2;
         .topButtons{
             height: 60px;
@@ -103,8 +105,21 @@
             }
         }
         .createNewButton{
-            width: 60px;
-            height: 60px;
+            position: absolute;
+            right: 50px;
+            bottom: 100px;
+            width: 90px;
+            height: 90px;
+            box-shadow: 0 0 5px 5px rgb(77, 77, 77);
+            border-radius: 50%;
+            z-index: 999;
+        }
+        .times{
+            display: flex;
+            gap: 10px;
+        }
+        .inner{
+            height: calc(100% - 60px);
         }
     }
 </style>

@@ -1,6 +1,6 @@
 <template>
     <div class="button" @click="clickButton($event)" :name="name">
-        <img v-if="icon" class="buttonIcon" :src="src">
+        <img v-if="icon" class="buttonIcon" :src="src" :alt="name">
         <slot></slot>
     </div>
 </template>

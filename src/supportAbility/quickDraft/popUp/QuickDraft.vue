@@ -4,12 +4,14 @@
         <div class="topButtons">
             <Button icon="add" name="创建" @click="create"></Button>
             <Button icon="manage" name="管理模式" @click="switchManageMode"></Button>
-            <Button icon="floatWindow" name="切换悬浮窗" @click="switchFloatWindow"></Button>
+            <Button icon="floatWindow" name="切换显示悬浮窗" @click="switchFloatWindow"></Button>
             <Button icon="close" name="关闭" @click="closePopUp(popUp)"></Button>
         </div>
         <div class="quickDraftItems">
             <QuickDraftItem 
                 v-for="quickDraftItem in quickDraft" 
+                :key="quickDraftItem.__key"
+                :manage-mode="manageMode"
                 :quick-draft-item="quickDraftItem"/>
         </div>
     </div>
@@ -21,28 +23,58 @@
 
 <script setup lang='ts'>
     import Button from '@/components/global/button.vue';    
-    import { addQuickDraftItem, createQuickDraftItem, nowQuickDraft } from '../quickDraft';
+    import { addQuickDraftItem, createQuickDraftItem, nowQuickDraft , swicthQuickDraftFloatWindow } from '../quickDraft';
     import { closePopUp, PopUp } from '@/hooks/pages/popUp';
     import QuickDraftItem from '../component/QuickDraftItem.vue';
     import FocusingPage from '../component/FocusingPage.vue';
+    import { ref,onMounted,onUnmounted, toRaw } from 'vue';
+import { getMonitor } from '@/api/dragToSort';
     const {popUp} = defineProps<{popUp:PopUp}>()
     const quickDraft = nowQuickDraft
     //切换管理模式
+    const manageMode = ref(false)
     function switchManageMode(){
-
+        manageMode.value = !manageMode.value
     }
+    //管理放置事件
+    let cleanup = ()=>{}
+onMounted(()=>{
+	cleanup = getMonitor({
+        canMonitor:(source)=>{
+            const data = source.data
+            return data.type == "quickDraftItem"
+        },
+        "sourceIndex":(sourceData)=>{
+            const key = sourceData.itemKey
+            return quickDraft.findIndex((item)=>{
+                return item.__key == key
+            })
+        },
+        "targetIndex":(targetData)=>{
+            const key = targetData.itemKey
+            return quickDraft.findIndex((item)=>{
+                return item.__key == key
+            })
+        },
+        "list":toRaw(quickDraft),
+        returnNewList:(newList)=>{
+            Object.assign(quickDraft,newList)
+        }
+    })
+})
+onUnmounted(()=>{
+	cleanup()
+})
     //切换显示悬浮窗
     function switchFloatWindow(){
-
+        swicthQuickDraftFloatWindow()
     }
 
-    //创建并添加新的暂记对象到最后
+    //创建并添加新的暂记对象到开始
     function create(){
         const newItem = createQuickDraftItem()
         addQuickDraftItem(newItem,0)
     }
-
-    //当前聚焦的对象
     
 </script>
 

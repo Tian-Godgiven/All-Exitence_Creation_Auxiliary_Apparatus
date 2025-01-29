@@ -8,7 +8,12 @@ export function LongTapAndClickTouchStart(ifLongTap:Ref,time:number=400){
     return theTimeOut
 }
 //再传这个ref给它，判断执行长按或点击事件
-export function LongTapAndClickTouchEnd({theTimeOut,ifLongTap,longTap,click}:{theTimeOut:any,ifLongTap:Ref,longTap:()=>void,click:()=>void}){
+export function LongTapAndClickTouchEnd({theTimeOut,ifLongTap,longTap,click}:{
+    theTimeOut:any,
+    ifLongTap:Ref,
+    longTap:()=>void,
+    click:()=>void
+}){
     //清除计时器
     clearTimeout(theTimeOut)
     //是长按
