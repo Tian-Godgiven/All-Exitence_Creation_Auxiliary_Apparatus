@@ -3,6 +3,7 @@ import { initAppSetting } from "./appSetting"
 import { appData, createDirByPath, createFileToPath, ifExists } from "../fileSysytem"
 import { initGlobalInputSuggestion } from "../../supportAbility/inputSuggestion/globalInputSuggestion"
 import { supportAbilityList } from "@/data/list/supportAbilityList"
+import { nowProjectInfo } from "../project/projectData"
 
 //初始化应用程序
 export async function initApp(){

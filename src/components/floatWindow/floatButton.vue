@@ -12,6 +12,7 @@
 </template>
 
 <script setup lang='ts'>
+import { doNotOverContainer } from '@/api/doNotOverContainer';
 import { ref } from 'vue'
     type edge = "left"|"right"
     const {
@@ -35,8 +36,9 @@ import { ref } from 'vue'
     }>()
 
     let timeOutEvent:NodeJS.Timeout//定时器
-    let longTap = false
-    let allowMove = false
+    let longTap = false//长按状态
+    let allowMove = false//允许移动状态
+    let moving = false //是否进行了移动
     // 原始位置
     let oldMousePos = {x:0,y:0}
     // 元素原始位置
@@ -55,10 +57,9 @@ import { ref } from 'vue'
         }
         //不需要则直接允许拖拽
         else{
-            if(onMove)onMove("start",selectDom)
+            if(onMove)onMove("start",selectDom)//触发onMove
             allowMove = true
         }
-        
         
         const { pageX, pageY } = ev; // 手指位置
         const { offsetLeft, offsetTop } = selectDom; // 元素位置
@@ -74,6 +75,7 @@ import { ref } from 'vue'
         // 清空长按定时器
         if (timeOutEvent)clearTimeout(timeOutEvent);
         if (allowMove) {
+            moving = true
             const selectDom = ev.currentTarget as HTMLElement
             // x轴偏移量
             const lefts = oldMousePos.x - oldNodePos.x;
@@ -88,16 +90,16 @@ import { ref } from 'vue'
         const selectDom = ev.currentTarget as HTMLElement
         // 清空定时器
         if(timeOutEvent)clearTimeout(timeOutEvent);
-        //非长按时触发点击事件
-        if(!longTap && click){
+        //非长按，并且没有拖拽时触发点击事件
+        if(!longTap && !moving && click){
             click()
         }
         //移动结算
         if(allowMove) {
             allowMove = false;
-            const {clientWidth, clientHeight} = document.body;//屏幕高宽
-            const {offsetLeft, offsetTop} = selectDom;//对象位置
-            const {width,height} = selectDom.getBoundingClientRect()//对象宽高
+            const {clientWidth} = document.body;//屏幕高宽
+            const {offsetLeft} = selectDom;//对象位置
+            const {width} = selectDom.getBoundingClientRect()//对象宽高
             //获取离得最近的边缘
             const {theEdge,closeDis} = getCloseEdge()
             if(theEdge){
@@ -115,20 +117,11 @@ import { ref } from 'vue'
                         `calc(100% - ${width}px)` : "0px";
                     if(onEdge)onEdge(theEdge,selectDom)
                 }
-                //不吸附：不会在距离小于0时超出边缘
-                else if(closeDis<0){
-                    selectDom.style.left = 
-                        theEdge=="right" ? 
-                        `calc(100% - ${width}px)` : "0px";
-                }
             }
 
-            //不会超出上下边缘
-            if (offsetTop < 0) {
-                selectDom.style.top = '0px';
-            } else if (offsetTop + height > clientHeight) {
-                selectDom.style.top = `${clientHeight}px`;
-            }   
+            //不会超出上下边缘，如果不允许吸附=不允许超出左右边缘
+            const side = allowEdge ? "horizon":"all"
+            doNotOverContainer(selectDom,document.body,side,10) 
 
             function getCloseEdge(){
                 //和左右的距离是否小于指定距离
@@ -149,10 +142,13 @@ import { ref } from 'vue'
                 }
                 return {theEdge,closeDis}
             }
+
+            //触发onMove的停止事件
+            if(onMove)onMove("stop",selectDom)
         }
-        //触发onMove的停止事件
-        if(onMove)onMove("stop",selectDom)
+        //状态还原
         longTap = false
+        moving = false
     }
     
 

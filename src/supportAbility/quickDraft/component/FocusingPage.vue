@@ -1,16 +1,23 @@
 <template>
-    <div class="focusingPage" v-if="quickDraftItem != null" v-show="ifFocusing">
+    <div class="focusingPage" 
+        v-if="quickDraftItem != null" 
+        v-show="ifFocusing">
         <div class="topButtons">
             <Button 
-                :class="index == 0?'disabled':''"
-                icon="leftArrow" 
+                :icon="index == 0? 'leftArrow-disabled':'leftArrow'" 
                 name="上一暂记对象" 
                 @click="focusLastItem"/>
-            <Button icon="leftArrow" name="管理页面" @click="ifFocusing = false"/>
-            <Button icon="fold" name="切换展开" @click="foldQuickDraft"/>
             <Button 
-                :class="index == nowQuickDraft.length-1 ? 'disabled':''"
-                icon="rightArrow" 
+                icon="backMain" 
+                name="管理页面" 
+                @click="showManagePage"/>
+            <Button 
+                v-if="float"
+                icon="collapse" 
+                name="折叠悬浮窗" 
+                @click="fold"/>
+            <Button 
+                :icon="index == nowQuickDraft.length-1? 'rightArrow-disabled':'rightArrow'" 
                 name="下一暂记对象" 
                 @click="focusNextItem"/>
         </div>
@@ -38,6 +45,8 @@
     import TextArea from '@/components/other/textArea/textArea.vue';
     import Time from '@/components/global/time.vue';
     import Button from '@/components/global/button.vue';
+    const {float = false,foldFloatWindow=()=>{}} 
+        = defineProps<{float?:boolean,foldFloatWindow?:()=>void}>() 
     const index = computed(()=>{
         if(!focusingItem.value)return null;
         return nowQuickDraft.indexOf(focusingItem.value)
@@ -68,9 +77,9 @@
         const newFocusingItem = nowQuickDraft[index.value+1]
         focusingItem.value = newFocusingItem
     }
-    //切换暂记版的展开or半展开状态
-    function foldQuickDraft(){
-
+    //折叠悬浮窗
+    function fold(){
+        foldFloatWindow()
     }
     //创建并聚焦到新的暂记版,使得新暂记版在当前暂记版之后
     function createNewItem(){
@@ -80,6 +89,17 @@
         addQuickDraftItem(newItem,index.value+1)
         //聚焦到该暂记版
         focusingItem.value = newItem
+    }
+    //显示管理页面
+    function showManagePage(){
+        //收起暂记版，弹出弹窗
+        if(float){
+            
+        }
+        //切换至弹窗
+        else{
+            ifFocusing.value = false
+        }
     }
 </script>
 
@@ -116,6 +136,7 @@
         }
         .times{
             display: flex;
+            color: rgb(101, 101, 101);
             gap: 10px;
         }
         .inner{

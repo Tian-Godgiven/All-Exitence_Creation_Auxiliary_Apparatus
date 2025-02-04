@@ -1,6 +1,8 @@
 import { createApp } from "vue";
+import vueClickOutSide from "@/api/vue-clickOutSide"
 import 'element-plus/dist/index.css'
 import "vue-scroll-picker/lib/style.css";//滚动条组件
+
 
 import App from "./App.vue";
 import VueScrollPicker from "vue-scroll-picker";
@@ -15,3 +17,4 @@ app.use<Vue3TouchEventsOptions>(Vue3TouchEvents, {
   })
 app.mount('#app')
 app.use(VueScrollPicker); // export default is plugin
+app.directive("click-outside",vueClickOutSide)

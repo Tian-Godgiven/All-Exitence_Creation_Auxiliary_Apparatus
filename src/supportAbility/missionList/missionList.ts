@@ -6,6 +6,7 @@ import MissionList from "./popUp/missionList.vue"
 import { showAlert } from "@/hooks/alert"
 import { showQuickInfo } from "@/api/showQuickInfo"
 import ShowMissionAlert from "./popUp/showMissionAlert.vue"
+import { SupportAbilitySignUpItem } from "@/data/list/supportAbilityList"
 
 export type Mission = { 
     title:string,//任务标题
@@ -21,6 +22,14 @@ export type Mission = {
     __key: string,
 }
 export type MissionState = "doing" | "completed" | "failed"
+
+//注册该插件
+export const missionListItem:SupportAbilitySignUpItem = {
+    name:"missionList",
+    init:()=>initMissionList(),
+    save:()=>saveMissionList(),
+    call:()=>showMissionListPopUp()
+}
 
 //初始化任务列表系统
 export const nowMissionList = reactive<{

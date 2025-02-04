@@ -1,13 +1,24 @@
 import { addToRightPage } from "@/hooks/pages/rightPage"
 import { TextAreaContent } from "@/hooks/expression/textAreaContent"
-import { createFileToPath, readFileFromPath } from "@/hooks/fileSysytem"
+import { createFileToPath, readFileFromPath, writeFileAtPath } from "@/hooks/fileSysytem"
 import { showPopUp } from "@/hooks/pages/popUp"
-import { reactive, ref, shallowRef } from "vue"
+import { reactive, ref, shallowRef, toRaw } from "vue"
 import QuickDraft from "./popUp/QuickDraft.vue"
 import { nanoid } from "nanoid"
 import FloatWindow from "./popUp/FloatWindow.vue"
-import { addFloatWindow, deleteFloatWindow } from "@/hooks/pages/floatWindow"
+import { addFloatWindow, deleteFloatWindow} from "@/hooks/pages/floatWindow"
+import { SupportAbilitySignUpItem } from "@/data/list/supportAbilityList"
+import { nowProjectInfo } from "@/hooks/project/projectData"
 
+//注册对象
+export const quickDraftItem:SupportAbilitySignUpItem = {
+    name:"quickDraft",
+    init:()=>initQuickDraft(),
+    save:()=>saveQuickDraft(),
+    syncProject:async(projectPath)=>await changeQuickDraft(projectPath)
+}
+
+//类
 export type QuickDraftItem = {
     inner:TextAreaContent[],
     time:number,
@@ -16,9 +27,10 @@ export type QuickDraftItem = {
 export type QuickDraft = {
     items:QuickDraftItem[],
     setting:{
+        focusingItem:string | null,
         floatWindow:{
             show:boolean,
-            position:[string,string]
+            position:[number,number]
         }
     }
 }
@@ -26,9 +38,10 @@ export type QuickDraft = {
 const idleQuickDraft:QuickDraft = {
     items:[],
     setting:{
+        focusingItem:null,
         floatWindow:{
             show:true,
-            position:["100px","100px"]
+            position:[100,100]
         }
     }
 }
@@ -46,7 +59,16 @@ export async function initQuickDraft(){
 }
 //保存
 export function saveQuickDraft(){
-
+    //保存当前聚焦对象的key
+    const focusingKey = focusingItem.value?.__key ?? null
+    nowQuickDraftSetting.focusingItem = focusingKey
+    //保存设置和item
+    const dataPath = `projects/${nowProjectInfo.pathName}/data`
+    console.log(toRaw(nowQuickDraft))
+    writeFileAtPath(dataPath,"quickDraft.json",{
+        items:toRaw(nowQuickDraft),
+        setting:toRaw(nowQuickDraftSetting)
+    })
 }
 //创建暂记版
 export async function createQuickDraft(projectPath:string){
@@ -67,38 +89,46 @@ export async function changeQuickDraft(projectPath:string){
     }
     //切换当前暂记版
     Object.assign(nowQuickDraft,quickDraft.items)
-    //读取设置，判断是否显示悬浮窗，若为是则加载悬浮窗,否则隐藏悬浮窗
+    Object.assign(nowQuickDraftSetting,quickDraft.setting)
+    //读取设置
     const setting = quickDraft.setting
+    //读取记录的聚焦暂记对象
+    const focusingKey = setting.focusingItem
+    if(focusingKey){
+        const result = quickDraft.items.find((item)=>item.__key == focusingKey)
+        if(result)focusingItem.value = result
+    }
+    //加载或隐藏悬浮窗
+    console.log(setting.floatWindow)
     loadQuickDraftFloatWindow(setting.floatWindow)
 }
 
 //显示暂记版弹窗
-export async function showQuickDraftPopUp(position?:{x?:string,y?:string},size?:{height?:string,width?:string}){
+export async function showQuickDraftPopUp(){
     showPopUp({
         vue:shallowRef(QuickDraft),
         "buttons":null,
         "mask":true,
-        position,
-        size
     })
 }
 //加载暂记版悬浮窗
-let key:string|null = null
-export function loadQuickDraftFloatWindow(floatWindowSetting:{show:boolean,position:[string,string]}){
-    //显示:在app中加载对应的悬浮窗
-    if(floatWindowSetting.show){
-        key = addFloatWindow(FloatWindow)
+export let floatWindowKey = ref<string|null>(null)
+export function loadQuickDraftFloatWindow(floatWindowSetting:QuickDraft["setting"]["floatWindow"]){
+    console.log(floatWindowSetting)
+    //显示:在app中添加悬浮窗
+    if(floatWindowSetting.show && floatWindowKey.value==null){
+        floatWindowKey.value = addFloatWindow(FloatWindow)
     }
-    //隐藏
-    else if(key){
-        deleteFloatWindow(key)
-        key = null
+    //隐藏:将已有的悬浮窗删除
+    else if(!floatWindowSetting.show && floatWindowKey.value){
+        deleteFloatWindow(floatWindowKey.value)
+        floatWindowKey.value = null
     }
 }
 //控制悬浮窗的显示与否
-export function swicthQuickDraftFloatWindow(show?:boolean,position?:[string,string]){
+export function switchQuickDraftFloatWindow(show?:boolean,position?:[number,number]){
     //修改设置项
-    if(!show){
+    if(show==null){
         show = !nowQuickDraftSetting.floatWindow.show
     }
     nowQuickDraftSetting.floatWindow.show = show
@@ -111,10 +141,10 @@ export function swicthQuickDraftFloatWindow(show?:boolean,position?:[string,stri
 }
 //控制悬浮窗的折叠与否
 export const foldFloatWindow = ref(true)
-export function switchFloatWindoFold(bool?:boolean){
-    if(bool)foldFloatWindow.value = bool
+export function switchFoldFloatWindow(bool?:boolean){
+    if(bool!=null)foldFloatWindow.value = bool
     else{
-        foldFloatWindow.value = foldFloatWindow.value
+        foldFloatWindow.value = !foldFloatWindow.value
     }
 }
 
@@ -147,8 +177,9 @@ export function deleteQuickDraftItem(item:QuickDraftItem){
 //显示聚焦页面
 export const ifFocusing = ref(false)
 export const focusingItem = ref<QuickDraftItem|null>(null)
-export function showFocusingPage(item:QuickDraftItem){
+export function showFocusingPage(item?:QuickDraftItem){
     ifFocusing.value = true
-    focusingItem.value = item
-    console.log(focusingItem,item)
+    if(item){
+        focusingItem.value = item
+    }
 }

@@ -4,8 +4,8 @@
         <div class="topButtons">
             <Button icon="add" name="创建" @click="create"></Button>
             <Button icon="manage" name="管理模式" @click="switchManageMode"></Button>
-            <Button icon="floatWindow" name="切换显示悬浮窗" @click="switchFloatWindow"></Button>
-            <Button icon="close" name="关闭" @click="closePopUp(popUp)"></Button>
+            <Button :icon="floatWindowKey?'hideFloat':'showFloat'" name="切换显示悬浮窗" @click="switchFloatWindow"></Button>
+            <Button icon="close" name="关闭" @click="close"></Button>
         </div>
         <div class="quickDraftItems">
             <QuickDraftItem 
@@ -23,13 +23,13 @@
 
 <script setup lang='ts'>
     import Button from '@/components/global/button.vue';    
-    import { addQuickDraftItem, createQuickDraftItem, nowQuickDraft , swicthQuickDraftFloatWindow } from '../quickDraft';
+    import { addQuickDraftItem, createQuickDraftItem, nowQuickDraft , switchQuickDraftFloatWindow, switchFoldFloatWindow, floatWindowKey } from '../quickDraft';
     import { closePopUp, PopUp } from '@/hooks/pages/popUp';
     import QuickDraftItem from '../component/QuickDraftItem.vue';
     import FocusingPage from '../component/FocusingPage.vue';
-    import { ref,onMounted,onUnmounted, toRaw } from 'vue';
+    import { ref,onMounted,onUnmounted, toRaw, computed } from 'vue';
 import { getMonitor } from '@/api/dragToSort';
-    const {popUp} = defineProps<{popUp:PopUp}>()
+    const {popUp} = defineProps<{popUp?:PopUp}>()
     const quickDraft = nowQuickDraft
     //切换管理模式
     const manageMode = ref(false)
@@ -67,13 +67,22 @@ onUnmounted(()=>{
 })
     //切换显示悬浮窗
     function switchFloatWindow(){
-        swicthQuickDraftFloatWindow()
+        switchQuickDraftFloatWindow()
     }
 
     //创建并添加新的暂记对象到开始
     function create(){
         const newItem = createQuickDraftItem()
         addQuickDraftItem(newItem,0)
+    }
+
+    //关闭
+    function close(){
+        if(popUp)closePopUp(popUp)
+        else{
+            //收起悬浮窗
+            switchFoldFloatWindow(true)
+        }
     }
     
 </script>

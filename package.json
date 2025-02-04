@@ -17,6 +17,7 @@
     "@tauri-apps/plugin-shell": "^2",
     "date-fns": "^4.1.0",
     "element-plus": "^2.9.0",
+    "gsap": "^3.12.7",
     "lodash": "^4.17.21",
     "nanoid": "^5.0.9",
     "postcss-plugin-px2rem": "^0.8.1",
