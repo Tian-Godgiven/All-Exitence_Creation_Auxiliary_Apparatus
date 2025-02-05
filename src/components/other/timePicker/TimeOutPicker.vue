@@ -15,7 +15,7 @@
     import { addHours, addMinutes } from 'date-fns';
     import { ElPopover } from 'element-plus';
     import ScrollTimePicker from './scrollTimePicker.vue';
-import { getDateDistanceDHM } from '@/hooks/expression/customTime';
+import { getDateDistanceDHM } from '@/supportAbility/customDate/translateTime';
     const targetTime = defineModel<number>({default:Date.now()})
     const {startTime = Date.now()} = defineProps<{startTime:number}>()
 

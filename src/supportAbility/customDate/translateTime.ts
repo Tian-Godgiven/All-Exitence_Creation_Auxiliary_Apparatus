@@ -1,49 +1,44 @@
 import { differenceInDays, differenceInHours, differenceInMilliseconds, differenceInMinutes, differenceInMonths, differenceInSeconds, differenceInYears } from "date-fns"
 import { TimeUnit } from "element-plus"
+import { TimeRule } from "./customTime"
 
-//自定义时间表达式
-export type TimeRule = 
-    "date"//地球时间
-    |{
-        数符:"阿拉伯数字"|"简体中文数字"|"繁体中文数字",
-        单位符:TimeRuleItem[]
-    }
-export type TimeRuleItem = {
-    target:string,
-    equal:"number"
-}|{
-    target:null
-}
 
+
+/**
+ * 时间对象
+ * @param number 这个时间的总值
+ * @param rule 这个时间使用的表达式名称
+ */
 export type TimeValue = {
     number:number,
-    unit:string
+    rule:string | "date"
 }
-
+/**
+ * 允许使用的时间连接符
+ */
 export type TimeLinker = 
     null|//不需要链接符
     "/"|//下划线
     "-"|//分隔线
     ":"
 
-export type TimeItem = translateObject
-
 /**
- * 通过时间表达式翻译时间值
- * @param timeValue 需要翻译的时间对象的值
- * @param timeRule 翻译所需的时间规则
- * @param unitFrom,unitEnd 翻译结果的首位单位，余数均会舍去
+ * 通过时间表达式翻译得到时间值的设置项
+ * @param value 需要翻译的时间对象的值
+ * @param rule 翻译所需的时间规则
+ * @param unitFrom,unitEnd 翻译结果的首尾单位，余数均会舍去
+ * @param linker 可选的时间连接符
+ * @param showUnit 是否显示单位
  */
-type translateOption = {
+export type CustomTimeTranslateItem = {
+    value:TimeValue,
+    rule:TimeRule,
     linker?:TimeLinker,
     showUnit?:boolean,
     unitFrom?:string|null,
     unitEnd?:string|null
 }
-type translateObject = translateOption & {
-    value:TimeValue,
-    rule:TimeRule,
-}
+//翻译时间表达式，返回一个字符串或对象
 export function translateCustomTime({
     value,
     rule,
@@ -51,7 +46,7 @@ export function translateCustomTime({
     showUnit=true,
     unitFrom=null,
     unitEnd=null
-}:translateObject){
+}:CustomTimeTranslateItem){
     //如果用的是Date规则
     if(rule == "date"){
         const date = getDateArrByUnit(value.number,unitFrom as any,unitEnd as any)
@@ -140,30 +135,33 @@ function getDateArrByUnit(time:number,unitFrom?:DateUnit,unitEnd?:DateUnit){
     }
 }
 
-//按照指定的值获取Date对象的时间差
-type TimeOut = translateOption &{
-    startTime:TimeValue,
-    endTime:TimeValue,
-    rule:TimeRule
-}
+//获取两个时间对象的时间差
 export function translateTimeOut({
     startTime,endTime,rule,
     linker=null,
     showUnit=true,
     unitFrom=null,
     unitEnd=null
-}:TimeOut){
+}:{
+    startTime:TimeValue,
+    endTime:TimeValue,
+    rule:TimeRule,
+    linker:TimeLinker,
+    showUnit:boolean,
+    unitFrom:string|null,
+    unitEnd:string|null
+}){
     //常规时间
     if(rule == "date"){
         //获取时间数组
-        const timeOutArr = getDateTimeOutArrByUnit(startTime,endTime,unitFrom,unitEnd)
+        const timeOutArr = getDateTimeOutArrByUnit(startTime,endTime,unitFrom as any,unitEnd as any)
         //链接起来
         const str = linkUnit(timeOutArr,showUnit,linker)
         return str
     }
     //自定义时间
     else{
-
+        
     }
 }
 

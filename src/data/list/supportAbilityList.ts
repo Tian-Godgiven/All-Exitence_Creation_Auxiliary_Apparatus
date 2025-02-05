@@ -1,6 +1,7 @@
 import { createFileToPath, readFileFromPath } from "@/hooks/fileSysytem";
 import { createInputSuggestionList } from "@/hooks/inputSupport/inputSuggestion/inputSuggestion";
 import { projectInputSuggestionListData } from "@/hooks/project/projectData";
+import { customTimeItem } from "@/supportAbility/customDate/customTime";
 import { initGlobalInputSuggestion, saveGlobalInputSuggestion } from "@/supportAbility/inputSuggestion/globalInputSuggestion";
 import { missionListItem } from "@/supportAbility/missionList/missionList";
 import { quickDraftItem } from "@/supportAbility/quickDraft/quickDraft";
@@ -33,4 +34,5 @@ export const supportAbilityList:SupportAbilitySignUpItem[] = [
     },
     missionListItem,
     quickDraftItem,
+    customTimeItem
 ]

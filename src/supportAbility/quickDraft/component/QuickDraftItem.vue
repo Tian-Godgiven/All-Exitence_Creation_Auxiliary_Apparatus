@@ -44,7 +44,7 @@ import Indicator from '@/components/other/indicator.vue';
     const timeValue = computed(()=>{
         return {
             number:quickDraftItem.time,
-            unit:"date"
+            rule:"date"
         }
     }) 
     //长按显示控制面板

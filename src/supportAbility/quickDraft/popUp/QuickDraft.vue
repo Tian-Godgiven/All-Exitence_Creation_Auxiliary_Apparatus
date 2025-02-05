@@ -27,7 +27,7 @@
     import { closePopUp, PopUp } from '@/hooks/pages/popUp';
     import QuickDraftItem from '../component/QuickDraftItem.vue';
     import FocusingPage from '../component/FocusingPage.vue';
-    import { ref,onMounted,onUnmounted, toRaw, computed } from 'vue';
+    import { ref,onMounted,onUnmounted, toRaw } from 'vue';
 import { getMonitor } from '@/api/dragToSort';
     const {popUp} = defineProps<{popUp?:PopUp}>()
     const quickDraft = nowQuickDraft

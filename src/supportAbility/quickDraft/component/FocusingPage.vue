@@ -55,7 +55,7 @@
     const timeValue = computed(()=>{
         const tmp = reactive({
             number:0,
-            unit:"date"
+            rule:"date"
         })
         if(focusingItem.value){
             tmp.number = focusingItem.value.time

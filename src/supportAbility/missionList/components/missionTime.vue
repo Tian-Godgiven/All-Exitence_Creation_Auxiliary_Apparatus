@@ -16,7 +16,7 @@
 import Time from '@/components/global/time.vue';
 import { type Mission } from '../missionList';
 import { computed } from 'vue';
-import { TimeValue } from '@/hooks/expression/customTime';
+import { TimeValue } from '@/supportAbility/customDate/translateTime';
     const {mission} = defineProps<{mission:Mission}>()
     //显示任务剩余时间 
     const timeDistance = computed(()=>{
@@ -38,7 +38,7 @@ import { TimeValue } from '@/hooks/expression/customTime';
     //获取时间值对象
     function getTimeValue(time:number):TimeValue{
         return {
-            unit:"date",
+            rule:"date",
             number:time
         }
     }
