@@ -1,6 +1,6 @@
 import { addToRightPage } from "@/hooks/pages/rightPage"
 import { TextAreaContent } from "@/hooks/expression/textAreaContent"
-import { createFileToPath, readFileFromPath, writeFileAtPath } from "@/hooks/fileSysytem"
+import { createFileToPath,  tryReadFileAtPath, writeFileAtPath } from "@/hooks/fileSysytem"
 import { showPopUp } from "@/hooks/pages/popUp"
 import { reactive, ref, shallowRef, toRaw } from "vue"
 import QuickDraft from "./popUp/QuickDraft.vue"
@@ -64,7 +64,6 @@ export function saveQuickDraft(){
     nowQuickDraftSetting.focusingItem = focusingKey
     //保存设置和item
     const dataPath = `projects/${nowProjectInfo.pathName}/data`
-    console.log(toRaw(nowQuickDraft))
     writeFileAtPath(dataPath,"quickDraft.json",{
         items:toRaw(nowQuickDraft),
         setting:toRaw(nowQuickDraftSetting)
@@ -81,13 +80,11 @@ export async function createQuickDraft(projectPath:string){
 export async function changeQuickDraft(projectPath:string){
     //切换到对应项目的暂记版
     const dataPath = projectPath+"/data"
-    let quickDraft = await readFileFromPath(dataPath,"quickDraft.json") as QuickDraft
-    //若读取失败则创建一个新的暂记版对象
-    if(!quickDraft){
-        createQuickDraft(projectPath)
-        quickDraft = idleQuickDraft
-    }
+    //尝试读取项目暂记版，失败时创建默认暂记版
+    let quickDraft:QuickDraft = await tryReadFileAtPath(
+        dataPath,"quickDraft.json",true,idleQuickDraft)
     //切换当前暂记版
+    nowQuickDraft.length = 0 //清空数组内容
     Object.assign(nowQuickDraft,quickDraft.items)
     Object.assign(nowQuickDraftSetting,quickDraft.setting)
     //读取设置
@@ -114,7 +111,6 @@ export async function showQuickDraftPopUp(){
 //加载暂记版悬浮窗
 export let floatWindowKey = ref<string|null>(null)
 export function loadQuickDraftFloatWindow(floatWindowSetting:QuickDraft["setting"]["floatWindow"]){
-    console.log(floatWindowSetting)
     //显示:在app中添加悬浮窗
     if(floatWindowSetting.show && floatWindowKey.value==null){
         floatWindowKey.value = addFloatWindow(FloatWindow)

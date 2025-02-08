@@ -59,6 +59,7 @@ export async function readFileFromPath(path:string,fileName:string,ifJSON:boolea
         return content
     }
     catch(err){
+        console.error(err)
         return false
     }
 }
@@ -79,6 +80,26 @@ export async function writeFileAtPath(path:string,fileName:string,content:Object
     const filePath = getPath(path,fileName)
     const stringContent = JSON.stringify(content)
     await writeTextFile(filePath,stringContent,appData)
+}
+
+//尝试读取指定文件，失败时创建指定内容文件
+export async function tryReadFileAtPath(path:string,fileName:string,ifJSON:boolean=true,content:Object|string|(()=>Object|string)){
+    const tmp = await readFileFromPath(path,fileName,ifJSON)
+    //失败创建
+    if(!tmp){
+        let inner
+        if(content instanceof Function){
+            inner = content()
+        }
+        else{
+            inner = content
+        }
+        await createFileToPath(path,fileName,JSON.stringify(inner))
+        return inner
+    }
+    else{
+        return tmp
+    }
 }
 
 //重命名指定的文件/文件夹，当名称重复时会尝试修改这个名称并返回新的名称

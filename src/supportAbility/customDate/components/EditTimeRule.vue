@@ -1,126 +1,155 @@
 <template>
-<div class="editTimeRule" ref="pageRef">
+<div class="editTimeRule">
     <DownLineInput class="name" 
         v-model="newRule.name" 
         placeholder="自定义时间名称"/>
-    <div class="selectNumFormat">
-        <ElSelect
-        v-model="newRule.numFormat">
-            <ElOption
-                v-for="item in numFormatChoice"
-                :key="item"
-                :value="item"/>
-        </ElSelect>
-    </div>
-    <div class="units">
-        <div>已有单位</div>
-        <div class="addNewUnit" @click="addUnit">新增</div>
-        <div class="unit" v-for="unit in newRule.units">
-            <DownLineInput 
-                class="unitName"
-                v-model="unit.name" 
-                placeholder="单位名称（必需）"/>
-            <div>=</div>
-            <DownLineInput 
-                v-if="unit.target"
-                class="unitEqual"
-                v-model="unit.equal" 
-                placeholder="相等值"/>
-            <ElSelect v-model="unit.target">
+    <div class="selectBar">
+        <div class="selectNumFormat">
+            <ElSelect
+            v-model="newRule.numFormat">
                 <ElOption
-                    :label="item.label"
-                    :value="item.value"
-                    v-for="item in unitTargetChoice">
-                </ElOption>
+                    v-for="item in numFormatChoice"
+                    :key="item"
+                    :value="item"/>
             </ElSelect>
         </div>
+        <div class="selectPosition">
+            仅限当前项目<input type="checkbox" v-model="onlyProject">
+        </div>
+    </div>
+    
+    <div class="units">
+        <div class="titleBar">
+            <div>已有单位</div>
+            <Button @click="addUnit" icon="add" name="新增单位"></Button>
+        </div>
+        <div class="container">
+            <EditTimeRuleUnit v-for="unit in newRule.units" :unit="unit" :allUnit = newRule.units></EditTimeRuleUnit>
+        </div>
+        
     </div>
     
     <div class="finalButtons">
         <Button name="确认" @click="confirm">确认</Button>
-        <Button name="返回" @click="returnManage">返回</Button>
+        <Button name="返回" @click="quit">返回</Button>
     </div>
 </div>
 </template>
 
 <script setup lang='ts'>
-    import { computed, reactive, ref} from 'vue';
-import { CustomTimeRule} from '../customTime';
+    import {reactive, ref, toRaw} from 'vue';
+import { addCustomTimeRule, changeCustomTimeRulePosition, checkCustomTimeRule, CustomTimeRule, hideEditPage, ifShowEditPage, sortRuleUnits} from '../customTime';
 import { cloneDeep } from 'lodash';
 import DownLineInput from '@/components/other/input/downLineInput.vue';
 import { ElOption, ElSelect } from 'element-plus';
 import Button from '@/components/global/button.vue';
-import { gsap } from 'gsap/gsap-core';
-    let {timeRule=null} = defineProps<{timeRule:CustomTimeRule|null}>()
-    //若为空则创建
-    let tmp = timeRule
+import EditTimeRuleUnit from './EditTimeRuleUnit.vue';
+import { editTarget } from '../customTime'; 
+import { nanoid } from 'nanoid';
+    //初始值
+    const idle = {
+        name:"",
+        numFormat:"阿拉伯数字",
+        units:[{name:"",target:false}],
+        __key:nanoid()
+    }
+    //若为空则创建新规则
+    let tmp:any = editTarget.targetRule
     if(tmp == null){
-        tmp = {
-            name:"",
-            numFormat:"阿拉伯数字",
-            units:[]
-        }
+        tmp = idle
     }
     //拷贝编辑对象
-    const newRule = reactive(cloneDeep(tmp))
+    let newRule = reactive(cloneDeep(tmp))
+    
     //数符选项
     const numFormatChoice:CustomTimeRule["numFormat"][] = [
         "简体中文数字",
         "繁体中文数字",
         "阿拉伯数字"
     ]
-    //单位目标选项
-    const unitTargetChoice = computed(()=>{
-        const tmp:{label:string,value:string|false}[] = 
-            [{label:"最小单位",value:false}]
-        for(const unit of newRule.units){
-            if(unit.name != ""){
-                tmp.push({
-                    value:unit.name,
-                    label:unit.name
-                })
-            }
-        }
-        return tmp
-    })
-    //添加空的新单位
+    //位置选项:项目内
+    const onlyProject = ref(editTarget.position=="project")
+    //添加空的新单位到开头，默认以上一个单位为基准
     function addUnit(){
-        newRule.units.push({
+        const lastUnit = newRule.units[0]
+        newRule.units.unshift({
             name:"",
-            target:false,
+            target:lastUnit.name,
+            equal:1
         })
     }
     //返回修改后的规则
     function confirm(){
-        //确认名称不重复
-        //所有单位的单位名都存在
-        //所有单位的目标单位名都存在
-        returnManage()
+        const newPosition = onlyProject.value?"project":"global"
+        //检查是否符合条件
+        if(!checkCustomTimeRule(newRule,newPosition)){return false}
+        //按照从大到小的顺序重新排列单位
+        const newUnits = sortRuleUnits(newRule.units)
+        newRule.units = newUnits
+        //如果传入为null，则添加新规则
+        if(editTarget.targetRule==null){
+            addCustomTimeRule(toRaw(newRule),newPosition)
+        }
+        //否则修改传入的规则的内容或位置
+        else{
+            Object.assign(editTarget.targetRule,toRaw(newRule))
+            if(newPosition != editTarget.position){
+                changeCustomTimeRulePosition(editTarget.targetRule,newPosition)
+            }
+        }
+        //返回管理页面
+        hideEditPage()
     }
-    //返回管理页面
-    const pageRef = ref()
-    function returnManage(){
-        if(!pageRef.value)return  
-        const dom = pageRef.value
-        gsap.to(dom,{
-            x:"100%",
-            ease:"power1.inOut"
-        })
+    //取消返回
+    function quit(){
+        hideEditPage()
     }
 </script>
 
 <style scoped lang='scss'>
 @use "@/static/style/global.scss" as global;
-    .editTimeRule{
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        top: 0;
-        left: 0;
-        background-color: global.$bgColor;
-        transform: translateX(100%);
-        box-sizing: border-box;
-        padding: 20px;
-        z-index: 2;
+@use "@/static/style/popUp.scss";
+.editTimeRule{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: global.$bgColor;
+    box-sizing: border-box;
+    padding: 20px;
+    z-index: 2;
+    .selectBar{
+        display: grid;
+        grid-template-columns: 9fr 9fr;
+        gap: 10px;
+        align-items: center;
+        justify-content: center;
     }
+    .units{
+        .titleBar{
+            display: flex;
+            .button{
+                height: 40px;
+                width: 40px;
+                border: 3px solid black;
+                border-radius: 5px;
+            }
+        }
+        .container{
+            max-height: 700px;
+            position: relative;
+            overflow: auto;
+            &::-webkit-scrollbar{
+                display: none;
+            }
+        }
+        
+    }
+    .finalButtons{
+        @extend .finalButtons
+    }
+    
+}
+
 </style>

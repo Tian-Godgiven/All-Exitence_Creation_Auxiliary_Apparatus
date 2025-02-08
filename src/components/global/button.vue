@@ -20,9 +20,6 @@ import { computed } from 'vue';
             return new URL(img,import.meta.url).href
         }
     })
-    
-    
-    
 
     //触发点击事件
     function clickButton(event:Event){
@@ -35,6 +32,7 @@ import { computed } from 'vue';
         .buttonIcon{
             width: 100%;
             height: 100%;
+            object-fit: contain;
         }
     }
 </style>
