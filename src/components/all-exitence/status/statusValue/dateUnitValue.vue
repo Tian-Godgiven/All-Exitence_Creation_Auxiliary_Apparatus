@@ -31,6 +31,8 @@
     }
     //失去聚焦时改回numFormat指定的数符
     function onBlur(){
+        unit.value = displayValue.value as number
+        emits("change")
         displayValue.value = translateTimeNumFormat(unit.value,format)
     }
     //计算宽度
@@ -39,7 +41,7 @@
             return `${unit.value.toString().length+1}ch`
         }
         else{
-            return `${unit.value.toString().length+1}em`
+            return `${unit.value.toString().length+0.5}em`
         }
         
     }

@@ -15,7 +15,6 @@
 				:name="abilitiy.name"
 				@click="abilitiy.click"
 				v-for="(abilitiy) in abilities">
-				{{ abilitiy.name }}
 			</buttonVue>
 		</div>
 	</div>

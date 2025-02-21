@@ -1,6 +1,7 @@
 <template>
     <div class="button" @click.stop="clickButton($event)" :name="name">
         <img v-if="icon" class="buttonIcon" :src="src" :alt="name">
+        <span v-else>{{ name }}</span>
         <slot></slot>
     </div>
 </template>

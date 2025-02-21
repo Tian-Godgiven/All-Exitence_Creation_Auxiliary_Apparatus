@@ -46,7 +46,6 @@ import DateUnitValue from './dateUnitValue.vue';
     })
     //是否显示单位
     const showUnit = computed(()=>{
-        console.log(statusSetting.showUnit)
         return statusSetting.showUnit
     })
     //链接符号
@@ -60,7 +59,7 @@ import DateUnitValue from './dateUnitValue.vue';
     //输入框改变值时，修改status的值
     function onChange(){
         const newValue = translateTimeArrToValue(unitList.value,timeRule.value)
-        console.log(newValue)
+        console.log("计算后的新值为",newValue)
         status.value = newValue
     }
     

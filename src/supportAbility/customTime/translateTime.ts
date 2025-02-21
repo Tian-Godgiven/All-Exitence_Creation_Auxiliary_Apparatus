@@ -1,6 +1,6 @@
 import { differenceInDays, differenceInHours, differenceInMilliseconds, differenceInMinutes, differenceInMonths, differenceInSeconds, differenceInYears } from "date-fns"
 import { TimeUnit } from "element-plus"
-import { CustomTimeRule, CustomTimeRuleUnit, sortRuleUnits, TimeRule } from "./customTime"
+import { CustomTimeRule, CustomTimeRuleUnit, globalCustomTime, projectCustomTime, sortRuleUnits, TimeRule } from "./customTime"
 import { showPopUp } from "@/hooks/pages/popUp"
 import Selector from "./popUp/Selector.vue"
 import { shallowRef } from "vue"
@@ -51,9 +51,12 @@ export type TimeTranslateItem = TranslateItem & {
 //根据key获取指定的时间表达式
 export function getTimeRule(key:"date"|string):"date"|CustomTimeRule|false{
     if(key == "date")return key;
-    const customRule = false
-    if(customRule){return customRule}
-    //找不到时指定的时间表达式
+    //否则在全局or项目中寻找这个时间表达式
+    const tmpG = globalCustomTime.find((timeRule)=>timeRule.__key == key)
+    if(tmpG){return tmpG}
+    const tmpP = projectCustomTime.find((timeRule)=>timeRule.__key == key)
+    if(tmpP){return tmpP}
+    //找不到指定的时间表达式返回false
     return false
     
 }
@@ -139,10 +142,11 @@ function getCustomTimeArrByUnit(value:number,rule:CustomTimeRule,unitFrom?:strin
     //先进行一次排序
     unitList = sortRuleUnits(unitList)
     //遍历规则中的单位
+    console.log(unitList)
+    let start = false
+    let leastValue = value
     for(let i=0;i<unitList.length;i++){
         const unit = unitList[i]
-        let start = false
-        let leastValue = value
         if(unit.name == unitFrom || !unitFrom || noFrom){
             start = true
         }
@@ -153,8 +157,9 @@ function getCustomTimeArrByUnit(value:number,rule:CustomTimeRule,unitFrom?:strin
                 // 计算当前单位等于多少最小单位
                 const unitEqual = getEqualToMinUnit(unitList,unit,1) as number
                 //计算当前单位的值
-                const unitValue = leastValue / unitEqual
-                result.push({ name: unit.target, value: unitValue });
+                const unitValue = Math.round(leastValue / unitEqual)
+                console.log(unit,unitValue)
+                result.push({ name: unit.name, value: unitValue });
                 // 用余数更新剩余值
                 leastValue -= unitValue * unitEqual;
             } 
@@ -380,14 +385,13 @@ export function translateTimeArrToValue(timeArr:TimeArr,rule:TimeRule){
     ////如果是自定义规则,遍历数组,从规则中找到这个单位,获取这个单位相较于最小单位的值,加在总值中
     for(let i =0 ; i<timeArr.length; i++){
         const item = timeArr[i];
-        
         const unit = rule.units.find((unit)=>unit.name == item.name)
         if(!unit){
             console.error("没有在规则中找到指定的单位",rule,item.name)
             return false
         }
         const equalToMin = getEqualToMinUnit(rule.units,unit,item.value)
-        if(!equalToMin){return false}
+        if(equalToMin===false){return false}
         totalValue += equalToMin
     }
     return totalValue
@@ -432,7 +436,7 @@ const numFormatList = {
         return num.toString().split('').map(digit => chineseNumbers[parseInt(digit)]).join('');
     },
     "繁体中文数字": (num: number) => {
-        const chineseNumbers = ['〇', '壹', '貳', '叁', '肆', '伍', '陸', '柒', '捌', '玖'];
+        const chineseNumbers = ['零', '壹', '貳', '叁', '肆', '伍', '陸', '柒', '捌', '玖'];
         return num.toString().split('').map(digit => chineseNumbers[parseInt(digit)]).join('');
     }
 };
