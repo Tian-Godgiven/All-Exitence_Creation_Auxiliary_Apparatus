@@ -2,7 +2,13 @@
     <div class="timePicker">
         <ElPopover trigger="click" class="popover" width="60%">
             <template #reference>
-                <Time class="time" :value="timeValue" rule="date" unit-from="hour" unit-end="minute"></Time>
+                <Time 
+                    class="time" 
+                    :value="timeValue.number" 
+                    rule="date" 
+                    unit-from="时" 
+                    unit-end="分">
+                </Time>
             </template>
             <ScrollTimePicker class="picker" :time="timeItem" @onChange="onChange"></ScrollTimePicker>
         </ElPopover>

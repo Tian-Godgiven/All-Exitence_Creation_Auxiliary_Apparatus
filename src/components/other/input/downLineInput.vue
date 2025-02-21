@@ -1,13 +1,13 @@
 <template>
     <div class="container">
         <input 
-        :placeholder="placeholder"
-        class="input"
-        v-model="value"
-        :type="type"
-        @input="onInput"
-        @focus="onFocus"
-        @blur="onBlur" />
+            :placeholder="placeholder"
+            class="input"
+            v-model="value"
+            :type="type"
+            @input="onInput"
+            @focus="onFocus"
+            @blur="onBlur" />
         <div class="downLine" :class="ifFocusing? 'focusing':null" ></div>
     </div>
     
@@ -17,7 +17,9 @@
 import { ref } from 'vue';
 
     const value = defineModel()
-    const {placeholder,type} = defineProps(['placeholder','type'])
+    const {placeholder="",type} = defineProps<{
+        placeholder?:string,type?:"number"|"string",autoWidth?:boolean
+    }>()
     const emits = defineEmits(["focus","blur","input"])
     const ifFocusing = ref(false)
     function onFocus(){
@@ -35,9 +37,12 @@ import { ref } from 'vue';
 
 <style scoped lang='scss'>
     .container{
+        position: relative;
         width: 100%;
     }
     .input{
+        flex:inherit;
+        text-align: inherit;
         width: 100%;
         padding: 0;
         border: none;
@@ -45,8 +50,9 @@ import { ref } from 'vue';
         font-size: inherit;
     }
     .downLine{
+        position: absolute;
         position: relative;
-        top: -3px;
+        bottom: 3px;
         height: 3px;
         width: 100%;
         background-color: #8aa1a1;

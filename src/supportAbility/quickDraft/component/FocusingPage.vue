@@ -26,8 +26,21 @@
             name="创建新暂记对象" 
             @click="createNewItem"/>
         <div class="times">
-            <Time class="time" :value="timeValue" rule="date" unit-from="year" unit-end="day" linker="/" :show-unit="false"></Time>
-            <Time class="time" :value="timeValue" rule="date" unit-from="hour" unit-end="minute" linker=":" :show-unit="false"></Time>
+            <Time class="time" 
+                :value="timeValue.number" 
+                rule="date" 
+                unit-from="年" 
+                unit-end="日" 
+                linker="/" 
+                :show-unit="false"></Time>
+            <Time class="time" 
+                :value="timeValue.number" 
+                rule="date" 
+                unit-from="时" 
+                unit-end="分" 
+                linker=":" 
+                :show-unit="false">
+            </Time>
         </div>
         <TextArea class="inner"
             placeholder="无内容"
@@ -55,7 +68,6 @@
     const timeValue = computed(()=>{
         const tmp = reactive({
             number:0,
-            rule:"date"
         })
         if(focusingItem.value){
             tmp.number = focusingItem.value.time

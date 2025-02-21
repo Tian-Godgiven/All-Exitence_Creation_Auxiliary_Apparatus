@@ -1,5 +1,6 @@
 
 import chooseValueVue from "@/components/all-exitence/status/statusValue/chooseValue.vue"
+import DateValue from "@/components/all-exitence/status/statusValue/dateValue.vue"
 import downLineValueVue from "@/components/all-exitence/status/statusValue/downLineValue.vue"
 import inputBoxValueVue from "@/components/all-exitence/status/statusValue/inputBoxValue.vue"
 import multiValueVue from "@/components/all-exitence/status/statusValue/multiValue.vue"
@@ -24,8 +25,6 @@ export let statusValueTypeList = [
 	{value : "relation",text:"关联属性"},
 	{value : "multi",text : "复合属性"},
 	{value : "status",text: "嵌套属性"},
-
-
 ]
 
 // 属性值类型对应组件表
@@ -39,5 +38,6 @@ export let statusValueVueList:{[key:string]:any} = {
 	"radio":radioValueVue,
 	"multi":multiValueVue,
 	"tags":tagsValueVue,
-	"relation":relationValueVue
+	"relation":relationValueVue,
+	"date":DateValue
 }

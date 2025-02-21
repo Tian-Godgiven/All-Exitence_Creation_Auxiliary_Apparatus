@@ -12,7 +12,8 @@ export interface PopUp{
 	vueName?:string, //弹窗对应的vue对象名称
 	vue?:ShallowRef<any>, //弹窗中显示的vue组件
 	mask:boolean, //是否显示遮罩层
-	returnValue?:(...args: any[])=> any, //用于在弹窗中使用的返回回调事件
+	returnValue?:(...args: any[])=> void, //用于在弹窗中使用的返回回调事件
+	onClose?:(...args: any[])=> void, //用于在关闭弹窗中使用的回调事件，通常为reject
 	index?:number, //弹窗的位置，一般来说不需要设置,
 	size?:{
 		width?:string,
@@ -88,6 +89,11 @@ export function closePopUp(popUp?:PopUp){
 		if(index != -1){
 			popUpList.splice(index,1)
 		}
+	}
+
+	//执行关闭函数
+	if(popUp?.onClose){
+		popUp?.onClose()
 	}
 	
 	//如果指定了弹窗并且该弹窗显示了mask

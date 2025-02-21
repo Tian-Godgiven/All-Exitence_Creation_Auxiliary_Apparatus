@@ -2,7 +2,13 @@
     <div class="datePicker">
         <ElPopover trigger="click" class="popover" width="80%">
             <template #reference>
-                <Time class="time" :value="timeValue" rule="date" unit-from="year" unit-end="day"></Time>
+                <Time 
+                    class="time" 
+                    :value="timeValue.number" 
+                    rule="date" 
+                    unit-from="年" 
+                    unit-end="日">
+                </Time>
             </template>
             <ScrollDatePicker :time="timeItem" @on-change="onChange"></ScrollDatePicker>
         </ElPopover>
@@ -17,7 +23,7 @@
 
     const date = defineModel<number>({default:Date.now()})
     const timeValue = reactive({
-        unit:"date",
+        rule:"date",
         number:date
     })
     //选择器的值

@@ -26,7 +26,6 @@
         <div class="container">
             <EditTimeRuleUnit v-for="unit in newRule.units" :unit="unit" :allUnit = newRule.units></EditTimeRuleUnit>
         </div>
-        
     </div>
     
     <div class="finalButtons">
@@ -38,7 +37,7 @@
 
 <script setup lang='ts'>
     import {reactive, ref, toRaw} from 'vue';
-import { addCustomTimeRule, changeCustomTimeRulePosition, checkCustomTimeRule, CustomTimeRule, hideEditPage, ifShowEditPage, sortRuleUnits} from '../customTime';
+import { addCustomTimeRule, changeCustomTimeRulePosition, checkCustomTimeRule, CustomTimeRule, hideEditPage, sortRuleUnits} from '../customTime';
 import { cloneDeep } from 'lodash';
 import DownLineInput from '@/components/other/input/downLineInput.vue';
 import { ElOption, ElSelect } from 'element-plus';
@@ -82,7 +81,9 @@ import { nanoid } from 'nanoid';
     function confirm(){
         const newPosition = onlyProject.value?"project":"global"
         //检查是否符合条件
+        console.log(newRule.units)
         if(!checkCustomTimeRule(newRule,newPosition)){return false}
+        console.log(newRule.units)
         //按照从大到小的顺序重新排列单位
         const newUnits = sortRuleUnits(newRule.units)
         newRule.units = newUnits
@@ -92,10 +93,13 @@ import { nanoid } from 'nanoid';
         }
         //否则修改传入的规则的内容或位置
         else{
+            console.log(newRule)
             Object.assign(editTarget.targetRule,toRaw(newRule))
+            console.log(editTarget.targetRule)
             if(newPosition != editTarget.position){
                 changeCustomTimeRulePosition(editTarget.targetRule,newPosition)
             }
+            
         }
         //返回管理页面
         hideEditPage()

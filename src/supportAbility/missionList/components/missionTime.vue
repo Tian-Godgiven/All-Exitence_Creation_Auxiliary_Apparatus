@@ -2,13 +2,29 @@
     <div class="missionTime" v-if="mission.state == 'doing'">
         <div>限时：{{ timeDistance }}</div>
         <div>
-            截止：<Time :value="getTimeValue(mission.planTime as number)" 
-                rule="date" unit-end="minute"></Time>
+            截止：
+            <Time 
+                :value="(mission.planTime as number)" 
+                rule="date" 
+                unitEnd="分">
+            </Time>
         </div>
     </div>
     <div class="missionTime" v-else>
-        <div>开始：<Time :value="getTimeValue(mission.startTime)" rule="date" unit-end="minute"></Time></div>
-        <div>截止：<Time :value="getTimeValue(mission.endTime)" rule="date" unit-end="minute"></Time></div>
+        <div>开始：
+            <Time 
+                :value="mission.startTime" 
+                rule="date" 
+                unit-end="分">
+            </Time>
+        </div>
+        <div>截止：
+            <Time 
+                :value="mission.endTime" 
+                rule="date" 
+                unit-end="分">
+            </Time>
+        </div>
     </div>
 </template>
 
@@ -16,7 +32,6 @@
 import Time from '@/components/global/time.vue';
 import { type Mission } from '../missionList';
 import { computed } from 'vue';
-import { TimeValue } from '@/supportAbility/customDate/translateTime';
     const {mission} = defineProps<{mission:Mission}>()
     //显示任务剩余时间 
     const timeDistance = computed(()=>{
@@ -35,13 +50,6 @@ import { TimeValue } from '@/supportAbility/customDate/translateTime';
         str += minute + "分钟"
         return str
     })
-    //获取时间值对象
-    function getTimeValue(time:number):TimeValue{
-        return {
-            rule:"date",
-            number:time
-        }
-    }
 </script>
 
 <style scoped lang='scss'>

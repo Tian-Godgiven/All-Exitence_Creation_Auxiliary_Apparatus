@@ -7,6 +7,7 @@ import { createDirByPath, ifExists, tryReadFileAtPath, writeFileAtPath } from "@
 import { showQuickInfo } from "@/api/showQuickInfo"
 import { showAlert } from "@/hooks/alert"
 import { nowProjectInfo } from "@/hooks/project/projectData"
+import { getEqualToMinUnit } from "./translateTime"
 
 //注册自定义时间表达式
 export const customTimeItem:SupportAbilitySignUpItem = {
@@ -115,13 +116,13 @@ export function checkCustomTimeRule(rule:CustomTimeRule,position:"global"|"proje
         return false
     }
     //单位数量不得为0
-    const units = rule.units
-    if(units.length == 0){
+    const unitList = rule.units
+    if(unitList.length == 0){
         showQuickInfo("时间表达式的单位数量不得为0")
         return false
     }
-    for(let i = 0;i<units.length;i++){
-        const unit = units[i]
+    for(let i = 0;i<unitList.length;i++){
+        const unit = unitList[i]
         //所有单位的单位名都存在
         if(unit.name.trim() == ""){
             showQuickInfo(`第${i+1}个单位的名称无效，单位名称不得为空`)
@@ -129,7 +130,7 @@ export function checkCustomTimeRule(rule:CustomTimeRule,position:"global"|"proje
         }
         //所有单位的目标都存在或为false
         const target = unit.target
-        const ifTarget = units.find((unit)=>unit.name == target)
+        const ifTarget = unitList.find((unit)=>unit.name == target)
         if(target != false && !ifTarget){
             showQuickInfo(`第${i+1}个单位的目标无效，目标不存在于当前规则中`)
             return false
@@ -138,7 +139,14 @@ export function checkCustomTimeRule(rule:CustomTimeRule,position:"global"|"proje
         if(target != false && unit.equal <=0){
             showQuickInfo(`第${i+1}个单位的基准值必须大于0`)
             return false
+        } 
+        //要求所有单位最终都可以转换为最小单位
+        const ifEqualToMin = getEqualToMinUnit(unitList,unit,1)
+        if(!ifEqualToMin){
+            showQuickInfo(`${unit.name}无法转换为最小单位，可能存在递归调用。`)
+            return false
         }
+        
     }
     return true
         
@@ -211,7 +219,21 @@ export function sortRuleUnits(units: CustomTimeRuleUnit[]): CustomTimeRuleUnit[]
     };
 
     const sortedOtherUnits = otherUnits.sort(compare);
-    console.log(sortedOtherUnits)
     // 返回组合后的排序数组：先是其他单位（按 equal 排序），最后是 target 为 false 的单位
+    console.log(sortedOtherUnits,falseUnits)
     return [...sortedOtherUnits, ...falseUnits];
+}
+
+//通过key获取指定的自定义时间规则
+export function getCustomTimeRuleByKey(key:string){
+    //先在全局找
+    let rule = globalCustomTime.find((rule)=>rule.__key == key)
+    if(rule)return rule
+    //再在项目内找
+    rule = projectCustomTime.find((rule)=>rule.__key == key)
+    if(rule)return rule
+    else{
+        console.error("未能找到指定的自定义时间规则，可能已经删除或不存在")
+        return false
+    }
 }

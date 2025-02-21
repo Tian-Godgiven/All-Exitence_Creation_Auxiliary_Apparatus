@@ -7,6 +7,7 @@ import selectBonusVue from "@/components/all-exitence/status/statusBonusInput/se
 import chooseBonusVue from "@/components/all-exitence/status/statusBonusInput/chooseBonus.vue";
 import relationBonusVue from "@/components/all-exitence/status/statusBonusInput/relationBonus.vue";
 import tagsBonusVue from "@/components/all-exitence/status/statusBonusInput/tagsBonus.vue";
+import DateBonusVue from "@/components/all-exitence/status/statusBonusInput/dateBonus.vue";
 export let statusBonusInputList:{[key:string]:any} = {
 	"range":rangeBonusVue,
 	"select":selectBonusVue,
@@ -16,5 +17,6 @@ export let statusBonusInputList:{[key:string]:any} = {
 	"radio":radioBonusVue,
 	"relation":relationBonusVue,
 	"status":childStatusBonusVue,
-	"tags":tagsBonusVue
+	"tags":tagsBonusVue,
+	"date":DateBonusVue,
 }

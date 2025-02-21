@@ -8,8 +8,22 @@
                 :mode="'disabled'">
             </TextArea>
             <div class="times">
-                <Time class="time" :value="timeValue" rule="date" unit-from="year" unit-end="day" linker="/" :show-unit="false"></Time>
-                <Time class="time" :value="timeValue" rule="date" unit-from="hour" unit-end="minute" linker=":" :show-unit="false"></Time>
+                <Time class="time" 
+                    :value="quickDraftItem.time" 
+                    rule="date" 
+                    unit-from="年" 
+                    unit-end="日" 
+                    linker="/" 
+                    :show-unit="false">
+                </Time>
+                <Time class="time" 
+                    :value="quickDraftItem.time" 
+                    rule="date" 
+                    unit-from="时" 
+                    unit-end="分" 
+                    linker=":" 
+                    :show-unit="false">
+                </Time>
             </div>
         </div>      
         
@@ -31,7 +45,7 @@
 </template>
 
 <script setup lang='ts'>
-    import { computed, onMounted, onUnmounted, ref } from 'vue';
+    import { onMounted, onUnmounted, ref } from 'vue';
     import { deleteQuickDraftItem, QuickDraftItem, showFocusingPage } from '../quickDraft';
     import TextArea from '@/components/other/textArea/textArea.vue';
     import Time from '@/components/global/time.vue';
@@ -41,12 +55,6 @@ import { DragState, getCombine } from '@/api/dragToSort';
 
 import Indicator from '@/components/other/indicator.vue';
     const {quickDraftItem,manageMode} = defineProps<{quickDraftItem:QuickDraftItem,manageMode:boolean}>()
-    const timeValue = computed(()=>{
-        return {
-            number:quickDraftItem.time,
-            rule:"date"
-        }
-    }) 
     //长按显示控制面板
     function longTap(){
         showControlPanel([{
