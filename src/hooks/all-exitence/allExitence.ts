@@ -7,6 +7,7 @@ import { Group } from "@/class/Group";
 import { nanoid } from "nanoid";
 import { addExitenceInputSuggestion, changeExitenceInputSuggestion, deleteExitenceInputSuggestion } from "../inputSupport/inputSuggestion/inputSuggestion";
 import { showAlert } from "../alert";
+import { filterExitenceByRule } from "../expression/groupRule";
 
 //当前万物
 export const nowAllExitence = reactive<{types:Type[]}>({types:[]})
@@ -167,13 +168,9 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
     // 获取key对应的事物的属性
     export function getExitenceStatusByKey(statusKey:any,allStatus:any[],allTypeStatus?:any[]){
         if(!statusKey)return false
-        const status = allStatus.find((tmp:Status)=>{
-            if(tmp.__key == statusKey){
-                return tmp
-            }
-        })
+        const status = allStatus.find((tmp:Status)=>tmp.__key == statusKey)
         if(!status){return false}
-        //只需要事物属性的值或key时，无需传入allTypeStatus
+        //只需要事物属性的内容时，无需传入allTypeStatus
         if(!allTypeStatus){
             return status
         }
@@ -306,4 +303,14 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
             }
         })
     }
-    
+    // 获取指定分类中，满足分组规则的事物
+    export function getExitenceInGroup(type:Type,group:Group){
+        //遍历所有事物，获取满足条件的部分
+        const tmp = type.exitence.reduce((arr:any[],exitence:any)=>{
+            if(filterExitenceByRule(exitence,group.rules)){
+                arr.push(exitence)
+            }
+            return arr
+        },[])
+        return tmp
+    }

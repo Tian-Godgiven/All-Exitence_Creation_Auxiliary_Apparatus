@@ -55,12 +55,8 @@
                     showQuickInfo("关联属性的名称不可重复")
                     return false
                 }
-                //将这个属性添加到关联体当中,不需要其中的key
-                relationSource[status.name] = {
-                    value:status.value,
-                    valueType:status.valueType,
-                    setting:status.setting
-                }
+                //将这个属性添加到关联体当中
+                relationSource[status.name] = status
             }
         })
     }

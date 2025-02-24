@@ -1,7 +1,7 @@
 <template>
     <div>
         <statusValueVue class="unitStatus" v-for="(value,key) in source" 
-            :key="Symbol()"
+            :key="unitStatus.__key"
             :status="unitStatus[key]" :typeStatus="value">
         </statusValueVue>
     </div>

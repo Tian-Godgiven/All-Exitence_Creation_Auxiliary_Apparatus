@@ -1,6 +1,6 @@
 import { addToRightPage } from "@/hooks/pages/rightPage"
 import { TextAreaContent } from "@/hooks/expression/textAreaContent"
-import { createFileToPath,  tryReadFileAtPath, writeFileAtPath } from "@/hooks/fileSysytem"
+import { tryReadFileAtPath, writeFileAtPath } from "@/hooks/fileSysytem"
 import { showPopUp } from "@/hooks/pages/popUp"
 import { reactive, ref, shallowRef, toRaw } from "vue"
 import QuickDraft from "./popUp/QuickDraft.vue"
@@ -49,7 +49,7 @@ const idleQuickDraft:QuickDraft = {
 //初始化:添加按键即可，切换项目的同时会切换至对应的暂记版
 export const nowQuickDraft = reactive<QuickDraft['items']>([])
 export const nowQuickDraftSetting = reactive<QuickDraft['setting']>(idleQuickDraft.setting)
-export async function initQuickDraft(){
+function initQuickDraft(){
     //添加右侧功能按键
     addToRightPage({
         "iconName":"quickDraft",
@@ -58,7 +58,7 @@ export async function initQuickDraft(){
     })
 }
 //保存
-export function saveQuickDraft(){
+function saveQuickDraft(){
     //保存当前聚焦对象的key
     const focusingKey = focusingItem.value?.__key ?? null
     nowQuickDraftSetting.focusingItem = focusingKey
@@ -68,13 +68,6 @@ export function saveQuickDraft(){
         items:toRaw(nowQuickDraft),
         setting:toRaw(nowQuickDraftSetting)
     })
-}
-//创建暂记版
-export async function createQuickDraft(projectPath:string){
-    //在项目的data中创建暂记版对象
-    const dataPath = projectPath+"/data"
-    const quickDraft = idleQuickDraft
-    await createFileToPath(dataPath,"quickDraft.json",JSON.stringify(quickDraft))
 }
 //切换暂记版
 export async function changeQuickDraft(projectPath:string){
@@ -96,7 +89,6 @@ export async function changeQuickDraft(projectPath:string){
         if(result)focusingItem.value = result
     }
     //加载或隐藏悬浮窗
-    console.log(setting.floatWindow)
     loadQuickDraftFloatWindow(setting.floatWindow)
 }
 

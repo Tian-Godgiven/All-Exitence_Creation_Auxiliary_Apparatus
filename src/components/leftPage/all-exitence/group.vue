@@ -87,6 +87,7 @@ import { DragState, getCombine } from '@/api/dragToSort';
 		}
 	}
 
+//拖拽功能的实现
 let cleanup = ()=>{}
 onMounted(()=>{
 	if(groupRef.value == null || handlerRef.value==null)return;

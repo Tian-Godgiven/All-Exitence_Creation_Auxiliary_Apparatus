@@ -24,7 +24,8 @@ export const buttonIconList:Record<string,string>= {
     "manage":"manageMode.svg",//管理模式
     "backMain":"backMain.svg",
     "collapse":"collapse.svg",//缩小箭头
-    "shrink":"shrink.svg"//缩小窗口
+    "shrink":"shrink.svg",//缩小窗口
+    "timeLine":"",//时间线←
 }
 
 

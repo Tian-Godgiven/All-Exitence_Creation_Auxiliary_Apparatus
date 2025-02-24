@@ -6,7 +6,10 @@
 
 <script setup lang='ts'>
     import { ref } from 'vue';
-
+    //点击到指定对象跳转or显示到该位置
+    function clickItem(){
+        
+    }
 </script>
 
 <style scoped lang='scss'>

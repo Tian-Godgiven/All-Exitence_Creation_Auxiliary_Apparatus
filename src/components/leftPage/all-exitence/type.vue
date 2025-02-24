@@ -21,7 +21,7 @@
 			<groupVue v-for="group in type.groups" 
 				:key="group.__key" 
 				:group="group" 
-				:groupExitence="getGroupExitence(group)">
+				:groupExitence="getExitenceInGroup(type,group)">
 			</groupVue>
 
 			<div v-for="exitence,index in showExitence">
@@ -43,11 +43,10 @@
 import groupVue from "./group.vue"
 import exitenceVue from "./exitence.vue"
 import { computed, provide, inject,ref, onMounted, onUnmounted, Ref } from "vue";
-import { createExitence,createGroupPopUp, deleteTypePopUp, updateTypePopUp } from "@/hooks/all-exitence/allExitence";
+import { createExitence,createGroupPopUp, deleteTypePopUp, getExitenceInGroup, updateTypePopUp } from "@/hooks/all-exitence/allExitence";
 import { showExitenceOnMain } from "@/hooks/pages/mainPage/showOnMain";
 import { hidePage } from "@/hooks/pages/pageChange";
 import { showControlPanel } from "@/hooks/controlPanel";
-import { Group } from "@/class/Group";
 import { filterExitenceByRule } from "@/hooks/expression/groupRule";
 import { Type } from "@/class/Type";
 import longTapContainerVue from "../../other/longTapContainer.vue";
@@ -67,17 +66,6 @@ import { DragState, getCombine } from '@/api/dragToSort';
 
 	//管理模式：不显示分组内的事物，并且显示所有事物
 	const manageMode:Ref<boolean> = inject("manageMode",ref(false))
-	//获取分组中的事物
-	function getGroupExitence(group:Group){
-		//遍历所有事物，获取满足条件的部分
-		const tmp = type.exitence.reduce((arr:any[],exitence:any)=>{
-			if(filterExitenceByRule(exitence,group.rules)){
-				arr.push(exitence)
-			}
-			return arr
-		},[])
-		return tmp
-	}
 	// 没有分组的事物
 	let noGroupExitence = computed(()=>{
 		//让所有事物分别遍历一次分组规则，返回没有满足任何一个规则的事物数组
