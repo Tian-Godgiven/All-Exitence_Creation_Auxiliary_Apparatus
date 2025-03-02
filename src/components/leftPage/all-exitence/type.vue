@@ -12,7 +12,7 @@
 				<div ref="handlerRef">拖动</div>
 			</div>
 			
-			<longTapContainerVue class="titleName" :disabled="manageMode" @longtap = "longtap" @click="swicthExpending()">
+			<longTapContainerVue class="titleName" :disabled="manageMode" @longtap = "longtap" @click="switchExpending()">
 				<div class="text">{{type.name }}</div>
 			</longTapContainerVue>
 		</div>
@@ -43,11 +43,10 @@
 import groupVue from "./group.vue"
 import exitenceVue from "./exitence.vue"
 import { computed, provide, inject,ref, onMounted, onUnmounted, Ref } from "vue";
-import { createExitence,createGroupPopUp, deleteTypePopUp, getExitenceInGroup, updateTypePopUp } from "@/hooks/all-exitence/allExitence";
+import { createExitence,createGroupPopUp, deleteTypePopUp, getExitenceInGroup, getNoGroupExitence, updateTypePopUp } from "@/hooks/all-exitence/allExitence";
 import { showExitenceOnMain } from "@/hooks/pages/mainPage/showOnMain";
 import { hidePage } from "@/hooks/pages/pageChange";
 import { showControlPanel } from "@/hooks/controlPanel";
-import { filterExitenceByRule } from "@/hooks/expression/groupRule";
 import { Type } from "@/class/Type";
 import longTapContainerVue from "../../other/longTapContainer.vue";
 import indicatorVue from '@/components/other/indicator.vue';
@@ -60,7 +59,7 @@ import { DragState, getCombine } from '@/api/dragToSort';
 	const expending = computed(()=>{
 		return type.expending
 	})
-	function swicthExpending(){
+	function switchExpending(){
 		type.expending = !expending.value
 	}
 
@@ -68,16 +67,7 @@ import { DragState, getCombine } from '@/api/dragToSort';
 	const manageMode:Ref<boolean> = inject("manageMode",ref(false))
 	// 没有分组的事物
 	let noGroupExitence = computed(()=>{
-		//让所有事物分别遍历一次分组规则，返回没有满足任何一个规则的事物数组
-		const tmp = type.exitence.filter((exitence:any)=>{
-			for(let group of type.groups){
-				//满足任意一个分组的事物不要
-				if(filterExitenceByRule(exitence,group.rules)){
-					return false
-				}
-			}
-			return true
-		})
+		const tmp = getNoGroupExitence(type)
 		return tmp
 	})
 	//显示在页面上的事物

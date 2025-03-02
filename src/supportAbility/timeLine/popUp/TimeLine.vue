@@ -16,7 +16,7 @@
     import Line from '../components/Line.vue'
 import { nowAllTimeLine, showCreateTimeLinePopUp } from '../timeLine';
 
-    //新建弹窗
+    //显示新建弹窗
     function createNew(){
         showCreateTimeLinePopUp()
     }

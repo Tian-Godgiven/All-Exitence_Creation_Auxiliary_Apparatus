@@ -9,10 +9,10 @@ import controlPanelVue from '@/popUps/controlPanel.vue';
 import editTypeVue from '@/popUps/all-exitence/editType.vue';
 import editGroupVue from '@/popUps/all-exitence/editGroup.vue';
 import setExitenceVue from '@/popUps/all-exitence/setExitence.vue';
+import ChooseInAllExitence from '@/popUps/all-exitence/ChooseInAllExitence.vue';
 
 // 用于显示不同Vue组件的弹窗
 export let popUpVueList:{[key:string]:any} = {
-
 	"showAlert":alertVue,
 	"showControlPanel":controlPanelVue,
 
@@ -36,5 +36,5 @@ export let popUpVueList:{[key:string]:any} = {
 	"createStatus":editStatusVue,
 	"updateStatus":editStatusVue,
 
-
+	"chooseInAllExitence":ChooseInAllExitence,
 }

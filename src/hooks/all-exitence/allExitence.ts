@@ -306,11 +306,29 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
     // 获取指定分类中，满足分组规则的事物
     export function getExitenceInGroup(type:Type,group:Group){
         //遍历所有事物，获取满足条件的部分
-        const tmp = type.exitence.reduce((arr:any[],exitence:any)=>{
+        const tmp = type.exitence.reduce((arr:Exitence[],exitence:Exitence)=>{
             if(filterExitenceByRule(exitence,group.rules)){
                 arr.push(exitence)
             }
             return arr
         },[])
         return tmp
+    }
+    // 获取指定分类中，没有满足任何分组规则的事物
+    export function getNoGroupExitence(type:Type,groups?:Group[]){
+        if(!groups){
+            groups = type.groups
+        }
+        //让所有事物分别遍历一次分组规则，返回没有满足任何一个规则的事物数组
+		const tmp = type.exitence.filter((exitence)=>{
+            for(let i=0;i<groups.length;i++){
+                const group = groups[i]
+                //满足任意一个分组的事物不要
+				if(filterExitenceByRule(exitence,group.rules)){
+					return false
+				}
+            }
+			return true
+		})
+		return tmp
     }

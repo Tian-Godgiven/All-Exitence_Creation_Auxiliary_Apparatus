@@ -26,7 +26,8 @@ export function changeNowAllArticles(newAllArticles:any){
     export function addArticle(chapter:Chapter){
         //继承章节的from
         const from = [...chapter.from,chapter.__key]
-        const newArticle:Article = new Article("","",from,nanoid())
+        const now = Date.now()
+        const newArticle:Article = new Article("","",from,nanoid(),now,now)
         chapter.articles.push(newArticle)
         return newArticle
     }
@@ -131,4 +132,42 @@ export function changeNowAllArticles(newAllArticles:any){
                 chapter.name = newName
             }
         })
+    }
+
+    //给出某个章节或文章的from，找到其父章节
+    export function getParentChapter(from:string[]){
+        //在最外层
+        if(from.length == 0){
+            //返回项目总文本
+            return nowAllArticles
+        }
+        //遍历from获取其父章节
+        let tmp_parent = nowAllArticles
+        from.forEach((key)=>{
+            const tmp = tmp_parent.chapters.find((chapter)=>{
+                chapter.__key == key
+            })
+            //替换当前父章节
+            if(tmp){
+                tmp_parent = tmp
+            }
+            else{
+                showAlert({
+                    info:"无法找到目标章节，或许已经删除",
+                    confirm:()=>{}
+                })
+                return false
+            }
+        })
+    }
+
+    //通过from和key找到某个chapter
+    export function getChapterByKey(from:string[],key:string|null){
+        //寻找父章节
+        const parent = getParentChapter(from)
+        //返回该chapter
+        if(!parent){return false}
+        const tmp = parent.chapters.find((chapter)=>chapter.__key == key)
+        if(!tmp)return false;
+        return tmp
     }

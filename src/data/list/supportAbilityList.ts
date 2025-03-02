@@ -5,6 +5,7 @@ import { customTimeItem } from "@/supportAbility/customTime/customTime";
 import { initGlobalInputSuggestion, saveGlobalInputSuggestion } from "@/supportAbility/inputSuggestion/globalInputSuggestion";
 import { missionListItem } from "@/supportAbility/missionList/missionList";
 import { quickDraftItem } from "@/supportAbility/quickDraft/quickDraft";
+import { timeLineSignUpItem } from "@/supportAbility/timeLine/timeLine";
 
 export type SupportAbilitySignUpItem = {
     name:string,
@@ -34,5 +35,6 @@ export const supportAbilityList:SupportAbilitySignUpItem[] = [
     },
     missionListItem,
     quickDraftItem,
-    customTimeItem
+    customTimeItem,
+    timeLineSignUpItem,
 ]
