@@ -37,7 +37,7 @@ import { computed, ref } from 'vue';
             buttons:null,
             mask:true,
             props:{
-                targetType:"group",
+                targetType:"exitence",
                 chooseRange:"all"
             },
             returnValue:(targetList)=>{
