@@ -58,7 +58,7 @@
     import Button from '@/components/global/button.vue';
     import { getTimeRule, showTimeSelector, TimeLinker } from '@/supportAbility/customTime/translateTime';
 import { ElOption, ElSelect } from 'element-plus';
-import Status from '@/interfaces/exitenceStatus';
+import Status from '@/interfaces/Status';
 import { showQuickInfo } from '@/api/showQuickInfo';
 import { TimeRule } from '@/supportAbility/customTime/customTime';
     //时间属性

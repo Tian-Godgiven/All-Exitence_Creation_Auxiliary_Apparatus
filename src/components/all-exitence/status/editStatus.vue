@@ -38,11 +38,11 @@
 
 <script setup lang="ts" name=""> 
 	import { inject, ref, computed, provide } from 'vue'; 
-	import { statusValueTypeList } from '@/data/list/statusValueList';
+	import { statusValueTypeList } from '@/static/list/statusValueList';
 	import settingBoxVue from '../setting/settingBox.vue';
-	import { statusSettingList } from "@/data/list/settingList/statusSettingList";
+	import { statusSettingList } from "@/static/list/settingList/statusSettingList";
 	import statusValueVue from '../status/statusValue/statusValue.vue';
-	import { statusBonusInputList } from '@/data/list/statusBonusInputList';
+	import { statusBonusInputList } from '@/static/list/statusBonusInputList';
 	import statusNameVue from './statusName.vue';
 	import { showQuickInfo } from '@/api/showQuickInfo';
 	import { ElOption, ElSelect } from 'element-plus';

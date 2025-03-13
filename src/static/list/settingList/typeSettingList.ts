@@ -1,5 +1,5 @@
 import { Type } from "@/class/Type"
-import Status from "@/interfaces/exitenceStatus"
+import Status from "@/interfaces/Status"
 import { SettingOption } from "@/interfaces/SettingOption"
 
 // 属性设置的内容项表

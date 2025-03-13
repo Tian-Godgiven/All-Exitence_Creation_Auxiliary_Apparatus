@@ -1,26 +1,19 @@
 <template>
     <div class="button" @click.stop="clickButton($event)" :name="name">
-        <img v-if="icon" class="buttonIcon" :src="src" :alt="name">
+        <IconVue v-if="icon" class="buttonIcon" :icon="icon" :name="name"></IconVue>
         <span v-else>{{ name }}</span>
         <slot></slot>
     </div>
 </template>
 
 <script setup lang='ts'>
-    import { ButtonIcon, buttonIconList } from '@/data/list/buttonIconList';
-import { computed } from 'vue';
+    import { Icon} from '@/static/list/iconList';
+import IconVue from './Icon.vue';
 
-    const {icon=null,name} = defineProps<{icon?:ButtonIcon|null,name:string}>()
+    const {icon=null,name} = defineProps<{icon?:Icon|null,name:string}>()
     const emits = defineEmits(["click"])
     
-    //获取图标
-    let src = computed(()=>{
-        if(icon){
-            const iconImg = buttonIconList[icon]
-            const img = "../../static/icon/" + iconImg
-            return new URL(img,import.meta.url).href
-        }
-    })
+    
 
     //触发点击事件
     function clickButton(event:Event){
@@ -33,7 +26,6 @@ import { computed } from 'vue';
         .buttonIcon{
             width: 100%;
             height: 100%;
-            object-fit: contain;
         }
     }
 </style>

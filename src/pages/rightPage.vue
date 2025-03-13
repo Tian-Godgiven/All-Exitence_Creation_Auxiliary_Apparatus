@@ -25,7 +25,7 @@
 import { rightMaxWidth, rightShowWidth, rotateDegree, switchRight } from '@/hooks/pages/pageChange';
 import { computed } from 'vue';
 import buttonVue from '@/components/global/button.vue';
-import { rightAbilityList } from '@/data/list/rightAbilityList';
+import { rightAbilityList } from '@/static/list/rightAbilityList';
 	// 由于右侧页面是从右往左的，因此实际设定的是该页面的right属性
 	let rightWidth = computed(()=>{
 		return (rightShowWidth.value - rightMaxWidth) +"px"

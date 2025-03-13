@@ -7,7 +7,7 @@ export class Group{
 		public name:string,
 		public rules:string[],
 		public setting:{},
-		public __key:any = nanoid(),
+		public __key:string = nanoid(),
 		public expending:boolean = true
 	){}
 	

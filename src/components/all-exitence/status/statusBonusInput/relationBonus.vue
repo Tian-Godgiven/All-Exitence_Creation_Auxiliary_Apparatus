@@ -24,9 +24,9 @@
 <script setup lang='ts'>
     import { showQuickInfo } from '@/api/showQuickInfo';
     import { showPopUp } from '@/hooks/pages/popUp';
-    import Status from '@/interfaces/exitenceStatus';
+    import Status from '@/interfaces/Status';
     import { reactive, inject } from 'vue';
-    import { statusValueTypeList } from '@/data/list/statusValueList';
+    import { statusValueTypeList } from '@/static/list/statusValueList';
 
     const status = inject<any>('status');
     //初始存在一个空值

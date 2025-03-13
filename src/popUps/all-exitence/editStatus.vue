@@ -8,7 +8,7 @@
 
 <script setup lang="ts" name=""> 
 	import { provide, toRaw,reactive } from 'vue'; 
-	import Status from '@/interfaces/exitenceStatus';
+	import Status from '@/interfaces/Status';
 	import editStatusVue from '@/components/all-exitence/status/editStatus.vue';
 	import { closePopUp } from '@/hooks/pages/popUp';
     import { cloneDeep } from 'lodash';

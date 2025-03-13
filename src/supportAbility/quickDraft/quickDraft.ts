@@ -7,7 +7,7 @@ import QuickDraft from "./popUp/QuickDraft.vue"
 import { nanoid } from "nanoid"
 import FloatWindow from "./popUp/FloatWindow.vue"
 import { addFloatWindow, deleteFloatWindow} from "@/hooks/pages/floatWindow"
-import { SupportAbilitySignUpItem } from "@/data/list/supportAbilityList"
+import { SupportAbilitySignUpItem } from "@/static/list/supportAbilityList"
 import { nowProjectInfo } from "@/hooks/project/projectData"
 
 //注册对象

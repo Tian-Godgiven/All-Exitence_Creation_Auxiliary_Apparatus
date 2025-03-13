@@ -8,7 +8,7 @@
 
 <script setup lang="ts" name=""> 
 	import { provide, reactive, toRaw } from 'vue'; 
-	import Status from '@/interfaces/exitenceStatus';
+	import Status from '@/interfaces/Status';
 	import editStatusVue from '../status/editStatus.vue';
 	// 新增属性
 	let newStatus = reactive<Status>({

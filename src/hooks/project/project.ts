@@ -6,7 +6,7 @@ import { nowProjectInfo, nowProjectPath, saveProjectInfo, syncProject } from "./
 import { showAlert } from "../alert";
 import { hidePage } from "../pages/pageChange";
 import { showInitialAppOnMain, showInitialProjectOnMain, showOnMain, showTargetOnMain } from "../pages/mainPage/showOnMain";
-import { supportAbilityList } from "@/data/list/supportAbilityList";
+import { supportAbilityList } from "@/static/list/supportAbilityList";
 
 export type ProjectLastTarget = 
     {from:string,targetKey:string,type:"exitence"}|//事物

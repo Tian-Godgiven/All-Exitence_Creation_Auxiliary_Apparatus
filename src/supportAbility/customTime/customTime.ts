@@ -1,4 +1,4 @@
-import { SupportAbilitySignUpItem } from "@/data/list/supportAbilityList"
+import { SupportAbilitySignUpItem } from "@/static/list/supportAbilityList"
 import { showPopUp } from "@/hooks/pages/popUp"
 import { reactive, ref, shallowRef, toRaw } from "vue"
 import Manager from "./popUp/Manager.vue"
@@ -48,7 +48,6 @@ async function initCustomTime(){
     //尝试读取全局时间表达式
     const tmp = await tryReadFileAtPath("supportAbility/customTime","customTime.json",true,[])
     globalCustomTime.length = 0
-    console.log(tmp)
     Object.assign(globalCustomTime,tmp)
     //注册右侧按钮
     addToRightPage({

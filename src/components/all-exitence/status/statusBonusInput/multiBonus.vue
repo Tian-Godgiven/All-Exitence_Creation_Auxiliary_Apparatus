@@ -47,7 +47,7 @@ import { showQuickInfo } from '@/api/showQuickInfo';
 import multiStatusExpressionVue from '@/popUps/expression/multiStatusExpression.vue';
 import chooseFromListVue from '@/components/other/chooseFromList.vue';
 import inputVue from '@/components/other/input/downLineInput.vue'
-import { statusValueTypeList } from '@/data/list/statusValueList';
+import { statusValueTypeList } from '@/static/list/statusValueList';
 import { multiStatusPart } from '@/hooks/expression/multiStatusValue';
 	//不同按键对应的各个弹窗对象
 	const multiBonusPopUpList:{[key:string]:any} = {

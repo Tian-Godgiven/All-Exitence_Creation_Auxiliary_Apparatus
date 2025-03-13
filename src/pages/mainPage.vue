@@ -73,10 +73,10 @@ import { showOnMain } from '@/hooks/pages/mainPage/showOnMain';
 import { computed, ref, watch } from 'vue';
 import { nowProjectInfo } from '@/hooks/project/projectData';
 import { saveAll } from '@/hooks/project/saveProject';
-import { ButtonIcon } from '@/data/list/buttonIconList';
+import { Icon } from '@/static/list/iconList';
 
 // 功能按键
-	const buttons:{icon:ButtonIcon,name:string,click:()=>any}[] = [
+	const buttons:{icon:Icon,name:string,click:()=>any}[] = [
 		{
 			name:"手动保存",
 			icon:"handSave",

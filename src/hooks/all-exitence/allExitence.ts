@@ -1,13 +1,14 @@
-import { Exitence } from "@/class/Exitence"
+import { Exitence, ExitenceStatus } from "@/class/Exitence"
 import { Type } from "@/class/Type"
 import { showPopUp } from "../pages/popUp";
 import { reactive } from "vue";
-import Status from "@/interfaces/exitenceStatus";
+import Status from "@/interfaces/Status";
 import { Group } from "@/class/Group";
 import { nanoid } from "nanoid";
 import { addExitenceInputSuggestion, changeExitenceInputSuggestion, deleteExitenceInputSuggestion } from "../inputSupport/inputSuggestion/inputSuggestion";
 import { showAlert } from "../alert";
 import { filterExitenceByRule } from "../expression/groupRule";
+import { isArray } from "lodash";
 
 //当前万物
 export const nowAllExitence = reactive<{types:Type[]}>({types:[]})
@@ -40,11 +41,18 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
     }
 
     // 获取key对应的分类的属性
-    export function getTypeStatusByKey(statusKey:any,allTypeStatus:[]):Status | undefined{
+    export function getTypeStatusByKey(statusKey:string,allTypeStatus:Status[]):Status | undefined{
         return allTypeStatus.find((tmp:Status)=>{
             if(tmp.__key == statusKey){
                 return tmp
             }
+        })
+    }
+
+    // 获取key对应的分类对象
+    export function getTypeByKey(typeKey:string){
+        return nowAllExitence.types.find((type)=>{
+            type.__key == typeKey
         })
     }
 
@@ -165,34 +173,41 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
         
     }
 
-    // 获取key对应的事物的属性
-    export function getExitenceStatusByKey(statusKey:any,allStatus:any[],allTypeStatus?:any[]){
-        if(!statusKey)return false
-        const status = allStatus.find((tmp:Status)=>tmp.__key == statusKey)
+    // 获取key对应的事物的属性,这里是函数重载决定返回值类型
+    export function getExitenceStatusByKey(statusKey: string, allStatus: ExitenceStatus[]): ExitenceStatus | false;
+    export function getExitenceStatusByKey(statusKey: string, allStatus: ExitenceStatus[], allTypeStatus: Status[]): Status | false;
+    export function getExitenceStatusByKey(statusKey: string, allStatus: ExitenceStatus[], allTypeStatus?:Status[]){
+        const status = allStatus.find((tmp)=>tmp.__key == statusKey)
         if(!status){return false}
         //只需要事物属性的内容时，无需传入allTypeStatus
         if(!allTypeStatus){
             return status
         }
-        const typeStatus = allTypeStatus.find((tmp:Status)=>{
+
+        //如果传入了分类属性，则返回完整属性
+        const typeStatus = allTypeStatus.find((tmp)=>{
             if(tmp.__key == statusKey){
                 return tmp
             }
         })
-        //优先使用两者覆盖后的setting
-        const statusSetting = (function(){
-            if(typeStatus){
-                return {...typeStatus.setting,...status?.setting}
-            }
-        })()
+        //没有找到分类属性，则还是返回事物属性
+        if(!typeStatus)return status
 
-        return {
-            name:status?.name || typeStatus?.name || null,
+        //使用两者覆盖后的setting
+        const statusSetting = (()=>{
+            return {...typeStatus.setting,...status?.setting}
+        })() 
+        //返回完整的属性
+        const fullStatus:Status =  {
+            name:status?.name || typeStatus.name,
             value:("value" in status)? status.value : typeStatus.value,
             valueType:status["valueType"] || typeStatus["valueType"],
-            setting:statusSetting
+            setting:statusSetting,
+            __key:statusKey
         }
+        return fullStatus
     }
+
 
     // 弹出弹窗，选择是否删除指定事物
     export function deleteExitencePopUp(type:Type,exitence:Exitence){
@@ -227,6 +242,7 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
         const syncStatusKey = exitence.setting.syncWithName
         if(syncStatusKey){
             const status = getExitenceStatusByKey(syncStatusKey,exitence.status)
+            if(!status)return false;
             status.value = newName
         }
     }
@@ -234,6 +250,30 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
     export function changeExitenceNickName(exitence:Exitence,newNickName:string[]){
         //改变输入建议中的别名
         changeExitenceInputSuggestion(exitence.__key,"nickName",newNickName)
+    }
+
+    /**
+     * 
+     * @param exitence 
+     * @param status 允许传入一个数组，只有在事物具备其中所有属性时才会返回真 
+     * @returns 返回布尔值
+     */
+    export function ifExitenceHaveStatus(exitence:Exitence,statusList:Status[]|Status){
+        //是数组
+        if(isArray(statusList)){
+            //遍历列表,要求事物具备其中每一个属性
+            return statusList.every((status)=>{
+                //若事物的任一属性
+                return exitence.status.some((tmp)=>{
+                    return tmp.__key == status.__key
+                })
+            })
+        }
+        //不是数组
+        return exitence.status.some((tmp)=>{
+            return tmp.__key == statusList.__key
+        })
+        
     }
 
 
@@ -304,9 +344,9 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
         })
     }
     // 获取指定分类中，满足分组规则的事物
-    export function getExitenceInGroup(type:Type,group:Group){
+    export function getExitenceInGroup(exitenceList:Exitence[],group:Group){
         //遍历所有事物，获取满足条件的部分
-        const tmp = type.exitence.reduce((arr:Exitence[],exitence:Exitence)=>{
+        const tmp = exitenceList.reduce((arr:Exitence[],exitence)=>{
             if(filterExitenceByRule(exitence,group.rules)){
                 arr.push(exitence)
             }
@@ -315,12 +355,9 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
         return tmp
     }
     // 获取指定分类中，没有满足任何分组规则的事物
-    export function getNoGroupExitence(type:Type,groups?:Group[]){
-        if(!groups){
-            groups = type.groups
-        }
+    export function getNoGroupExitence(exitenceList:Exitence[],groups:Group[]){
         //让所有事物分别遍历一次分组规则，返回没有满足任何一个规则的事物数组
-		const tmp = type.exitence.filter((exitence)=>{
+		const tmp = exitenceList.filter((exitence)=>{
             for(let i=0;i<groups.length;i++){
                 const group = groups[i]
                 //满足任意一个分组的事物不要

@@ -17,7 +17,7 @@ import { inject } from 'vue';
 import statusNameVue from '../status/statusName.vue';
 import statusValueVue from '../status/statusValue/statusValue.vue';
 import { showPopUp } from '@/hooks/pages/popUp';
-import Status from '@/interfaces/exitenceStatus';
+import Status from '@/interfaces/Status';
 	let {status} = defineProps(["status"])
 	const emits = defineEmits(["deleteStatus"])
 	//删除属性

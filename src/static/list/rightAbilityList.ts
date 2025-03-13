@@ -1,11 +1,11 @@
 import { showPopUp } from "@/hooks/pages/popUp";
-import { ButtonIcon } from "./buttonIconList";
+import { Icon } from "./iconList";
 import { Ref, ref } from "vue";
 
 export type RightAbility = {
     name:string,
     click:()=>void,
-    iconName:ButtonIcon
+    iconName:Icon
 }|{
     name:string,
     click:()=>void,

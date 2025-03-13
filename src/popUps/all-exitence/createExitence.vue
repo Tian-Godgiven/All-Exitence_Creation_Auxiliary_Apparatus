@@ -34,9 +34,9 @@
     import settingBoxVue from '@/components/all-exitence/setting/settingBox.vue';
     import { addExitence, createNewExitence } from '@/hooks/all-exitence/allExitence';
     import tagsValueVue from '@/components/all-exitence/status/statusValue/tagsValue.vue';
-    import { exitenceSettingList } from '@/data/list/settingList/exitenceSettingList';
+    import { exitenceSettingList } from '@/static/list/settingList/exitenceSettingList';
 import { showQuickInfo } from '@/api/showQuickInfo';
-import Status from '@/interfaces/exitenceStatus';
+import Status from '@/interfaces/Status';
 import { nanoid } from 'nanoid';
     const {props, popUp, returnValue} = defineProps(["props","popUp","returnValue"])
     const name = ref("")

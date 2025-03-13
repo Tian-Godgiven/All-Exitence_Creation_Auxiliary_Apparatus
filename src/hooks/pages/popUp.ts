@@ -1,6 +1,6 @@
 import { reactive, ref, ShallowRef } from "vue"
 import { disableChangePage, enableChangePage } from "./pageChange"
-import { ButtonIcon } from "@/data/list/buttonIconList"
+import { Icon } from "@/static/list/iconList"
 
 export let popUpList = reactive<PopUp[]>([])
 export let maskIndex = ref(0)
@@ -27,7 +27,7 @@ export interface PopUp{
 interface Button{
 	name:string,
 	click:()=>void,
-	icon?:ButtonIcon
+	icon?:Icon
 }
 
 // 显示弹窗

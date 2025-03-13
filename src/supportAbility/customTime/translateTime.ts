@@ -450,3 +450,13 @@ export function translateTimeNumFormat(value: number, numFormat: "阿拉伯数�
         return value
     }
 }
+
+//通过key判断是否为某个时间规则
+export function ifSameTimeRule(timeRule:TimeRule,key:string){
+    if(timeRule == "date"){
+        return timeRule == key
+    }
+    else{
+        return timeRule.__key == key
+    }
+}

@@ -1,4 +1,4 @@
-import Status from "@/interfaces/exitenceStatus"
+import Status from "@/interfaces/Status"
 
 import { SettingOption } from "@/interfaces/SettingOption"
 

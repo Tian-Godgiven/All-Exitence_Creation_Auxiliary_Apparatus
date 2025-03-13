@@ -4,7 +4,7 @@ import { changeNowAllExitence } from "../all-exitence/allExitence"
 import { changeNowAllArticles } from "../all-articles/allArticles"
 import { createInputSuggestionList } from "../inputSupport/inputSuggestion/inputSuggestion"
 import { Type } from "@/class/Type"
-import { supportAbilityList } from "@/data/list/supportAbilityList"
+import { supportAbilityList } from "@/static/list/supportAbilityList"
 import { ProjectInfo } from "./project"
 
 //当前项目的文件夹路径

@@ -21,7 +21,7 @@
 			<groupVue v-for="group in type.groups" 
 				:key="group.__key" 
 				:group="group" 
-				:groupExitence="getExitenceInGroup(type,group)">
+				:groupExitence="getExitenceInGroup(type.exitence,group)">
 			</groupVue>
 
 			<div v-for="exitence,index in showExitence">
@@ -67,7 +67,7 @@ import { DragState, getCombine } from '@/api/dragToSort';
 	const manageMode:Ref<boolean> = inject("manageMode",ref(false))
 	// 没有分组的事物
 	let noGroupExitence = computed(()=>{
-		const tmp = getNoGroupExitence(type)
+		const tmp = getNoGroupExitence(type.exitence,type.groups)
 		return tmp
 	})
 	//显示在页面上的事物

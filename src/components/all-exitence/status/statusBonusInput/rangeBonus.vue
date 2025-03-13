@@ -27,7 +27,7 @@
 <script lang="ts" setup>
 import { inject, ref} from 'vue';
 import { showQuickInfo } from '@/api/showQuickInfo';
-import Status from '@/interfaces/exitenceStatus';
+import Status from '@/interfaces/Status';
 import downLineInputVue from '@/components/other/input/downLineInput.vue';
 	const status = inject<Status>('status',<any>{}); 
 	if(!status){

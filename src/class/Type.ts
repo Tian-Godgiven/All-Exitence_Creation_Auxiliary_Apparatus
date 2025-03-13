@@ -1,8 +1,7 @@
-// 【万物】/ 分类
-
+// 【万物】→分类
 import { Group } from "./Group";
 import { Exitence } from "./Exitence";
-import Status from "@/interfaces/exitenceStatus";
+import Status from "@/interfaces/Status";
 
 export class Type{
 	constructor(
@@ -11,7 +10,7 @@ export class Type{
 		public setting:{}, //分类设置
 		public groups:Group[], //分组数组
 		public exitence:Exitence[], //存在数组 
-		public __key:any,
+		public __key:string,
 		public expending:boolean = true,
 	){}
 }

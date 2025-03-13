@@ -3,7 +3,11 @@
         <!-- 选择条件对象 -->
         <div class="ruleTarget cube">
             <div class="selectTarget">
-                <ElCascader class="selector" :teleported="false" v-model="ruleTarget" :options="ruleTargetList"></ElCascader>
+                <ElCascader 
+                    class="selector" 
+                    :teleported="false" 
+                    v-model="ruleTarget" 
+                    :options="ruleTargetList"></ElCascader>
             </div>
 
             <!-- 设置 -->
@@ -41,11 +45,11 @@
 <script setup lang='ts'>
     import { inject, ref } from 'vue';
     import { ElSelect, ElOption, ElCascader } from 'element-plus';
-    import Status from '@/interfaces/exitenceStatus';
+    import Status from '@/interfaces/Status';
     import downLineInputVue from '@/components/other/input/downLineInput.vue';
-    import { exitenceSettingList } from '@/data/list/settingList/exitenceSettingList';
+    import { exitenceSettingList } from '@/static/list/settingList/exitenceSettingList';
 import { showQuickInfo } from '@/api/showQuickInfo';
-import { groupRuleSimbolList } from '@/data/list/groupRuleList';
+import { groupRuleSimbolList } from '@/static/list/groupRuleList';
 
     //分组所在的分类对象
     const type = inject<any>("type")

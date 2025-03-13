@@ -1,4 +1,4 @@
-import { RightAbility, rightAbilityList } from "../../data/list/rightAbilityList";
+import { RightAbility, rightAbilityList } from "../../static/list/rightAbilityList";
 
 //添加到右侧能力列表中
 export function addToRightPage(ability: RightAbility) {

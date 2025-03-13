@@ -1,34 +1,23 @@
 <template>
 <div class="chooseInNode">
-    <SwitchExpand v-if="item.child">
-        <template #title>
-            <div class="node">
-                <div>{{item.target.name}}</div>
-                <input @click.stop type="checkbox" :indeterminate="item.state=='mid'" v-model="item.state">
-            </div>
-        </template>
-        <template #inner>
-            <ChooseInNode v-for="child in item.child" :item="child"></ChooseInNode>
-        </template>
-    </SwitchExpand>
-
-    <div v-else class="node">
-        <div>{{item.target.name}}</div>
-        <input @click.stop type="checkbox" :indeterminate="item.state=='mid'" v-model="item.state">
-    </div>
+    <slot :item="item" :parent="parent"></slot>
+    <input @click.stop type="checkbox" :indeterminate="item.state=='mid'" v-model="item.state">
 </div>
 
 </template>
 
 <script setup lang='ts'>
-import { watch } from 'vue';
-import SwitchExpand from '../SwitchExpand.vue';
+    import { watch } from 'vue';
     type Item = {
+        name:string,
         target:any,
-        state:boolean|"mid",
-        child?:Item[]
+        state:boolean|"mid"|"disabled",
+        child?:Item[],
+        [key:string]:any,
     }
-    const {item} = defineProps<{item:Item}>()
+
+    const {item,parent} = defineProps<{item:Item,parent?:Item}>()
+    const emit = defineEmits(["choose"])
     //item状态被修改时，修改子元素的状态
     watch(()=>item.state,()=>{
         if(item.state == true){
@@ -58,17 +47,16 @@ import SwitchExpand from '../SwitchExpand.vue';
         }
     },{
         deep:true
-
     })
 </script>
 
 <style scoped lang='scss'>
 .chooseInNode{
-    .node{
-        display: flex;
-        input{
-            margin-left: auto;
-        }
+
+    display: flex;
+    input{
+        margin-left: auto;
     }
+    
 }
 </style>

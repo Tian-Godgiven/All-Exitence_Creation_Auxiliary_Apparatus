@@ -40,7 +40,7 @@ import exitenceStatusVue from '@/components/all-exitence/exitence/exitenceStatus
 import { changeExitenceName, nowAllExitence } from '@/hooks/all-exitence/allExitence';
 import draggableListVue from '../other/draggableList/draggableList.vue';	
 import { Type } from '@/class/Type';
-import Status from '@/interfaces/exitenceStatus';
+import Status from '@/interfaces/Status';
 import { showPopUp } from '@/hooks/pages/popUp';
 
 	let {exitence} = defineProps(["exitence"])

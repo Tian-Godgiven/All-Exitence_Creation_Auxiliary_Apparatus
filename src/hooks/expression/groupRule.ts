@@ -1,5 +1,5 @@
 import { Exitence } from "@/class/Exitence";
-import { groupRuleSimbolList } from "@/data/list/groupRuleList";
+import { groupRuleSimbolList } from "@/static/list/groupRuleList";
 import { getExitenceStatusByKey  } from "../all-exitence/allExitence";
 import { showQuickInfo } from "@/api/showQuickInfo";
 import { isArray } from "lodash";

@@ -14,7 +14,7 @@
     import statusNameVue from '../status/statusName.vue';
     import statusValueVue from '../status/statusValue/statusValue.vue';
     import { getTypeStatusByKey } from '@/hooks/all-exitence/allExitence';
-    import Status from '@/interfaces/exitenceStatus';
+    import Status from '@/interfaces/Status';
     import { showPopUp } from '@/hooks/pages/popUp';
 
     let {disabled,status} = defineProps(["disabled","status"])

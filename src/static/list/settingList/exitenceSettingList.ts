@@ -1,7 +1,7 @@
 import { Exitence } from "@/class/Exitence"
 import { Type } from "@/class/Type"
 import { changeExitenceName, changeExitenceNickName, getExitenceStatusByKey } from "@/hooks/all-exitence/allExitence"
-import Status from "@/interfaces/exitenceStatus"
+import Status from "@/interfaces/Status"
 import { SettingOption } from "@/interfaces/SettingOption"
 
 // 属性设置的内容项表

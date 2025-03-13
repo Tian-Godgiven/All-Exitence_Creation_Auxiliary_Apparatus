@@ -13,7 +13,7 @@
 <script setup lang='ts'>
     import { showQuickInfo } from '@/api/showQuickInfo';
 import settingBoxVue from '@/components/all-exitence/setting/settingBox.vue';
-    import { exitenceSettingList } from '@/data/list/settingList/exitenceSettingList';
+    import { exitenceSettingList } from '@/static/list/settingList/exitenceSettingList';
 import { closePopUp } from '@/hooks/pages/popUp';
 import { cloneDeep } from 'lodash';
     import { ref, provide } from 'vue';

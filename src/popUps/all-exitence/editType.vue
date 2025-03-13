@@ -56,7 +56,7 @@ import { checkTypeNameRepeat } from '@/hooks/all-exitence/allExitence';
 import { showQuickInfo } from '@/api/showQuickInfo';
 import { cloneDeep } from 'lodash';
 import settingBoxVue from '@/components/all-exitence/setting/settingBox.vue';
-import { typeSettingList } from '@/data/list/settingList/typeSettingList';
+import { typeSettingList } from '@/static/list/settingList/typeSettingList';
 import { nanoid } from 'nanoid';
 
 	const {props={},popUp,returnValue} = defineProps(["props","popUp","returnValue"])

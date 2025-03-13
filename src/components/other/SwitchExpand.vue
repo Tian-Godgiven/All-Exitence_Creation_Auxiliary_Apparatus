@@ -1,11 +1,10 @@
 <template>
 <div class="switchExpand">
-    
     <div class="title" @click="switchExpand">
         <div class="icon" :class="expand?'expand':'unexpand'"></div>
         <slot class="content" name="title"></slot>
     </div>
-    <div class="inner" ref="inner">
+    <div class="inner"  ref="inner">
         <slot name="inner"></slot>
     </div>
     

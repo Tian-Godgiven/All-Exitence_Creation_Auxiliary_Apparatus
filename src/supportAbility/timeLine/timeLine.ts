@@ -1,4 +1,4 @@
-import { SupportAbilitySignUpItem } from "@/data/list/supportAbilityList";
+import { SupportAbilitySignUpItem } from "@/static/list/supportAbilityList";
 import TimeLineVue from "./popUp/TimeLine.vue";
 import CreateTimeLineVue from "./popUp/CreateTimeLine.vue";
 import { showPopUp } from "@/hooks/pages/popUp";
@@ -9,7 +9,7 @@ import { nowProjectInfo } from "@/hooks/project/projectData";
 import { Exitence } from "@/class/Exitence";
 import { Article } from "@/class/Article";
 import { getExitenceStatusByKey, nowAllExitence } from "@/hooks/all-exitence/allExitence";
-import Status from "@/interfaces/exitenceStatus";
+import Status from "@/interfaces/Status";
 import { showAlert } from "@/hooks/alert";
 import { cloneDeep } from "lodash";
 import { getChapterByKey} from "@/hooks/all-articles/allArticles";
@@ -31,10 +31,12 @@ export const timeLineSignUpItem:SupportAbilitySignUpItem={
 export type TimeLine = {
 	targetType:"exitence",//时间线目标的类型
     key:{
-        sourceKey:[string], //其所在的分类的key
-        targetKey:string[],//该分类下的所有事物的key
+        sourceKey:string, //其所在的分类的key
+        targetKey:{
+            exitenceKey:string,//该分类下的所有选中的事物的key
+            statusKey:string //对应事物所使用的时间属性的key
+        }[],
     }[],
-	timeStatusKey:string|null,//该时间线所使用的时间属性的key
 	timeRuleKey:string|"date",//该时间线所使用的时间规则的key
 	now:number|null,//该时间线当前所处的位置，默认从最早的一个对象开始
 	unitStart?:string,//该时间线当前所显示的最大单位
@@ -47,7 +49,7 @@ export type TimeLine = {
         sourceKey:string[], //文章对象的from值
         targetKey:string[],//相同from值的文章对象的key值
     }[],
-	timeStatusKey:"createTime"|"updateTime",//要么是创建时间，要么时上次编辑时间
+	timeStatus:"createTime"|"updateTime",//要么是创建时间，要么时上次编辑时间
 	timeRuleKey:"date",//该时间线所使用的时间规则的key
 	now:number|null,//该时间线当前所处的位置，默认从最早的一个对象开始
 	unitStart?:string,//该时间线当前所显示的最大单位
@@ -159,14 +161,17 @@ function getTimeLineItems_Exitence(timeLine:TimeLine){
     //遍历keyList，依次获取所有事物
     keyList.forEach(({sourceKey,targetKey}) => {
         const typeKey = sourceKey[0]
-        const type = getTimeLineItems_checkType(typeKey,timeLine)
+        const type = getTimeLineItems_checkType(typeKey)
         if(!type){return null}
         //再寻找type中的targetKey
-        targetKey.forEach((exitenceKey)=>{
+        targetKey.forEach((item)=>{
+            //获取事物
+            const exitenceKey = item.exitenceKey
+            const statusKey = item.statusKey
             const tmpExitence = type.exitence.find((exitence)=>exitence.__key==exitenceKey)
             if(tmpExitence){
                 //获取事物组成的item
-                const tmpItem = getTimeLineItems_checkExitence(tmpExitence,timeLine)
+                const tmpItem = getTimeLineItems_checkExitence(tmpExitence,timeLine,statusKey)
                 if(tmpItem){
                     itemList.push(tmpItem)
                 }
@@ -185,14 +190,14 @@ function getTimeLineItems_Status(timeLine:TimeLine){
     const itemList:TimeLineItem[] = [] 
     //获取type的key
     const typeKey = keyList.sourceKey[0]
-    const type = getTimeLineItems_checkType(typeKey,timeLine)
+    const type = getTimeLineItems_checkType(typeKey)
     if(!type){return null}
     //获取exitence
     const exitenceKey = keyList.sourceKey[1]
     const exitence = type.exitence.find((exitence)=>exitence.__key == exitenceKey)
     if(!exitence){return null}
     //获取关联属性
-    const relationStatus:Status = getExitenceStatusByKey(keyList.targetKey,exitence.status,type.typeStatus)
+    const relationStatus = getExitenceStatusByKey(keyList.targetKey,exitence.status,type.typeStatus)
     if(!relationStatus){return null}
     //获取指定的时间子属性
     const relationSource:Record<string,Status> = relationStatus?.setting["relationSource"]
@@ -227,24 +232,23 @@ function getTimeLineItems_Article(timeLine:TimeLine){
         //找到source
         const last = sourceKey.at(-1) ?? null
         const source = getChapterByKey(sourceKey,last)
-        if(source){
-            //找到target
-            targetKey.forEach((articleKey)=>{
-                const tmpArticle = source.articles.find((article)=>article.__key==articleKey)
-                //加入itemList
-                if(tmpArticle){
-                    itemList.push({
-                        item:tmpArticle,
-                        time:tmpArticle[timeLine.timeStatusKey]
-                    })
-                }
+        if(!source)return;
+        //找到target
+        targetKey.forEach((articleKey)=>{
+            const tmpArticle = source.articles.find((article)=>article.__key==articleKey)
+            //加入itemList
+            if(!tmpArticle)return;
+            itemList.push({
+                item:tmpArticle,
+                time:tmpArticle[timeLine.timeStatus]
             })
-        }
+        })
+        
     })
     return itemList
 }
-//一个获取type并检查其指定属性的时间规则的复用函数
-function getTimeLineItems_checkType(typeKey:string,timeLine:TimeLine){
+//一个获取type的复用函数
+function getTimeLineItems_checkType(typeKey:string){
     const type = nowAllExitence.types.find((type)=>type.__key == typeKey)
     if(!type){
         showAlert({
@@ -253,24 +257,12 @@ function getTimeLineItems_checkType(typeKey:string,timeLine:TimeLine){
         })
         return null
     }
-    //然后寻找对应的事物对象key以及相应的时间属性的值
-    const timeStatus = type.typeStatus.find((status:Status)=>status.__key == timeLine.timeStatusKey)
-    if(!timeStatus){
-        showAlert({
-            info:"未能找到指定的属性，或许您已经将其删除",
-            confirm:()=>{}
-        })
-        return null
-    }
-    //要求指定的时间属性值对应的时间规则与时间轴上记录的时间规则一致
-    checkTimeRuleSame(timeStatus?.setting["timeRule"],timeLine)
     return type
 }
 //检查事物是否具备指定属性，并且时间规则是否相同的函数，返回满足条件的exitence组成的TimeLineItem
-function getTimeLineItems_checkExitence(exitence:Exitence,timeLine:TimeLine){
-    const timeStatusKey = timeLine.timeStatusKey
-    const status = getExitenceStatusByKey(timeStatusKey,exitence.status)
-    if(status && status?.setting["timeRule"] == timeLine.timeRuleKey){
+function getTimeLineItems_checkExitence(exitence:Exitence,timeLine:TimeLine,statusKey:string){
+    const status = getExitenceStatusByKey(statusKey,exitence.status)
+    if(status && status?.setting?.timeRule == timeLine.timeRuleKey){
         return {item:exitence,time:status.value}
     }
     return false

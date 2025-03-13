@@ -6,7 +6,7 @@ import MissionList from "./popUp/missionList.vue"
 import { showAlert } from "@/hooks/alert"
 import { showQuickInfo } from "@/api/showQuickInfo"
 import ShowMissionAlert from "./popUp/showMissionAlert.vue"
-import { SupportAbilitySignUpItem } from "@/data/list/supportAbilityList"
+import { SupportAbilitySignUpItem } from "@/static/list/supportAbilityList"
 
 export type Mission = { 
     title:string,//任务标题

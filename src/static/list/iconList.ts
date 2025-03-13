@@ -1,15 +1,15 @@
-export type ButtonIcon = keyof typeof buttonIconList;
+export type Icon = keyof typeof iconList;
 
-export const buttonIconList:Record<string,string>= {
-    "close":"",
-    "add":"plus.png",
-    "sub":"sub.svg",
-    "delete":"",
-    "leftArrow":"leftArrow.svg",
-    "leftArrow-disabled":"leftArrow-disabled.svg",
+export const iconList:Record<string,string>= {
+    "close":"",//叉号
+    "add":"plus.png",//加号
+    "sub":"sub.svg",//减号
+    "delete":"",//
+    "leftArrow":"leftArrow.svg",//向左箭头
+    "leftArrow-disabled":"leftArrow-disabled.svg",//禁用状态
     "rightArrow":"rightArrow.svg",
     "rightArrow-disabled":"rightArrow-disabled.svg",
-    "missionList":"missionList.png",
+    "missionList":"missionList.png",//任务列表
     "canlendar":"calendar.png",
     "handSave":"handSave.png",
     "showLeft":"showLeft.png",

@@ -6,7 +6,7 @@
 
 <script setup lang="ts" name="">
 import {computed, provide, watch } from 'vue'; 
-import { statusValueVueList } from '@/data/list/statusValueList';
+import { statusValueVueList } from '@/static/list/statusValueList';
 import { changeExitenceName, changeExitenceNickName, nowAllExitence } from '@/hooks/all-exitence/allExitence';
 import { translateToTextContent } from '@/hooks/expression/textAreaContent';
 
