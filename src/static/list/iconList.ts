@@ -2,6 +2,7 @@ export type Icon = keyof typeof iconList;
 
 export const iconList:Record<string,string>= {
     "close":"",//叉号
+    "check":"check.svg",//勾号
     "add":"plus.png",//加号
     "sub":"sub.svg",//减号
     "delete":"",//

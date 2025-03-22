@@ -1,18 +1,11 @@
 import { SupportAbilitySignUpItem } from "@/static/list/supportAbilityList";
-import TimeLineVue from "./popUp/TimeLine.vue";
-import CreateTimeLineVue from "./popUp/CreateTimeLine.vue";
+import TimeLineVue from "./TimeLine.vue";
+import CreateTimeLineVue from "./popUp/CreateTimeLine/CreateTimeLine.vue";
 import { showPopUp } from "@/hooks/pages/popUp";
 import { reactive, shallowRef, toRaw } from "vue";
 import { tryReadFileAtPath, writeFileAtPath } from "@/hooks/fileSysytem";
 import { addToRightPage } from "@/hooks/pages/rightPage";
 import { nowProjectInfo } from "@/hooks/project/projectData";
-import { Exitence } from "@/class/Exitence";
-import { Article } from "@/class/Article";
-import { getExitenceStatusByKey, nowAllExitence } from "@/hooks/all-exitence/allExitence";
-import Status from "@/interfaces/Status";
-import { showAlert } from "@/hooks/alert";
-import { cloneDeep } from "lodash";
-import { getChapterByKey} from "@/hooks/all-articles/allArticles";
 
 //注册辅助功能对象
 export const timeLineSignUpItem:SupportAbilitySignUpItem={
@@ -42,7 +35,7 @@ export type TimeLine = {
 	unitStart?:string,//该时间线当前所显示的最大单位
 	unitEnd?:string,//该时间线当前所显示的最小单位
 }|
-//对于文章类型,其具备其他限制
+//文章类型
 {
     targetType:"article",
     key:{
@@ -125,157 +118,4 @@ export function createTimeLine(timeLine:TimeLine){
     nowAllTimeLine.push(timeLine)
 }
 
-//获取时间轴上的对象，以列表形式返回
-type TimeLineItem = {
-    item:Exitence|Article|any,
-    time:number
-}
-export function getTimeLineItems(timeLine:TimeLine){
-    //根据类型找到这些对象的容器
-    const targetType = timeLine.targetType
-    let itemList:TimeLineItem[] | null = []
-    switch(targetType){
-        case "exitence":
-            itemList = getTimeLineItems_Exitence(timeLine)
-            break;
-        case "article":
-            itemList = getTimeLineItems_Article(timeLine)
-            break;
-        case "status":
-            itemList = getTimeLineItems_Status(timeLine)
-            break;
-        default:
-            console.error("不支持的时间线目标类型")
-            break;
-    }
-    return itemList
-}
-//获取事物组成的时间轴物体
-function getTimeLineItems_Exitence(timeLine:TimeLine){
-    if(timeLine.targetType!="exitence"){
-        console.error("错误传入了timeLine，目标类型不为事物")
-        return null
-    }
-    const keyList = timeLine.key
-    const itemList:TimeLineItem[] = []
-    //遍历keyList，依次获取所有事物
-    keyList.forEach(({sourceKey,targetKey}) => {
-        const typeKey = sourceKey[0]
-        const type = getTimeLineItems_checkType(typeKey)
-        if(!type){return null}
-        //再寻找type中的targetKey
-        targetKey.forEach((item)=>{
-            //获取事物
-            const exitenceKey = item.exitenceKey
-            const statusKey = item.statusKey
-            const tmpExitence = type.exitence.find((exitence)=>exitence.__key==exitenceKey)
-            if(tmpExitence){
-                //获取事物组成的item
-                const tmpItem = getTimeLineItems_checkExitence(tmpExitence,timeLine,statusKey)
-                if(tmpItem){
-                    itemList.push(tmpItem)
-                }
-            }
-        })
-    });
-    return itemList
-}
-//获取事物属性组成的时间轴物体
-function getTimeLineItems_Status(timeLine:TimeLine){
-    if(timeLine.targetType!="status"){
-        console.error("错误传入了timeLine，目标类型不为属性")
-        return null
-    }
-    const keyList = timeLine.key
-    const itemList:TimeLineItem[] = [] 
-    //获取type的key
-    const typeKey = keyList.sourceKey[0]
-    const type = getTimeLineItems_checkType(typeKey)
-    if(!type){return null}
-    //获取exitence
-    const exitenceKey = keyList.sourceKey[1]
-    const exitence = type.exitence.find((exitence)=>exitence.__key == exitenceKey)
-    if(!exitence){return null}
-    //获取关联属性
-    const relationStatus = getExitenceStatusByKey(keyList.targetKey,exitence.status,type.typeStatus)
-    if(!relationStatus){return null}
-    //获取指定的时间子属性
-    const relationSource:Record<string,Status> = relationStatus?.setting["relationSource"]
-    const timeStatus = Object.values(relationSource)?.find((status)=>
-        status.__key== timeLine.timeStatusKey
-    )
-    if(!timeStatus){return null}
-    //判断该时间子属性使用的timeRule是否一致
-    //不一致的情况下使用该时间子属性记录的timeRule
-    checkTimeRuleSame(timeStatus?.setting["timeRule"],timeLine)
-    //获取各个单元的值，剔除上面这个时间子属性
-    const unitValueList = relationStatus.value
-    unitValueList.forEach((unitValue:Record<string,any>)=>{
-        //深拷贝一份
-        const tmp = cloneDeep(unitValue)
-        //记录时间子属性的值
-        const timeValue = tmp[timeStatus.name]
-        //剔除时间子属性的键值对
-        delete tmp[timeStatus.name]
-        //添加到itemList
-        itemList.push({item:tmp,time:timeValue})
-    })
-    return itemList
-}
-//获取文章组成的时间轴物体
-function getTimeLineItems_Article(timeLine:TimeLine){
-    if(timeLine.targetType != "article")return null
-    const keyList = timeLine.key
-    const itemList:TimeLineItem[] = [] 
-    //遍历key
-    keyList.forEach(({sourceKey,targetKey})=>{
-        //找到source
-        const last = sourceKey.at(-1) ?? null
-        const source = getChapterByKey(sourceKey,last)
-        if(!source)return;
-        //找到target
-        targetKey.forEach((articleKey)=>{
-            const tmpArticle = source.articles.find((article)=>article.__key==articleKey)
-            //加入itemList
-            if(!tmpArticle)return;
-            itemList.push({
-                item:tmpArticle,
-                time:tmpArticle[timeLine.timeStatus]
-            })
-        })
-        
-    })
-    return itemList
-}
-//一个获取type的复用函数
-function getTimeLineItems_checkType(typeKey:string){
-    const type = nowAllExitence.types.find((type)=>type.__key == typeKey)
-    if(!type){
-        showAlert({
-            info:"未能找到指定的分类，或许您已经将其删除",
-            confirm:()=>{}
-        })
-        return null
-    }
-    return type
-}
-//检查事物是否具备指定属性，并且时间规则是否相同的函数，返回满足条件的exitence组成的TimeLineItem
-function getTimeLineItems_checkExitence(exitence:Exitence,timeLine:TimeLine,statusKey:string){
-    const status = getExitenceStatusByKey(statusKey,exitence.status)
-    if(status && status?.setting?.timeRule == timeLine.timeRuleKey){
-        return {item:exitence,time:status.value}
-    }
-    return false
-}
-//检查时间规则是否一致，不一致的情况下改用前者的时间规则
-function checkTimeRuleSame(timeRuleKey:string,timeLine:TimeLine){
-    if(timeRuleKey != timeLine.timeRuleKey){
-        //弹出提示，并且修改时间轴记录的时间规则
-        showAlert({
-            info:"时间属性所使用的时间规则出现变动，已自动调整为新的时间规则",
-            confirm:()=>{}
-        })
-        timeLine.timeRuleKey = timeRuleKey
-    }
-}
 

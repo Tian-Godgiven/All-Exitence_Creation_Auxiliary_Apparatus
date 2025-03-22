@@ -18,7 +18,7 @@
             <template #inner>
                 <div v-for="child in type.child">
                     <!-- 分组 -->
-                    <SwitchExpand v-if="child.child" class="group">
+                    <SwitchExpand v-if="'child' in child" class="group">
                         <template #title>
                             <ChooseInNode :item="child" :parent="type">
                                 {{ child.name }}
@@ -53,13 +53,13 @@
 import ChooseInNode from '@/components/other/chooseInTree/ChooseInNode.vue';
 import { closePopUp, PopUp } from '@/hooks/pages/popUp';
 import { computed, ref } from 'vue';
-import Button from '@/components/global/button.vue';
+import Button from '@/components/global/Button.vue';
 import { ElOption, ElSelect } from 'element-plus';
 import { getList, getSelectionExitence, getTimeRuleList } from './chooseExitence';
 import ChooseExitenceOption from './ChooseExitenceOption.vue';
 import SwitchExpand from '@/components/other/SwitchExpand.vue';
 
-    const {returnValue,popUp} = defineProps<{returnValue:(chosenList:any[])=>void,popUp:PopUp}>()
+    const {returnValue,popUp} = defineProps<{returnValue:(chosenList:any[],timeRule:string)=>void,popUp:PopUp}>()
     
     const list = computed(()=>{
         return getList(timeRule.value)
@@ -74,9 +74,9 @@ import SwitchExpand from '@/components/other/SwitchExpand.vue';
     
     //确认
     function confirm(){
-        //获得选中的所有事物
+        //获得选中的所有事物与时间规则key
         const chosenList = getSelectionExitence(list.value)
-        returnValue(chosenList)
+        returnValue(chosenList,timeRule.value)
         closePopUp(popUp)
     }
 </script>

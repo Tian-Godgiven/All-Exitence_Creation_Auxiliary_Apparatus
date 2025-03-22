@@ -173,6 +173,11 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
         
     }
 
+    // 获取key对应的分类中的事物
+    export function getExitenceByKey(type:Type,exitenceKey:string){
+        return type.exitence.find(e=>e.__key == exitenceKey)
+    }
+
     // 获取key对应的事物的属性,这里是函数重载决定返回值类型
     export function getExitenceStatusByKey(statusKey: string, allStatus: ExitenceStatus[]): ExitenceStatus | false;
     export function getExitenceStatusByKey(statusKey: string, allStatus: ExitenceStatus[], allTypeStatus: Status[]): Status | false;
@@ -274,6 +279,19 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
             return tmp.__key == statusList.__key
         })
         
+    }
+
+    //在弹窗中显示事物对象
+    export function showExitenceOnPopUp(type:Type,exitence:Exitence){
+        showPopUp({
+            vueName:"showExitence",
+            buttons:null,
+            mask:true,
+            props:{
+                type,
+                exitence
+            }
+        })
     }
 
 

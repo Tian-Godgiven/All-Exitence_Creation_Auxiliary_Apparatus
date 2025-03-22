@@ -41,7 +41,7 @@ import { addCustomTimeRule, changeCustomTimeRulePosition, checkCustomTimeRule, C
 import { cloneDeep } from 'lodash';
 import DownLineInput from '@/components/other/input/downLineInput.vue';
 import { ElOption, ElSelect } from 'element-plus';
-import Button from '@/components/global/button.vue';
+import Button from '@/components/global/Button.vue';
 import EditTimeRuleUnit from './EditTimeRuleUnit.vue';
 import { editTarget } from '../customTime'; 
 import { nanoid } from 'nanoid';

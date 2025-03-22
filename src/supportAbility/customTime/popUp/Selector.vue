@@ -22,7 +22,7 @@
 
 <script setup lang='ts'>
     import TimeRuleVue from '../components/TimeRule.vue';
-    import Button from '@/components/global/button.vue';
+    import Button from '@/components/global/Button.vue';
     import { globalCustomTime, projectCustomTime,type TimeRule } from '../customTime';
 import { closePopUp, PopUp } from '@/hooks/pages/popUp';
     const {popUp,returnValue} = defineProps<{popUp:PopUp,returnValue:(selector:TimeRule)=>void}>()

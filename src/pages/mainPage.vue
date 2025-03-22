@@ -53,7 +53,7 @@
 import { popUpList, showPopUp } from '@/hooks/pages/popUp'
 import { showLeft, switchProjectPage} from '@/hooks/pages/pageChange';
 import {touchStart,touchMove,touchEnd } from '@/hooks/pages/mainPage/mainTouch'
-import buttonVue from '@/components/global/button.vue';
+import buttonVue from '@/components/global/Button.vue';
 import projectPageVue from './projectPage.vue';
 import leftPageVue from '@/pages/leftPage.vue';
 import rightPageVue from '@/pages/rightPage.vue';

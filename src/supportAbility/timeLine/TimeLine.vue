@@ -5,21 +5,23 @@
             <div>管理</div>
         </div>
         <div class="container">
-            <Line v-for="timeLine in nowAllTimeLine" :timeLine="timeLine"></Line>
+            <Line></Line>
         </div>
     </div>
 </template>
 
 <script setup lang='ts'>
     import { ref } from 'vue';
-    import Button from '@/components/global/button.vue';
-    import Line from '../components/Line.vue'
-import { nowAllTimeLine, showCreateTimeLinePopUp } from '../timeLine';
+    import Button from '@/components/global/Button.vue';
+    import Line from './components/Line.vue'
+import { nowAllTimeLine, showCreateTimeLinePopUp } from './timeLine';
 
+    const testTimeLine = {}
     //显示新建弹窗
     function createNew(){
         showCreateTimeLinePopUp()
     }
+    
 </script>
 
 <style scoped lang='scss'>

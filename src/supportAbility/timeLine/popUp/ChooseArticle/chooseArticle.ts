@@ -3,19 +3,29 @@ import { Chapter } from "@/class/Chapter"
 import { nowAllArticles } from "@/hooks/all-articles/allArticles"
 import { reactive } from "vue"
 
-export type Item = {
+export type ArticleDataList = ListItem[]
+type ListItem  = {
+    sourceKey:string[],
+    target:{
+        name:string
+        key:string
+    }[]
+}
+export type Item = CItem | AItem
+type CItem = {
     name:string,
     target:Chapter,
-    child:Item[],
-    state:boolean|"mid"|"disabled",
-}|{
+    child:(AItem|CItem)[],
+    state:boolean|"mid",
+}
+type AItem = {
     name:string,
     target:Article,
-    state:boolean|"mid"|"disabled",
+    state:boolean|"mid",
 }
 
-//返回所有文章组成的树形结构列表
-export function getList():Item[]{
+//返回所有文章组成的树形结构列表，用于生成选项
+export function getList(){
     const list:Item[] = []
     //遍历当前所有文章
     nowAllArticles.chapters.forEach(chapter=>{
@@ -26,7 +36,7 @@ export function getList():Item[]{
     })
     return reactive(list)
 
-    function getChapterItem(chapter:Chapter):Item{
+    function getChapterItem(chapter:Chapter):CItem{
         return {
             name:chapter.name,
             target:chapter,
@@ -45,7 +55,7 @@ export function getList():Item[]{
         })
         return childItems
     }
-    function getArticleItem(article:Article):Item{
+    function getArticleItem(article:Article):AItem{
         return {
             name:article.title,
             target:article,
@@ -54,39 +64,56 @@ export function getList():Item[]{
     }
 }
 
-//获取所有选中的文章
+//获取所有选中的文章，用于生成时间轴
 export function getSelectedArticles(list:Item[]){
-    type ListItem  = {sourceKey:string[],targetKey:string[]}
     const chosenArticleList:ListItem[] = []
+    const noChapterList:ListItem = {sourceKey:[],target:[]}
     //遍历列表
     list.forEach(item=>{
-        handleItemSelection(item,[])
-    })
-    return chosenArticleList
-
-    // 处理每个子元素
-    function handleItemSelection(child: Item,from:string[]) {
-        if (child.state === "disabled" || child.state === false){return;} 
+        const from:string[] = []
+        if (item.state === false){return;} 
         //其还有子元素,说明是章节
-        if ('child' in child) {
-            const targetKey:string[] = []
-            const newFrom = [...from,child.target.__key]
-            child.child.forEach(newchild => {
-                if("child" in newchild){
-                    handleItemSelection(newchild,newFrom)
-                }
-                //如果子元素不是章节且被选中，则将其添加到targetKey中并返回
-                else{
-                    if(newchild.state === "disabled" || newchild.state === false) return;
-                    targetKey.push(newchild.target.__key)
-                }
-            });
-            if(targetKey.length>0){
-                chosenArticleList.push({
-                    sourceKey:newFrom,
-                    targetKey
+        if ('child' in item) {
+            chapterChild(item,from)
+        }
+        //没有子元素了，说明是最外层文章，直接添加到无章节列表中
+        else{
+            noChapterList.target.push({
+                key:item.target.__key,
+                name:item.name
+            })
+        }
+    })
+    //添加上无章节文章
+    chosenArticleList.push(noChapterList)
+    //返回结果
+    return chosenArticleList
+    // 递归处理章节中的子元素
+    function chapterChild(item:CItem,from:string[]){
+        const target:{
+            name:string,
+            key:string}[] = []
+        //新的from为该章节
+        const newFrom = [...from,item.target.__key]
+        item.child.forEach(child => {
+            //是章节则递归
+            if("child" in child){
+                chapterChild(child,newFrom)
+            }
+            //如果子元素不是章节且被选中，则将其添加到targetKey中并返回
+            else{
+                if( child.state === false) return;
+                target.push({
+                    name: child.name,
+                    key:child.target.__key
                 })
             }
+        });
+        if(target.length>0){
+            chosenArticleList.push({
+                sourceKey:newFrom,
+                target
+            })
         }
     }
 }

@@ -41,7 +41,7 @@
 <script setup lang='ts'>
     import DownLineInput from '@/components/other/input/downLineInput.vue';
     import TextArea from '@/components/other/textArea/textArea.vue';
-    import Button from '@/components/global/button.vue';
+    import Button from '@/components/global/Button.vue';
     import { reactive, shallowRef, } from 'vue';
     import { showPopUp } from '@/hooks/pages/popUp';
     import { nanoid } from 'nanoid';

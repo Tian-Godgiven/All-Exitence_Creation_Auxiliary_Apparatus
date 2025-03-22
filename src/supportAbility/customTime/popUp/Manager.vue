@@ -34,7 +34,7 @@
     import EditTimeRule from '../components/EditTimeRule.vue';
     import { CustomTimeRule, deleteCustomTimeRule, globalCustomTime, ifShowEditPage, projectCustomTime, showEditPage } from '../customTime';
     import TimeRule from '../components/TimeRule.vue';
-    import Button from '@/components/global/button.vue';
+    import Button from '@/components/global/Button.vue';
 import { closePopUp, PopUp } from '@/hooks/pages/popUp';
     const {popUp} = defineProps<{popUp:PopUp}>()    
     //添加新的时间表达式

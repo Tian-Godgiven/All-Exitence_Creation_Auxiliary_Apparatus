@@ -22,7 +22,7 @@
 </template>
 
 <script setup lang='ts'>
-    import Button from '@/components/global/button.vue';    
+    import Button from '@/components/global/Button.vue';    
     import { addQuickDraftItem, createQuickDraftItem, nowQuickDraft , switchQuickDraftFloatWindow, switchFoldFloatWindow, floatWindowKey } from '../quickDraft';
     import { closePopUp, PopUp } from '@/hooks/pages/popUp';
     import QuickDraftItem from '../component/QuickDraftItem.vue';

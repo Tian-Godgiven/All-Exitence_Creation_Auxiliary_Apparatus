@@ -10,7 +10,6 @@
     import { watch } from 'vue';
     type Item = {
         name:string,
-        target:any,
         state:boolean|"mid"|"disabled",
         child?:Item[],
         [key:string]:any,

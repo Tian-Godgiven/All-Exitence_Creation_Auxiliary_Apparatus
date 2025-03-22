@@ -30,7 +30,7 @@
 import { shallowRef } from 'vue';
 import { PopUp } from '../hooks/pages/popUp'; 
 import { popUpVueList } from '../static/list/popUpVueList';
-import Button from '@/components/global/button.vue';
+import Button from '@/components/global/Button.vue';
 	let tmp = defineProps(["popUp"])
 	let popUp:PopUp = tmp.popUp
 	let {name,buttons,vueName,index} = popUp

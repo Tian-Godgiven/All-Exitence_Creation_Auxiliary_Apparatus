@@ -55,7 +55,7 @@
 
 <script setup lang='ts'>
     import { computed, inject, ref, watchEffect } from 'vue';
-    import Button from '@/components/global/button.vue';
+    import Button from '@/components/global/Button.vue';
     import { getTimeRule, showTimeSelector, TimeLinker } from '@/supportAbility/customTime/translateTime';
 import { ElOption, ElSelect } from 'element-plus';
 import Status from '@/interfaces/Status';

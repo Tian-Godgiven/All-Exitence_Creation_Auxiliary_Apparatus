@@ -27,6 +27,7 @@ import { showExitenceOnMain } from '@/hooks/pages/mainPage/showOnMain';
 import { closePopUp } from '@/hooks/pages/popUp';
     const {props,popUp} = defineProps(["props","popUp","returnValue"])
     const {type,exitence} = props
+    
     provide("type",type)//提供该事物所在的分类
 	provide("allStatus",exitence.status)//提供所有属性
 	provide("allTypeStatus",type.typeStatus)//提供所在的分类的所有属性

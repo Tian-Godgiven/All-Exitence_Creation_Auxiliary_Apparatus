@@ -12,10 +12,10 @@
 
 <script setup lang='ts'>
     import { computed } from 'vue';
-    import { Item } from './chooseExitence';
+    import { TItem,EItem } from './chooseExitence';
 import { ElOption, ElSelect } from 'element-plus';
 
-    const {item,parent} = defineProps<{item:Item,parent?:Item}>()
+    const {item,parent} = defineProps<{item:EItem|TItem,parent?:TItem}>()
     //选项列表:该对象的时间属性+额外属性中符合条件的部分
     const optionList = computed<{label:string,value:string}[]>(()=>{
         if(!item.timeStatus)return []
@@ -24,8 +24,7 @@ import { ElOption, ElSelect } from 'element-plus';
         //该事物的属性列表
         const statusList = item.timeStatus.flatMap((status)=>{
             //1.不为其分类当前所选择的时间属性
-            
-            if(pTargetStatus && status.__key == pTargetStatus){
+            if(pTargetStatus && status.__key == pTargetStatus.key){
                 return []
             }
             //2.与当前已选择的时间规则相同
@@ -42,17 +41,19 @@ import { ElOption, ElSelect } from 'element-plus';
                     label:"继承分类"
                 })
             }
-            item.targetStatus = statusList[0].value
+            //设置为默认选项
+            item.targetStatus.key = statusList[0].value
+            item.targetStatus.name = statusList[0].label
         }
         return statusList
     })
     //改变选择时，还会改变其事物选择的属性
     function onChange(){
-        if(item.child){
+        if('child' in item){
             const targetStatus = item.targetStatus;
             item.child.forEach((child)=>{
                 //分组的情况
-                if(child.child){
+                if('child' in child){
                     child.child.forEach((exitence)=>{
                         exitence.targetStatus = targetStatus
                     })

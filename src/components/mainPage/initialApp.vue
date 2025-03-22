@@ -18,16 +18,16 @@
             </p>
             <br>
             
-            <buttonVue class="createNewProject" @click="createNewProject" name="创建新项目" :icon="null">
+            <Button class="createNewProject" @click="createNewProject" name="创建新项目" :icon="null">
                 点击创建你的新项目
-            </buttonVue>
+            </Button>
         </div>
     </div>
 </template>
 
 <script setup lang='ts'>
     import { createNewProject } from '@/hooks/project/project';
-    import buttonVue from '../global/button.vue';
+    import Button from '../global/Button.vue';
 </script>
 
 <style scoped lang='scss'>

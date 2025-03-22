@@ -57,7 +57,7 @@
     import { addQuickDraftItem, createQuickDraftItem, focusingItem, ifFocusing, nowQuickDraft } from '../quickDraft';
     import TextArea from '@/components/other/textArea/textArea.vue';
     import Time from '@/components/global/time.vue';
-    import Button from '@/components/global/button.vue';
+    import Button from '@/components/global/Button.vue';
     const {float = false,foldFloatWindow=()=>{}} 
         = defineProps<{float?:boolean,foldFloatWindow?:()=>void}>() 
     const index = computed(()=>{

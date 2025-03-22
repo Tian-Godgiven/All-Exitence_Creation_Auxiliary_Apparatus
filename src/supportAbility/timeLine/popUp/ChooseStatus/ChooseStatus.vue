@@ -35,7 +35,7 @@ import SwitchExpand from '@/components/other/SwitchExpand.vue';
 import ChooseStatusOption from './ChooseStatusOption.vue';
 import { closePopUp, PopUp } from '@/hooks/pages/popUp';
 import { showQuickInfo } from '@/api/showQuickInfo';
-import Button from '@/components/global/button.vue';
+import Button from '@/components/global/Button.vue';
     const {popUp,returnValue} = defineProps<{popUp:PopUp,returnValue:(key:{sourceKey:[string,string],targetKey:string})=>{}}>()
     const list = getList()
     //返回选择的事物与选择的属性

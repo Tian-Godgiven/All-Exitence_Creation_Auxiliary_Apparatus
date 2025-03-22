@@ -51,8 +51,22 @@ export function changeNowAllArticles(newAllArticles:any){
         //将其所处的chapter展开
         console.log(article)
         //在主页面显示该文章
+
+        //未完成
     }
 
+    //通过from与key获取文章
+    export function getArticleByKey(from:string[],key:string){
+        const chapter = getParentChapter(from)
+        if(chapter){
+            return chapter.articles.find(article=>article.__key==key)
+        }
+    }
+
+    //在弹窗中显示文章对象
+    export function showArticleOnPopUp(article:Article){
+        //未完成
+    }
 
     
 

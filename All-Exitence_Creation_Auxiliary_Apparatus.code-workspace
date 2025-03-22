@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../../RPG_Game"
+		}
+	],
+	"settings": {
+		"git.ignoreLimitWarning": true,
+		"window.zoomLevel": 1.8
+	}
+}

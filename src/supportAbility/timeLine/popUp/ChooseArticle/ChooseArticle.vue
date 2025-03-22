@@ -19,12 +19,14 @@
 
 <script setup lang='ts'>
 import { PopUp,closePopUp } from '@/hooks/pages/popUp';
-import { getList, getSelectedArticles } from './chooseArticle';
+import { ArticleDataList, getList, getSelectedArticles } from './chooseArticle';
 import { ElOption, ElSelect } from 'element-plus';
 import { ref } from 'vue';
 import ChooseArticleOption from './ChooseArticleOption.vue';
-import Button from '@/components/global/button.vue';
-    const {popUp,returnValue} = defineProps<{popUp:PopUp,returnValue:(targetStatus:string,list:{sourceKey:string[],targetKey:string[]}[])=>void}>()
+import Button from '@/components/global/Button.vue';
+    
+    const {popUp,returnValue} = defineProps<{popUp:PopUp,
+        returnValue:(targetStatus:string,list:ArticleDataList)=>void}>()
     //选择作为目标属性的文章事件
     const targetStatusList = [
         {value:"createTime",label:"创建时间"},

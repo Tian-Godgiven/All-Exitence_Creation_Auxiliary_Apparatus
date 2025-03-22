@@ -19,7 +19,7 @@
 
 <script setup lang='ts'>
     import { closePopUp, PopUp } from '@/hooks/pages/popUp';
-    import Button from '@/components/global/button.vue';
+    import Button from '@/components/global/Button.vue';
     import { Ref, ref } from 'vue';
     import { cloneDeep } from 'lodash';
     import DatePicker from '@/components/other/timePicker/DatePicker.vue';

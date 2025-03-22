@@ -22,6 +22,7 @@
     "nanoid": "^5.0.9",
     "postcss-plugin-px2rem": "^0.8.1",
     "sortable": "^2.0.0",
+    "typed.js": "^2.1.0",
     "vue": "^3.3.4",
     "vue-scroll-picker": "^1.2.3",
     "vue3-touch-events": "^4.2.0",

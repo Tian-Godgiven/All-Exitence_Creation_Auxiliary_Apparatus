@@ -6,13 +6,32 @@ import { Type } from '@/class/Type';
 import { reactive } from "vue";
 import { globalCustomTime, projectCustomTime } from "@/supportAbility/customTime/customTime"; 
 
-export type Item = {
+export type TItem = {
     name:string,
-    state:boolean|"mid"|"disabled",
-    child?:Item[],
-    target:string, //对象的key
-    targetStatus?:string,//目标属性的键
-    timeStatus?:(Status|ExitenceStatus)[],
+    state:boolean|"mid",
+    child:(EItem|GItem)[],
+    key:string, //对象的key
+    targetStatus:{
+        name:string,
+        key:string
+    },//目标属性的名称和键
+    timeStatus:(Status|ExitenceStatus)[],
+}
+type GItem = {
+    name:string,
+    state:boolean|"mid",
+    child:EItem[],
+    key:string
+}
+export type EItem = {
+    name:string,
+    state:boolean|"mid",
+    key:string, //对象的key
+    targetStatus:{
+        name:string,
+        key:string
+    },//目标属性的名称和键
+    timeStatus:(Status|ExitenceStatus)[],
 }
 
 //获取当前项目可用的所有时间规则组成的选项
@@ -32,11 +51,11 @@ export function getTimeRuleList(){
 }
  
 //获取需要显示的列表，其中的所有项都具备选择的时间规则的属性
-export function getList(timeRuleKey:string):Item[]{
+export function getList(timeRuleKey:string):TItem[]{
     //分类列表
     const typeList = nowAllExitence.types
     //遍历分类
-    let list:Item[] = typeList.flatMap((type)=>{
+    let list:TItem[] = typeList.flatMap((type)=>{
         //获取分类数据
         const typeData = getTypeData(type,timeRuleKey)
         if(!typeData)return[];
@@ -55,9 +74,12 @@ export function getList(timeRuleKey:string):Item[]{
         const noGroupExitence = getNoGroupExitence(exitenceList,type.groups)
         const noGroupList = getExitenceDataArr(eDataList,noGroupExitence)
         return {
-            name:type.name,
-            target:type.__key,
-            targetStatus:typeData.timeStatus[0]?.__key, //默认选中第一个属性
+            name: type.name,
+            key:type.__key,
+            targetStatus:{
+                key:typeData.timeStatus[0]?.__key,
+                name:typeData.timeStatus[0]?.name
+            }, //默认选中第一个属性
             timeStatus:typeData.timeStatus,
             state:false,
             child:[...groupList,...noGroupList]
@@ -121,7 +143,7 @@ function getTypeData(type:Type,timeRuleKey:string):{
     return false
 }
 //获取分组数据
-function getGroupData(eDataList:EData[],exitenceList:Exitence[],group:Group){
+function getGroupData(eDataList:EData[],exitenceList:Exitence[],group:Group):GItem|false{
     //获取分组中的事物
     const eInGroup = getExitenceInGroup(exitenceList,group)
     //没有事物时不返回分组
@@ -131,87 +153,105 @@ function getGroupData(eDataList:EData[],exitenceList:Exitence[],group:Group){
     //返回分组数据
     return {
         name:group.name,
-        target:group.__key,
         state:false,
-        child:childList
+        child:childList,
+        key:group.__key
     }
 }
 //获取事物数据数组
-function getExitenceDataArr(eDataList:EData[],exitenceList:Exitence[]){
+function getExitenceDataArr(eDataList:EData[],exitenceList:Exitence[]):EItem[]{
     return exitenceList.flatMap((exitence)=>{
         const eData = eDataList.find((value)=>value.target == exitence)
         if(eData) return {
             name:eData.target.name,
-            target:eData.target.__key,
+            key:eData.target.__key,
             timeStatus:eData.timeStatus,
-            targetStatus:"",
+            targetStatus:{
+                name:"",
+                key:""
+            },
             state:false,
         }
         return []
     })
 }
 
-//获取列表中选择的事物对象与其对应的属性 
-export function getSelectionExitence(list: Item[]) {
-    type TargetKey = {
-        exitenceKey:string,
-        statusKey:string
-    }[]
-    const timeLineList :{
-        sourceKey:string,
-        targetKey:TargetKey
-    }[] = []
-    // 遍历分类
+//获取列表中选择的事物对象与属性的信息
+export type TargetList = {
+    name:string,
+    key:string,
+    status?:{
+        name:string,
+        key:string
+    },
+    exitence:ExitenceItem[]
+}[]
+type ExitenceItem = {
+    name:string,
+    key:string
+    status:{
+        name:string,
+        key:string
+    },
+}
+export function getSelectionExitence(list: TItem[]) {
+    const targetList:TargetList = []
+    // 遍历列表
     list.forEach(type => {
         if (!type.child) return;  // 如果没有子元素，跳过
-        //该分类下的事物列表
-        const exitenceList:{ exitenceKey: string; statusKey: string }[] = [];
         const { state: typeState, targetStatus: statusOfType } = type;
+        if (typeState===false)return;
+        // 该分类下的事物列表
+        const exitenceList:{ name:string,key:string,status:{name:string,key:string}}[] = []
         // 分类中存在选中对象的情况
-        if (typeState === "mid" || typeState === true) {
-            type.child.forEach(child =>{
-                handleChildSelection(child, exitenceList,statusOfType,);
-            });
-        }
-        timeLineList.push({
-            sourceKey:type.target,
-            targetKey:exitenceList
-        })
-    });
-    return timeLineList
-
-    // 处理每个子元素（包括分组的事物）
-    function handleChildSelection(child: Item, exitenceList:TargetKey,statusOfType?: string,) {
-        if (child.state === "mid" || child.state === true) {
-            if (child.child) {
+        type.child.forEach(child =>{
+            if (child.state === false) return;
+            //分组
+            if ('child' in child) {
                 child.child.forEach(exitence => {
                     if (exitence.state === true) {
                         addExitenceToList(exitence, exitenceList,statusOfType);
                     }
                 });
-            } else {
-                addExitenceToList(child, exitenceList,statusOfType,);
             }
-        }
-    }
-
+            //事物 
+            else {
+                addExitenceToList(child, exitenceList,statusOfType);
+            }
+        });
+        targetList.push({
+            name:type.name,
+            key:type.key,
+            status:{
+                name:type.targetStatus.name,
+                key:type.targetStatus.key
+            },
+            exitence:exitenceList
+        })
+    });
+    return targetList
+ 
     // 添加选中的事物到列表中
-    function addExitenceToList(exitence: { targetStatus?: string; target: string }, exitenceList:TargetKey,statusOfType?: string,) {
+    function addExitenceToList(eItem: EItem, list:ExitenceItem[],statusOfType?: TItem["targetStatus"],) {
         let targetStatus 
-        if(exitence.targetStatus == ""){
+        if(eItem.targetStatus?.key == "" || eItem.targetStatus.key == "inherit"){
             targetStatus = statusOfType
         }
         else{
-            targetStatus = exitence.target
+            targetStatus = eItem.targetStatus
         }
         if(!targetStatus){
             console.error("意料之外的错误：该事物没有被正确设置时间属性")
             return;
         }
 
-        exitenceList.push({
-            exitenceKey: exitence.target,
-            statusKey: targetStatus
+        list.push({
+            name:eItem.name,
+            key: eItem.key,
+            status:{
+                name:targetStatus.name,
+                key:targetStatus.key
+            }
         });
     }
 }
