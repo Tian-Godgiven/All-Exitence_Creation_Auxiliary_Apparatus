@@ -122,6 +122,10 @@ export function createTimeLine(timeLine:TimeLine){
 
 //接受时间轴上的某个刻度的值，计算出该刻度的单位和文本
 export function getScaleInfo(scaleValue:number,rule:TimeRule,unitEnd?:string){
+    if(!rule)return {
+        height:5,
+        width:1,
+    };
     //scale的值是相较于最小单位的，因此需要进行一道转化
     if(unitEnd){
         //设其为该值的时间单位数组
@@ -136,13 +140,6 @@ export function getScaleInfo(scaleValue:number,rule:TimeRule,unitEnd?:string){
         console.log(tmp)
         if(tmp)scaleValue = tmp
     }
-    //获取其真实值
-    
-
-    if(!rule)return {
-        height:5,
-        width:1,
-    };
     //获取该刻度值相较于最小单位的进位
     const carryoverArr = translateTimeValueToCarryover({
         value:scaleValue,
@@ -153,7 +150,6 @@ export function getScaleInfo(scaleValue:number,rule:TimeRule,unitEnd?:string){
     const text = carryoverArr.map(unit=>{
         return unit.value.toString() + unit.name
     })
-    console.log(text)
     //进位越多刻度越长
     const carryoverNum = carryoverArr.length
     return {

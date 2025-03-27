@@ -7,8 +7,6 @@ import { createDirByPath, ifExists, tryReadFileAtPath, writeFileAtPath } from "@
 import { showQuickInfo } from "@/api/showQuickInfo"
 import { showAlert } from "@/hooks/alert"
 
-import { getCustomEqualToMinUnit } from "./translateTime"
-
 //注册自定义时间表达式
 export const customTimeItem:SupportAbilitySignUpItem = {
     "name":"customTime",
@@ -22,7 +20,8 @@ export type TimeRule = "date"|CustomTimeRule//地球时间
 export type CustomTimeRuleUnit = {
     name:string
     target:string,
-    equal:number
+    equal:number,
+    equalToMin?:number
 }|{
     name:string
     target:false //最小单位
@@ -52,6 +51,7 @@ async function initCustomTime(){
         "click":()=>showCustomTimeManager(),
         "iconName":"customTime"
     })
+    console.log(customTimeLib)
 }
 
 //保存
@@ -79,6 +79,14 @@ export function deleteCustomTimeRule(rule:CustomTimeRule){
         }
     })
     
+}
+
+//编辑/修改指定的自定义时间表达式
+export function editCustomTimeRule(rule:CustomTimeRule,newRule:CustomTimeRule){
+    const index = customTimeLib.indexOf(rule)
+    if(index>=0){
+        customTimeLib[index] = newRule
+    }
 }
 
 //检查指定的时间表达式是否符合规范
@@ -116,13 +124,6 @@ export function checkCustomTimeRule(rule:CustomTimeRule){
             showQuickInfo(`第${i+1}个单位的基准值必须大于0`)
             return false
         } 
-        //要求所有单位最终都可以转换为最小单位
-        const ifEqualToMin = getCustomEqualToMinUnit(unitList,unit,1)
-        if(!ifEqualToMin){
-            showQuickInfo(`${unit.name}无法转换为最小单位，可能存在递归调用。`)
-            return false
-        }
-        
     }
     return true
         
@@ -142,15 +143,13 @@ export const ifShowEditPage = ref(false)
 type EditTarget = CustomTimeRule|null
 export const editTarget = ref<EditTarget>(null)
 //显示编辑页面
-export function showEditPage(targetRule:EditTarget){
+export function showEditPage(targetRule:CustomTimeRule|null){
     ifShowEditPage.value = true
-    //修改编辑对象
-    editTarget.value = targetRule;
- }
+    editTarget.value = targetRule
+}
 //隐藏编辑页面
 export function hideEditPage(){
     ifShowEditPage.value = false
-    console.log(1234)
 }
 
 //给rule的unit排序
@@ -178,7 +177,6 @@ export function sortRuleUnits(units: CustomTimeRuleUnit[]): CustomTimeRuleUnit[]
 
     const sortedOtherUnits = otherUnits.sort(compare);
     // 返回组合后的排序数组：先是其他单位（按 equal 排序），最后是 target 为 false 的单位
-    console.log(sortedOtherUnits,falseUnits)
     return [...sortedOtherUnits, ...falseUnits];
 }
 
@@ -193,3 +191,21 @@ export function getCustomTimeRuleByKey(key:string){
     }
 }
 
+//通过递归获得某个unit相较于其对应的target直到最小单位时的等价值
+//eg:1时 = 3600秒
+export function getCustomEqualToMinUnit(unitList:CustomTimeRuleUnit[],unit:CustomTimeRuleUnit,base:number){
+    const target = unit.target;
+    //当前单位就是最小单位
+    if(target == false){return base}
+    const targetUnit = unitList.find((unit)=>unit.name == target)
+    //如果没有找到目标单位，即要么不存在目标单位,要么该单位不会指向最小单位，返回false
+    if(!targetUnit){return false}
+    //目标为最小单位，返回已有equal*base的值即为unit与最小单位的equal
+    if(targetUnit.target == false){
+        return base * unit.equal
+    }
+    //否则从UnitList中移除当前unit，进行递归
+    const index = unitList.indexOf(unit)
+    const newList = unitList.filter((_, i) => i !== index);
+    return getCustomEqualToMinUnit(newList,targetUnit,base*unit.equal)
+}

@@ -30,9 +30,9 @@
 import LineTick from './LineTick.vue';
     const {timeLine} = {timeLine:{
         targetType:"exitence",//时间线目标的类型
-        timeRuleKey:"date",//该时间线所使用的时间规则的key
+        timeRuleKey:"lJBZCzI5469McfKuOTizE",//该时间线所使用的时间规则的key
         now:null,//该时间线当前所处的位置，默认从最早的一个对象开始
-        unitEnd:"日",//该时间线当前所显示的最小单位
+        unitEnd:null,//该时间线当前所显示的最小单位
     }}
     // defineProps<{timeLine:TimeLine}>()
 
@@ -134,6 +134,7 @@ import LineTick from './LineTick.vue';
     })
     const shortTickNum = 4//两个长刻度中间的短刻度数量
     const tickSpacing = 10;//每个刻度的长度，单位px
+    //每个刻度中间的距离
     const spacePerTick = computed(()=>{
         return tickSpacing*(shortTickNum+1)
     })

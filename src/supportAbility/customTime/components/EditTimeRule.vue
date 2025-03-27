@@ -34,7 +34,7 @@
 
 <script setup lang='ts'>
     import {reactive,toRaw} from 'vue';
-import { addCustomTimeRule, checkCustomTimeRule, CustomTimeRule, hideEditPage, sortRuleUnits} from '../customTime';
+import { addCustomTimeRule, checkCustomTimeRule, CustomTimeRule, editCustomTimeRule, getCustomEqualToMinUnit, hideEditPage, sortRuleUnits} from '../customTime';
 import { cloneDeep } from 'lodash';
 import DownLineInput from '@/components/other/input/downLineInput.vue';
 import { ElOption, ElSelect } from 'element-plus';
@@ -42,6 +42,7 @@ import Button from '@/components/global/Button.vue';
 import EditTimeRuleUnit from './EditTimeRuleUnit.vue';
 import { editTarget } from '../customTime'; 
 import { nanoid } from 'nanoid';
+import { showQuickInfo } from '@/api/showQuickInfo';
     //初始值
     const idle:CustomTimeRule = {
         name:"",
@@ -66,11 +67,12 @@ import { nanoid } from 'nanoid';
     //添加空的新单位到开头，默认以上一个单位为基准
     function addUnit(){
         const lastUnit = newRule.units[0]
-        newRule.units.unshift({
+        const newUnit = {
             name:"",
             target:lastUnit.name,
-            equal:1
-        })
+            equal:1,
+        }
+        newRule.units.unshift(newUnit)
     }
     //返回修改后的规则
     function confirm(){
@@ -79,16 +81,31 @@ import { nanoid } from 'nanoid';
         //按照从大到小的顺序重新排列单位
         const newUnits = sortRuleUnits(newRule.units)
         newRule.units = newUnits
+        //为所有单位添加或更新equalToMin
+        for(let unit of newRule.units){
+            if(unit.target){
+                const equalToMin = getCustomEqualToMinUnit(newRule.units,unit,1)
+                if(equalToMin){
+                    unit.equalToMin = equalToMin
+                }
+                else{
+                    showQuickInfo(`${unit.name}无法转换为最小单位，可能存在递归调用。`)
+                    return false
+                }
+            }
+        }
+        console.log(newRule)
         //如果传入为null，则添加新规则
         if(editTarget.value==null){
             addCustomTimeRule(toRaw(newRule))
         }
         //否则修改传入的规则的内容或位置
         else{
-            editTarget.value = newRule
+            editCustomTimeRule(editTarget.value,newRule)
         }
         //返回管理页面
         hideEditPage()
+        
     }
     //取消返回
     function quit(){

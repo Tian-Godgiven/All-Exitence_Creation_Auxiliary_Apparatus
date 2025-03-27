@@ -1,6 +1,6 @@
 import { differenceInDays, differenceInHours, differenceInMilliseconds, differenceInMinutes, differenceInMonths, differenceInSeconds, differenceInYears } from "date-fns"
 import { TimeUnit } from "element-plus"
-import { CustomTimeRule, CustomTimeRuleUnit, customTimeLib, sortRuleUnits, TimeRule } from "./customTime"
+import { CustomTimeRule, CustomTimeRuleUnit, customTimeLib, TimeRule } from "./customTime"
 import { showPopUp } from "@/hooks/pages/popUp"
 import Selector from "./popUp/Selector.vue"
 import { shallowRef } from "vue"
@@ -92,12 +92,9 @@ export function getTimeRuleUnits(timeRule:TimeRule,unitFrom?:string,unitEnd?:str
         if(noEnd){
             console.error("时间规则中不存在指定的结束单位",timeRule,unitEnd)
         }
-        //先进行一次排序
-        allUnitList = sortRuleUnits(allUnitList)
         //遍历规则中的单位
         let start = false
-        for(let i=0;i<allUnitList.length;i++){
-            const unit = allUnitList[i]
+        for(let unit of allUnitList){
             if(unit.name == unitFrom || !unitFrom || noFrom){
                 start = true
             }
@@ -183,8 +180,6 @@ export function translateTimeValueToArr({
         const result:TimeArr = []//结果数组
         //剩余可分配值
         let leastValue = value
-        //时间规则包含的所有单位
-        const allUnit = rule.units
         //获取所有需要包含在内的单位
         const unitList = getTimeRuleUnits(rule,unitFrom,unitEnd) as CustomTimeRuleUnit[]
         //遍历每个单位并获取值
@@ -194,43 +189,27 @@ export function translateTimeValueToArr({
         return result
         
         function getUnitValue(unit:CustomTimeRuleUnit){
+            let unitValue:number
             // 非最小单位
             if(unit.target !== false) {
-                // 计算当前单位等于多少最小单位
-                const unitEqual = getCustomEqualToMinUnit(allUnit,unit,1)
+                // 当前单位等于多少最小单位
+                const unitEqual = unit.equalToMin
                 // 当前单位无效，将其忽略
                 if(!unitEqual)return;
                 //计算当前单位的值
-                const unitValue = Math.round(leastValue / unitEqual)
-                result.push({ name: unit.name, value: unitValue });
+                unitValue = Math.floor(leastValue / unitEqual)
                 // 用余数更新剩余值
-                leastValue -= unitValue * unitEqual;
+                leastValue -= (unitValue * unitEqual);
             } 
             // 最小单位，直接将剩余值分配给它
-            else if (unit.target === false) {
-                result.push({ name: unit.name, value: leastValue });
+            else{
+                unitValue = leastValue
             }
+            //时间单位在进位时不会为0，因此需要+1
+            unitValue += 1
+            result.push({ name: unit.name, value: unitValue });
         }
     }
-
-//通过递归获得某个unit相较于其对应的target直到最小单位时的等价值
-//eg:1时 = 3600秒
-export function getCustomEqualToMinUnit(unitList:CustomTimeRuleUnit[],unit:CustomTimeRuleUnit,base:number){
-    const target = unit.target;
-    //当前单位就是最小单位
-    if(target == false){return base}
-    const targetUnit = unitList.find((unit)=>unit.name == target)
-    //如果没有找到目标单位，即要么不存在目标单位,要么该单位不会指向最小单位，返回false
-    if(!targetUnit){return false}
-    //目标为最小单位，返回已有equal*base的值即为unit与最小单位的equal
-    if(targetUnit.target == false){
-        return base * unit.equal
-    }
-    //否则从UnitList中移除当前unit，进行递归
-    const index = unitList.indexOf(unit)
-    const newList = unitList.filter((_, i) => i !== index);
-    return getCustomEqualToMinUnit(newList,targetUnit,base*unit.equal)
-}
 
 type DateUnit = "年"|"月"|"日"|"时"|"分"|"秒"|"毫秒"
 type DateArrItem = {
@@ -414,9 +393,17 @@ export function translateTimeArrToValue(timeArr:TimeArr,rule:TimeRule){
             console.error("没有在规则中找到指定的单位",rule,item.name)
             return false
         }
-        const equalToMin = getCustomEqualToMinUnit(rule.units,unit,item.value)
-        if(equalToMin===false){return false}
-        totalValue += equalToMin
+        //非最小单位计算等于多少最小单位
+        if(unit.target){
+            const equalToMin = unit.equalToMin
+            if(!equalToMin){return false}
+            totalValue += equalToMin * item.value
+        }
+        //最小单位加上
+        else{
+            totalValue += item.value
+        }
+
     }
     return totalValue
 }
@@ -443,7 +430,7 @@ export function translateTimeValueToCarryover({value,rule,unitFrom,unitEnd}:{
     for(let i=timeArr.length-1;i>0;i--){
         const unit = timeArr[i]
         if(unit.value == 1){
-            result.push(timeArr[i-1])
+            result.unshift(timeArr[i-1])
         }
         else{
             break
