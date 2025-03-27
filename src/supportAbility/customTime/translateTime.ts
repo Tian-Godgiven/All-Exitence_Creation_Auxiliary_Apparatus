@@ -1,6 +1,6 @@
 import { differenceInDays, differenceInHours, differenceInMilliseconds, differenceInMinutes, differenceInMonths, differenceInSeconds, differenceInYears } from "date-fns"
 import { TimeUnit } from "element-plus"
-import { CustomTimeRule, CustomTimeRuleUnit, globalCustomTime, projectCustomTime, sortRuleUnits, TimeRule } from "./customTime"
+import { CustomTimeRule, CustomTimeRuleUnit, customTimeLib, sortRuleUnits, TimeRule } from "./customTime"
 import { showPopUp } from "@/hooks/pages/popUp"
 import Selector from "./popUp/Selector.vue"
 import { shallowRef } from "vue"
@@ -52,13 +52,67 @@ export type TimeTranslateItem = TranslateItem & {
 export function getTimeRule(key:"date"|string):"date"|CustomTimeRule|false{
     if(key == "date")return key;
     //否则在全局or项目中寻找这个时间表达式
-    const tmpG = globalCustomTime.find((timeRule)=>timeRule.__key == key)
-    if(tmpG){return tmpG}
-    const tmpP = projectCustomTime.find((timeRule)=>timeRule.__key == key)
-    if(tmpP){return tmpP}
+    const tmp = customTimeLib.find((timeRule)=>timeRule.__key == key)
+    if(tmp){return tmp}
     //找不到指定的时间表达式返回false
     return false
-    
+}
+
+//获取指定时间规则的，从指定开始单位（大）到指定结束单位（小）的所有单位
+export function getTimeRuleUnits(timeRule:TimeRule,unitFrom?:string,unitEnd?:string){
+    let start = false
+    const unitList:(DateUnit|CustomTimeRuleUnit)[] = []
+    //date类型
+    if(timeRule == "date"){
+        const dateArr:DateUnit[] = ["年","月","日","时","分","秒","毫秒"]
+        //遍历寻找指定的单位
+        for(let i=0;i<dateArr.length;i++){
+            //起始:找到from或没有from
+            if(dateArr[i] == unitFrom || !unitFrom){
+                start = true
+            }
+            if(start){
+                unitList.push(dateArr[i])
+            }
+            //找到结束的单位
+            if(dateArr[i] == unitEnd){
+                return unitList
+            }
+        }
+    }
+    //自定义时间规则类型
+    else{
+        //要求若设定起始和结束，则其都必须存在于数组中
+        let allUnitList = timeRule.units
+        const noFrom = unitFrom && !allUnitList.find((unit)=>unit.name==unitFrom)
+        const noEnd = unitEnd && !allUnitList.find((unit)=>unit.name==unitEnd)
+        if(noFrom){
+            console.error("时间规则中不存在指定的起始单位",timeRule,unitFrom)
+        }
+        if(noEnd){
+            console.error("时间规则中不存在指定的结束单位",timeRule,unitEnd)
+        }
+        //先进行一次排序
+        allUnitList = sortRuleUnits(allUnitList)
+        //遍历规则中的单位
+        let start = false
+        for(let i=0;i<allUnitList.length;i++){
+            const unit = allUnitList[i]
+            if(unit.name == unitFrom || !unitFrom || noFrom){
+                start = true
+            }
+            //添加到列表中
+            if(start){
+                unitList.push(unit)
+            }
+            //结束的单位
+            if(unit.name == unitEnd){
+                return unitList
+            }
+        }
+    }
+    //没有设置结束单位
+    return unitList
 }
 
 //翻译时间表达式，返回一个字符串
@@ -84,17 +138,15 @@ export function translateTimeValueToString({
 }
 
 type TranslateItem = {
-        value:number,
-        rule:CustomTimeRule,
-        unitFrom?:string,
-        unitEnd?:string
-    }|{
-        value:number,
-        rule:"date",
-        unitFrom?:DateUnit,
-        unitEnd?:DateUnit
-    }
-//翻译时间表达式，返回一个由单位和各单位的值组成的数组
+    value:number,
+    rule:CustomTimeRule | "date",
+    unitFrom?:string,
+    unitEnd?:string
+}
+/**
+ * 根据时间规则翻译时间值，返回一个由单位名和各单位的值组成的数组
+ * @returns 顺序从大单位到小单位
+ */
 export function translateTimeValueToArr({
     value,
     rule,
@@ -108,57 +160,48 @@ export function translateTimeValueToArr({
     return getCustomTimeArrByUnit(value,rule,unitFrom,unitEnd)
 }
 
-//使用指定的linker链接时间对象
-function linkUnit(timeArr:TimeArr,showUnit:boolean=true,linker:TimeLinker=false){
-    let str = ""
-    const maxIndex = timeArr.length-1
-    timeArr.forEach((item,index) => {
-        str += item.value
-        //是否显示单位
-        if(showUnit){
-            str += item.name
-        }
-        //linker链接的字符串
-        if(linker && index != maxIndex){
-            str += linker
-        }   
-    });
-    return str
-}
+    //使用指定的linker链接时间对象
+    function linkUnit(timeArr:TimeArr,showUnit:boolean=true,linker:TimeLinker=false){
+        let str = ""
+        const maxIndex = timeArr.length-1
+        timeArr.forEach((item,index) => {
+            str += item.value
+            //是否显示单位
+            if(showUnit){
+                str += item.name
+            }
+            //linker链接的字符串
+            if(linker && index != maxIndex){
+                str += linker
+            }   
+        });
+        return str
+    }
 
-//获取自定义时间表达式的单位数组
-function getCustomTimeArrByUnit(value:number,rule:CustomTimeRule,unitFrom?:string,unitEnd?:string){
-    const result:TimeArr = []
-    //要求若起始和结束都必须存在与数组中
-    let unitList = rule.units
-    const noFrom = unitFrom && !unitList.find((unit)=>unit.name==unitFrom)
-    const noEnd = unitEnd && !unitList.find((unit)=>unit.name==unitEnd)
-    if(noFrom){
-        console.error("时间规则中不存在指定的起始单位",rule,unitFrom)
-    }
-    if(noEnd){
-        console.error("时间规则中不存在指定的结束单位",rule,unitEnd)
-    }
-    //先进行一次排序
-    unitList = sortRuleUnits(unitList)
-    //遍历规则中的单位
-    console.log(unitList)
-    let start = false
-    let leastValue = value
-    for(let i=0;i<unitList.length;i++){
-        const unit = unitList[i]
-        if(unit.name == unitFrom || !unitFrom || noFrom){
-            start = true
-        }
-        //开始获取内容
-        if(start){
+    //获取一个时间值在自定义时间表达式下的时间对象数组
+    function getCustomTimeArrByUnit(value:number,rule:CustomTimeRule,unitFrom?:string,unitEnd?:string){
+        const result:TimeArr = []//结果数组
+        //剩余可分配值
+        let leastValue = value
+        //时间规则包含的所有单位
+        const allUnit = rule.units
+        //获取所有需要包含在内的单位
+        const unitList = getTimeRuleUnits(rule,unitFrom,unitEnd) as CustomTimeRuleUnit[]
+        //遍历每个单位并获取值
+        unitList.forEach(unit=>{
+            getUnitValue(unit)
+        })
+        return result
+        
+        function getUnitValue(unit:CustomTimeRuleUnit){
             // 非最小单位
             if(unit.target !== false) {
                 // 计算当前单位等于多少最小单位
-                const unitEqual = getEqualToMinUnit(unitList,unit,1) as number
+                const unitEqual = getCustomEqualToMinUnit(allUnit,unit,1)
+                // 当前单位无效，将其忽略
+                if(!unitEqual)return;
                 //计算当前单位的值
                 const unitValue = Math.round(leastValue / unitEqual)
-                console.log(unit,unitValue)
                 result.push({ name: unit.name, value: unitValue });
                 // 用余数更新剩余值
                 leastValue -= unitValue * unitEqual;
@@ -168,19 +211,11 @@ function getCustomTimeArrByUnit(value:number,rule:CustomTimeRule,unitFrom?:strin
                 result.push({ name: unit.name, value: leastValue });
             }
         }
-        //结束的单位
-        if(unit.name == unitEnd){
-            break
-        }
     }
-    return result
-
-    
-}
 
 //通过递归获得某个unit相较于其对应的target直到最小单位时的等价值
 //eg:1时 = 3600秒
-export function getEqualToMinUnit(unitList:CustomTimeRuleUnit[],unit:CustomTimeRuleUnit,base:number){
+export function getCustomEqualToMinUnit(unitList:CustomTimeRuleUnit[],unit:CustomTimeRuleUnit,base:number){
     const target = unit.target;
     //当前单位就是最小单位
     if(target == false){return base}
@@ -194,37 +229,26 @@ export function getEqualToMinUnit(unitList:CustomTimeRuleUnit[],unit:CustomTimeR
     //否则从UnitList中移除当前unit，进行递归
     const index = unitList.indexOf(unit)
     const newList = unitList.filter((_, i) => i !== index);
-    return getEqualToMinUnit(newList,targetUnit,base*unit.equal)
+    return getCustomEqualToMinUnit(newList,targetUnit,base*unit.equal)
 }
 
-
-//按照指定的值获取Date单位数组
 type DateUnit = "年"|"月"|"日"|"时"|"分"|"秒"|"毫秒"
 type DateArrItem = {
     name:DateUnit,
     value:number
 }
-function getDateArrFromNumber(time:number,unitFrom?:DateUnit,unitEnd?:DateUnit):DateArrItem[]{
+//按照指定的值获取Date单位数组
+function getDateArrFromNumber(time:number,unitFrom?:string,unitEnd?:string):DateArrItem[]{
     const date = new Date(time)
     const options:DateArrItem[] = [];
-    const arr:DateUnit[] = ["年","月","日","时","分","秒","毫秒"]
-    let start = false
-    for(let i=0;i<arr.length;i++){
-        //起始:找到from或没有from
-        if(arr[i] == unitFrom || !unitFrom || !arr.includes(unitFrom)){
-            start = true
-        }
-        if(start){
-            pushToOptions(i)
-        }
-        //结束的单位
-        if(arr[i] == unitEnd){
-            return options
-        }
-    }
+    //获取包含的单位
+    const unitList = getTimeRuleUnits("date",unitFrom,unitEnd) as DateUnit[]
+    //遍历单位，依次计算值
+    unitList.forEach((unit)=>{
+        pushToOptions(unit)
+    })
     return options
-    function pushToOptions(i:number){
-        const name = arr[i]
+    function pushToOptions(name:DateUnit){
         let value:number = 0
         switch(name){
             case "年":
@@ -316,64 +340,64 @@ export function translateTimeOut({
     }
 }
 
-//获取Date对象的时间差数组
-function getDateTimeOutArrByUnit(startTime:TimeValue,endTime:TimeValue,unitFrom:TimeUnit,unitEnd:TimeUnit){
-    const options:any = [];
-    const arr = ["year","month","day","hour","minute","second","millisecond"]
-    let tmp = false
-    const start = startTime.number
-    const end = endTime.number
-    for(let i=0;i<arr.length;i++){
-        //起始:找到from或没有from
-        if(arr[i] == unitFrom || !unitFrom || !arr.includes(unitFrom)){
-            tmp = true
+    //获取Date对象的时间差数组
+    function getDateTimeOutArrByUnit(startTime:TimeValue,endTime:TimeValue,unitFrom:TimeUnit,unitEnd:TimeUnit){
+        const options:any = [];
+        const arr = ["year","month","day","hour","minute","second","millisecond"]
+        let tmp = false
+        const start = startTime.number
+        const end = endTime.number
+        for(let i=0;i<arr.length;i++){
+            //起始:找到from或没有from
+            if(arr[i] == unitFrom || !unitFrom || !arr.includes(unitFrom)){
+                tmp = true
+            }
+            if(tmp){
+                pushToOptions(i)
+            }
+            //结束的单位
+            if(arr[i] == unitEnd || arr[i] == 'millisecond'){
+                return options
+            }
         }
-        if(tmp){
-            pushToOptions(i)
-        }
-        //结束的单位
-        if(arr[i] == unitEnd || arr[i] == 'millisecond'){
-            return options
-        }
-    }
-    function pushToOptions(i:number){
-        let unit:string = "年"
-        let number:number = 0
+        function pushToOptions(i:number){
+            let unit:string = "年"
+            let number:number = 0
 
-        //根据单位，获得两个Date的差值
-        switch(arr[i]){
-            case "year":
-                unit="年",
-                number=differenceInYears(start,end)
-                break;
-            case "month":
-                unit="月",
-                number=differenceInMonths(start,end)
-                break;
-            case "day":
-                unit="日",
-                number=differenceInDays(start,end)
-                break;
-            case "hour":
-                unit="时",
-                number=differenceInHours(start,end)
-                break;
-            case "minute":
-                unit="分",
-                number=differenceInMinutes(start,end)
-                break;
-            case "second":
-                unit="秒",
-                number=differenceInSeconds(start,end)
-                break;
-            case "millisecond":
-                unit="毫秒",
-                number=differenceInMilliseconds(start,end)
-                break;
+            //根据单位，获得两个Date的差值
+            switch(arr[i]){
+                case "year":
+                    unit="年",
+                    number=differenceInYears(start,end)
+                    break;
+                case "month":
+                    unit="月",
+                    number=differenceInMonths(start,end)
+                    break;
+                case "day":
+                    unit="日",
+                    number=differenceInDays(start,end)
+                    break;
+                case "hour":
+                    unit="时",
+                    number=differenceInHours(start,end)
+                    break;
+                case "minute":
+                    unit="分",
+                    number=differenceInMinutes(start,end)
+                    break;
+                case "second":
+                    unit="秒",
+                    number=differenceInSeconds(start,end)
+                    break;
+                case "millisecond":
+                    unit="毫秒",
+                    number=differenceInMilliseconds(start,end)
+                    break;
+            }
+            options.push({unit,number})
         }
-        options.push({unit,number})
     }
-}
 
 //将时间数组按规则翻译为数字
 export function translateTimeArrToValue(timeArr:TimeArr,rule:TimeRule){
@@ -382,7 +406,7 @@ export function translateTimeArrToValue(timeArr:TimeArr,rule:TimeRule){
     if(rule == "date"){
         return getDateNumberFromArr(timeArr as DateArrItem[])
     }
-    ////如果是自定义规则,遍历数组,从规则中找到这个单位,获取这个单位相较于最小单位的值,加在总值中
+    //如果是自定义规则,遍历数组,从规则中找到这个单位,获取这个单位相较于最小单位的值,加在总值中
     for(let i =0 ; i<timeArr.length; i++){
         const item = timeArr[i];
         const unit = rule.units.find((unit)=>unit.name == item.name)
@@ -390,11 +414,42 @@ export function translateTimeArrToValue(timeArr:TimeArr,rule:TimeRule){
             console.error("没有在规则中找到指定的单位",rule,item.name)
             return false
         }
-        const equalToMin = getEqualToMinUnit(rule.units,unit,item.value)
+        const equalToMin = getCustomEqualToMinUnit(rule.units,unit,item.value)
         if(equalToMin===false){return false}
         totalValue += equalToMin
     }
     return totalValue
+}
+
+/**
+ * 获取时间值中存在的进位数组，进位的定义是某个单位在当次得到了由指定最小单位的进位
+ * @param timeValue 时间值
+ * @param rule 时间规则
+ * @param unitFrom 默认为最大单位
+ * @param unitEnd 默认为最小单位
+ */
+export function translateTimeValueToCarryover({value,rule,unitFrom,unitEnd}:{
+    value:number,rule:TimeRule,unitFrom?:string,unitEnd?:string
+}){
+    //获取值对应的单位数组
+    const timeArr = translateTimeValueToArr({
+        value,
+        rule,
+        unitFrom,
+        unitEnd
+    })
+    const result:{name:string,value:number}[] = []
+    //从小到大访问单位，判断每个单位的值，若为1，则认为存在进位，否则不存在进位跳过
+    for(let i=timeArr.length-1;i>0;i--){
+        const unit = timeArr[i]
+        if(unit.value == 1){
+            result.push(timeArr[i-1])
+        }
+        else{
+            break
+        }
+    }
+    return result
 }
 
 //获取两个Date对象相差的天/时/分数组
@@ -427,7 +482,6 @@ export function showTimeSelector():Promise<TimeRule|false>{
     
 }
 
-
 // 数符转换表
 const numFormatList = {
     "阿拉伯数字": (num: number) => num, // 阿拉伯数字直接转为字符串
@@ -440,7 +494,6 @@ const numFormatList = {
         return num.toString().split('').map(digit => chineseNumbers[parseInt(digit)]).join('');
     }
 };
-
 // 翻译为数字格式
 export function translateTimeNumFormat(value: number, numFormat: "阿拉伯数字" | "简体中文数字" | "繁体中文数字") {
     if (numFormatList[numFormat]) {

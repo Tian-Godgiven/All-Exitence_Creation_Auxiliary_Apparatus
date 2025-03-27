@@ -6,15 +6,14 @@ import { addToRightPage } from "@/hooks/pages/rightPage"
 import { createDirByPath, ifExists, tryReadFileAtPath, writeFileAtPath } from "@/hooks/fileSysytem"
 import { showQuickInfo } from "@/api/showQuickInfo"
 import { showAlert } from "@/hooks/alert"
-import { nowProjectInfo } from "@/hooks/project/projectData"
-import { getEqualToMinUnit } from "./translateTime"
+
+import { getCustomEqualToMinUnit } from "./translateTime"
 
 //注册自定义时间表达式
 export const customTimeItem:SupportAbilitySignUpItem = {
     "name":"customTime",
     "init":()=>initCustomTime(),
     "call":()=>showCustomTimeManager(),
-    "syncProject":(projectPath)=>changeProjectCustomTime(projectPath),
     "save":()=>saveCustomTime()
 }
 
@@ -35,20 +34,18 @@ export type CustomTimeRule ={
     __key:string
 }
 
-//全局时间表达式库
-export const globalCustomTime = reactive<CustomTimeRule[]>([])
-//项目时间表达式库
-export const projectCustomTime = reactive<CustomTimeRule[]>([])
+//时间表达式库
+export const customTimeLib = reactive<CustomTimeRule[]>([])
 
 //初始化
 async function initCustomTime(){
     //尝试创建对应文件夹
     const ifExisit = await ifExists("supportAbility","customTime")
     if(!ifExisit){createDirByPath("supportAbility","customTime")}
-    //尝试读取全局时间表达式
+    //尝试读取时间表达式库
     const tmp = await tryReadFileAtPath("supportAbility/customTime","customTime.json",true,[])
-    globalCustomTime.length = 0
-    Object.assign(globalCustomTime,tmp)
+    customTimeLib.length = 0
+    Object.assign(customTimeLib,tmp)
     //注册右侧按钮
     addToRightPage({
         "name":"自定义时间",
@@ -57,44 +54,24 @@ async function initCustomTime(){
     })
 }
 
-//切换项目加载对应项目的时间表达式
-async function changeProjectCustomTime(projectPath:string){
-    //读取时间表达式
-    const dataPath = projectPath + "/data"
-    const tmp = await tryReadFileAtPath(dataPath,"customTime.json",true,[])
-    projectCustomTime.length = 0
-    Object.assign(projectCustomTime,tmp)
-}
-
 //保存
 async function saveCustomTime(){
     //保存全局时间表达式
-    await writeFileAtPath("supportAbility/customTime","customTime.json",toRaw(globalCustomTime))
-    //保存项目时间表达式
-    const dataPath = "projects/" + nowProjectInfo.pathName + "/data"
-    console.log(dataPath)
-    await writeFileAtPath(dataPath,"customTime.json",toRaw(projectCustomTime))
+    await writeFileAtPath("supportAbility/customTime","customTime.json",toRaw(customTimeLib))
 }
 
-
 //将自定义时间表达式添加到指定位置
-export function addCustomTimeRule(newRule:CustomTimeRule,position:"global"|"project"="global"){
-    console.log(newRule)
-    if(position == "global"){
-        globalCustomTime.push(newRule)
-    }
-    else if(position == "project"){
-        projectCustomTime.push(newRule)
-    }
+export function addCustomTimeRule(newRule:CustomTimeRule){
+    customTimeLib.push(newRule)
     return newRule
 }
 
 //删除指定的自定义时间表达式
-export function deleteCustomTimeRule(rule:CustomTimeRule,position:"global"|"project"){
+export function deleteCustomTimeRule(rule:CustomTimeRule){
     showAlert({
         "info":`删除时间表达式${rule.name}?`,
         confirm:()=>{
-            const range = position == "global"?globalCustomTime:projectCustomTime
+            const range = customTimeLib
             const index = range.indexOf(rule)
             if(index>=0){
                 range.splice(index,1)
@@ -105,13 +82,13 @@ export function deleteCustomTimeRule(rule:CustomTimeRule,position:"global"|"proj
 }
 
 //检查指定的时间表达式是否符合规范
-export function checkCustomTimeRule(rule:CustomTimeRule,position:"global"|"project"){
+export function checkCustomTimeRule(rule:CustomTimeRule){
     //名称在范围内不重复
     const name = rule.name
-    const range = position=="global"?globalCustomTime:projectCustomTime
+    const range = customTimeLib
     const ifRepeat = range.find((theRule)=>theRule.name == name)
     if(ifRepeat && ifRepeat.__key != rule.__key){
-        showQuickInfo(`时间表达式的名称在${position=="global"?"全局":"项目"}范围内不得重复`)
+        showQuickInfo(`时间表达式的名称不得重复`)
         return false
     }
     //单位数量不得为0
@@ -140,7 +117,7 @@ export function checkCustomTimeRule(rule:CustomTimeRule,position:"global"|"proje
             return false
         } 
         //要求所有单位最终都可以转换为最小单位
-        const ifEqualToMin = getEqualToMinUnit(unitList,unit,1)
+        const ifEqualToMin = getCustomEqualToMinUnit(unitList,unit,1)
         if(!ifEqualToMin){
             showQuickInfo(`${unit.name}无法转换为最小单位，可能存在递归调用。`)
             return false
@@ -149,17 +126,6 @@ export function checkCustomTimeRule(rule:CustomTimeRule,position:"global"|"proje
     }
     return true
         
-}
-//改变指定时间表达式的位置
-export function changeCustomTimeRulePosition(rule:CustomTimeRule,newPosition:"global"|"project"){
-    const oldRange = newPosition == "global"?projectCustomTime:globalCustomTime
-    //从旧位置删去
-    console.log(oldRange,rule)
-    const index = oldRange.indexOf(rule)
-    console.log(index)
-    oldRange.splice(index,1)
-    //添加进新位置
-    addCustomTimeRule(rule,newPosition)
 }
 //显示管理页面弹窗
 export function showCustomTimeManager(){
@@ -173,20 +139,13 @@ export function showCustomTimeManager(){
 //是否显示编辑页面
 export const ifShowEditPage = ref(false)
 //编辑页面使用的对象
-type EditTarget = {
-    targetRule:CustomTimeRule|null,
-    position:"global"|"project"
-}
-export const editTarget = reactive<EditTarget>({
-    targetRule:null,
-    position:"project"
-})
+type EditTarget = CustomTimeRule|null
+export const editTarget = ref<EditTarget>(null)
 //显示编辑页面
-export function showEditPage({targetRule,position}:EditTarget){
+export function showEditPage(targetRule:EditTarget){
     ifShowEditPage.value = true
     //修改编辑对象
-    editTarget.targetRule = targetRule;
-    editTarget.position = position
+    editTarget.value = targetRule;
  }
 //隐藏编辑页面
 export function hideEditPage(){
@@ -226,13 +185,11 @@ export function sortRuleUnits(units: CustomTimeRuleUnit[]): CustomTimeRuleUnit[]
 //通过key获取指定的自定义时间规则
 export function getCustomTimeRuleByKey(key:string){
     //先在全局找
-    let rule = globalCustomTime.find((rule)=>rule.__key == key)
-    if(rule)return rule
-    //再在项目内找
-    rule = projectCustomTime.find((rule)=>rule.__key == key)
+    let rule = customTimeLib.find((rule)=>rule.__key == key)
     if(rule)return rule
     else{
         console.error("未能找到指定的自定义时间规则，可能已经删除或不存在")
         return false
     }
 }
+

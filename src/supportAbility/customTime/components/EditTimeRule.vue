@@ -13,9 +13,6 @@
                     :value="item"/>
             </ElSelect>
         </div>
-        <div class="selectPosition">
-            仅限当前项目<input type="checkbox" v-model="onlyProject">
-        </div>
     </div>
     
     <div class="units">
@@ -29,15 +26,15 @@
     </div>
     
     <div class="finalButtons">
-        <Button name="确认" @click="confirm">确认</Button>
-        <Button name="返回" @click="quit">返回</Button>
+        <Button name="确认" @click="confirm"></Button>
+        <Button name="返回" @click="quit"></Button>
     </div>
 </div>
 </template>
 
 <script setup lang='ts'>
-    import {reactive, ref, toRaw} from 'vue';
-import { addCustomTimeRule, changeCustomTimeRulePosition, checkCustomTimeRule, CustomTimeRule, hideEditPage, sortRuleUnits} from '../customTime';
+    import {reactive,toRaw} from 'vue';
+import { addCustomTimeRule, checkCustomTimeRule, CustomTimeRule, hideEditPage, sortRuleUnits} from '../customTime';
 import { cloneDeep } from 'lodash';
 import DownLineInput from '@/components/other/input/downLineInput.vue';
 import { ElOption, ElSelect } from 'element-plus';
@@ -46,14 +43,14 @@ import EditTimeRuleUnit from './EditTimeRuleUnit.vue';
 import { editTarget } from '../customTime'; 
 import { nanoid } from 'nanoid';
     //初始值
-    const idle = {
+    const idle:CustomTimeRule = {
         name:"",
         numFormat:"阿拉伯数字",
         units:[{name:"",target:false}],
         __key:nanoid()
     }
     //若为空则创建新规则
-    let tmp:any = editTarget.targetRule
+    let tmp:CustomTimeRule|null = editTarget.value
     if(tmp == null){
         tmp = idle
     }
@@ -66,8 +63,6 @@ import { nanoid } from 'nanoid';
         "繁体中文数字",
         "阿拉伯数字"
     ]
-    //位置选项:项目内
-    const onlyProject = ref(editTarget.position=="project")
     //添加空的新单位到开头，默认以上一个单位为基准
     function addUnit(){
         const lastUnit = newRule.units[0]
@@ -79,27 +74,18 @@ import { nanoid } from 'nanoid';
     }
     //返回修改后的规则
     function confirm(){
-        const newPosition = onlyProject.value?"project":"global"
         //检查是否符合条件
-        console.log(newRule.units)
-        if(!checkCustomTimeRule(newRule,newPosition)){return false}
-        console.log(newRule.units)
+        if(!checkCustomTimeRule(newRule)){return false}
         //按照从大到小的顺序重新排列单位
         const newUnits = sortRuleUnits(newRule.units)
         newRule.units = newUnits
         //如果传入为null，则添加新规则
-        if(editTarget.targetRule==null){
-            addCustomTimeRule(toRaw(newRule),newPosition)
+        if(editTarget.value==null){
+            addCustomTimeRule(toRaw(newRule))
         }
         //否则修改传入的规则的内容或位置
         else{
-            console.log(newRule)
-            Object.assign(editTarget.targetRule,toRaw(newRule))
-            console.log(editTarget.targetRule)
-            if(newPosition != editTarget.position){
-                changeCustomTimeRulePosition(editTarget.targetRule,newPosition)
-            }
-            
+            editTarget.value = newRule
         }
         //返回管理页面
         hideEditPage()

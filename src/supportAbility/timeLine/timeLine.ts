@@ -6,6 +6,8 @@ import { reactive, shallowRef, toRaw } from "vue";
 import { tryReadFileAtPath, writeFileAtPath } from "@/hooks/fileSysytem";
 import { addToRightPage } from "@/hooks/pages/rightPage";
 import { nowProjectInfo } from "@/hooks/project/projectData";
+import { translateTimeArrToValue, translateTimeValueToCarryover } from "../customTime/translateTime";
+import { TimeRule } from "../customTime/customTime";
 
 //注册辅助功能对象
 export const timeLineSignUpItem:SupportAbilitySignUpItem={
@@ -80,7 +82,7 @@ function saveTimeLine(){
     const dataPath = "projects/"+nowProjectInfo.pathName+"/data"
     writeFileAtPath(dataPath,"timeLine.json",toRaw(nowAllTimeLine))
 }
-//改变项目
+//切换项目
 async function changeTimeLine(projectPath:string){
     const dataPath = projectPath+"/data"
     //尝试读取项目时间线，失败时创建默认总时间线对象
@@ -117,5 +119,49 @@ export function createTimeLine(timeLine:TimeLine){
     //向当前的总时间轴对象中添加该时间轴
     nowAllTimeLine.push(timeLine)
 }
+
+//接受时间轴上的某个刻度的值，计算出该刻度的单位和文本
+export function getScaleInfo(scaleValue:number,rule:TimeRule,unitEnd?:string){
+    //scale的值是相较于最小单位的，因此需要进行一道转化
+    if(unitEnd){
+        //设其为该值的时间单位数组
+        const timeArr = [
+            {  
+                name:unitEnd,
+                value:scaleValue
+            }
+        ]
+        //获取其真实值
+        const tmp = translateTimeArrToValue(timeArr,rule)
+        console.log(tmp)
+        if(tmp)scaleValue = tmp
+    }
+    //获取其真实值
+    
+
+    if(!rule)return {
+        height:5,
+        width:1,
+    };
+    //获取该刻度值相较于最小单位的进位
+    const carryoverArr = translateTimeValueToCarryover({
+        value:scaleValue,
+        rule,
+        unitEnd
+    })
+    //刻度文本为进位的值和名称
+    const text = carryoverArr.map(unit=>{
+        return unit.value.toString() + unit.name
+    })
+    console.log(text)
+    //进位越多刻度越长
+    const carryoverNum = carryoverArr.length
+    return {
+        height:5+2*carryoverNum,
+        width:1+0.5*carryoverNum,
+        text
+    }
+}
+
 
 

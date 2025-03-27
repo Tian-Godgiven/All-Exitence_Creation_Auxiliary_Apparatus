@@ -7,17 +7,10 @@
             <Button @click="closePopUp(popUp)" name="关闭" icon="close"></Button>
         </div>
         
-        <div class="timeRules">全局可用
-            <TimeRule v-for="rule in globalCustomTime" :key="rule.__key" :rule="rule">
-                <div @click="deleteCustomTimeRule(rule,'global')">删除</div>
-                <div @click="editTimeRule(rule,'global')">编辑</div>
-            </TimeRule>
-        </div>
-        
-        <div class="timeRules">当前项目内可用
-            <TimeRule v-for="rule in projectCustomTime" :key="rule.__key" :rule="rule">
-                <div @click="deleteCustomTimeRule(rule,'project')">删除</div>
-                <div @click="editTimeRule(rule,'project')">编辑</div>
+        <div class="timeRules">
+            <TimeRule v-for="rule in customTimeLib" :key="rule.__key" :rule="rule">
+                <div @click="deleteCustomTimeRule(rule)">删除</div>
+                <div @click="editTimeRule(rule)">编辑</div>
             </TimeRule>
         </div>
     </div>
@@ -32,7 +25,7 @@
 
 <script setup lang='ts'>
     import EditTimeRule from '../components/EditTimeRule.vue';
-    import { CustomTimeRule, deleteCustomTimeRule, globalCustomTime, ifShowEditPage, projectCustomTime, showEditPage } from '../customTime';
+    import { CustomTimeRule, deleteCustomTimeRule, customTimeLib, ifShowEditPage, showEditPage } from '../customTime';
     import TimeRule from '../components/TimeRule.vue';
     import Button from '@/components/global/Button.vue';
 import { closePopUp, PopUp } from '@/hooks/pages/popUp';
@@ -40,18 +33,12 @@ import { closePopUp, PopUp } from '@/hooks/pages/popUp';
     //添加新的时间表达式
     function addTimeRule(){
         //显示编辑页面，传入空内容
-        showEditPage({
-            targetRule:null,
-            position:"project"
-        })
+        showEditPage(null)
     }
     //编辑时间表达式
-    function editTimeRule(targetRule:CustomTimeRule,position:"global"|"project"){
+    function editTimeRule(targetRule:CustomTimeRule){
         //显示编辑页面
-        showEditPage({
-            targetRule,
-            position
-        })
+        showEditPage(targetRule)
     }
    
 </script>

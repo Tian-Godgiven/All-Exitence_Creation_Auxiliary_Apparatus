@@ -4,7 +4,7 @@ import { getExitenceInGroup, getNoGroupExitence, nowAllExitence } from '@/hooks/
 import { Group } from '@/class/Group';
 import { Type } from '@/class/Type';
 import { reactive } from "vue";
-import { globalCustomTime, projectCustomTime } from "@/supportAbility/customTime/customTime"; 
+import { customTimeLib } from "@/supportAbility/customTime/customTime"; 
 
 export type TItem = {
     name:string,
@@ -36,7 +36,7 @@ export type EItem = {
 
 //获取当前项目可用的所有时间规则组成的选项
 export function getTimeRuleList(){
-    const allTimeRule = [...globalCustomTime,...projectCustomTime].map(timeRule=>{
+    const allTimeRule = customTimeLib.map(timeRule=>{
         return {
             value:timeRule.__key,
             label:timeRule.name

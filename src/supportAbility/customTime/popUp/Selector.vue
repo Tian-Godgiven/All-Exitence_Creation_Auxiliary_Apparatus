@@ -7,13 +7,7 @@
                 <div>阿拉伯数字</div>
                 <Button @click="selectRule('date')" name="选择"></Button>
             </div>
-            <TimeRuleVue v-for="rule in globalCustomTime" :key="rule.__key" :rule="rule">
-                <Button @click="selectRule(rule)" name="选择"></Button>
-            </TimeRuleVue>
-        </div>
-        
-        <div class="timeRules">当前项目内可用
-            <TimeRuleVue v-for="rule in projectCustomTime" :key="rule.__key" :rule="rule">
+            <TimeRuleVue v-for="rule in customTimeLib" :key="rule.__key" :rule="rule">
                 <Button @click="selectRule(rule)" name="选择"></Button>
             </TimeRuleVue>
         </div>
@@ -23,7 +17,7 @@
 <script setup lang='ts'>
     import TimeRuleVue from '../components/TimeRule.vue';
     import Button from '@/components/global/Button.vue';
-    import { globalCustomTime, projectCustomTime,type TimeRule } from '../customTime';
+    import { customTimeLib, type TimeRule } from '../customTime';
 import { closePopUp, PopUp } from '@/hooks/pages/popUp';
     const {popUp,returnValue} = defineProps<{popUp:PopUp,returnValue:(selector:TimeRule)=>void}>()
     function selectRule(rule:TimeRule){
