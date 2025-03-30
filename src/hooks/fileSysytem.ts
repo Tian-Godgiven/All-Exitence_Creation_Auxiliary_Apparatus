@@ -84,9 +84,15 @@ export async function writeFileAtPath(path:string,fileName:string,content:Object
 
 //尝试读取指定文件，失败时创建指定内容文件
 export async function tryReadFileAtPath(path:string,fileName:string,ifJSON:boolean=true,content:Object|string|(()=>Object|string)){
-    const tmp = await readFileFromPath(path,fileName,ifJSON)
-    //失败创建
-    if(!tmp){
+    try{
+        const content = await readTextFile(getPath(path,fileName), appData);
+        //读取文件
+        if(ifJSON && content){
+            return JSON.parse(content)
+        }
+        return content
+    }
+    catch(err){
         let inner
         if(content instanceof Function){
             inner = content()
@@ -96,9 +102,6 @@ export async function tryReadFileAtPath(path:string,fileName:string,ifJSON:boole
         }
         await createFileToPath(path,fileName,JSON.stringify(inner))
         return inner
-    }
-    else{
-        return tmp
     }
 }
 

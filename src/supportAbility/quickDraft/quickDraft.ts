@@ -15,6 +15,7 @@ export const quickDraftItem:SupportAbilitySignUpItem = {
     name:"quickDraft",
     init:()=>initQuickDraft(),
     save:()=>saveQuickDraft(),
+    //同步and创建
     syncProject:async(projectPath)=>await changeQuickDraft(projectPath)
 }
 
@@ -57,14 +58,14 @@ function initQuickDraft(){
         "name":"暂记版"
     })
 }
-//保存
-function saveQuickDraft(){
+//保存 
+async function saveQuickDraft(){
     //保存当前聚焦对象的key
     const focusingKey = focusingItem.value?.__key ?? null
     nowQuickDraftSetting.focusingItem = focusingKey
     //保存设置和item
     const dataPath = `projects/${nowProjectInfo.pathName}/data`
-    writeFileAtPath(dataPath,"quickDraft.json",{
+    await writeFileAtPath(dataPath,"quickDraft.json",{
         items:toRaw(nowQuickDraft),
         setting:toRaw(nowQuickDraftSetting)
     })

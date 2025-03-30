@@ -48,6 +48,7 @@ export async function syncProject(projectPath:string){
         return true
     }
     catch(err){
+        console.error(err)
         //找不到指定路径，说明该项目已经不存在
         return false
     }

@@ -7,6 +7,9 @@ export const appSetting = reactive<any>({})
 //软件启动时，初始化全局设置对象
 export async function initAppSetting(){
     const tmp = await readFileFromPath("appData","appSetting.json")
+    if(!tmp){
+        console.log("")
+    }
     Object.assign(appSetting,tmp)
 }
 

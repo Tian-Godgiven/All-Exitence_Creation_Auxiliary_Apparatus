@@ -10,8 +10,8 @@ import { timeLineSignUpItem } from "@/supportAbility/timeLine/timeLine";
 export type SupportAbilitySignUpItem = {
     name:string,
     init:()=>void,  //软件初始化时触发的事件
-    createProject?:(projectPathName:string)=>void, //创建新项目时触发的事件
-    syncProject?:(projecyPathName:string)=>void,//同步/移动到项目时触发的事件
+    createProject?:(projectPathName:string)=>Promise<void>, //创建新项目时触发的事件
+    syncProject?:(projecyPathName:string)=>Promise<void>,//同步/移动到项目时触发的事件
     save?:()=>void, //软件保存时触发的事件
     call?:()=>void //软件响应指定名称的辅助功能时触发的事件,
 }

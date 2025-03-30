@@ -166,7 +166,7 @@ export async function createProject(name:string,info:string=""){
     nowProjectList.value.push(projectInfo)
 
     //移动到当前项目
-    moveToProject(pathName)
+    await moveToProject(pathName)
     //隐藏项目页面
     hidePage('project')
 
@@ -177,11 +177,13 @@ export async function createProject(name:string,info:string=""){
         //创建基础设置
     
         //辅助功能的同步创建事件
-        supportAbilityList.forEach(ability=>{
+        for (const ability of supportAbilityList) {
             if(ability.createProject){
-                ability.createProject(projectPath)
+                const func =  ability.createProject
+                console.log("创建了辅助功能",ability.name)
+                await func(projectPath)
             }
-        })
+        }
     }
 }
 
