@@ -284,6 +284,7 @@ function getDateNumberFromArr(dateArr: DateArrItem[]): number {
         }
     }
 
+    console.log(year)
     // 由于JavaScript的月份从0开始，所以需要减去1
     const date = new Date(year, month - 1, day, hours, minutes, seconds, milliseconds);
     return date.getTime();
@@ -385,9 +386,9 @@ export function translateTimeArrToValue(timeArr:TimeArr,rule:TimeRule){
     if(rule == "date"){
         return getDateNumberFromArr(timeArr as DateArrItem[])
     }
+
     //如果是自定义规则,遍历数组,从规则中找到这个单位,获取这个单位相较于最小单位的值,加在总值中
-    for(let i =0 ; i<timeArr.length; i++){
-        const item = timeArr[i];
+    for(let item of timeArr){
         const unit = rule.units.find((unit)=>unit.name == item.name)
         if(!unit){
             console.error("没有在规则中找到指定的单位",rule,item.name)
@@ -397,11 +398,11 @@ export function translateTimeArrToValue(timeArr:TimeArr,rule:TimeRule){
         if(unit.target){
             const equalToMin = unit.equalToMin
             if(!equalToMin){return false}
-            totalValue += equalToMin * item.value
+            totalValue += equalToMin * (item.value-1)
         }
         //最小单位加上
         else{
-            totalValue += item.value
+            totalValue += (item.value-1)
         }
 
     }
@@ -498,5 +499,51 @@ export function ifSameTimeRule(timeRule:TimeRule,key:string){
     }
     else{
         return timeRule.__key == key
+    }
+}
+
+//将一个完整的时间值转化为相较于指定单位的值，包含小数点
+export function translateTimeValueEqualToUnit(oldValue:number,rule:TimeRule,targetUnit?:string){
+    if(rule=="date"){
+        const date = new Date(oldValue)
+        const year = date.getFullYear()
+        //闰年的数量
+        const leapYear = Math.floor(year / 4) - Math.floor(year / 100) + Math.floor(year / 400);
+        switch(targetUnit){
+            case "年":
+                return year;
+            case "月":
+                const month = date.getMonth() + 1
+                return year*12 + month;
+            case "日":
+                console.log()
+                return leapYear*366 + (year-leapYear)*365;
+            case "时":
+                return 24*leapYear*366 + (year-leapYear)*365;
+            case "分":
+                return 60*24*leapYear*366 + (year-leapYear)*365;
+            case "秒":
+                return 3600*24*leapYear*366 + (year-leapYear)*365;
+            default:
+                return year
+        }
+    }
+    else{
+        //如果没有指定单位，默认使用最小单位
+        let unit
+        if(!targetUnit){
+            unit = rule.units.find(unit=>unit.target === false)
+        }
+        else{
+            //获取指定单位
+            unit = rule.units.find(unit=>unit.name == targetUnit)
+        }
+        //获取旧值相较于指定单位的值
+        if(unit?.target && unit?.equalToMin){
+            return oldValue/unit.equalToMin
+        }
+        else{
+            return oldValue
+        }
     }
 }

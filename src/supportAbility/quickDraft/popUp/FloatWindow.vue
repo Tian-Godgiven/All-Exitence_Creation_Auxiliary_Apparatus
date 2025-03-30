@@ -6,6 +6,10 @@
         :click="click" 
         :allowEdge="foldFloatWindow"
         class="quickDraftFloatWindow"
+        :style="{
+            top:position[0]+'px',
+            left:position[1]+'px'
+        }"
         :class={fold:foldFloatWindow,unfold:!foldFloatWindow,focusing:ifFocusing}
         v-click-outside = "clickOutside"
         >
@@ -49,8 +53,8 @@ import { doNotOverContainer } from '@/api/doNotOverContainer';
             if(!floatWindowRef.value)return
             const dom = floatWindowRef.value.$el.nextElementSibling
             //记录展开前的位置
-            position[0] = dom.offsetLeft
-            position[1] = dom.offsetTop
+            position[0] = dom.offsetTop
+            position[1] = dom.offsetLeft
             doNotOverContainer(dom,document.body,"all",10,0.2)
         },1)
     }
@@ -59,8 +63,8 @@ import { doNotOverContainer } from '@/api/doNotOverContainer';
         switchFoldFloatWindow(true)
         if(!floatWindowRef.value)return
         const dom = floatWindowRef.value.$el.nextElementSibling
-        dom.style.left = position[0]+"px"
-        dom.style.top = position[1]+"px"
+        dom.style.top = position[0]+"px"
+        dom.style.left = position[1]+"px"
     }
     //点击外部：折叠时失去聚焦
     function clickOutside(){
@@ -68,18 +72,21 @@ import { doNotOverContainer } from '@/api/doNotOverContainer';
             ifFocusing.value = false
         }
     }
+
     //悬浮窗的拖动
     const moving = ref(false) //正在拖动
-    let position:[number,number] = [0,0] //记录的位置
-    let oldPosition:[number,number] = [0,0] //展开状态时，移动前的位置
+    //当前位置or初始位置
+    let position:[number,number] = nowQuickDraftSetting.floatWindow.position
+    //展开状态时，移动前的位置
+    let oldPosition:[number,number] = [0,0] 
     function onMove(state:"start"|"stop",dom:HTMLElement){
         if(state=="start"){
             moving.value = true
-            oldPosition = [dom.offsetLeft,dom.offsetTop]
+            oldPosition = [dom.offsetTop,dom.offsetLeft]
         }
         else if(state=="stop"){
             moving.value = false
-            const newPosition:[number,number] = [dom.offsetLeft,dom.offsetTop]
+            const newPosition:[number,number] = [dom.offsetTop,dom.offsetLeft]
             //如果是展开状态，则使用移动了的距离来改变position
             if(!foldFloatWindow.value){
                 position = [position[0]+newPosition[0]-oldPosition[0],
@@ -99,8 +106,6 @@ import { doNotOverContainer } from '@/api/doNotOverContainer';
 @use "@/static/style/global.scss" as global;
     .quickDraftFloatWindow{
         position: absolute;
-        top: 100px;
-        left: 500px;
         color: global.$antiBgColor;
         background-color: global.$bgColor;
         border-radius: 10px;

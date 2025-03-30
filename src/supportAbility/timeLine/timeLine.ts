@@ -6,7 +6,7 @@ import { reactive, shallowRef, toRaw } from "vue";
 import { tryReadFileAtPath, writeFileAtPath } from "@/hooks/fileSysytem";
 import { addToRightPage } from "@/hooks/pages/rightPage";
 import { nowProjectInfo } from "@/hooks/project/projectData";
-import { translateTimeArrToValue, translateTimeValueToCarryover } from "../customTime/translateTime";
+import { translateTimeArrToValue, translateTimeValueToArr, translateTimeValueToCarryover } from "../customTime/translateTime";
 import { TimeRule } from "../customTime/customTime";
 
 //注册辅助功能对象
@@ -129,15 +129,12 @@ export function getScaleInfo(scaleValue:number,rule:TimeRule,unitEnd?:string){
     //scale的值是相较于最小单位的，因此需要进行一道转化
     if(unitEnd){
         //设其为该值的时间单位数组
-        const timeArr = [
-            {  
-                name:unitEnd,
-                value:scaleValue
-            }
-        ]
+        const timeArr = [{  
+            name:unitEnd,
+            value:scaleValue
+        }]
         //获取其真实值
         const tmp = translateTimeArrToValue(timeArr,rule)
-        console.log(tmp)
         if(tmp)scaleValue = tmp
     }
     //获取该刻度值相较于最小单位的进位
@@ -152,6 +149,41 @@ export function getScaleInfo(scaleValue:number,rule:TimeRule,unitEnd?:string){
     })
     //进位越多刻度越长
     const carryoverNum = carryoverArr.length
+    return {
+        height:5+2*carryoverNum,
+        width:1+0.5*carryoverNum,
+        text
+    }
+}
+//接受时间轴的第一个刻度的值，计算出刻度的单位和文本
+export function getStartScaleInfo(scaleValue:number,rule:TimeRule,unitEnd?:string){
+    if(!rule)return {
+        height:5,
+        width:1,
+    };
+    //scale的值是相较于最小单位的，因此需要进行一道转化
+    if(unitEnd){
+        //设其为该值的时间单位数组
+        const timeArr = [{  
+            name:unitEnd,
+            value:scaleValue
+        }]
+        //获取其真实值
+        const tmp = translateTimeArrToValue(timeArr,rule)
+        if(tmp)scaleValue = tmp
+    }
+    //获取该刻度值相较于最小单位的值
+    const timeArr = translateTimeValueToArr({
+        value:scaleValue,
+        rule,
+        unitEnd
+    })
+    //刻度文本为各个单位的值和名称
+    const text = timeArr.map(unit=>{
+        return unit.value.toString() + unit.name
+    })
+    //进位越多刻度越长
+    const carryoverNum = timeArr.length
     return {
         height:5+2*carryoverNum,
         width:1+0.5*carryoverNum,

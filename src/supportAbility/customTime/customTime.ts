@@ -29,7 +29,7 @@ export type CustomTimeRuleUnit = {
 export type CustomTimeRule ={
     name:string,
     numFormat:"阿拉伯数字"|"简体中文数字"|"繁体中文数字",
-    units:CustomTimeRuleUnit[],
+    units:[CustomTimeRuleUnit,...CustomTimeRuleUnit[]],
     __key:string
 }
 
@@ -193,7 +193,7 @@ export function getCustomTimeRuleByKey(key:string){
 
 //通过递归获得某个unit相较于其对应的target直到最小单位时的等价值
 //eg:1时 = 3600秒
-export function getCustomEqualToMinUnit(unitList:CustomTimeRuleUnit[],unit:CustomTimeRuleUnit,base:number){
+export function getCustomEqualToUnit(unitList:CustomTimeRuleUnit[],unit:CustomTimeRuleUnit,base:number){
     const target = unit.target;
     //当前单位就是最小单位
     if(target == false){return base}
@@ -207,5 +207,5 @@ export function getCustomEqualToMinUnit(unitList:CustomTimeRuleUnit[],unit:Custo
     //否则从UnitList中移除当前unit，进行递归
     const index = unitList.indexOf(unit)
     const newList = unitList.filter((_, i) => i !== index);
-    return getCustomEqualToMinUnit(newList,targetUnit,base*unit.equal)
+    return getCustomEqualToUnit(newList,targetUnit,base*unit.equal)
 }

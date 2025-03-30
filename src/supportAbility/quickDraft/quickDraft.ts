@@ -30,7 +30,7 @@ export type QuickDraft = {
         focusingItem:string | null,
         floatWindow:{
             show:boolean,
-            position:[number,number]
+            position:[number,number] //top和left，单位px
         }
     }
 }

@@ -9,10 +9,12 @@
         <svg class="line">
             <path :d="path" stroke="black" stroke-width="2" fill="none"/>
             <g stroke="black">
+                <LineTick :tick="{x:0,value:startValue}"></LineTick>
                 <LineTick v-for="tick in ticks" :tick></LineTick>
             </g>
         </svg>
         <Item v-for="(item,index) in itemList" 
+            :style="{left:getItemLocation(item)+'px'}"
             :item="item" 
             :index="index"
             :type="timeLine.targetType">
@@ -26,13 +28,13 @@
     import { computed, provide, ref, useTemplateRef } from 'vue';
     import { TimeLineItem } from './item/item';
     import Item from "./item/Item.vue"
-    import { getTimeRule, translateTimeValueToArr } from '@/supportAbility/customTime/translateTime';
+    import { getTimeRule, translateTimeArrToValue, translateTimeValueEqualToUnit, translateTimeValueToArr } from '@/supportAbility/customTime/translateTime';
 import LineTick from './LineTick.vue';
     const {timeLine} = {timeLine:{
         targetType:"exitence",//时间线目标的类型
-        timeRuleKey:"lJBZCzI5469McfKuOTizE",//该时间线所使用的时间规则的key
+        timeRuleKey:"date",//该时间线所使用的时间规则的key
         now:null,//该时间线当前所处的位置，默认从最早的一个对象开始
-        unitEnd:null,//该时间线当前所显示的最小单位
+        unitEnd:"日"
     }}
     // defineProps<{timeLine:TimeLine}>()
 
@@ -53,7 +55,7 @@ import LineTick from './LineTick.vue';
                 typeKey:"123",
                 exitenceKey:"456"
             },
-            time:10
+            time:Date.now()
         }]
         // return getTimeLineItems(timeLine)
         //按时间值排序
@@ -63,9 +65,13 @@ import LineTick from './LineTick.vue';
 
     //时间轴上各个对象的位置
     function getItemLocation(item:TimeLineItem){
-        //获取该对象的时间值相较于当前指定的最小时间单位的值
-
-        //获取该值在刻度上所处的位置，每10个刻度为1个最小时间单位
+        if(!timeRule)return;
+        //获取该对象的时间值相较于当前指定的最小时间单位的值,也就是其所在的第几个刻度
+        let tickValue = translateTimeValueEqualToUnit(item.time,timeRule,minUnit.value)
+        //要减去时间轴的起始值
+        tickValue -= startValue.value
+        //返回刻度*每个刻度的px
+        return tickValue * tickSpacing
     }
 
     //点击到时间轴
@@ -117,33 +123,38 @@ import LineTick from './LineTick.vue';
 
 //时间轴刻度
     /*这个时间轴的起始值
-      即最小时间值对象的时间值，对应时间规则中的指定最小单位的值
+      即最小时间值对象的时间值最接近的包含，对应时间规则中的指定最小单位的值
       例如指定单位为日时，返回的是该时间值等于多少日*/
-    const startValue = computed(()=>{
+    const startValue = computed<number>(()=>{
         if(!timeRule)return 0
-        const minValue = itemList.value[0].time
-        const arr = translateTimeValueToArr({
-            value:minValue,
-            "rule":timeRule,
+        const minItem = itemList.value[0]
+        const timeArr = translateTimeValueToArr({
+            value:minItem.time,
+            rule:timeRule,
             unitEnd:minUnit.value
         })
-        //获取其中unitEnd的值
-        const tmp = arr.find(item=>item.name == minUnit.value)
-        if(!tmp)return 0
-        return tmp.value
+        //设定其中最小单位的值为1
+        const smallUnit = timeArr.at(-1)
+        if(smallUnit){
+            smallUnit.value = 1
+        }
+        //然后获得这个数组转换回值
+        const smallValue = translateTimeArrToValue(timeArr,timeRule)
+        //再获得这个值相较于最小单位的值
+        if(!smallValue)return 0;
+        const startValue = translateTimeValueEqualToUnit(smallValue,timeRule,minUnit.value)
+        if(!startValue)return 0
+        return startValue
     })
-    const shortTickNum = 4//两个长刻度中间的短刻度数量
     const tickSpacing = 10;//每个刻度的长度，单位px
-    //每个刻度中间的距离
-    const spacePerTick = computed(()=>{
-        return tickSpacing*(shortTickNum+1)
-    })
+
     //刻度分布情况
     const ticks = computed(()=>{
         //总的刻度数量
         const totalTicks = Math.floor((lineWidth.value) / tickSpacing);
         const ticks = [];
-        for (let i = 0; i <= totalTicks; i++) {
+        //跳过第一个刻度，其为起始刻度
+        for (let i = 1; i <= totalTicks; i++) {
             const value = startValue.value + i//该刻度对应的值
             const x = i * tickSpacing;//该刻度的位置
             ticks.push({
@@ -176,6 +187,7 @@ import LineTick from './LineTick.vue';
 
 .line {
     position: absolute;
+    left: 20px;
     width: 100%;
     height: 100px;
     overflow: visible;

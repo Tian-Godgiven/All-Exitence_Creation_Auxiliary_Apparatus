@@ -34,7 +34,7 @@
 
 <script setup lang='ts'>
     import {reactive,toRaw} from 'vue';
-import { addCustomTimeRule, checkCustomTimeRule, CustomTimeRule, editCustomTimeRule, getCustomEqualToMinUnit, hideEditPage, sortRuleUnits} from '../customTime';
+import { addCustomTimeRule, checkCustomTimeRule, CustomTimeRule, editCustomTimeRule, getCustomEqualToUnit, hideEditPage, sortRuleUnits} from '../customTime';
 import { cloneDeep } from 'lodash';
 import DownLineInput from '@/components/other/input/downLineInput.vue';
 import { ElOption, ElSelect } from 'element-plus';
@@ -84,7 +84,7 @@ import { showQuickInfo } from '@/api/showQuickInfo';
         //为所有单位添加或更新equalToMin
         for(let unit of newRule.units){
             if(unit.target){
-                const equalToMin = getCustomEqualToMinUnit(newRule.units,unit,1)
+                const equalToMin = getCustomEqualToUnit(newRule.units,unit,1)
                 if(equalToMin){
                     unit.equalToMin = equalToMin
                 }

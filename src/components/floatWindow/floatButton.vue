@@ -142,7 +142,6 @@ import { ref } from 'vue'
                 }
                 return {theEdge,closeDis}
             }
-
             //触发onMove的停止事件
             if(onMove)onMove("stop",selectDom)
         }
