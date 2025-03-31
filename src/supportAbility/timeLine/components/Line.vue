@@ -30,6 +30,7 @@
     import Item from "./item/Item.vue"
     import { getTimeRule, translateTimeArrToValue, translateTimeValueEqualToUnit, translateTimeValueToArr } from '@/supportAbility/customTime/translateTime';
     import LineTick from './LineTick.vue';
+import { getSmallestTimeValue } from '../timeLine';
     const {timeLine} = defineProps<{timeLine:any/*TimeLine*/}>()
 
     //使用的时间规则
@@ -66,7 +67,7 @@
         //将指定位置聚焦，移动其到中心
     }
 
-//拖动时间轴
+    //拖动时间轴
     const timeLineLeft = ref(0) //时间线当前的移动距离
     let startLeft = 0 //时间线在移动之前的移动距离
     let isDragging = false //正在拖动
@@ -108,28 +109,14 @@
         isDragging = false
     }
 
-//时间轴刻度
+    //时间轴刻度
     /*这个时间轴的起始值
       即最小时间值对象的时间值最接近的包含，对应时间规则中的指定最小单位的值
       例如指定单位为日时，返回的是该时间值等于多少日*/
     const startValue = computed<number>(()=>{
         if(!timeRule)return 0
         const minItem = itemList.value[0]
-        const timeArr = translateTimeValueToArr({
-            value:minItem.time,
-            rule:timeRule,
-            unitEnd:minUnit.value
-        })
-        //设定其中最小单位的值为1
-        const smallUnit = timeArr.at(-1)
-        if(!smallUnit)return 0
-        smallUnit.value = 1
-        //然后获得这个数组转换回值
-        const smallValue = translateTimeArrToValue(timeArr,timeRule)
-        //再获得这个值相较于最小单位的值
-        if(smallValue===false)return 0;
-        const startValue = translateTimeValueEqualToUnit(smallValue,timeRule,minUnit.value)
-        return startValue
+        return getSmallestTimeValue(minItem.time,timeRule,minUnit.value)
     })
     const tickSpacing = 10;//每个刻度的长度，单位px
 

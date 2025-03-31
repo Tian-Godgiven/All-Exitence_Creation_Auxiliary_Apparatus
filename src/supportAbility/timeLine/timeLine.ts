@@ -5,7 +5,7 @@ import { reactive, ref, shallowRef, toRaw } from "vue";
 import { tryReadFileAtPath, writeFileAtPath } from "@/hooks/fileSysytem";
 import { addToRightPage } from "@/hooks/pages/rightPage";
 import { nowProjectInfo } from "@/hooks/project/projectData";
-import { translateTimeUnitValueToValue, translateTimeValueToArr, translateTimeValueToCarryover } from "../customTime/translateTime";
+import { translateTimeArrToValue, translateTimeUnitValueToValue, translateTimeValueEqualToUnit, translateTimeValueToArr, translateTimeValueToCarryover } from "../customTime/translateTime";
 import { TimeRule } from "../customTime/customTime";
 
 //注册辅助功能对象
@@ -182,6 +182,24 @@ export function getStartScaleInfo(scaleValue:number,rule:TimeRule,unitEnd?:strin
         width:1+0.5*carryoverNum,
         text
     }
+}
+//获取一个时间值，将最小单位设定为最小值时的时间值，用于生成第一个刻度
+export function getSmallestTimeValue(timeValue:number,rule:TimeRule,unitEnd?:string){
+    const timeArr = translateTimeValueToArr({
+        value:timeValue,
+        rule,
+        unitEnd
+    })
+    //设定其中最小单位的值为1
+    const smallUnit = timeArr.at(-1)
+    if(!smallUnit)return 0
+    smallUnit.value = 1
+    //然后获得这个数组转换回值
+    const smallValue = translateTimeArrToValue(timeArr,rule)
+    //再获得这个值相较于最小单位的值
+    if(smallValue===false)return 0;
+    const startValue = translateTimeValueEqualToUnit(smallValue,rule,unitEnd)
+    return startValue
 }
 
 

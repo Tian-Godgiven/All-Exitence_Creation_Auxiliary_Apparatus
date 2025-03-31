@@ -9,9 +9,9 @@
                 :inputSupport="true">
             </textAreaVue>
 			<div class="exitenceAbility">
-				<div class="button" @click="switchControlMode">属性管理</div>
-				<div class="button" @click="setExitence">事物设置</div>
-				<div class="button" @click="addNewStatus">新增属性</div>
+				<Button @click="switchControlMode" name="属性管理"></Button>
+				<Button @click="setExitence" name="事物设置"></Button>
+				<Button @click="addNewStatus" name="新增属性"></Button>
 			</div>
         </div>
         <div class="targetInner" ref="inner">
@@ -34,14 +34,15 @@
 </template>
 
 <script setup lang="ts" name="">
-import { computed, provide, ref } from 'vue';
-import textAreaVue from '@/components/other/textArea/textArea.vue';
-import exitenceStatusVue from '@/components/all-exitence/exitence/exitenceStatus.vue';
-import { changeExitenceName, nowAllExitence } from '@/hooks/all-exitence/allExitence';
-import draggableListVue from '../other/draggableList/draggableList.vue';	
-import { Type } from '@/class/Type';
-import Status from '@/interfaces/Status';
-import { showPopUp } from '@/hooks/pages/popUp';
+	import { computed, provide, ref } from 'vue';
+	import textAreaVue from '@/components/other/textArea/textArea.vue';
+	import exitenceStatusVue from '@/components/all-exitence/exitence/exitenceStatus.vue';
+	import { changeExitenceName, nowAllExitence } from '@/hooks/all-exitence/allExitence';
+	import draggableListVue from '../other/draggableList/draggableList.vue';	
+	import { Type } from '@/class/Type';
+	import Status from '@/interfaces/Status';
+	import Button from '../global/Button.vue';
+	import { showPopUp } from '@/hooks/pages/popUp';
 
 	let {exitence} = defineProps(["exitence"])
 
@@ -136,6 +137,11 @@ import { showPopUp } from '@/hooks/pages/popUp';
 			.scrollSpace{
 				width: 100%;
 				height: 30%;
+			}
+		}
+		.top{
+			.exitenceAbility{
+				display: flex;
 			}
 		}
     }
