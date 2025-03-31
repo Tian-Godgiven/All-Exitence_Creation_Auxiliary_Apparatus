@@ -15,20 +15,21 @@
                 :quick-draft-item="quickDraftItem"/>
         </div>
     </div>
-    <transition name="slide">
+    <SlidePage :show="ifFocusing">
         <FocusingPage></FocusingPage>
-    </transition>
+    </SlidePage>
 </div>  
 </template>
 
 <script setup lang='ts'>
     import Button from '@/components/global/Button.vue';    
-    import { addQuickDraftItem, createQuickDraftItem, nowQuickDraft , switchQuickDraftFloatWindow, switchFoldFloatWindow, floatWindowKey } from '../quickDraft';
+    import { addQuickDraftItem, createQuickDraftItem, nowQuickDraft , switchQuickDraftFloatWindow, switchFoldFloatWindow, floatWindowKey, ifFocusing } from '../quickDraft';
     import { closePopUp, PopUp } from '@/hooks/pages/popUp';
     import QuickDraftItem from '../component/QuickDraftItem.vue';
     import FocusingPage from '../component/FocusingPage.vue';
     import { ref,onMounted,onUnmounted, toRaw } from 'vue';
 import { getMonitor } from '@/api/dragToSort';
+import SlidePage from '@/components/other/SlidePage.vue';
     const {popUp} = defineProps<{popUp?:PopUp}>()
     const quickDraft = nowQuickDraft
     //切换管理模式
@@ -113,17 +114,5 @@ import { getMonitor } from '@/api/dragToSort';
             flex-direction: column;
         }
     }
-}
-
-.slide-enter-active, .slide-leave-active {
-    transition: transform 0.5s ease;
-}
-
-.slide-enter-from, .slide-leave-to /* .slide-leave-active in <2.1.8 */ {
-    transform: translateX(100%); /* 初始状态在右侧外面 */
-}
-
-.slide-enter-to, .slide-leave-from /* .slide-leave-active in <2.1.8 */ {
-    transform: translateX(0); /* 最终状态显示在父元素内 */
 }
 </style>

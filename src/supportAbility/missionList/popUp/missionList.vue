@@ -39,9 +39,10 @@
 				:mission="mission" />
 		</div>
 	</div>
-	<transition name="slide">
-		<EditMission class="editMission" v-if="ifShowEditMission"></EditMission>
-	</transition>
+
+	<SlidePage :show="ifShowEditMission">
+		<EditMission></EditMission>
+	</SlidePage>
 </div>
 	
 </template>
@@ -53,6 +54,7 @@
 	import MissionTag from '../components/missionTag.vue';
 	import Button from '@/components/global/Button.vue';
 	import { createNewMission, ifShowEditMission, Mission, MissionState, nowMissionList, manageMode } from '../missionList';
+import SlidePage from '@/components/other/SlidePage.vue';
 	const missionList = nowMissionList
 	//用于筛选的标签库
 	const selectTags:Ref<{tag:string,num:number,chosen:boolean}[]> = computed(()=>{
@@ -242,16 +244,6 @@
 			width: 0;
 		}
 	}
-	
-
-	.editMission{
-		position: absolute;
-		left: 0;
-		top: 0;
-		height: 100%;
-		width: 100%;
-		z-index: 2;
-	}
 
 	.missionTag.chosen{
 		color: black;
@@ -262,15 +254,4 @@
 		background-color: rgb(208, 208, 208);
 	}
 
-	.slide-enter-active, .slide-leave-active {
-		transition: transform 0.5s ease;
-	}
-
-	.slide-enter-from, .slide-leave-to /* .slide-leave-active in <2.1.8 */ {
-		transform: translateX(100%); /* 初始状态在右侧外面 */
-	}
-
-	.slide-enter-to, .slide-leave-from /* .slide-leave-active in <2.1.8 */ {
-		transform: translateX(0); /* 最终状态显示在父元素内 */
-	}
 </style>

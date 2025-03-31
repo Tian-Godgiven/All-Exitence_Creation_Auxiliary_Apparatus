@@ -32,8 +32,8 @@
     </div>
     
     <div class="finalButtons">
-        <Button @click="confirm" name="确认">确认</Button>
-        <Button @click="cancel" name="取消">取消</Button>
+        <Button @click="confirm" name="确认"></Button>
+        <Button @click="cancel" name="取消"></Button>
     </div>
 </div>
 </template>
@@ -111,14 +111,6 @@
 @use "@/static/style/globalStyle.scss";
 @use "@/static/style/popUp.scss";
 .editMission{
-    background-color: white;
-    position: absolute;
-    left: 0;
-    top: 0;
-    padding: 20px;
-    box-sizing: border-box;
-    width: 100%;
-    height: 100%;
     .topButtons{
         width: 100%;
         display: flex;

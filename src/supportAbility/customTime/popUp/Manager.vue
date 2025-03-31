@@ -14,9 +14,10 @@
             </TimeRule>
         </div>
     </div>
-    <Transition name="slide">
-        <EditTimeRule ref="editPageRef" v-if="ifShowEditPage" ></EditTimeRule>
-    </Transition>
+
+    <SlidePage :show="ifShowEditPage">
+        <EditTimeRule></EditTimeRule>
+    </SlidePage>
     
 
 </div>
@@ -29,6 +30,7 @@
     import TimeRule from '../components/TimeRule.vue';
     import Button from '@/components/global/Button.vue';
 import { closePopUp, PopUp } from '@/hooks/pages/popUp';
+import SlidePage from '@/components/other/SlidePage.vue';
     const {popUp} = defineProps<{popUp:PopUp}>()    
     //添加新的时间表达式
     function addTimeRule(){
@@ -58,15 +60,5 @@ import { closePopUp, PopUp } from '@/hooks/pages/popUp';
         }
     }
 }
-.slide-enter-active, .slide-leave-active {
-    transition: transform 0.5s ease;
-}
 
-.slide-enter-from, .slide-leave-to /* .slide-leave-active in <2.1.8 */ {
-    transform: translateX(100%); /* 初始状态在右侧外面 */
-}
-
-.slide-enter-to, .slide-leave-from /* .slide-leave-active in <2.1.8 */ {
-    transform: translateX(0); /* 最终状态显示在父元素内 */
-}
 </style>

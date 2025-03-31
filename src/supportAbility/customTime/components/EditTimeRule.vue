@@ -34,15 +34,15 @@
 
 <script setup lang='ts'>
     import {reactive,toRaw} from 'vue';
-import { addCustomTimeRule, checkCustomTimeRule, CustomTimeRule, editCustomTimeRule, getCustomEqualToUnit, hideEditPage, sortRuleUnits} from '../customTime';
-import { cloneDeep } from 'lodash';
-import DownLineInput from '@/components/other/input/downLineInput.vue';
-import { ElOption, ElSelect } from 'element-plus';
-import Button from '@/components/global/Button.vue';
-import EditTimeRuleUnit from './EditTimeRuleUnit.vue';
-import { editTarget } from '../customTime'; 
-import { nanoid } from 'nanoid';
-import { showQuickInfo } from '@/api/showQuickInfo';
+    import { addCustomTimeRule, checkCustomTimeRule, CustomTimeRule, editCustomTimeRule, getCustomEqualToUnit, hideEditPage, sortRuleUnits} from '../customTime';
+    import { cloneDeep } from 'lodash';
+    import DownLineInput from '@/components/other/input/downLineInput.vue';
+    import { ElOption, ElSelect } from 'element-plus';
+    import Button from '@/components/global/Button.vue';
+    import EditTimeRuleUnit from './EditTimeRuleUnit.vue';
+    import { editTarget } from '../customTime'; 
+    import { nanoid } from 'nanoid';
+    import { showQuickInfo } from '@/api/showQuickInfo';
     //初始值
     const idle:CustomTimeRule = {
         name:"",
@@ -117,15 +117,6 @@ import { showQuickInfo } from '@/api/showQuickInfo';
 @use "@/static/style/global.scss" as global;
 @use "@/static/style/popUp.scss";
 .editTimeRule{
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    background-color: global.$bgColor;
-    box-sizing: border-box;
-    padding: 20px;
-    z-index: 2;
     .selectBar{
         display: grid;
         grid-template-columns: 9fr 9fr;

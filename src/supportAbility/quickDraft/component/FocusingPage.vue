@@ -1,55 +1,54 @@
 <template>
-    <div class="focusingPage" 
-        v-if="quickDraftItem != null" 
-        v-show="ifFocusing">
-        <div class="topButtons">
-            <Button 
-                :icon="index == 0? 'leftArrow-disabled':'leftArrow'" 
-                name="上一暂记对象" 
-                @click="focusLastItem"/>
-            <Button 
-                icon="backMain" 
-                name="管理页面" 
-                @click="showManagePage"/>
-            <Button 
-                v-if="float"
-                icon="collapse" 
-                name="折叠悬浮窗" 
-                @click="fold"/>
-            <Button 
-                :icon="index == nowQuickDraft.length-1? 'rightArrow-disabled':'rightArrow'" 
-                name="下一暂记对象" 
-                @click="focusNextItem"/>
-        </div>
-        <Button class="createNewButton" 
-            icon="add" 
-            name="创建新暂记对象" 
-            @click="createNewItem"/>
-        <div class="times">
-            <Time class="time" 
-                :value="timeValue.number" 
-                rule="date" 
-                unit-from="年" 
-                unit-end="日" 
-                linker="/" 
-                :show-unit="false"></Time>
-            <Time class="time" 
-                :value="timeValue.number" 
-                rule="date" 
-                unit-from="时" 
-                unit-end="分" 
-                linker=":" 
-                :show-unit="false">
-            </Time>
-        </div>
-        <TextArea class="inner"
-            placeholder="无内容"
-            @focus="quickDraftItem.time = Date.now()"
-            :input-support="true"
-            input-suggestion-list="all"
-            v-model="quickDraftItem.inner">
-        </TextArea>
+<div class="focusingPage" 
+    v-if="quickDraftItem != null">
+    <div class="topButtons">
+        <Button 
+            :icon="index == 0? 'leftArrow-disabled':'leftArrow'" 
+            name="上一暂记对象" 
+            @click="focusLastItem"/>
+        <Button 
+            icon="backMain" 
+            name="管理页面" 
+            @click="showManagePage"/>
+        <Button 
+            v-if="float"
+            icon="collapse" 
+            name="折叠悬浮窗" 
+            @click="fold"/>
+        <Button 
+            :icon="index == nowQuickDraft.length-1? 'rightArrow-disabled':'rightArrow'" 
+            name="下一暂记对象" 
+            @click="focusNextItem"/>
     </div>
+    <Button class="createNewButton" 
+        icon="add" 
+        name="创建新暂记对象" 
+        @click="createNewItem"/>
+    <div class="times">
+        <Time class="time" 
+            :value="timeValue.number" 
+            rule="date" 
+            unit-from="年" 
+            unit-end="日" 
+            linker="/" 
+            :show-unit="false"></Time>
+        <Time class="time" 
+            :value="timeValue.number" 
+            rule="date" 
+            unit-from="时" 
+            unit-end="分" 
+            linker=":" 
+            :show-unit="false">
+        </Time>
+    </div>
+    <TextArea class="inner"
+        placeholder="无内容"
+        @focus="quickDraftItem.time = Date.now()"
+        :input-support="true"
+        input-suggestion-list="all"
+        v-model="quickDraftItem.inner">
+    </TextArea>
+</div>
 </template>
 
 <script setup lang='ts'>
@@ -120,14 +119,7 @@
 
     .focusingPage{
         background-color: global.$bgColor;
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        top: 0;
-        left: 0;
-        box-sizing: border-box;
-        padding: 20px;
-        z-index: 2;
+        padding-top: 20px;
         .topButtons{
             height: 60px;
             display: flex;
