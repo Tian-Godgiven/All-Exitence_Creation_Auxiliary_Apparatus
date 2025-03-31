@@ -38,33 +38,33 @@ import { getMonitor } from '@/api/dragToSort';
     }
     //管理放置事件
     let cleanup = ()=>{}
-onMounted(()=>{
-	cleanup = getMonitor({
-        canMonitor:(source)=>{
-            const data = source.data
-            return data.type == "quickDraftItem"
-        },
-        "sourceIndex":(sourceData)=>{
-            const key = sourceData.itemKey
-            return quickDraft.findIndex((item)=>{
-                return item.__key == key
-            })
-        },
-        "targetIndex":(targetData)=>{
-            const key = targetData.itemKey
-            return quickDraft.findIndex((item)=>{
-                return item.__key == key
-            })
-        },
-        "list":toRaw(quickDraft),
-        returnNewList:(newList)=>{
-            Object.assign(quickDraft,newList)
-        }
+    onMounted(()=>{
+        cleanup = getMonitor({
+            canMonitor:(source)=>{
+                const data = source.data
+                return data.type == "quickDraftItem"
+            },
+            "sourceIndex":(sourceData)=>{
+                const key = sourceData.itemKey
+                return quickDraft.findIndex((item)=>{
+                    return item.__key == key
+                })
+            },
+            "targetIndex":(targetData)=>{
+                const key = targetData.itemKey
+                return quickDraft.findIndex((item)=>{
+                    return item.__key == key
+                })
+            },
+            "list":toRaw(quickDraft),
+            returnNewList:(newList)=>{
+                Object.assign(quickDraft,newList)
+            }
+        })
     })
-})
-onUnmounted(()=>{
-	cleanup()
-})
+    onUnmounted(()=>{
+        cleanup()
+    })
     //切换显示悬浮窗
     function switchFloatWindow(){
         switchQuickDraftFloatWindow()

@@ -1,5 +1,5 @@
 <template>
-<div class="createTimeLine">
+<div class="createTimeLine" ref="pageRef">
     <div class="chooseTarget">
         <div class="chooseType">目标类型:
             <ElSelect class="selector" v-model="targetType">
@@ -23,6 +23,11 @@
     <div>起始时间：
         <DownLineInput v-model="startTime" placeholder="默认"></DownLineInput>
     </div>
+
+    <div class="finalButtons">
+        <Button @click="confirm" name="确认"></Button>
+        <Button @click="quit" name="取消"></Button>
+    </div>
 </div>
 </template>
 
@@ -30,13 +35,15 @@
     import DownLineInput from '@/components/other/input/downLineInput.vue';
     import { showPopUp } from '@/hooks/pages/popUp';
     import { ElOption, ElSelect } from 'element-plus';
-    import { computed, ref, shallowRef } from 'vue';
+    import { computed, onMounted, ref, shallowRef, useTemplateRef, watch, watchEffect } from 'vue';
     import ChooseExitence from "../ChooseExitence/ChooseExitence.vue"
     import ShowExitence from '../ChooseExitence/ShowExitence.vue';
     import ChooseArticle from '../ChooseArticle/ChooseArticle.vue';
     import ChooseStatus from '../ChooseStatus/ChooseStatus.vue';
     import Button from '@/components/global/Button.vue';
     import ShowArticle from '../ChooseArticle/ShowArticle.vue';
+import { hideCreateTimeLine, ifShowCreatePage } from '../../timeLine';
+import gsap from 'gsap';
     //选择的目标类型
     const targetTypeList = [
         {value:"exitence",label:"事物"},
@@ -91,7 +98,7 @@
         }
     }
 
-    //显示指定的内容
+    //显示指定类型对象的内容
     const vue = computed(()=>{
         switch(targetType.value){
             case "exitence":
@@ -100,8 +107,6 @@
                 return ShowArticle
         }
     })
-
-    
 
     //目标属性：适用于文章or事物属性
     const timeStatusKey = ref<string>("")
@@ -112,9 +117,22 @@
     })
     //起始时间值
     const startTime = ref(0)
+
+    //确认
+    function confirm(){
+        hideCreateTimeLine()
+    }
+    //取消
+    function quit(){
+        hideCreateTimeLine()
+    }
 </script>
 
 <style scoped lang='scss'>
+@use "@/static/style/popUp.scss";
+.createTimeLine{
+    
+}
 .chooseTarget{
     width: 100%;
     .chooseType{
@@ -132,4 +150,8 @@
         margin: 20px 0px;
     }
 }
+
+    .finalButtons{
+        @extend .finalButtons;
+    }
 </style>

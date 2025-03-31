@@ -160,19 +160,22 @@
     height: 300px;
     overflow: hidden;
     cursor: grab;
+    .wrapper {
+        position: absolute;
+        width: 100%;
+        top: 50%;
+        margin:0 10px;
+        .line {
+            position: absolute;
+            width: 100%;
+            height: 100px;
+            overflow: visible;
+        }
+    }
 }
 
-.wrapper {
-    position: absolute;
-    width: 100%;
-    top: 50%;
-    margin:0 10px;
-}
 
-.line {
-    position: absolute;
-    width: 100%;
-    height: 100px;
-    overflow: visible;
-}
+
+
+
 </style>

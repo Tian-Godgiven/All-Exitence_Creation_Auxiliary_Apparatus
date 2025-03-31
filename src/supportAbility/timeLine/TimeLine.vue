@@ -1,5 +1,6 @@
 <template>
-    <div class="timeLine">
+<div class="timeLinePopUp">
+    <div class="manage">
         <div class="topBar">
             <Button @click="createNew" name="新建"></Button>
             <div>管理</div>
@@ -9,12 +10,22 @@
             <Line :timeLine=testTimeLine[1]></Line>
         </div>
     </div>
+
+    <SlidePage :show="ifShowCreatePage">
+        <CreateTimeLine></CreateTimeLine>
+    </SlidePage>
+    
+</div>
+
+    
 </template>
 
 <script setup lang='ts'>
     import Button from '@/components/global/Button.vue';
     import Line from './components/Line.vue'
-import { nowAllTimeLine, showCreateTimeLinePopUp } from './timeLine';
+    import CreateTimeLine from "./popUp/CreateTimeLine/CreateTimeLine.vue"
+    import { ifShowCreatePage, nowAllTimeLine, showCreateTimeLine } from './timeLine';
+    import SlidePage from '@/components/other/SlidePage.vue';
 
     const testTimeLine = [
         {
@@ -48,13 +59,26 @@ import { nowAllTimeLine, showCreateTimeLinePopUp } from './timeLine';
         
     ]
 
-    //显示新建弹窗
+    //显示新建时间线
     function createNew(){
-        showCreateTimeLinePopUp()
+        showCreateTimeLine()
     }
     
 </script>
 
 <style scoped lang='scss'>
+.timeLinePopUp{
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    .manage{
+        .topBar{
 
+        }
+        .container{
+            height: calc(100% - 50px);
+        }
+    }
+}
 </style>

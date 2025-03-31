@@ -2,7 +2,7 @@ import { SupportAbilitySignUpItem } from "@/static/list/supportAbilityList";
 import TimeLineVue from "./TimeLine.vue";
 import CreateTimeLineVue from "./popUp/CreateTimeLine/CreateTimeLine.vue";
 import { showPopUp } from "@/hooks/pages/popUp";
-import { reactive, shallowRef, toRaw } from "vue";
+import { reactive, ref, shallowRef, toRaw } from "vue";
 import { tryReadFileAtPath, writeFileAtPath } from "@/hooks/fileSysytem";
 import { addToRightPage } from "@/hooks/pages/rightPage";
 import { nowProjectInfo } from "@/hooks/project/projectData";
@@ -103,15 +103,16 @@ function showTimeLinePopUp(){
 }
 
 //显示创建时间轴弹窗
-export function showCreateTimeLinePopUp(){
-    showPopUp({
-        vue:shallowRef(CreateTimeLineVue),
-        "buttons":[],
-        "mask":true,
-        returnValue:(newTimeLine:TimeLine)=>{
-            createTimeLine(newTimeLine)
-        }
-    })
+export const ifShowCreatePage = ref(false)
+export function showCreateTimeLine(){
+    showTimeLinePopUp()
+    //切换到创建时间轴页面
+    ifShowCreatePage.value = true
+    console.log(ifShowCreatePage.value)
+}
+export function hideCreateTimeLine(){
+    //切换走创建时间轴页面
+    ifShowCreatePage.value = false
 }
 
 //创建新的时间轴
