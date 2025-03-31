@@ -6,7 +6,7 @@
 
 <script setup lang='ts'>
     import gsap from 'gsap';
-import { ref, useTemplateRef, watchEffect } from 'vue';
+    import {useTemplateRef, watchEffect } from 'vue';
 
     const {show} = defineProps<{show:boolean}>()
     //显示与隐藏该页面的动画

@@ -10,24 +10,18 @@
             class="unitEqual"
             v-model="unit.equal" 
             placeholder="相等值"/>
-        <ElSelect v-model="unit.target">
-            <ElOption
-                :label="item.label"
-                :value="item.value"
-                v-for="item in unitTargetChoice">
-            </ElOption>
-        </ElSelect>
+        <Selector v-model="unit.target" :list="unitTargetList"></Selector>
     </div>
 </template>
 
 <script setup lang='ts'>
     import DownLineInput from '@/components/other/input/downLineInput.vue';
-    import { ElSelect,ElOption } from 'element-plus';
     import { computed } from 'vue';
     import { CustomTimeRuleUnit } from '../customTime';
+import Selector from '@/components/global/Selector.vue';
     const {unit,allUnit} = defineProps<{unit:CustomTimeRuleUnit,allUnit:CustomTimeRuleUnit[]}>()
     //获取单位目标选项：不包括自身
-    const unitTargetChoice = computed(()=>{
+    const unitTargetList = computed(()=>{
         const tmp:{label:string,value:string|false}[] = 
             [{label:"最小单位",value:false}]
         for(const target of allUnit){

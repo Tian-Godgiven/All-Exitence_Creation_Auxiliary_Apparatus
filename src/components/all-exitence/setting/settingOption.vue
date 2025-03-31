@@ -21,16 +21,12 @@
 
 		<!-- 选项式 -->
 		<div class="inner" v-else-if="type == 'choose'">
-			<ElSelect
+			<Selector 
 				placeholder="请选择"
 				@change="setTarget"
-				v-model="setValue">
-				<ElOption
-					v-for="item in choices"
-					:label="item.text"
-					:value="item.value"
-				></ElOption>
-			</ElSelect>
+				v-model="setValue"
+				:list="choices">
+			</Selector>
 		</div>
 
 		
@@ -38,10 +34,10 @@
 </template>
 
 <script setup lang="ts" name="">
-import { ElOption, ElSelect } from 'element-plus';
 import { computed, inject, ref, toRaw, watch } from 'vue'; 
 import downLineInputVue from '@/components/other/input/downLineInput.vue';
 import { isArray } from 'lodash';
+import Selector from '@/components/global/Selector.vue';
 
 	//暴露一个方法用以调用确认值函数
 	defineExpose({
@@ -150,9 +146,9 @@ import { isArray } from 'lodash';
 	}
 
 	//choose选择类型所使用的选项
-	let choices = computed(()=>{
+	let choices = computed<{label:string,value:string}[]>(()=>{
 		if(type.value != "choose"){
-			return;
+			return [{label:"无",value:""}];
 		}
 		//优先使用定义的选项数组
 		const tmp = setOption.choices
@@ -171,7 +167,7 @@ import { isArray } from 'lodash';
 			}
 			//如果这个设置项没有默认值，则会在开头添加一个空值选项
 			if(setOption.value == null){
-				tmpList.unshift({text:"无",value:""})
+				tmpList.unshift({label:"无",value:""})
 			}
 			return tmpList
 		}

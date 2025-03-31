@@ -1,11 +1,7 @@
 <template>
     <div class="option" @click.stop="choose">
         <div>{{ item.name }}</div>
-        <ElSelect @click.stop v-model="item.targetStatus">
-            <ElOption v-for="status in item.status" 
-                :value="status.key" 
-                :label="status.name"></ElOption>
-        </ElSelect>
+        <Selector @click.stop v-model="item.targetStatus" :list="statusList"></Selector>
         <Icon :show="ifShow" class="icon" icon="check"></Icon>
     </div>
 </template>
@@ -13,12 +9,20 @@
 <script setup lang='ts'>
 import Icon from '@/components/global/Icon.vue';
 import { chooseTarget, EItem } from './chooseStatus';
-import { ElOption, ElSelect } from 'element-plus';
 import { computed } from 'vue';
+import Selector from '@/components/global/Selector.vue';
 
     const {item} = defineProps<{item:EItem}>()
     const ifShow = computed(()=>{
         return item.state === true
+    })
+    const statusList = computed(()=>{
+        return item.status.map(status=>{
+            return {
+                label:status.name,
+                value:status.key
+            }
+        })
     })
     function choose(){
         //选择该选项

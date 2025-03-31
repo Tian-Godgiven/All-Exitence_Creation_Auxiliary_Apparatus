@@ -139,6 +139,7 @@ export function filterExitenceByRule(exitence:Exitence,rules:any[]){
             case "tag":
                 const tagStatusKey = exitence.setting?.tagStatus
                 const tagStatus = getExitenceStatusByKey(tagStatusKey,exitence.status)
+                if(!tagStatus)return;
                 return tagStatus.value
             default:
                 //事物的某个属性值：提取其中的属性key
@@ -151,6 +152,7 @@ export function filterExitenceByRule(exitence:Exitence,rules:any[]){
                     }
                     //获取事物该属性的值
                     const status = getExitenceStatusByKey(key,exitence.status)
+                    if(!status)return;
                     return status.value
                 } 
                 //事物的某个设置值

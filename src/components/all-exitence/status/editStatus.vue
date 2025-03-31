@@ -9,18 +9,14 @@
 		
 		<!-- 属性类型与设置 -->
 		<div class="statusSet">
-			<ElSelect
+			<Selector
 				@change="changeValueType"
 				class="selectValueType" 
 				v-model="status.valueType"
-				placeholder="Select">
-				<ElOption
-					v-for="item in valueTypes"
-					:key="item.value"
-					:label="item.text"
-					:value="item.value"
-				/>
-			</ElSelect>
+				placeholder="选择类型"
+				:list="valueTypes">
+			</Selector>
+
 			<div class="button" @click="switchSetting">设置</div>
             <div class="button" @click="confirm">
                 <slot name="confirm"></slot>
@@ -45,8 +41,8 @@
 	import { statusBonusInputList } from '@/static/list/statusBonusInputList';
 	import statusNameVue from './statusName.vue';
 	import { showQuickInfo } from '@/api/showQuickInfo';
-	import { ElOption, ElSelect } from 'element-plus';
 	import { cloneDeep } from 'lodash';
+import Selector from '@/components/global/Selector.vue';
 
 	// 需要编辑的属性初值
     let status = inject<any>("status")

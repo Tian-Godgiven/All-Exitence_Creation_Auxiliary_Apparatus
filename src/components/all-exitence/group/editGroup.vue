@@ -19,17 +19,7 @@
             </div>
 
             <!-- 连接分组规则，默认为并且 -->
-            <div>
-                <ElSelect
-                    v-model="ruleLinker"
-                    placeholder="请选择">
-                    <ElOption
-                        v-for="item in ruleLinkerList"
-                        :key="item.value"
-                        :label="item.text"
-                        :value="item.value"/>
-                </ElSelect>
-            </div>
+            <Selector v-model="ruleLinker" placeholder="请选择" :list="ruleLinkerList"/>
 
             <!-- 创建新的分组规则 -->
             <newGroupRuleVue @createGroupRule="createNewRule" ></newGroupRuleVue>
@@ -39,21 +29,21 @@
 </template>
 
 <script setup lang='ts'>
-    import { ref } from 'vue';
+    import { ref} from 'vue';
     import downLineInputVue from '@/components/other/input/downLineInput.vue';
     import newGroupRuleVue from '@/components/all-exitence/group/newGroupRule.vue';
     import draggableListVue from '@/components/other/draggableList/draggableList.vue';
-    import { ElSelect, ElOption } from 'element-plus';
     import groupRuleVue from '@/components/all-exitence/group/groupRule.vue';
+import Selector from '@/components/global/Selector.vue';
     
     const group = defineModel<any>()
 
     //分组规则连接符号
     const ruleLinker = ref("&&")
     const ruleLinkerList = [
-        {text:"并且",value:"&&"},
-        {text:"或者",value:"||"},
-        {text:"取反/否定",value:"!"}
+        {label:"并且",value:"&&"},
+        {label:"或者",value:"||"},
+        {label:"取反/否定",value:"!"}
     ]
 
     //删除已有的分组规则

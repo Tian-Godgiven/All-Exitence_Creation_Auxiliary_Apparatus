@@ -1,11 +1,7 @@
 <template>
 <div class="chooseExitence">
     <div class="chooseTimeRule">选择时间规则
-        <ElSelect v-model="timeRule">
-            <ElOption v-for="item in timeRuleList" 
-                :value="item.value"
-                :label="item.label"/>
-        </ElSelect>
+        <Selector v-model="timeRule" :list="timeRuleList"/>
     </div>
 
     <div class="chooseList">
@@ -54,10 +50,10 @@ import ChooseInNode from '@/components/other/chooseInTree/ChooseInNode.vue';
 import { closePopUp, PopUp } from '@/hooks/pages/popUp';
 import { computed, ref } from 'vue';
 import Button from '@/components/global/Button.vue';
-import { ElOption, ElSelect } from 'element-plus';
 import { getList, getSelectionExitence, getTimeRuleList } from './chooseExitence';
 import ChooseExitenceOption from './ChooseExitenceOption.vue';
 import SwitchExpand from '@/components/other/SwitchExpand.vue';
+import Selector from '@/components/global/Selector.vue';
 
     const {returnValue,popUp} = defineProps<{returnValue:(chosenList:any[],timeRule:string)=>void,popUp:PopUp}>()
     

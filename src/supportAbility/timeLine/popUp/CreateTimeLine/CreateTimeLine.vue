@@ -2,13 +2,10 @@
 <div class="createTimeLine" ref="pageRef">
     <div class="chooseTarget">
         <div class="chooseType">目标类型:
-            <ElSelect class="selector" v-model="targetType">
-                <ElOption 
-                    v-for="item in targetTypeList" 
-                    :value="item.value"
-                    :label="item.label">
-                </ElOption>
-            </ElSelect>
+            <Selector class="selector" 
+                v-model="targetType" 
+                :list="targetTypeList">
+            </Selector>
         </div>
         <Button name="选择目标" 
             class="showPopUp" 
@@ -18,8 +15,12 @@
     
     <component v-if="targetList.length>0" class="showTarget" :is="vue" :targets="targetList"></component>
 
-    <div>选择起始单位</div>
-    <div>选择结束单位</div>
+    <div>选择最大单位
+        <Selector v-model="maxUnit" :list="timeRuleUnits"></Selector>
+    </div>
+    <div>选择最小单位
+        <Selector v-model="minUnit" :list="minUnitList"></Selector>
+    </div>
     <div>起始时间：
         <DownLineInput v-model="startTime" placeholder="默认"></DownLineInput>
     </div>
@@ -34,16 +35,18 @@
 <script setup lang='ts'>
     import DownLineInput from '@/components/other/input/downLineInput.vue';
     import { showPopUp } from '@/hooks/pages/popUp';
-    import { ElOption, ElSelect } from 'element-plus';
-    import { computed, onMounted, ref, shallowRef, useTemplateRef, watch, watchEffect } from 'vue';
+    import { computed, ref, shallowRef, watch} from 'vue';
     import ChooseExitence from "../ChooseExitence/ChooseExitence.vue"
     import ShowExitence from '../ChooseExitence/ShowExitence.vue';
     import ChooseArticle from '../ChooseArticle/ChooseArticle.vue';
     import ChooseStatus from '../ChooseStatus/ChooseStatus.vue';
     import Button from '@/components/global/Button.vue';
     import ShowArticle from '../ChooseArticle/ShowArticle.vue';
-import { hideCreateTimeLine, ifShowCreatePage } from '../../timeLine';
-import gsap from 'gsap';
+import { hideCreateTimeLine} from '../../timeLine';
+import { getTimeRule, getTimeRuleUnits } from '@/supportAbility/customTime/translateTime';
+import { isString } from 'lodash';
+import Selector from '@/components/global/Selector.vue';
+
     //选择的目标类型
     const targetTypeList = [
         {value:"exitence",label:"事物"},
@@ -54,7 +57,7 @@ import gsap from 'gsap';
 
     //选择的目标对象列表
     let targetList = ref([])
-    //目标的时间规则，默认为date
+    //目标的时间规则的key，默认为date
     let timeRuleKey = "date"
     //通过弹窗选择指定类型的对象，以及对应选择的时间规则
     function chooseTarget(){
@@ -115,8 +118,65 @@ import gsap from 'gsap';
         //否则可选项为目标中存在时间类属性
         
     })
-    //起始时间值
-    const startTime = ref(0)
+
+    //所有可选时间单位
+    const timeRuleUnits = computed(()=>{
+        const timeRule = getTimeRule(timeRuleKey)
+        if(timeRule){
+            const units = getTimeRuleUnits(timeRule)
+            return units.map(unit=>{
+                //date类型
+                if(isString(unit)){
+                    return {
+                        label:unit,
+                        value:unit
+                    }
+                }
+                //自定义类型
+                return {
+                    label:unit.name,
+                    value:unit.name
+                }
+            })
+        }
+        else{
+            return [{label:"",value:""}]
+        }
+    })
+    //选择最大时间单位
+    const maxUnit = ref("")
+    watch(timeRuleUnits,()=>{
+        if(timeRuleUnits.value){
+            const tmp = timeRuleUnits.value[0]
+            maxUnit.value = tmp.value
+        }
+        maxUnit.value = ""
+    })
+    //最小时间单位的选项
+    const minUnitList = computed(()=>{
+        if(!timeRuleUnits.value)return [{label:"",value:""}]
+        const maxIndex = timeRuleUnits.value.findIndex(unit=>{
+            return unit.value == maxUnit.value
+        })
+        return timeRuleUnits.value.slice(maxIndex+1)
+    })
+    //最小单位
+    const minUnit = ref("")
+    watch(minUnitList,()=>{
+        if(!minUnitList.value){
+            minUnit.value = "";
+            return;
+        }
+        const tmp = minUnitList.value.at(-1)
+        if(!tmp)return;
+        minUnit.value = tmp.value
+    })
+
+
+    //起始时间值,为当前选择的对象中，时间值最小的对象的最小时间单位为最小值时的值
+    const startTime = computed(()=>{
+
+    })
 
     //确认
     function confirm(){
@@ -130,9 +190,6 @@ import gsap from 'gsap';
 
 <style scoped lang='scss'>
 @use "@/static/style/popUp.scss";
-.createTimeLine{
-    
-}
 .chooseTarget{
     width: 100%;
     .chooseType{

@@ -5,13 +5,7 @@
         placeholder="自定义时间名称"/>
     <div class="selectBar">
         <div class="selectNumFormat">
-            <ElSelect
-            v-model="newRule.numFormat">
-                <ElOption
-                    v-for="item in numFormatChoice"
-                    :key="item"
-                    :value="item"/>
-            </ElSelect>
+            <Selector v-model="newRule.numFormat" :list="numFormatList"></Selector>
         </div>
     </div>
     
@@ -34,15 +28,16 @@
 
 <script setup lang='ts'>
     import {reactive,toRaw} from 'vue';
-    import { addCustomTimeRule, checkCustomTimeRule, CustomTimeRule, editCustomTimeRule, getCustomEqualToUnit, hideEditPage, sortRuleUnits} from '../customTime';
+    import { addCustomTimeRule, checkCustomTimeRule, CustomTimeRule, CustomTimeRuleUnit, editCustomTimeRule, getCustomEqualToUnit, hideEditPage, sortRuleUnits} from '../customTime';
     import { cloneDeep } from 'lodash';
     import DownLineInput from '@/components/other/input/downLineInput.vue';
-    import { ElOption, ElSelect } from 'element-plus';
     import Button from '@/components/global/Button.vue';
     import EditTimeRuleUnit from './EditTimeRuleUnit.vue';
     import { editTarget } from '../customTime'; 
     import { nanoid } from 'nanoid';
     import { showQuickInfo } from '@/api/showQuickInfo';
+import Selector from '@/components/global/Selector.vue';
+
     //初始值
     const idle:CustomTimeRule = {
         name:"",
@@ -56,18 +51,18 @@
         tmp = idle
     }
     //拷贝编辑对象
-    let newRule = reactive(cloneDeep(tmp))
+    let newRule = reactive<CustomTimeRule>(cloneDeep(tmp))
     
     //数符选项
-    const numFormatChoice:CustomTimeRule["numFormat"][] = [
-        "简体中文数字",
-        "繁体中文数字",
-        "阿拉伯数字"
+    const numFormatList = [
+        {label:"简体中文数字",value:"简体中文数字"},
+        {label:"繁体中文数字",value:"繁体中文数字"},
+        {label:"阿拉伯数字",value:"阿拉伯数字"}
     ]
     //添加空的新单位到开头，默认以上一个单位为基准
     function addUnit(){
         const lastUnit = newRule.units[0]
-        const newUnit = {
+        const newUnit:CustomTimeRuleUnit = {
             name:"",
             target:lastUnit.name,
             equal:1,

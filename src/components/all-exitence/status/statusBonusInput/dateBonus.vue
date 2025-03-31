@@ -13,40 +13,16 @@
             <input type="checkbox" v-model="showUnit">
         </div>
         <div class="option">起始单位：
-            <ElSelect v-model="unitFrom">
-                <ElOption
-                    v-for="unit in unitList"
-                    :value="unit"
-                    :key="unit"
-                />
-            </ElSelect>
+            <Selector v-model="unitFrom" :list="unitList"/>
         </div>
         <div class="option">终末单位：
-            <ElSelect v-model="unitEnd">
-                <ElOption
-                    v-for="unit in unitList"
-                    :value="unit"
-                    :key="unit"
-                />
-            </ElSelect>
+            <Selector v-model="unitEnd" :list="unitList"/>
         </div>
         <div class="option">数字类型：
-            <ElSelect v-model="numFormat">
-                <ElOption
-                    v-for="value in numFormatList"
-                    :value="value"
-                    :key="value"
-                />
-            </ElSelect>
+            <Selector v-model="numFormat" :list="numFormatList"/>
         </div>
         <div class="option">链接符：
-            <ElSelect v-model="linker">
-                <ElOption
-                    v-for="item in linkerList"
-                    :value="item.value"
-                    :label="item.label"
-                />
-            </ElSelect>
+            <Selector v-model="linker" :list="linkerList"/>
         </div>
     </div>
     
@@ -56,8 +32,8 @@
 <script setup lang='ts'>
     import { computed, inject, ref, watchEffect } from 'vue';
     import Button from '@/components/global/Button.vue';
+    import Selector from '@/components/global/Selector.vue';
     import { getTimeRule, showTimeSelector, TimeLinker } from '@/supportAbility/customTime/translateTime';
-import { ElOption, ElSelect } from 'element-plus';
 import Status from '@/interfaces/Status';
 import { showQuickInfo } from '@/api/showQuickInfo';
 import { TimeRule } from '@/supportAbility/customTime/customTime';
@@ -97,21 +73,29 @@ import { TimeRule } from '@/supportAbility/customTime/customTime';
         }
     }
 //选择首尾单位
-    const unitList = computed(()=>{
+    const unitList = computed<{label:string,value:string}[]>(()=>{
+        let list:string[] = []
         if(timeRule.value == "date"){
-            return ["年","月","日","时","分","秒"]
+            list = ["年","月","日","时","分","秒"]
         }
-        else{
+        else if(timeRule.value){
             const timeRuleUnits = timeRule.value?.units
-            return timeRuleUnits?.map(unit=>unit.name)
+            list = timeRuleUnits.map(unit=>unit.name)
         }
+        return list.map(item=>{
+            return {
+                label:item,
+                value:item
+            }
+        })
     })
     const unitFrom = ref<string>("")
     const unitEnd = ref<string>("")
     //列表变化时首尾单位变化
     watchEffect(()=>{
-        unitFrom.value = unitList.value?unitList.value[0]:"";
-        unitEnd.value = unitList.value?.at(-1)??""
+        unitFrom.value = unitList.value[0].value
+        const last = unitList.value.at(-1)
+        unitEnd.value = last?last.value:""
     })
     //首尾单位选择时改变status
     watchEffect(()=>{
@@ -119,7 +103,11 @@ import { TimeRule } from '@/supportAbility/customTime/customTime';
         status.setting["unitEnd"] = unitEnd.value
     })
 //选择使用的数符
-    const numFormatList = ["阿拉伯数字","简体中文数字","繁体中文数字"]
+    const numFormatList = [
+        {label:"阿拉伯数字",value:"阿拉伯数字"},
+        {label:"简体中文数字",value:"简体中文数字"},
+        {label:"繁体中文数字",value:"繁体中文数字"}
+    ]
     const numFormat = ref("阿拉伯数字")
     watchEffect(()=>{
         status.setting["numFormat"] = numFormat.value

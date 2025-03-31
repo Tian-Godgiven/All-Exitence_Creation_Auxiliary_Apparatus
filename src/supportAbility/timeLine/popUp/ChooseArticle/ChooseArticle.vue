@@ -1,11 +1,7 @@
 <template>
 <div class="chooseArticle">
     <div class="chooseTime">
-        <ElSelect v-model="targetStatus">
-            <ElOption v-for="item in targetStatusList"
-                :value="item.value"
-                :label="item.label"/>
-        </ElSelect>
+        <Selector v-model="targetStatus" :list="targetStatusList"/>
     </div>
     <div class="chooseList">
         <ChooseArticleOption v-for="item in list" :item="item"/>
@@ -20,7 +16,6 @@
 <script setup lang='ts'>
 import { PopUp,closePopUp } from '@/hooks/pages/popUp';
 import { ArticleDataList, getList, getSelectedArticles } from './chooseArticle';
-import { ElOption, ElSelect } from 'element-plus';
 import { ref } from 'vue';
 import ChooseArticleOption from './ChooseArticleOption.vue';
 import Button from '@/components/global/Button.vue';

@@ -13,18 +13,18 @@ import tagsValueVue from "@/components/all-exitence/status/statusValue/tagsValue
 
 // 属性值类型表
 export let statusValueTypeList = [
-	{value : "downLine",text : "输入线"},
-	{value : "inputBox",text : "输入框"},
-	{value : "range",text : "范围选择"},
-	{value : "choose",text : "选项选择"},
-	{value : "select",text : "选项框"},
-	{value : "switch",text : "滑动开关"},
-	{value : "radio",text : "灯开关"},
-	{value : "tags",text: "标签"},
-	{value : "date",text : "日期"},
-	{value : "relation",text:"关联属性"},
-	{value : "multi",text : "复合属性"},
-	{value : "status",text: "嵌套属性"},
+	{value : "downLine",label : "输入线"},
+	{value : "inputBox",label : "输入框"},
+	{value : "range",label : "范围选择"},
+	{value : "choose",label : "选项选择"},
+	{value : "select",label : "选项框"},
+	{value : "switch",label : "滑动开关"},
+	{value : "radio",label : "灯开关"},
+	{value : "tags",label: "标签"},
+	{value : "date",label : "日期"},
+	{value : "relation",label:"关联属性"},
+	{value : "multi",label : "复合属性"},
+	{value : "status",label: "嵌套属性"},
 ]
 
 // 属性值类型对应组件表

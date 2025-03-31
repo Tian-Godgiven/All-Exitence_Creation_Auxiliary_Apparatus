@@ -1,19 +1,18 @@
 <template>
     <div>{{item.name}}</div>
-    <ElSelect @change="onChange" 
+    <Selector
+        @change="onChange" 
         @click.stop 
         v-if="optionList.length>0" 
-        v-model="item.targetStatus">
-        <ElOption v-for="option in optionList" 
-            :value="option.value"
-            :label="option.label"/>
-    </ElSelect>
+        v-model="item.targetStatus"
+        :list="optionList"
+    />
 </template>
 
 <script setup lang='ts'>
     import { computed } from 'vue';
     import { TItem,EItem } from './chooseExitence';
-import { ElOption, ElSelect } from 'element-plus';
+import Selector from '@/components/global/Selector.vue';
 
     const {item,parent} = defineProps<{item:EItem|TItem,parent?:TItem}>()
     //选项列表:该对象的时间属性+额外属性中符合条件的部分

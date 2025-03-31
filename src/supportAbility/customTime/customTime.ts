@@ -154,7 +154,7 @@ export function hideEditPage(){
 }
 
 //给rule的unit排序
-export function sortRuleUnits(units: CustomTimeRuleUnit[]): CustomTimeRuleUnit[] {
+export function sortRuleUnits(units: CustomTimeRuleUnit[]){
     // 先将 target 为 false 的 unit 筛选出来，最后处理
     const falseUnits = units.filter(unit => unit.target === false);
     const otherUnits = units.filter(unit => unit.target !== false);
@@ -176,9 +176,10 @@ export function sortRuleUnits(units: CustomTimeRuleUnit[]): CustomTimeRuleUnit[]
         }
     };
 
-    const sortedOtherUnits = otherUnits.sort(compare);
+    const sortedOtherUnits:CustomTimeRuleUnit[] = otherUnits.sort(compare);
     // 返回组合后的排序数组：先是其他单位（按 equal 排序），最后是 target 为 false 的单位
-    return [...sortedOtherUnits, ...falseUnits];
+    const allUnits = [...sortedOtherUnits, ...falseUnits] as [CustomTimeRuleUnit,...CustomTimeRuleUnit[]]
+    return allUnits
 }
 
 //通过key获取指定的自定义时间规则

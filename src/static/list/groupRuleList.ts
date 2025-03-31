@@ -1,8 +1,8 @@
 export const groupRuleSimbolList = [
-    {text:"=",value:"=="},
-    {text:"不等于",value:"!="},
-    {text:"数值大于",value:">"},
-    {text:"数值小于",value:"<"},
-    {text:"文本长度大于",value:"s>"},
-    {text:"文本长度小于",value:"s<"},
+    {label:"=",value:"=="},
+    {label:"不等于",value:"!="},
+    {label:"数值大于",value:">"},
+    {label:"数值小于",value:"<"},
+    {label:"文本长度大于",value:"s>"},
+    {label:"文本长度小于",value:"s<"},
 ]

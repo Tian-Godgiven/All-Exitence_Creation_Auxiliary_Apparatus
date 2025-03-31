@@ -20,15 +20,7 @@
         <div class="ruleInner">
             <div class="ruleMake">
                 <div class="selectSimbol cube">
-                <ElSelect
-                    v-model="ruleSimbol"
-                    placeholder="请选择">
-                    <ElOption
-                        v-for="item in groupRuleSimbolList"
-                        :key="item.value"
-                        :label="item.text"
-                        :value="item.value"/>
-                </ElSelect>
+                <Selector v-model="ruleSimbol" :list="groupRuleSimbolList" placeholder="请选择"></Selector>
             </div>
             <div class="inputValue cube">
                 <downLineInputVue class="inputVue" placeholder="输入规则条件的值" v-model="ruleValue"></downLineInputVue>
@@ -44,12 +36,13 @@
 
 <script setup lang='ts'>
     import { inject, ref } from 'vue';
-    import { ElSelect, ElOption, ElCascader } from 'element-plus';
+    import { ElCascader } from 'element-plus';
     import Status from '@/interfaces/Status';
     import downLineInputVue from '@/components/other/input/downLineInput.vue';
     import { exitenceSettingList } from '@/static/list/settingList/exitenceSettingList';
 import { showQuickInfo } from '@/api/showQuickInfo';
 import { groupRuleSimbolList } from '@/static/list/groupRuleList';
+import Selector from '@/components/global/Selector.vue';
 
     //分组所在的分类对象
     const type = inject<any>("type")

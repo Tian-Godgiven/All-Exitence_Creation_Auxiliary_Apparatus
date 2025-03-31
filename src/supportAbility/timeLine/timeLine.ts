@@ -1,6 +1,5 @@
 import { SupportAbilitySignUpItem } from "@/static/list/supportAbilityList";
 import TimeLineVue from "./TimeLine.vue";
-import CreateTimeLineVue from "./popUp/CreateTimeLine/CreateTimeLine.vue";
 import { showPopUp } from "@/hooks/pages/popUp";
 import { reactive, ref, shallowRef, toRaw } from "vue";
 import { tryReadFileAtPath, writeFileAtPath } from "@/hooks/fileSysytem";
