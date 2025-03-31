@@ -6,7 +6,7 @@ import { reactive, shallowRef, toRaw } from "vue";
 import { tryReadFileAtPath, writeFileAtPath } from "@/hooks/fileSysytem";
 import { addToRightPage } from "@/hooks/pages/rightPage";
 import { nowProjectInfo } from "@/hooks/project/projectData";
-import { translateTimeArrToValue, translateTimeValueToArr, translateTimeValueToCarryover } from "../customTime/translateTime";
+import { translateTimeArrToValue, translateTimeUnitValueToValue, translateTimeValueToArr, translateTimeValueToCarryover } from "../customTime/translateTime";
 import { TimeRule } from "../customTime/customTime";
 
 //注册辅助功能对象
@@ -134,7 +134,7 @@ export function getScaleInfo(scaleValue:number,rule:TimeRule,unitEnd?:string){
             value:scaleValue
         }]
         //获取其真实值
-        const tmp = translateTimeArrToValue(timeArr,rule)
+        const tmp = translateTimeUnitValueToValue(scaleValue,rule,unitEnd)
         if(tmp)scaleValue = tmp
     }
     //获取该刻度值相较于最小单位的进位
@@ -164,13 +164,16 @@ export function getStartScaleInfo(scaleValue:number,rule:TimeRule,unitEnd?:strin
     //scale的值是相较于最小单位的，因此需要进行一道转化
     if(unitEnd){
         //设其为该值的时间单位数组
-        const timeArr = [{  
+        const a = {  
             name:unitEnd,
             value:scaleValue
-        }]
+        }
         //获取其真实值
-        const tmp = translateTimeArrToValue(timeArr,rule)
-        if(tmp)scaleValue = tmp
+        const tmp = translateTimeUnitValueToValue(scaleValue,rule,unitEnd)
+        
+        if(tmp){
+            scaleValue = tmp
+        }
     }
     //获取该刻度值相较于最小单位的值
     const timeArr = translateTimeValueToArr({

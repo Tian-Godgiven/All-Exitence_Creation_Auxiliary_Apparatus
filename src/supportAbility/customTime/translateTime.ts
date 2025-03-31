@@ -1,9 +1,13 @@
-import { differenceInDays, differenceInHours, differenceInMilliseconds, differenceInMinutes, differenceInMonths, differenceInSeconds, differenceInYears } from "date-fns"
+import { addDays, addHours, addMilliseconds, addMinutes, addMonths, addSeconds, addYears, differenceInDays, differenceInHours, differenceInMilliseconds, differenceInMinutes, differenceInMonths, differenceInSeconds, differenceInYears } from "date-fns"
 import { TimeUnit } from "element-plus"
 import { CustomTimeRule, CustomTimeRuleUnit, customTimeLib, TimeRule } from "./customTime"
 import { showPopUp } from "@/hooks/pages/popUp"
 import Selector from "./popUp/Selector.vue"
 import { shallowRef } from "vue"
+
+
+// 写在前面：由于涉及大量的类型翻译，加上时间规则上对date（地球历法）和自定义时间规则的区分
+// 导致几乎所有翻译过程都有两套内容，为避免繁琐也为了统一流程，将date和自定义时间规则分别放置在同一处，将统一的调用函数集中放置在开头
 
 
 
@@ -46,6 +50,13 @@ export type TimeLinker =
 export type TimeTranslateItem = TranslateItem & {
     linker?:TimeLinker,
     showUnit?:boolean,
+}
+
+//date类型的翻译过程需要使用的类型
+type DateUnit = "年"|"月"|"日"|"时"|"分"|"秒"|"毫秒"
+type DateArrItem = {
+    name:DateUnit,
+    value:number
 }
 
 //根据key获取指定的时间表达式
@@ -205,17 +216,13 @@ export function translateTimeValueToArr({
             else{
                 unitValue = leastValue
             }
-            //时间单位在进位时不会为0，因此需要+1
+            //所有时间单位的起始值为1，添加上1
             unitValue += 1
             result.push({ name: unit.name, value: unitValue });
         }
     }
 
-type DateUnit = "年"|"月"|"日"|"时"|"分"|"秒"|"毫秒"
-type DateArrItem = {
-    name:DateUnit,
-    value:number
-}
+
 //按照指定的值获取Date单位数组
 function getDateArrFromNumber(time:number,unitFrom?:string,unitEnd?:string):DateArrItem[]{
     const date = new Date(time)
@@ -284,7 +291,6 @@ function getDateNumberFromArr(dateArr: DateArrItem[]): number {
         }
     }
 
-    console.log(year)
     // 由于JavaScript的月份从0开始，所以需要减去1
     const date = new Date(year, month - 1, day, hours, minutes, seconds, milliseconds);
     return date.getTime();
@@ -316,7 +322,7 @@ export function translateTimeOut({
     }
     //自定义时间
     else{
-        
+        //未完成
     }
 }
 
@@ -404,7 +410,6 @@ export function translateTimeArrToValue(timeArr:TimeArr,rule:TimeRule){
         else{
             totalValue += (item.value-1)
         }
-
     }
     return totalValue
 }
@@ -503,29 +508,27 @@ export function ifSameTimeRule(timeRule:TimeRule,key:string){
 }
 
 //将一个完整的时间值转化为相较于指定单位的值，包含小数点
-export function translateTimeValueEqualToUnit(oldValue:number,rule:TimeRule,targetUnit?:string){
+export function translateTimeValueEqualToUnit(value:number,rule:TimeRule,targetUnit?:string){
     if(rule=="date"){
-        const date = new Date(oldValue)
-        const year = date.getFullYear()
-        //闰年的数量
-        const leapYear = Math.floor(year / 4) - Math.floor(year / 100) + Math.floor(year / 400);
+        //默认时间戳，注意月份从0开始
+        const idleDate = new Date(1970,0,1)
+        //当前时间戳
+        const date = new Date(value)
         switch(targetUnit){
             case "年":
-                return year;
+                return differenceInYears(date,idleDate)
             case "月":
-                const month = date.getMonth() + 1
-                return year*12 + month;
+                return differenceInMonths(date,idleDate)
             case "日":
-                console.log()
-                return leapYear*366 + (year-leapYear)*365;
+                return differenceInDays(date,idleDate)
             case "时":
-                return 24*leapYear*366 + (year-leapYear)*365;
+                return differenceInHours(date,idleDate)
             case "分":
-                return 60*24*leapYear*366 + (year-leapYear)*365;
+                return differenceInMinutes(date,idleDate)
             case "秒":
-                return 3600*24*leapYear*366 + (year-leapYear)*365;
+                return differenceInSeconds(date,idleDate)
             default:
-                return year
+                return differenceInYears(date,idleDate)
         }
     }
     else{
@@ -540,10 +543,48 @@ export function translateTimeValueEqualToUnit(oldValue:number,rule:TimeRule,targ
         }
         //获取旧值相较于指定单位的值
         if(unit?.target && unit?.equalToMin){
-            return oldValue/unit.equalToMin
+            return value/unit.equalToMin
         }
         else{
-            return oldValue
+            return value
         }
+    }
+}
+//将一个指定单位的值转化为一个完整的时间值
+export function translateTimeUnitValueToValue(unitValue:number,rule:TimeRule,targetUnit:string){
+    if(rule == "date"){
+        //当前时间为默认起始时间
+        let nowDate = new Date(1970,0,1) 
+        switch (targetUnit) {
+            case "年":
+                nowDate = addYears(nowDate,unitValue-1970)
+                break;
+            case "月":
+                nowDate = addMonths(nowDate,unitValue-1)
+                break;
+            case "日":
+                nowDate = addDays(nowDate,unitValue)
+                break;
+            case "时":
+                nowDate = addHours(nowDate,unitValue)
+                break;
+            case "分":
+                nowDate = addMinutes(nowDate,unitValue)
+                break;
+            case "秒":
+                nowDate = addSeconds(nowDate,unitValue)
+                break;
+            case "毫秒":
+                nowDate = addMilliseconds(nowDate,unitValue)
+                break;
+        }
+        return nowDate.getTime();
+    }
+    //自定单位直接翻译成值
+    else {
+        return translateTimeArrToValue([{
+            name:targetUnit,
+            value:unitValue
+        }],rule)
     }
 }

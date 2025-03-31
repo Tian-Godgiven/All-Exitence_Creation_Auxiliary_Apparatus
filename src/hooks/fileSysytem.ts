@@ -93,7 +93,9 @@ export async function tryReadFileAtPath(path:string,fileName:string,ifJSON:boole
         return content
     }
     catch(err){
+        //读取失败，创建相应内容的文件，并返回创建后的内容
         let inner
+        //内容可能是一个函数
         if(content instanceof Function){
             inner = content()
         }

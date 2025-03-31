@@ -42,16 +42,17 @@ async function initCustomTime(){
     const ifExisit = await ifExists("supportAbility","customTime")
     if(!ifExisit){createDirByPath("supportAbility","customTime")}
     //尝试读取时间表达式库
-    const tmp = await tryReadFileAtPath("supportAbility/customTime","customTime.json",true,[])
+    const tmp = await tryReadFileAtPath(
+        "supportAbility/customTime","customTime.json",true,[])
     customTimeLib.length = 0
     Object.assign(customTimeLib,tmp)
+    console.log(customTimeLib)
     //注册右侧按钮
     addToRightPage({
         "name":"自定义时间",
         "click":()=>showCustomTimeManager(),
         "iconName":"customTime"
     })
-    console.log(customTimeLib)
 }
 
 //保存

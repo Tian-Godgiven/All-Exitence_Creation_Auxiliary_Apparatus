@@ -10,7 +10,7 @@
             <path :d="path" stroke="black" stroke-width="2" fill="none"/>
             <g stroke="black">
                 <LineTick :tick="{x:0,value:startValue}"></LineTick>
-                <LineTick v-for="tick in ticks" :tick></LineTick>
+                <LineTick :key="tick.x" v-for="tick in ticks" :tick></LineTick>
             </g>
         </svg>
         <Item v-for="(item,index) in itemList" 
@@ -28,15 +28,9 @@
     import { computed, provide, ref, useTemplateRef } from 'vue';
     import { TimeLineItem } from './item/item';
     import Item from "./item/Item.vue"
-    import { getTimeRule, translateTimeArrToValue, translateTimeValueEqualToUnit, translateTimeValueToArr } from '@/supportAbility/customTime/translateTime';
-import LineTick from './LineTick.vue';
-    const {timeLine} = {timeLine:{
-        targetType:"exitence",//时间线目标的类型
-        timeRuleKey:"date",//该时间线所使用的时间规则的key
-        now:null,//该时间线当前所处的位置，默认从最早的一个对象开始
-        unitEnd:"日"
-    }}
-    // defineProps<{timeLine:TimeLine}>()
+    import { getTimeRule, translateTimeArrToValue, translateTimeUnitValueToValue, translateTimeValueEqualToUnit, translateTimeValueToArr } from '@/supportAbility/customTime/translateTime';
+    import LineTick from './LineTick.vue';
+    const {timeLine} = defineProps<{timeLine:any/*TimeLine*/}>()
 
     //使用的时间规则
     const timeRule = getTimeRule(timeLine.timeRuleKey)
@@ -49,14 +43,7 @@ import LineTick from './LineTick.vue';
     provide("minUnit",minUnit.value)
     // 时间轴上的各个对象
     const itemList = computed<TimeLineItem[]>(()=>{
-        const list:TimeLineItem[] = [{
-            label:["分类","事物"],
-            key:{
-                typeKey:"123",
-                exitenceKey:"456"
-            },
-            time:Date.now()
-        }]
+        const list:TimeLineItem[] = timeLine.item
         // return getTimeLineItems(timeLine)
         //按时间值排序
         list.sort((a,b)=>b.time - a.time)
@@ -135,15 +122,13 @@ import LineTick from './LineTick.vue';
         })
         //设定其中最小单位的值为1
         const smallUnit = timeArr.at(-1)
-        if(smallUnit){
-            smallUnit.value = 1
-        }
+        if(!smallUnit)return 0
+        smallUnit.value = 1
         //然后获得这个数组转换回值
         const smallValue = translateTimeArrToValue(timeArr,timeRule)
         //再获得这个值相较于最小单位的值
-        if(!smallValue)return 0;
+        if(smallValue===false)return 0;
         const startValue = translateTimeValueEqualToUnit(smallValue,timeRule,minUnit.value)
-        if(!startValue)return 0
         return startValue
     })
     const tickSpacing = 10;//每个刻度的长度，单位px
@@ -181,13 +166,11 @@ import LineTick from './LineTick.vue';
     position: absolute;
     width: 100%;
     top: 50%;
-    left: 0;
-    display: flex;
+    margin:0 10px;
 }
 
 .line {
     position: absolute;
-    left: 20px;
     width: 100%;
     height: 100px;
     overflow: visible;

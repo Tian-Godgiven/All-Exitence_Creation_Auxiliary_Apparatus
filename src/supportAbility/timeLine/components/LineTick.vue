@@ -18,7 +18,9 @@ import { getScaleInfo, getStartScaleInfo } from '../timeLine';
     const minUnit = inject<string>("minUnit")
     const tickInfo = computed(()=>{
         if(tick.x == 0){
-            return getStartScaleInfo(tick.value,timeRule,minUnit)
+            const tmp = getStartScaleInfo(tick.value,timeRule,minUnit)
+            console.log("起始tick的值",tick,tmp)
+            return tmp
         }
         return getScaleInfo(tick.value,timeRule,minUnit)
     })
