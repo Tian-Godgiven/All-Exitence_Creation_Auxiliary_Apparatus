@@ -28,7 +28,7 @@
     import { computed, provide, ref, useTemplateRef } from 'vue';
     import { TimeLineItem } from './item/item';
     import Item from "./item/Item.vue"
-    import { getTimeRule, translateTimeArrToValue, translateTimeUnitValueToValue, translateTimeValueEqualToUnit, translateTimeValueToArr } from '@/supportAbility/customTime/translateTime';
+    import { getTimeRule, translateTimeArrToValue, translateTimeValueEqualToUnit, translateTimeValueToArr } from '@/supportAbility/customTime/translateTime';
     import LineTick from './LineTick.vue';
     const {timeLine} = defineProps<{timeLine:any/*TimeLine*/}>()
 

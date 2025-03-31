@@ -12,7 +12,6 @@
 </template>
 
 <script setup lang='ts'>
-    import { ref } from 'vue';
     import Button from '@/components/global/Button.vue';
     import Line from './components/Line.vue'
 import { nowAllTimeLine, showCreateTimeLinePopUp } from './timeLine';
