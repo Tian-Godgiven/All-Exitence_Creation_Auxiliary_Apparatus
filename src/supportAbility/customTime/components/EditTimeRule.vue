@@ -27,7 +27,7 @@
 </template>
 
 <script setup lang='ts'>
-    import {reactive,toRaw} from 'vue';
+    import {computed, reactive,toRaw} from 'vue';
     import { addCustomTimeRule, checkCustomTimeRule, CustomTimeRule, CustomTimeRuleUnit, editCustomTimeRule, getCustomEqualToUnit, hideEditPage, sortRuleUnits} from '../customTime';
     import { cloneDeep } from 'lodash';
     import DownLineInput from '@/components/other/input/downLineInput.vue';
@@ -45,13 +45,19 @@ import Selector from '@/components/global/Selector.vue';
         units:[{name:"",target:false}],
         __key:nanoid()
     }
-    //若为空则创建新规则
-    let tmp:CustomTimeRule|null = editTarget.value
-    if(tmp == null){
-        tmp = idle
-    }
-    //拷贝编辑对象
-    let newRule = reactive<CustomTimeRule>(cloneDeep(tmp))
+    //编辑对象是源对象的拷贝
+    const newRule = computed(()=>{
+        let tmp = editTarget.value
+        //若为空则创建新规则
+        if(tmp == null){
+            tmp = idle
+        }
+        //拷贝编辑对象
+        let newRule = reactive<CustomTimeRule>(cloneDeep(tmp))
+        return newRule
+    })
+    
+    
     
     //数符选项
     const numFormatList = [
@@ -61,25 +67,25 @@ import Selector from '@/components/global/Selector.vue';
     ]
     //添加空的新单位到开头，默认以上一个单位为基准
     function addUnit(){
-        const lastUnit = newRule.units[0]
+        const lastUnit = newRule.value.units[0]
         const newUnit:CustomTimeRuleUnit = {
             name:"",
             target:lastUnit.name,
             equal:1,
         }
-        newRule.units.unshift(newUnit)
+        newRule.value.units.unshift(newUnit)
     }
     //返回修改后的规则
     function confirm(){
         //检查是否符合条件
-        if(!checkCustomTimeRule(newRule)){return false}
+        if(!checkCustomTimeRule(newRule.value)){return false}
         //按照从大到小的顺序重新排列单位
-        const newUnits = sortRuleUnits(newRule.units)
-        newRule.units = newUnits
+        const newUnits = sortRuleUnits(newRule.value.units)
+        newRule.value.units = newUnits
         //为所有单位添加或更新equalToMin
-        for(let unit of newRule.units){
+        for(let unit of newRule.value.units){
             if(unit.target){
-                const equalToMin = getCustomEqualToUnit(newRule.units,unit,1)
+                const equalToMin = getCustomEqualToUnit(newRule.value.units,unit,1)
                 if(equalToMin){
                     unit.equalToMin = equalToMin
                 }
@@ -89,14 +95,13 @@ import Selector from '@/components/global/Selector.vue';
                 }
             }
         }
-        console.log(newRule)
         //如果传入为null，则添加新规则
         if(editTarget.value==null){
-            addCustomTimeRule(toRaw(newRule))
+            addCustomTimeRule(toRaw(newRule.value))
         }
         //否则修改传入的规则的内容或位置
         else{
-            editCustomTimeRule(editTarget.value,newRule)
+            editCustomTimeRule(editTarget.value,newRule.value)
         }
         //返回管理页面
         hideEditPage()

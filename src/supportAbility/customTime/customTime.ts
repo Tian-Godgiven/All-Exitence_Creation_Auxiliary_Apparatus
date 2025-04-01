@@ -46,7 +46,6 @@ async function initCustomTime(){
         "supportAbility/customTime","customTime.json",true,[])
     customTimeLib.length = 0
     Object.assign(customTimeLib,tmp)
-    console.log(customTimeLib)
     //注册右侧按钮
     addToRightPage({
         "name":"自定义时间",
@@ -141,8 +140,7 @@ export function showCustomTimeManager(){
 //是否显示编辑页面
 export const ifShowEditPage = ref(false)
 //编辑页面使用的对象
-type EditTarget = CustomTimeRule|null
-export const editTarget = ref<EditTarget>(null)
+export const editTarget = ref<CustomTimeRule|null>(null)
 //显示编辑页面
 export function showEditPage(targetRule:CustomTimeRule|null){
     ifShowEditPage.value = true
