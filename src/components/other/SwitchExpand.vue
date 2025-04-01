@@ -13,14 +13,11 @@
 
 <script setup lang='ts'>
     import gsap from 'gsap';
-    import { ref, watchEffect } from 'vue';
+    import { ref } from 'vue';
     const {startExpand=true} = defineProps<{startExpand?:boolean}>()
     const expand = ref(startExpand)
     const inner = ref()
     function switchExpand(){
-        expand.value = !expand.value
-    }
-    watchEffect(()=>{
         if(!inner.value)return false
         //收起
         if(expand.value){
@@ -38,7 +35,8 @@
                 duration:1
             })
         }
-    })
+        expand.value = !expand.value
+    }
     
 </script>
 
