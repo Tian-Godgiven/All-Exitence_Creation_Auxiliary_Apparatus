@@ -15,7 +15,7 @@ export type TItem = {
     targetStatus:{
         name:string,
         key:string,
-        value:number
+        time:number
     },//选中的属性的名称,键和值
     timeStatus:(Status|ExitenceStatus)[],
 }
@@ -32,7 +32,7 @@ export type EItem = {
     targetStatus:{
         name:string,
         key:string,
-        value:number
+        time:number
     },//选中的目标时间属性的名称和键和值
     timeStatus:(Status|ExitenceStatus)[],
 }
@@ -82,7 +82,7 @@ export function getList(timeRuleKey:string):TItem[]{
             targetStatus:{
                 key:typeData.timeStatus[0]?.__key,
                 name:typeData.timeStatus[0]?.name,
-                value:typeData.timeStatus[0]?.value
+                time:typeData.timeStatus[0]?.value
             }, //默认选中第一个属性
             timeStatus:typeData.timeStatus,
             state:false,
@@ -173,7 +173,7 @@ function getExitenceDataArr(eDataList:EData[],exitenceList:Exitence[]):EItem[]{
             targetStatus:{
                 name:"",
                 key:"",
-                value:0
+                time:0
             },
             state:false,
         }
@@ -257,8 +257,8 @@ export function getSelectionExitence(list: TItem[]) {
         }
         //判断这个事物的时间值是否小于当前最小时间
         console.log(targetStatus,minTimeValue)
-        if(targetStatus.value < minTimeValue){
-            minTimeValue = targetStatus.value
+        if(targetStatus.time < minTimeValue){
+            minTimeValue = targetStatus.time
         }
 
         list.push({

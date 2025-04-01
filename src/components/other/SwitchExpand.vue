@@ -13,30 +13,33 @@
 
 <script setup lang='ts'>
     import gsap from 'gsap';
-    import { ref } from 'vue';
+    import { ref, watchEffect } from 'vue';
     const {startExpand=true} = defineProps<{startExpand?:boolean}>()
     const expand = ref(startExpand)
     const inner = ref()
     function switchExpand(){
+        expand.value = !expand.value
+    }
+    watchEffect(()=>{
         if(!inner.value)return false
         //收起
         if(expand.value){
             gsap.to(inner.value,{
                 height:0,
-                type:"easeInOut",
+                ease:"power2.inOut",
                 duration:1
             })
         }
         //展开
         else{
             gsap.to(inner.value,{
-                height:"fit-content",
-                type:"easeInOut",
+                height:"auto",
+                ease:"power2.inOut",
                 duration:1
             })
         }
-        expand.value = !expand.value
-    }
+    })
+    
 </script>
 
 <style scoped lang='scss'>

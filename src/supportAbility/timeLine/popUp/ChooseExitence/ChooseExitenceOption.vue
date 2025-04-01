@@ -2,7 +2,7 @@
     <div>{{item.name}}</div>
     <Selector
         @change="onChange" 
-        @click.stop 
+        @click.stop
         v-if="optionList.length>0" 
         v-model="item.targetStatus"
         :list="optionList"
@@ -16,21 +16,21 @@ import Selector from '@/components/global/Selector.vue';
 
     const {item,parent} = defineProps<{item:EItem|TItem,parent?:TItem}>()
     //选项列表:该对象的时间属性+额外属性中符合条件的部分
-    const optionList = computed<{label:string,value:{time:number,key:string}}[]>(()=>{
+    const optionList = computed<{label:string,value:{time:number,key:string,name:string}}[]>(()=>{
         if(!item.timeStatus)return []
         //分类选择的属性
         const pTargetStatus = parent?.targetStatus
         //该事物的可选属性列表
         const statusList = item.timeStatus.flatMap((status)=>{
-            //1.不为其分类当前所选择的时间属性
+            //不为其分类当前所选择的时间属性
             if(pTargetStatus && status.__key == pTargetStatus.key){
                 return []
             }
-            //2.与当前已选择的时间规则相同
             return {
                 value:{
                     key:status.__key as string,
-                    time:status.value
+                    time:status.value,
+                    name:status.name as string
                 }, 
                 label:status.name as string,
             }
@@ -41,23 +41,21 @@ import Selector from '@/components/global/Selector.vue';
                 statusList.unshift({
                     value:{
                         key:"inherit",
-                        time:null
+                        time:null,
+                        name:""
                     },
                     label:"继承分类"
                 })
             }
-            
-            //设置为默认选项
-            item.targetStatus.key = statusList[0].value.key
-            item.targetStatus.value = statusList[0].value.time
-            item.targetStatus.name = statusList[0].label
-            console.log(statusList,item)
+            //设置为默认选项(第一个选项)
+            item.targetStatus = statusList[0].value
         }
         return statusList
     })
     //改变选择时，还会改变其事物选择的属性
     function onChange(){
         if('child' in item){
+            console.log("改变子元素了",item)
             const targetStatus = item.targetStatus;
             item.child.forEach((child)=>{
                 //分组的情况
