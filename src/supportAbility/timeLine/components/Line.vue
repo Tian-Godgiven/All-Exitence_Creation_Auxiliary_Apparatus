@@ -28,11 +28,10 @@
     import { computed, provide, ref, useTemplateRef } from 'vue';
     import { TimeLineItem } from './item/item';
     import Item from "./item/Item.vue"
-    import { getTimeRule, translateTimeArrToValue, translateTimeValueEqualToUnit, translateTimeValueToArr } from '@/supportAbility/customTime/translateTime';
+    import { getTimeRule, translateTimeValueEqualToUnit } from '@/supportAbility/customTime/translateTime';
     import LineTick from './LineTick.vue';
 import { getSmallestTimeValue } from '../timeLine';
     const {timeLine} = defineProps<{timeLine:any/*TimeLine*/}>()
-
     //使用的时间规则
     const timeRule = getTimeRule(timeLine.timeRuleKey)
     //使用的最小单位

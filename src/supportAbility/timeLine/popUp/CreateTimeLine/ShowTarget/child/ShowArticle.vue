@@ -8,7 +8,7 @@
 </template>
 
 <script setup lang='ts'>
-import { ArticleDataList as List } from './chooseArticle';
+
 import Button from '@/components/global/Button.vue';
 
     const {targets} = defineProps<{targets:List}>()

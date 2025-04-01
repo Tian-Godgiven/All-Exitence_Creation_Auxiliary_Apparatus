@@ -20,6 +20,7 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
         newAllExitence = JSON.parse(newAllExitence)
     }
     nowAllExitence.types = newAllExitence.types
+    console.log("当前所有事物",nowAllExitence)
 }
 
 //分类相关

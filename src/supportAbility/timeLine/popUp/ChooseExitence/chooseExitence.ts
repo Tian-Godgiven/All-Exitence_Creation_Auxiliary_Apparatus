@@ -6,6 +6,7 @@ import { Type } from '@/class/Type';
 import { reactive } from "vue";
 import { customTimeLib } from "@/supportAbility/customTime/customTime"; 
 
+export type ChooseExitenceList = TItem[]
 export type TItem = {
     name:string,
     state:boolean|"mid",
@@ -13,8 +14,9 @@ export type TItem = {
     key:string, //对象的key
     targetStatus:{
         name:string,
-        key:string
-    },//目标属性的名称和键
+        key:string,
+        value:number
+    },//选中的属性的名称,键和值
     timeStatus:(Status|ExitenceStatus)[],
 }
 type GItem = {
@@ -29,8 +31,9 @@ export type EItem = {
     key:string, //对象的key
     targetStatus:{
         name:string,
-        key:string
-    },//目标属性的名称和键
+        key:string,
+        value:number
+    },//选中的目标时间属性的名称和键和值
     timeStatus:(Status|ExitenceStatus)[],
 }
 
@@ -50,7 +53,7 @@ export function getTimeRuleList(){
     return allTimeRule
 }
  
-//获取需要显示的列表，其中的所有项都具备选择的时间规则的属性
+//获取可供选择的完整列表
 export function getList(timeRuleKey:string):TItem[]{
     //分类列表
     const typeList = nowAllExitence.types
@@ -78,7 +81,8 @@ export function getList(timeRuleKey:string):TItem[]{
             key:type.__key,
             targetStatus:{
                 key:typeData.timeStatus[0]?.__key,
-                name:typeData.timeStatus[0]?.name
+                name:typeData.timeStatus[0]?.name,
+                value:typeData.timeStatus[0]?.value
             }, //默认选中第一个属性
             timeStatus:typeData.timeStatus,
             state:false,
@@ -168,7 +172,8 @@ function getExitenceDataArr(eDataList:EData[],exitenceList:Exitence[]):EItem[]{
             timeStatus:eData.timeStatus,
             targetStatus:{
                 name:"",
-                key:""
+                key:"",
+                value:0
             },
             state:false,
         }
@@ -176,33 +181,37 @@ function getExitenceDataArr(eDataList:EData[],exitenceList:Exitence[]):EItem[]{
     })
 }
 
-//获取列表中选择的事物对象与属性的信息
-export type TargetList = {
-    name:string,
+
+//最终返回的目标列表，包含对象名称和key，各个事物对象还包含对应的时间值
+export type TargetList = TypeItem[]
+type TypeItem = {
+    name:string,//type的名称和key，以及选择的type的时间属性的信息
     key:string,
     status?:{
         name:string,
         key:string
     },
     exitence:ExitenceItem[]
-}[]
+}
 type ExitenceItem = {
     name:string,
-    key:string
+    key:string,
     status:{
         name:string,
         key:string
     },
 }
+//获取选择的列表与最小时间值
 export function getSelectionExitence(list: TItem[]) {
     const targetList:TargetList = []
+    let minTimeValue = Infinity
     // 遍历列表
     list.forEach(type => {
         if (!type.child) return;  // 如果没有子元素，跳过
         const { state: typeState, targetStatus: statusOfType } = type;
         if (typeState===false)return;
         // 该分类下的事物列表
-        const exitenceList:{ name:string,key:string,status:{name:string,key:string}}[] = []
+        const exitenceList:ExitenceItem[] = []
         // 分类中存在选中对象的情况
         type.child.forEach(child =>{
             if (child.state === false) return;
@@ -229,11 +238,13 @@ export function getSelectionExitence(list: TItem[]) {
             exitence:exitenceList
         })
     });
-    return targetList
+    return {targetList,minTimeValue}
  
     // 添加选中的事物到列表中
     function addExitenceToList(eItem: EItem, list:ExitenceItem[],statusOfType?: TItem["targetStatus"],) {
+        console.log(eItem,list,statusOfType)
         let targetStatus 
+        //继承分类 
         if(eItem.targetStatus?.key == "" || eItem.targetStatus.key == "inherit"){
             targetStatus = statusOfType
         }
@@ -243,6 +254,11 @@ export function getSelectionExitence(list: TItem[]) {
         if(!targetStatus){
             console.error("意料之外的错误：该事物没有被正确设置时间属性")
             return;
+        }
+        //判断这个事物的时间值是否小于当前最小时间
+        console.log(targetStatus,minTimeValue)
+        if(targetStatus.value < minTimeValue){
+            minTimeValue = targetStatus.value
         }
 
         list.push({

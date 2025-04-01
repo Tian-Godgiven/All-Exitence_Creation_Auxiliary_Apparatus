@@ -16,11 +16,11 @@ import Selector from '@/components/global/Selector.vue';
 
     const {item,parent} = defineProps<{item:EItem|TItem,parent?:TItem}>()
     //选项列表:该对象的时间属性+额外属性中符合条件的部分
-    const optionList = computed<{label:string,value:string}[]>(()=>{
+    const optionList = computed<{label:string,value:{time:number,key:string}}[]>(()=>{
         if(!item.timeStatus)return []
         //分类选择的属性
         const pTargetStatus = parent?.targetStatus
-        //该事物的属性列表
+        //该事物的可选属性列表
         const statusList = item.timeStatus.flatMap((status)=>{
             //1.不为其分类当前所选择的时间属性
             if(pTargetStatus && status.__key == pTargetStatus.key){
@@ -28,21 +28,30 @@ import Selector from '@/components/global/Selector.vue';
             }
             //2.与当前已选择的时间规则相同
             return {
-                value:status.__key as string, 
-                label:status.name as string
+                value:{
+                    key:status.__key as string,
+                    time:status.value
+                }, 
+                label:status.name as string,
             }
         })
         if(statusList.length > 0){
             //如果分类已经选择了属性，则添加上继承分类属性的选项
             if(pTargetStatus){
                 statusList.unshift({
-                    value:"inherit",
+                    value:{
+                        key:"inherit",
+                        time:null
+                    },
                     label:"继承分类"
                 })
             }
+            
             //设置为默认选项
-            item.targetStatus.key = statusList[0].value
+            item.targetStatus.key = statusList[0].value.key
+            item.targetStatus.value = statusList[0].value.time
             item.targetStatus.name = statusList[0].label
+            console.log(statusList,item)
         }
         return statusList
     })

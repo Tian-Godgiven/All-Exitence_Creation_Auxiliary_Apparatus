@@ -18,7 +18,7 @@
 
 <script setup lang='ts'>
 import Button from '@/components/global/Button.vue';
-import { TargetList } from './chooseExitence';
+import { TargetList } from '../../../ChooseExitence/chooseExitence';
     const {targets} = defineProps<{targets:TargetList}>()
     function deleteTarget(type:TargetList[number],i:number){
         const typeIndex = targets.indexOf(type)

@@ -11,19 +11,18 @@
 
 <script setup lang='ts'>
     import { TimeRule } from '@/supportAbility/customTime/customTime';
-import { computed, inject } from 'vue';
+import { inject } from 'vue';
 import { getScaleInfo, getStartScaleInfo } from '../timeLine';
     const {tick} = defineProps<{tick:{x:number,value:number}}>()
     const timeRule = inject<TimeRule>("timeRule","date")
     const minUnit = inject<string>("minUnit")
-    const tickInfo = computed(()=>{
+    const tickInfo = function(){
         if(tick.x == 0){
             const tmp = getStartScaleInfo(tick.value,timeRule,minUnit)
-            console.log("起始tick的值",tick,tmp)
             return tmp
         }
         return getScaleInfo(tick.value,timeRule,minUnit)
-    })
+    }()
     
     
 </script>   

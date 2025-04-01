@@ -3,8 +3,8 @@
     <div class="chooseTarget">
         <div class="chooseType">目标类型:
             <Selector class="selector" 
-                v-model="itemType" 
-                :list="itemTypeList">
+                v-model="targetType" 
+                :list="typeList">
             </Selector>
         </div>
         <Button name="选择目标" 
@@ -13,7 +13,7 @@
         </Button>
     </div>
     
-    <component v-if="itemList.length>0" class="showTarget" :is="vue" :targets="itemList"></component>
+    <ShowTarget :targetType :targetList></ShowTarget>
 
     <div>选择最大单位
         <Selector v-model="maxUnit" :list="timeRuleUnits"></Selector>
@@ -34,90 +34,31 @@
 
 <script setup lang='ts'>
     import DownLineInput from '@/components/other/input/downLineInput.vue';
-    import { showPopUp } from '@/hooks/pages/popUp';
-    import { computed, ref, shallowRef, watch} from 'vue';
-    import ChooseExitence from "../ChooseExitence/ChooseExitence.vue"
-    import ShowExitence from '../ChooseExitence/ShowExitence.vue';
-    import ChooseArticle from '../ChooseArticle/ChooseArticle.vue';
-    import ChooseStatus from '../ChooseStatus/ChooseStatus.vue';
+    import { computed, ref, watch} from 'vue';
+    
     import Button from '@/components/global/Button.vue';
-    import ShowArticle from '../ChooseArticle/ShowArticle.vue';
 import { getSmallestTimeValue, hideCreateTimeLine} from '../../timeLine';
 import { getTimeRule, getTimeRuleUnits } from '@/supportAbility/customTime/translateTime';
 import { isString } from 'lodash';
 import Selector from '@/components/global/Selector.vue';
-
+import ShowTarget from './ShowTarget/ShowTarget.vue';
+import { chooseTarget, minTimeValue, targetList, targetType,timeRuleKey } from './createTimeLine';
+    
     //选择的目标类型
-    const itemTypeList = [
+    const typeList = [
         {value:"exitence",label:"事物"},
         {value:"status",label:"事物属性"},
         {value:"article",label:"文章"},
     ]
-    const itemType = ref<"exitence"|"status"|"article">("exitence")
 
-    //选择的目标对象列表
-    let itemList = ref<any>([])
-    //目标的时间规则的key，默认为date
-    let timeRuleKey = ref("date")
+
+    //使用的时间规则
     const timeRule = computed(()=>{
         const rule = getTimeRule(timeRuleKey.value)
-        console.log("时间规则是",rule)
         return rule
     })
-    //通过弹窗选择指定类型的对象，以及对应选择的时间规则
-    function chooseTarget(){
-        switch(itemType.value){
-            //选择事物
-            case "exitence":
-            showPopUp({
-                vue:shallowRef(ChooseExitence),
-                buttons:null,
-                mask:true,
-                returnValue:(list,timeRule)=>{
-                    //获取targetList和时间规则
-                    itemList.value = list;
-                    timeRuleKey.value = timeRule
-                }
-            })
-            break;
-            //选择文章
-            case "article":
-            showPopUp({
-                vue:shallowRef(ChooseArticle),
-                buttons:[],
-                mask:true,
-                returnValue:(targetStatus,list)=>{
-                    itemList.value = list
-                    timeStatusKey.value = targetStatus
-                    timeRuleKey.value = "date"
-                }
-            })
-            break;
-            //选择单个事物与指定的关联属性
-            case "status":
-            showPopUp({
-                vue:shallowRef(ChooseStatus),
-                buttons:[],
-                mask:true,
-                returnValue:(target)=>{
-                    
-                }
-            })
-            break;
-        }
-    }
 
-    //显示指定类型对象的内容
-    const vue = computed(()=>{
-        switch(itemType.value){
-            case "exitence":
-                return ShowExitence
-            case "article":
-                return ShowArticle
-        }
-    })
-
-    //目标属性：适用于文章or事物属性
+    //目标属性的key：适用于文章or属性类型
     const timeStatusKey = ref<string>("")
     //仅在选择事物属性时有效，列出指定事物属性中可以被选为时间属性子属性
     const statusKeyList = computed(()=>{
@@ -125,9 +66,8 @@ import Selector from '@/components/global/Selector.vue';
         
     })
 
-    //所有可选时间单位
+    //所有可选时间单位，也用于最大时间单位选项
     const timeRuleUnits = computed(()=>{
-        console.log("启动！")
         if(timeRule.value){
             const units = getTimeRuleUnits(timeRule.value)
             return units.map(unit=>{
@@ -177,7 +117,6 @@ import Selector from '@/components/global/Selector.vue';
             return;
         }
         const tmp = minUnitList.value.at(-1)
-        console.log(tmp)
         if(!tmp)return;
         minUnit.value = tmp.value
     })
@@ -186,11 +125,13 @@ import Selector from '@/components/global/Selector.vue';
     //起始时间值,为当前选择的对象中，时间值最小的对象的最小时间单位为最小值时的值
     const startTime = computed(()=>{
         if(!timeRule.value)return 0
-        //最小对象为第一个
-        const minItem = itemList.value[0]
-        if(!minItem || "time" !in minItem)return 0
-        console.log(minItem,timeRule.value,minUnit.value)
-        return getSmallestTimeValue(minItem.time,timeRule.value,minUnit.value)
+        //最小时间值
+        console.log("计算起始时间值",
+            minTimeValue.value,
+            timeRule.value,
+            minUnit.value
+        )
+        return getSmallestTimeValue(minTimeValue.value,timeRule.value,minUnit.value)
     })
 
     //确认，返回当前编辑的对象

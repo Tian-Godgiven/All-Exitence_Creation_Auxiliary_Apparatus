@@ -22,46 +22,47 @@ export const timeLineSignUpItem:SupportAbilitySignUpItem={
 /**
  * 时间轴对象
  */
-export type TimeLine = {
-	targetType:"exitence",//时间线目标的类型
-    key:{
-        sourceKey:string, //其所在的分类的key
-        targetKey:{
-            exitenceKey:string,//该分类下的所有选中的事物的key
-            statusKey:string //对应事物所使用的时间属性的key
-        }[],
-    }[],
-	timeRuleKey:string|"date",//该时间线所使用的时间规则的key
-	now:number|null,//该时间线当前所处的位置，默认从最早的一个对象开始
-	unitStart?:string,//该时间线当前所显示的最大单位
-	unitEnd?:string,//该时间线当前所显示的最小单位
-}|
-//文章类型
-{
-    targetType:"article",
-    key:{
-        sourceKey:string[], //文章对象的from值
-        targetKey:string[],//相同from值的文章对象的key值
-    }[],
-	timeStatus:"createTime"|"updateTime",//要么是创建时间，要么时上次编辑时间
-	timeRuleKey:"date",//该时间线所使用的时间规则的key
-	now:number|null,//该时间线当前所处的位置，默认从最早的一个对象开始
-	unitStart?:string,//该时间线当前所显示的最大单位
-	unitEnd?:string,//该时间线当前所显示的最小单位
-}|
-//属性类型
-{
-    targetType:"status",//时间线目标的类型
-    key:{
-        sourceKey:[string,string], //其所在的分类的key+其所在的事物的key
-        targetKey:string,//其本身的key
-    },
-	timeStatusKey:string|null,//该时间线所使用的时间属性的key
-	timeRuleKey:string|"date",//该时间线所使用的时间规则的key
-	now:number|null,//该时间线当前所处的位置，默认从最早的一个对象开始
-	unitStart?:string,//该时间线当前所显示的最大单位
-	unitEnd?:string,//该时间线当前所显示的最小单位
-}
+// 通用时间线属性（共有的部分）
+type TimeLineBase = {
+    timeRuleKey: "date" | string;  // 时间线规则的key，"date" 或其他值
+    now: number | null;  // 当前时间线的位置，默认从最早的对象开始
+    unitStart?: string;  // 当前时间线的最大单位
+    unitEnd?: string;    // 当前时间线的最小单位
+};
+// 事件类型时间线
+export type ExistenceTimeLine = TimeLineBase & {
+    targetType: "exitence";  // 明确指定目标类型为 "exitence"
+    key: {
+        sourceKey: string;  // 分类的key
+        targetKey: {
+            exitenceKey: string;  // 该分类下选中的事物的key
+            statusKey: string;    // 事物对应的时间属性的key
+        }[];
+    }[];
+};
+// 文章类型时间线
+export type ArticleTimeLine = TimeLineBase & {
+    targetType: "article";  // 明确指定目标类型为 "article"
+    key: {
+        sourceKey: string[];  // 文章对象的from值
+        targetKey: string[];  // 相同from值的文章对象的key值
+    }[];
+    // 创建时间，默认为编辑时间
+    timeStatus: "createTime" | "updateTime";  
+};
+  
+// 属性类型时间线
+export type StatusTimeLine = TimeLineBase & {
+    targetType: "status";  // 明确指定目标类型为 "status"
+    key: {
+        sourceKey: [string, string];  // 分类的key + 事物的key
+        targetKey: string;            // 该时间线本身的key
+    };
+    timeStatusKey: string;  // 时间属性的key，可能为null
+};
+  
+// 时间线类型联合
+export type TimeLine = ExistenceTimeLine | ArticleTimeLine | StatusTimeLine;
 
 //默认的总时间轴对象
 const idleAllTimeLine:TimeLine[] = []

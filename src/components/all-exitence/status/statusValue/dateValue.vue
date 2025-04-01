@@ -20,22 +20,27 @@ import { getTimeRule,  translateTimeArrToValue,  translateTimeValueToArr } from 
     import { computed, ref } from 'vue';
 import DateUnitValue from './dateUnitValue.vue';
 import { setStatus } from '@/hooks/all-exitence/status';
-    const {status,statusSetting} = defineProps(['status','statusSetting'])
+import Status from '@/interfaces/Status';
+    const {status,typeStatus,statusSetting} = defineProps(['status','typeStatus','statusSetting'])
     //是否不具备时间属性或时间属性无效
     const noTimeRule = ref(false)
     const timeRule = computed(()=>{
-        console.log(status,statusSetting)
         const ruleKey = statusSetting["timeRule"]
         //获取规则目标，失败时将规则修改为date
         let rule = getTimeRule(ruleKey)
         if(!rule){
+            //未完成：关联属性的属性修改无效
             showQuickInfo("未能获取指定的时间表达式，将使用现实时间替代")
             noTimeRule.value = true
-            setStatus(status,"timeRule","date")
-            setStatus(status,"uniFrom","年")
-            setStatus(status,"unitEnd","日")
-            //并且还会修改属性的值为当前时间
-            status.value = Date.now()
+            //判断是分类属性无效还是额外属性无效
+            if(typeStatus && !getTimeRule(typeStatus.setting["timeRule"])){
+                //设置分类属性
+                setIdleStatus(typeStatus)
+            }
+            //是额外属性
+            else{
+                setIdleStatus(status)
+            }
             rule = "date"
         }
         return rule
@@ -74,6 +79,15 @@ import { setStatus } from '@/hooks/all-exitence/status';
     function onChange(){
         const newValue = translateTimeArrToValue(unitList.value,timeRule.value)
         status.value = newValue
+    }
+
+    //设置为默认属性
+    function setIdleStatus(status:Status){
+        setStatus(status,"timeRule","date")
+        setStatus(status,"unitFrom","年")
+        setStatus(status,"unitEnd","日")
+        //并且还会修改属性的值为当前时间
+        status.value = Date.now()
     }
     
 </script>

@@ -21,7 +21,7 @@
     const key = ref(0)
 
     const type = inject<any>("type")
-    //获取事物所在的分类的属性
+    //获取事物所在的分类的属性,若为额外属性则为空
 	let typeStatus = getTypeStatusByKey(status.__key,type.typeStatus)
 
     //属性设置：在事物中不显示属性名

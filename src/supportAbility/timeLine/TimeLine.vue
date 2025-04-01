@@ -3,7 +3,7 @@
     <div class="manage">
         <div class="topBar">
             <Button @click="createNew" name="新建"></Button>
-            <div>管理</div>
+            <Button @click="manageMode" name="管理"></Button>
         </div>
         <div class="container">
             <Line :timeLine=testTimeLine[0]></Line>
@@ -62,6 +62,11 @@
     //显示新建时间线
     function createNew(){
         showCreateTimeLine()
+    }
+
+    //管理模式
+    function manageMode(){
+        
     }
     
 </script>

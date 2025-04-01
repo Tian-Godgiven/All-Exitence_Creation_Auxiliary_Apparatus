@@ -1,6 +1,6 @@
 <template>
 	<div class="value" :class="disabled?'disabled':''">
-		<component :status="status" :typeStatus="typeStatus" :statusSetting="statusSetting" :is="statusValueVueList[valueType]"></component>
+		<component :status :typeStatus :statusSetting="statusSetting" :is="statusValueVueList[valueType]"></component>
 	</div>
 </template>
 

@@ -1,7 +1,7 @@
 <template>
 <div class="chooseExitence">
     <div class="chooseTimeRule">选择时间规则
-        <Selector v-model="timeRule" :list="timeRuleList"/>
+        <Selector v-model="timeRuleKey" :list="timeRuleList"/>
     </div>
 
     <div class="chooseList">
@@ -50,29 +50,29 @@ import ChooseInNode from '@/components/other/chooseInTree/ChooseInNode.vue';
 import { closePopUp, PopUp } from '@/hooks/pages/popUp';
 import { computed, ref } from 'vue';
 import Button from '@/components/global/Button.vue';
-import { getList, getSelectionExitence, getTimeRuleList } from './chooseExitence';
+import { getList, getTimeRuleList } from './chooseExitence';
 import ChooseExitenceOption from './ChooseExitenceOption.vue';
 import SwitchExpand from '@/components/other/SwitchExpand.vue';
 import Selector from '@/components/global/Selector.vue';
+import { returnValue_Exitence } from '../CreateTimeLine/createTimeLine';
 
-    const {returnValue,popUp} = defineProps<{returnValue:(chosenList:any[],timeRule:string)=>void,popUp:PopUp}>()
+    const {popUp} = defineProps<{popUp:PopUp}>()
     
     const list = computed(()=>{
-        return getList(timeRule.value)
+        return getList(timeRuleKey.value)
     })
 
     //可选择的时间规则列表，默认选项为data(日期)
     const timeRuleList = computed(()=>{
         return getTimeRuleList()
     })
-    //当前选中的时间规则
-    const timeRule = ref<string>("date")
+    //当前选中的时间规则的key
+    const timeRuleKey = ref<string>("date")
     
     //确认
     function confirm(){
-        //获得选中的所有事物与时间规则key
-        const chosenList = getSelectionExitence(list.value)
-        returnValue(chosenList,timeRule.value)
+        //执行返回函数
+        returnValue_Exitence(list.value,timeRuleKey.value)
         closePopUp(popUp)
     }
 </script>
