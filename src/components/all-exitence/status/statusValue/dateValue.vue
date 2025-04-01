@@ -17,13 +17,12 @@
 import { showQuickInfo } from '@/api/showQuickInfo';
 
 import { getTimeRule,  translateTimeArrToValue,  translateTimeValueToArr } from '@/supportAbility/customTime/translateTime';
-    import { computed, ref } from 'vue';
+    import { computed } from 'vue';
 import DateUnitValue from './dateUnitValue.vue';
 import { setStatus } from '@/hooks/all-exitence/status';
 import Status from '@/interfaces/Status';
     const {status,typeStatus,statusSetting} = defineProps(['status','typeStatus','statusSetting'])
     //是否不具备时间属性或时间属性无效
-    const noTimeRule = ref(false)
     const timeRule = computed(()=>{
         const ruleKey = statusSetting["timeRule"]
         //获取规则目标，失败时将规则修改为date
@@ -31,7 +30,6 @@ import Status from '@/interfaces/Status';
         if(!rule){
             //未完成：关联属性的属性修改无效
             showQuickInfo("未能获取指定的时间表达式，将使用现实时间替代")
-            noTimeRule.value = true
             //判断是分类属性无效还是额外属性无效
             if(typeStatus && !getTimeRule(typeStatus.setting["timeRule"])){
                 //设置分类属性
@@ -47,12 +45,6 @@ import Status from '@/interfaces/Status';
     })
     //日期所需要显示的单位列表
     const unitList = computed(()=>{
-        if(noTimeRule.value){
-            return translateTimeValueToArr({
-                value:status.value,
-                rule:timeRule.value,
-            })
-        }
         const unitFrom = statusSetting["unitFrom"]
         const unitEnd = statusSetting["unitEnd"]
         //获取单位列表
@@ -97,6 +89,5 @@ import Status from '@/interfaces/Status';
     display: flex;
     flex-wrap: wrap;
     gap: 5px;
-    
 }
 </style>

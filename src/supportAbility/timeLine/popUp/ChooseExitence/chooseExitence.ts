@@ -204,6 +204,7 @@ type ExitenceItem = {
 //获取选择的列表与最小时间值
 export function getSelectionExitence(list: TItem[]) {
     const targetList:TargetList = []
+    //最小时间值
     let minTimeValue = Infinity
     // 遍历列表
     list.forEach(type => {
@@ -242,7 +243,6 @@ export function getSelectionExitence(list: TItem[]) {
  
     // 添加选中的事物到列表中
     function addExitenceToList(eItem: EItem, list:ExitenceItem[],statusOfType?: TItem["targetStatus"],) {
-        console.log(eItem,list,statusOfType)
         let targetStatus 
         //继承分类 
         if(eItem.targetStatus?.key == "" || eItem.targetStatus.key == "inherit"){

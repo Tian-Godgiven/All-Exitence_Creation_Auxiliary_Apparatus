@@ -331,6 +331,8 @@ export function translateTimeUnitValueToValue(unitValue:number,unitName:string,r
                 return differenceInMinutes(date,idleDate)
             case "秒":
                 return differenceInSeconds(date,idleDate)
+            case "毫秒":
+                return differenceInMilliseconds(date,idleDate)
             default:
                 return differenceInYears(date,idleDate)
         }

@@ -16,13 +16,17 @@
     <ShowTarget :targetType :targetList></ShowTarget>
 
     <div>选择最大单位
-        <Selector v-model="maxUnit" :list="timeRuleUnits"></Selector>
+        <Selector placeholder="无选项" v-model="maxUnit" :list="timeRuleUnits"></Selector>
     </div>
     <div>选择最小单位
-        <Selector v-model="minUnit" :list="minUnitList"></Selector>
+        <Selector placeholder="无选项" v-model="minUnit" :list="minUnitList"></Selector>
     </div>
     <div>起始时间：
-        <DownLineInput v-model="startTime" placeholder="默认"></DownLineInput>
+        <div class="startTime" v-if="startTimeArr">
+            <DateUnitValue v-for="unit in startTimeArr" :unit format="阿拉伯数字">
+                {{ unit.name }}
+            </DateUnitValue>
+        </div>
     </div>
 
     <div class="finalButtons">
@@ -33,16 +37,15 @@
 </template>
 
 <script setup lang='ts'>
-    import DownLineInput from '@/components/other/input/downLineInput.vue';
     import { computed, ref, watch} from 'vue';
-    
     import Button from '@/components/global/Button.vue';
-import { getSmallestTimeValue, hideCreateTimeLine} from '../../timeLine';
-import { getTimeRule, getTimeRuleUnits } from '@/supportAbility/customTime/translateTime';
+import { hideCreateTimeLine} from '../../timeLine';
+import { getTimeRule, getTimeRuleUnits, translateTimeValueToArr } from '@/supportAbility/customTime/translateTime';
 import { isString } from 'lodash';
 import Selector from '@/components/global/Selector.vue';
 import ShowTarget from './ShowTarget/ShowTarget.vue';
 import { chooseTarget, minTimeValue, targetList, targetType,timeRuleKey } from './createTimeLine';
+import DateUnitValue from '@/components/all-exitence/status/statusValue/dateUnitValue.vue';
     
     //选择的目标类型
     const typeList = [
@@ -68,32 +71,28 @@ import { chooseTarget, minTimeValue, targetList, targetType,timeRuleKey } from '
 
     //所有可选时间单位，也用于最大时间单位选项
     const timeRuleUnits = computed(()=>{
-        if(timeRule.value){
-            const units = getTimeRuleUnits(timeRule.value)
-            return units.map(unit=>{
-                //date类型
-                if(isString(unit)){
-                    return {
-                        label:unit,
-                        value:unit
-                    }
-                }
-                //自定义类型
+        if(!timeRule.value)return false
+        if(targetList.value.length==0)return false
+        const units = getTimeRuleUnits(timeRule.value)
+        return units.map(unit=>{
+            //date类型
+            if(isString(unit)){
                 return {
-                    label:unit.name,
-                    value:unit.name
+                    label:unit,
+                    value:unit
                 }
-            })
-        }
-        else{
-            return [{label:"",value:""}]
-        }
+            }
+            //自定义类型
+            return {
+                label:unit.name,
+                value:unit.name
+            }
+        })
         
     })
     //选择最大时间单位
     const maxUnit = ref("")
     watch(timeRuleUnits,()=>{
-        console.log(timeRuleUnits.value)
         if(timeRuleUnits.value){
             const tmp = timeRuleUnits.value[0]
             maxUnit.value = tmp.value
@@ -103,7 +102,8 @@ import { chooseTarget, minTimeValue, targetList, targetType,timeRuleKey } from '
     })
     //最小时间单位的选项
     const minUnitList = computed(()=>{
-        if(!timeRuleUnits.value)return [{label:"",value:""}]
+        if(!timeRuleUnits.value)return false
+        if(targetList.value.length==0)return false
         const maxIndex = timeRuleUnits.value.findIndex(unit=>{
             return unit.value == maxUnit.value
         })
@@ -122,16 +122,24 @@ import { chooseTarget, minTimeValue, targetList, targetType,timeRuleKey } from '
     })
 
 
-    //起始时间值,为当前选择的对象中，时间值最小的对象的最小时间单位为最小值时的值
-    const startTime = computed(()=>{
-        if(!timeRule.value)return 0
-        //最小时间值
-        console.log("计算起始时间值",
-            minTimeValue.value,
-            timeRule.value,
-            minUnit.value
-        )
-        return getSmallestTimeValue(minTimeValue.value,timeRule.value,minUnit.value)
+    //起始时间值数组,为当前选择的对象中，时间值最小的对象的最小时间单位为最小值时的值
+    const startTimeArr = computed(()=>{
+        if(!timeRule.value)return false
+        if(minTimeValue.value == Infinity)return false
+        if(targetList.value.length==0)return false
+        const timeArr = translateTimeValueToArr({
+            value:minTimeValue.value,
+            rule:timeRule.value,
+            unitFrom:maxUnit.value,
+            unitEnd:minUnit.value
+        })
+        //要将其中最小的单位的值设为1
+        const lastUnit = timeArr.at(-1)
+        if(lastUnit){
+            lastUnit.value = 1
+        }
+        
+        return timeArr
     })
 
     //确认，返回当前编辑的对象
@@ -162,6 +170,11 @@ import { chooseTarget, minTimeValue, targetList, targetType,timeRuleKey } from '
         padding: 5px 10px;
         margin: 20px 0px;
     }
+}
+.startTime{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
 }
 
     .finalButtons{

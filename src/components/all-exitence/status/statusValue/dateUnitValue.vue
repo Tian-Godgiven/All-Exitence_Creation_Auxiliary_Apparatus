@@ -43,7 +43,6 @@
         else{
             return `${unit.value.toString().length+0.5}em`
         }
-        
     }
 </script>
 

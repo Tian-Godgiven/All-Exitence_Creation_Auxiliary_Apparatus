@@ -50,18 +50,12 @@ export const minTimeValue = ref(0) //最小时间值
 //通过弹窗选择目标，时间规则，并获取其中最小时间值，对应类型的获取函数见下方
 export function chooseTarget(){
     let vue
-    let returnValue = (...args:any[])=>{}
     switch(targetType.value){
         case "exitence":
             vue = shallowRef(ChooseExitence)
             break;
         case "article":
             vue = shallowRef(ChooseArticle)
-            // returnValue = (targetStatus,list)=>{
-            //     targetList.value = list
-            //     timeStatusKey.value = targetStatus
-            //     timeRuleKey.value = "date"
-            // }
             break;
         //选择单个事物与指定的关联属性
         case "status":
@@ -75,7 +69,6 @@ export function chooseTarget(){
         vue,
         buttons:null,
         mask:true,
-        returnValue
     })
 }
 
@@ -90,3 +83,11 @@ export function chooseTarget(){
         timeRuleKey.value = newTimeRuleKey
     }
 
+    //文章类型返回的内容
+    export function returnValue_Article(){
+        returnValue = (targetStatus,list)=>{
+            targetList.value = list
+            timeStatusKey.value = targetStatus
+            timeRuleKey.value = "date"
+        }
+    }
