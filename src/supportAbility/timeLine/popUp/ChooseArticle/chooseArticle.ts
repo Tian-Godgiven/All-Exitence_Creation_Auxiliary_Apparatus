@@ -1,17 +1,12 @@
 import { Article } from "@/class/Article"
 import { Chapter } from "@/class/Chapter"
 import { nowAllArticles } from "@/hooks/all-articles/allArticles"
-import { reactive } from "vue"
+import { reactive, ref } from "vue"
 
+//所选择的文章的时间对象，包含更新时间和创建时间
+export const targetStatus = ref<"updateTime"|"createTime">("updateTime")
 
-export type ArticleDataList = ListItem[]
-type ListItem  = {
-    sourceKey:string[],
-    target:{
-        name:string
-        key:string
-    }[]
-}
+//用于获取所有文章列表的数据结构
 export type Item = CItem | AItem
 type CItem = {
     name:string,
@@ -65,10 +60,21 @@ export function getList(){
     }
 }
 
+//返回的列表的实际样貌
+export type ChooseArticleList = ListItem[]
+type ListItem  = {
+    sourceKey:string[],
+    target:{
+        name:string
+        key:string
+    }[]
+}
+
 //获取所有选中的文章，用于生成时间轴
-export function getSelectedArticles(list:Item[]){
-    const chosenArticleList:ListItem[] = []
+export function getSelectionArticles(list:Item[]){
+    const chosenList:ListItem[] = []
     const noChapterList:ListItem = {sourceKey:[],target:[]}
+    let minTime = Infinity
     //遍历列表
     list.forEach(item=>{
         const from:string[] = []
@@ -79,6 +85,11 @@ export function getSelectedArticles(list:Item[]){
         }
         //没有子元素了，说明是最外层文章，直接添加到无章节列表中
         else{
+            //判断其对应的时间是否小于最小时间
+            const time = item.target[targetStatus.value]
+            if(time < minTime){
+                minTime = time
+            }
             noChapterList.target.push({
                 key:item.target.__key,
                 name:item.name
@@ -86,9 +97,9 @@ export function getSelectedArticles(list:Item[]){
         }
     })
     //添加上无章节文章
-    chosenArticleList.push(noChapterList)
+    chosenList.push(noChapterList)
     //返回结果
-    return chosenArticleList
+    return {chosenList,minTime}
     // 递归处理章节中的子元素
     function chapterChild(item:CItem,from:string[]){
         const target:{
@@ -104,14 +115,19 @@ export function getSelectedArticles(list:Item[]){
             //如果子元素不是章节且被选中，则将其添加到targetKey中并返回
             else{
                 if( child.state === false) return;
+                //判断其对应的时间是否小于最小时间
+                const time = child.target[targetStatus.value]
+                if(time < minTime){
+                    minTime = time
+                }
                 target.push({
                     name: child.name,
-                    key:child.target.__key
+                    key: child.target.__key
                 })
             }
         });
         if(target.length>0){
-            chosenArticleList.push({
+            chosenList.push({
                 sourceKey:newFrom,
                 target
             })

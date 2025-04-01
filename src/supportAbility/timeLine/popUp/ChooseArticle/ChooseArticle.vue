@@ -15,25 +15,24 @@
 
 <script setup lang='ts'>
 import { PopUp,closePopUp } from '@/hooks/pages/popUp';
-import { ArticleDataList, getList, getSelectedArticles } from './chooseArticle';
-import { ref } from 'vue';
+import { targetStatus, getList, getSelectionArticles } from './chooseArticle';
 import ChooseArticleOption from './ChooseArticleOption.vue';
 import Button from '@/components/global/Button.vue';
-    
-    const {popUp,returnValue} = defineProps<{popUp:PopUp,
-        returnValue:(targetStatus:string,list:ArticleDataList)=>void}>()
+import {returnValue_Article} from '../CreateTimeLine/createTimeLine';
+
+    const {popUp} = defineProps<{popUp:PopUp}>()
     //选择作为目标属性的文章事件
     const targetStatusList = [
         {value:"createTime",label:"创建时间"},
         {value:"updateTime",label:"更新时间"}
     ]
-    const targetStatus = ref("updateTime")
+    
     //文章选项列表
     const list = getList()
     function confirm(){
         //获取选中的文章
-        const chosenList = getSelectedArticles(list)
-        returnValue(targetStatus.value,chosenList)
+        const {chosenList,minTime} = getSelectionArticles(list)
+        returnValue_Article(chosenList,targetStatus.value,minTime)
         closePopUp(popUp)
     }
 </script>

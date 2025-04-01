@@ -3,7 +3,6 @@ import { ref, shallowRef } from "vue"
 import ChooseExitence from "../ChooseExitence/ChooseExitence.vue"
 import ChooseArticle from '../ChooseArticle/ChooseArticle.vue';
 import ChooseStatus from '../ChooseStatus/ChooseStatus.vue';
-import { ChooseExitenceList, getSelectionExitence } from "../ChooseExitence/chooseExitence";
 
 type TargetType = "exitence"|"article"|"status"
 
@@ -15,7 +14,8 @@ export function getTargetKeyList(type:TargetType,targetList:any){
     switch(type){
         case "exitence":
             return getExitenceList(targetList)
-        
+        case "article":
+            return getArticleList(targetList)
     }
 
     function getExitenceList(targetList:{
@@ -41,53 +41,60 @@ export function getTargetKeyList(type:TargetType,targetList:any){
             
         })
     }
+    function getArticleList(targetList:{
+        sourceKey:string[],
+        target:{
+            name:string
+            key:string
+        }[]
+    }[]){
+        //遍历
+        return targetList.map(item=>{
+            return {
+                sourceKey:item.sourceKey,
+                targetKey:item.target.map(article=>{
+                    return article.key
+                })
+            }
+        })
+    }
 }
 
 //通过弹窗的返回函数获得目标列表+时间规则+最小时间单元
 export const targetList = ref<any>([])//目标列表
 export const timeRuleKey = ref("")//时间规则Key
 export const minTimeValue = ref(0) //最小时间值
-//通过弹窗选择目标，时间规则，并获取其中最小时间值，对应类型的获取函数见下方
+export const targetStatus = ref("")//文章类型使用的标识符
+
+//通过弹窗来获取上述值，具体的获取函数见下方
 export function chooseTarget(){
-    let vue
-    switch(targetType.value){
-        case "exitence":
-            vue = shallowRef(ChooseExitence)
-            break;
-        case "article":
-            vue = shallowRef(ChooseArticle)
-            break;
-        //选择单个事物与指定的关联属性
-        case "status":
-            vue = shallowRef(ChooseStatus);
-            returnValue = ()=>{
-                
-            }
-            break;
+    const componentMap = {
+        "exitence": ChooseExitence,
+        "article": ChooseArticle,
+        "status": ChooseStatus
+    };
+    const vue = shallowRef(componentMap[targetType.value]);
+    if(vue.value) {
+        showPopUp({
+            vue,
+            buttons: null,
+            mask: true,
+        });
     }
-    showPopUp({
-        vue,
-        buttons:null,
-        mask:true,
-    })
 }
 
-    //事物类型返回的函数
-
     //事物类型返回的内容
-    export function returnValue_Exitence(list:ChooseExitenceList,newTimeRuleKey:string){
+    export function returnValue_Exitence(list:any,newTimeRuleKey:string,minTime:number){
         //选中的事物类型列表即为目标列表targetList，其也会提供最小时间值
-        const result = getSelectionExitence(list)
-        targetList.value = result.targetList
-        minTimeValue.value = result.minTimeValue
+        targetList.value = list
+        minTimeValue.value = minTime
         timeRuleKey.value = newTimeRuleKey
     }
 
     //文章类型返回的内容
-    export function returnValue_Article(){
-        returnValue = (targetStatus,list)=>{
-            targetList.value = list
-            timeStatusKey.value = targetStatus
-            timeRuleKey.value = "date"
-        }
+    export function returnValue_Article(list:any,status:string,minTime:number){
+        targetList.value = list
+        targetStatus.value = status
+        timeRuleKey.value = "date"
+        minTimeValue.value = minTime
     }

@@ -50,7 +50,7 @@ import ChooseInNode from '@/components/other/chooseInTree/ChooseInNode.vue';
 import { closePopUp, PopUp } from '@/hooks/pages/popUp';
 import { computed, ref } from 'vue';
 import Button from '@/components/global/Button.vue';
-import { getList, getTimeRuleList } from './chooseExitence';
+import { getList, getSelectionExitence, getTimeRuleList } from './chooseExitence';
 import ChooseExitenceOption from './ChooseExitenceOption.vue';
 import SwitchExpand from '@/components/other/SwitchExpand.vue';
 import Selector from '@/components/global/Selector.vue';
@@ -71,8 +71,10 @@ import { returnValue_Exitence } from '../CreateTimeLine/createTimeLine';
     
     //确认
     function confirm(){
+        //获取选中的值
+        const {targetList,minTimeValue} = getSelectionExitence(list.value)
         //执行返回函数
-        returnValue_Exitence(list.value,timeRuleKey.value)
+        returnValue_Exitence(targetList,timeRuleKey.value,minTimeValue)
         closePopUp(popUp)
     }
 </script>
