@@ -236,22 +236,6 @@ export function getTimeLocation(time:number,timeRule:TimeRule|false,startTime:nu
     //乘以最小单位等于多少px
     const x = distantValue * pxPerUnit
     return x
-    // let tickTime = getSmallestTime(time,timeRule,minUnit)
-    // let tickValue = translateTimeValueEqualToUnit(tickTime,timeRule,minUnit)
-    // //获得这个tick所在的位置
-    // const x = (tickValue-startTime) * tickSpacing
-    // //如果没变则返回这个刻度的位置
-    // if(tickTime == time){
-    //     return x
-    // }
-    
-    // //否则计算比例
-    // const itemValue = translateTimeValueEqualToUnit(time,timeRule,minUnit)
-    // //1时间等于多少px？
-    // const pxPercent = 10//最小单位
-    // //获取差值
-    // const distance = (itemValue - tickValue) * pxPercent
-    // return x + distance
 }
 
 
