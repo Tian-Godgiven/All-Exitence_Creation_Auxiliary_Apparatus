@@ -87,7 +87,7 @@
     provide("tickSpacing",tickSpacing)
     //每个刻度所等于的最小单位值
     //每个单位的等比值增大4次（1,2,3,4倍）再换用更大的单位
-    let tickEquelUnit = 1
+    let tickEquelUnit = 1 
     //1最小单位等于多少px
     const pxPerUnit = computed(()=>{
         return tickSpacing/tickEquelUnit
@@ -110,13 +110,13 @@
 
     //拖动时间轴
     const timeLineLeft = ref(function(){
-        return 0
-        // //当前时间在时间轴上的位置，若无则设定为0
-        // const nowTime = timeLine.now
-        // if(!nowTime)return 0
-        // const x = getTimeLocation(nowTime,timeRule,startTime.value,pxPerUnit.value,minUnit.value)
-        // if(!x)return 0
-        // return x + 10
+        //当前时间在时间轴上的位置，若无则设定为0
+        const nowTime = timeLine.now
+        if(!nowTime)return 0
+        console.log(new Date(nowTime),new Date(startTime.value))
+        const x = getTimeLocation(nowTime,timeRule,startTime.value,pxPerUnit.value,minUnit.value)
+        if(!x)return 0
+        return x 
     }()) //时间线当前的移动距离
     let startLeft = 0//时间线在移动之前的移动距离
     let isDragging = false //正在拖动

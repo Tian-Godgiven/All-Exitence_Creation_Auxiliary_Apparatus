@@ -228,13 +228,13 @@ export function getSmallestTime(timeValue:number,rule:TimeRule,unitEnd?:string){
 // 注意这个时间必须是完整时间
 export function getTimeLocation(time:number,timeRule:TimeRule|false,startTime:number,pxPerUnit:number,minUnit?:string,){
     if(!timeRule)return;
-    //获取该对象的时间值相较于开始时间的差值
-    const distantTime = time - startTime;
     //这个差值等于多少最小单位,包含2为小数
-    const equalToUnit = translateTimeValueEqualToUnit(distantTime,timeRule,minUnit,true)
-    console.log(equalToUnit)
+    const timeValue = translateTimeValueEqualToUnit(time,timeRule,minUnit,true)
+    const startValue = translateTimeValueEqualToUnit(startTime,timeRule,minUnit)
+    //获取该对象的时间值相较于开始时间的差值
+    const distantValue = Number((timeValue - startValue).toFixed(2))
     //乘以最小单位等于多少px
-    const x = equalToUnit * pxPerUnit
+    const x = distantValue * pxPerUnit
     return x
     // let tickTime = getSmallestTime(time,timeRule,minUnit)
     // let tickValue = translateTimeValueEqualToUnit(tickTime,timeRule,minUnit)
