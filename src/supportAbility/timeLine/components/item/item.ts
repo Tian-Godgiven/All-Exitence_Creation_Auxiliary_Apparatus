@@ -4,8 +4,6 @@ import { showAlert } from "@/hooks/alert"
 import { getChapterByKey } from "@/hooks/all-articles/allArticles"
 import Status from "@/interfaces/Status"
 import { showQuickInfo } from "@/api/showQuickInfo"
-import { getTimeRule, translateTimeValueEqualToUnit } from "@/supportAbility/customTime/translateTime"
-import { TimeRule } from "@/supportAbility/customTime/customTime"
 
 //时间轴的组成部分
 export type TimeLineItem = {

@@ -1,4 +1,4 @@
-import { addDays, addHours, addMilliseconds, addMinutes, addMonths, addSeconds, addYears, differenceInDays, differenceInHours, differenceInMilliseconds, differenceInMinutes, differenceInMonths, differenceInSeconds, differenceInYears } from "date-fns"
+import { addDays, addHours, addMilliseconds, addMinutes, addMonths, addSeconds, addYears, differenceInDays, differenceInHours, differenceInMilliseconds, differenceInMinutes, differenceInMonths, differenceInSeconds, differenceInYears, getDate, getDay, getDaysInMonth, getHours, getMilliseconds, getMinutes, getMonth, getSeconds, isLeapYear } from "date-fns"
 import { TimeUnit } from "element-plus"
 import { CustomTimeRule, CustomTimeRuleUnit, customTimeLib, TimeRule } from "./customTime"
 import { showPopUp } from "@/hooks/pages/popUp"
@@ -211,12 +211,13 @@ export function translateTimeValueToCarryover({value,rule,unitFrom,unitEnd}:{
     return result
 }
 
-//将一个完整的时间值转化为相较于指定单位的值，包含小数点
-export function translateTimeValueEqualToUnit(value:number,rule:TimeRule,unitName?:string){
+//将一个完整的时间值转化为相较于指定单位的值，默认不包含小数点
+export function translateTimeValueEqualToUnit(value:number,rule:TimeRule,unitName?:string,decimalMode?:boolean){
     if(rule=="date"){
-        return getDate_ValueToUnit(value,unitName)
+        if(!unitName)unitName = "日"
+        return getDate_ValueToUnit(value,unitName,decimalMode)
     }
-    return getCustom_ValueToUnit(value,rule,unitName)
+    return getCustom_ValueToUnit(value,rule,unitName,decimalMode)
 }
 //将一个指定单位的值转化为一个完整的时间值
 export function translateTimeUnitValueToValue(unitValue:number,unitName:string,rule:TimeRule){
@@ -238,6 +239,7 @@ export function translateTimeUnitValueToValue(unitValue:number,unitName:string,r
 
 
 //date类型
+const dateUnits = ["年","月","日","时","分","秒"]
     //将date值转换为date单位数组
     function getDate_ValueToArr(time:number,unitFrom?:string,unitEnd?:string):DateArrItem[]{
         const date = new Date(time)
@@ -312,30 +314,64 @@ export function translateTimeUnitValueToValue(unitValue:number,unitName:string,r
         return date.getTime();
     }
 
-    //将date的值转化为某个单位的值
-    function getDate_ValueToUnit(value:number,unitName?:string){
+    //将date的值转化为某个单位的值,结果保留一位小数
+    function getDate_ValueToUnit(value:number,unitName:string,decimalMode:boolean=false){
         //默认时间戳，注意月份从0开始
         const idleDate = new Date(1970,0,1)
         //当前时间戳
         const date = new Date(value)
-        switch(unitName){
-            case "年":
-                return differenceInYears(date,idleDate)
-            case "月":
-                //这里是计算过程中由于月份从0开始所以少了一个月
-                return differenceInMonths(date,idleDate)+1
-            case "日":
-                return differenceInDays(date,idleDate)
-            case "时":
-                return differenceInHours(date,idleDate)
-            case "分":
-                return differenceInMinutes(date,idleDate)
-            case "秒":
-                return differenceInSeconds(date,idleDate)
-            case "毫秒":
-                return differenceInMilliseconds(date,idleDate)
-            default:
-                return differenceInYears(date,idleDate)
+        //获取指定单位的值
+        let targetValue = getUnitValueByUnitName(unitName)
+        if(!decimalMode)return targetValue
+        //获取该单位小一号单位的值
+        const targetIndex = dateUnits.indexOf(unitName)
+        const smallName =  dateUnits[targetIndex+1]
+        if(!smallName)return targetValue
+        //获取小数部分
+        const decimal = Number(getDecimal().toFixed(2))
+        //返回相加后的值
+        return decimal + targetValue
+
+        function getUnitValueByUnitName(unitName:string){
+            switch(unitName){
+                case "年":
+                    return differenceInYears(date,idleDate)
+                case "月":
+                    //这里是计算过程中由于月份从0开始所以少了一个月
+                    return differenceInMonths(date,idleDate)+1
+                case "日":
+                    return differenceInDays(date,idleDate)
+                case "时":
+                    return differenceInHours(date,idleDate)
+                case "分":
+                    return differenceInMinutes(date,idleDate)
+                case "秒":
+                    return differenceInSeconds(date,idleDate)
+                case "毫秒":
+                    return differenceInMilliseconds(date,idleDate)
+                default:
+                    return differenceInYears(date,idleDate)
+            }
+        }
+    
+        //获取小数值
+        function getDecimal(){
+            switch(smallName){
+                case "月":
+                    return getMonth(date)/12;
+                case "日":
+                    return getDate(date)/getDaysInMonth(date);
+                case "时":
+                    return getHours(date)/24;
+                case "分":
+                    return getMinutes(date)/60;
+                case "秒":
+                    return getSeconds(date)/60;
+                case "毫秒":
+                    return getMilliseconds(date)/100;
+                default:
+                    return getDay(date)/1
+            }
         }
     }
 
@@ -498,7 +534,7 @@ export function translateTimeUnitValueToValue(unitValue:number,unitName:string,r
         return totalValue
     }
     //将完整的时间值转化为某个单位的值
-    function getCustom_ValueToUnit(value:number,rule:CustomTimeRule,unitName?:string){
+    function getCustom_ValueToUnit(value:number,rule:CustomTimeRule,unitName?:string,decimalMode:boolean=false){
         //如果没有指定单位，默认使用最小单位
         let unit
         if(!unitName){
@@ -508,9 +544,27 @@ export function translateTimeUnitValueToValue(unitValue:number,unitName:string,r
             //获取指定单位
             unit = rule.units.find(unit=>unit.name == unitName)
         }
-        //获取旧值相较于指定单位的值
+        //获取值相较于指定单位的值
         if(unit?.target && unit?.equalToMin){
-            return value/unit.equalToMin
+            //整数部分
+            const targetValue = value/unit.equalToMin
+            //获取小数部分
+            if(decimalMode){
+                //小一个单位
+                const smallUnit = rule.units.find(i=>i.name == unit.target)
+                //小一个单位的值
+                if(!smallUnit)return targetValue
+                let equalToMin = 1//最小单位即为1
+                if(smallUnit.target && smallUnit.equalToMin){
+                    equalToMin = smallUnit.equal
+                }
+                const smallValue = (value%unit.equalToMin)/equalToMin
+                //小数部分
+                const decimal = Number((smallValue/unit.equal).toFixed(2))
+                console.log(decimal)
+                return decimal + targetValue
+            }
+            return targetValue
         }
         else{
             return value

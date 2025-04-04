@@ -12,16 +12,16 @@
 <script setup lang='ts'>
     import { TimeRule } from '@/supportAbility/customTime/customTime';
 import { inject } from 'vue';
-import { getScaleInfo, getStartScaleInfo } from '../timeLine';
+import { getTickInfo, getStartTickInfo } from '../timeLine';
     const {tick} = defineProps<{tick:{x:number,value:number}}>()
     const timeRule = inject<TimeRule>("timeRule","date")
     const minUnit = inject<string>("minUnit")
     const tickInfo = function(){
         if(tick.x == 0){
-            const tmp = getStartScaleInfo(tick.value,timeRule,minUnit)
+            const tmp = getStartTickInfo(tick.value,timeRule,minUnit)
             return tmp
         }
-        return getScaleInfo(tick.value,timeRule,minUnit)
+        return getTickInfo(tick.value,timeRule,minUnit)
     }()
     
     

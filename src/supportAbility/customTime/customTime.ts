@@ -19,7 +19,7 @@ export const customTimeItem:SupportAbilitySignUpItem = {
 export type TimeRule = "date"|CustomTimeRule//地球时间
 export type CustomTimeRuleUnit = {
     name:string
-    target:string,
+    target:string, //次级单位的名称，比这个单位更小
     equal:number,
     equalToMin?:number
 }|{

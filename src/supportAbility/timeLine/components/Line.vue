@@ -18,6 +18,7 @@
         lineWidth:number,
     }>()
 
+    //开始时间
     const startTime = inject<number>("startTime",0)
 
     //svg线条的图形
@@ -26,7 +27,7 @@
     })
 
     //时间轴刻度
-    const tickSpacing = 10;//每个刻度的长度，单位px
+    const tickSpacing = inject<number>("tickSpacing",10);//每个刻度的长度，单位px
 
     //总刻度数量
     const ticksNum = computed(()=>{

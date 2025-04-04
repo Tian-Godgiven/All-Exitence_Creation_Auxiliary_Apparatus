@@ -142,7 +142,7 @@ export function deleteTimeLine(timeLine:TimeLine){
 }
 
 //接受时间轴上的某个刻度的值，计算出该刻度的单位和文本
-export function getScaleInfo(scaleValue:number,rule:TimeRule,unitEnd?:string){
+export function getTickInfo(scaleValue:number,rule:TimeRule,unitEnd?:string){
     if(!rule)return {
         height:5,
         width:1,
@@ -172,7 +172,7 @@ export function getScaleInfo(scaleValue:number,rule:TimeRule,unitEnd?:string){
     }
 }
 //接受时间轴的第一个刻度的值，计算出刻度的单位和文本
-export function getStartScaleInfo(scaleValue:number,rule:TimeRule,unitEnd?:string){
+export function getStartTickInfo(scaleValue:number,rule:TimeRule,unitEnd?:string){
     if(!rule)return {
         height:5,
         width:1,
@@ -181,7 +181,6 @@ export function getStartScaleInfo(scaleValue:number,rule:TimeRule,unitEnd?:strin
     if(unitEnd){
         //获取其完整值
         const tmp = translateTimeUnitValueToValue(scaleValue,unitEnd,rule)
-        
         if(tmp){
             scaleValue = tmp
         }
@@ -227,12 +226,13 @@ export function getSmallestTime(timeValue:number,rule:TimeRule,unitEnd?:string){
 
 // 计算时间轴上任意一个时间的位置(相较于起始位置的left，单位px）
 // 注意这个时间必须是完整时间
-export function getTimeLocation(time:number,timeRule:TimeRule|false,startTime:number,tickSpacing:number,minUnit?:string,){
+export function getTimeLocation(time:number,timeRule:TimeRule|false,startTime:number,pxPerUnit:number,minUnit?:string,){
     if(!timeRule)return;
     //获取该对象的时间值相较于开始时间的差值
     const distantTime = time - startTime;
-    //这个差值等于多少最小单位
-    const equalToUnit = translateTimeValueEqualToUnit(distantTime,timeRule,minUnit)
+    //这个差值等于多少最小单位,包含2为小数
+    const equalToUnit = translateTimeValueEqualToUnit(distantTime,timeRule,minUnit,true)
+    console.log(equalToUnit)
     //乘以最小单位等于多少px
     const x = equalToUnit * pxPerUnit
     return x
