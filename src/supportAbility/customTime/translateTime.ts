@@ -308,7 +308,7 @@ export function translateTimeUnitValueToValue(unitValue:number,unitName:string,r
         }
 
         // 由于JavaScript的月份从0开始，所以需要减去1
-        const date = new Date(year, month - 1, day, hours, minutes, seconds, milliseconds);
+        const date = new Date(year, month-1, day, hours, minutes, seconds, milliseconds);
         return date.getTime();
     }
 
@@ -322,7 +322,8 @@ export function translateTimeUnitValueToValue(unitValue:number,unitName:string,r
             case "年":
                 return differenceInYears(date,idleDate)
             case "月":
-                return differenceInMonths(date,idleDate)
+                //这里是计算过程中由于月份从0开始所以少了一个月
+                return differenceInMonths(date,idleDate)+1
             case "日":
                 return differenceInDays(date,idleDate)
             case "时":

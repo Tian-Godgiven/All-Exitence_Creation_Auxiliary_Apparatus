@@ -1,12 +1,14 @@
 import { reactive, ref, ShallowRef } from "vue"
 import { disableChangePage, enableChangePage } from "./pageChange"
 import { Icon } from "@/static/list/iconList"
+import { nanoid } from "nanoid"
 
 export let popUpList = reactive<PopUp[]>([])
 export let maskIndex = ref(0)
 
 export interface PopUp{
 	name?:string, //弹窗的标题名称,默认为无
+	id?:string,//弹窗的唯一性id
 	buttons:Button[]|null, //弹窗中，需要在右上角显示的按钮
 	props?:{}, //弹窗的组件中需要使用的数据
 	vueName?:string, //弹窗对应的vue对象名称
@@ -35,11 +37,10 @@ export function showPopUp(popUp:PopUp){
 	//如果该弹窗已经显示，则不变,alert除外
 	if(popUp.vueName != "showAlert"){
 		const ifShowing = popUpList.some(thePopUp=>{
-			//vue对象相同
+			//vue对象相同的情况下
 			if((popUp.vue && popUp.vue.value == thePopUp.vue) || 
 				popUp.vueName && popUp.vueName == thePopUp.vueName
 			){
-				
 				return true
 			}
 		})
@@ -70,6 +71,8 @@ export function showPopUp(popUp:PopUp){
 		showMask(popUp)
 		maskIndex.value += 1
 	}
+
+	popUp.id = nanoid()
 	
 	// 添加弹窗
 	popUp["index"] = popUpList.length

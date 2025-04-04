@@ -7,6 +7,8 @@ import { addToRightPage } from "@/hooks/pages/rightPage";
 import { nowProjectInfo } from "@/hooks/project/projectData";
 import { translateTimeArrToValue, translateTimeUnitValueToValue, translateTimeValueEqualToUnit, translateTimeValueToArr, translateTimeValueToCarryover } from "../customTime/translateTime";
 import { TimeRule } from "../customTime/customTime";
+import { showAlert } from "@/hooks/alert";
+import { TimeLineItem } from "./components/item/item";
 
 //注册辅助功能对象
 export const timeLineSignUpItem:SupportAbilitySignUpItem={
@@ -20,10 +22,11 @@ export const timeLineSignUpItem:SupportAbilitySignUpItem={
 }
 
 /**
- * 时间轴对象
+ * 时间轴类型
  */
 // 通用时间线属性（共有的部分）
 type TimeLineBase = {
+    targetType: "status"|"exitence"|"article",
     timeRuleKey: "date" | string;  // 时间线规则的key，"date" 或其他值
     now: number | null;  // 当前时间线的位置，默认从最早的对象开始
     unitStart?: string;  // 当前时间线的最大单位
@@ -39,6 +42,7 @@ export type ExistenceTimeLine = TimeLineBase & {
             statusKey: string;    // 事物对应的时间属性的key
         }[];
     }[];
+    timeStatusKey:"",
 };
 // 文章类型时间线
 export type ArticleTimeLine = TimeLineBase & {
@@ -48,7 +52,7 @@ export type ArticleTimeLine = TimeLineBase & {
         targetKey: string[];  // 相同from值的文章对象的key值
     }[];
     // 创建时间，默认为编辑时间
-    timeStatus: "createTime" | "updateTime";  
+    timeStatusKey: "createTime" | "updateTime";  
 };
   
 // 属性类型时间线
@@ -108,7 +112,6 @@ export function showCreateTimeLine(){
     showTimeLinePopUp()
     //切换到创建时间轴页面
     ifShowCreatePage.value = true
-    console.log(ifShowCreatePage.value)
 }
 export function hideCreateTimeLine(){
     //切换走创建时间轴页面
@@ -119,6 +122,23 @@ export function hideCreateTimeLine(){
 export function createTimeLine(timeLine:TimeLine){
     //向当前的总时间轴对象中添加该时间轴
     nowAllTimeLine.push(timeLine)
+}
+//编辑
+export function editTimeLine(timeLine:TimeLine){
+
+}
+
+//删除
+export function deleteTimeLine(timeLine:TimeLine){
+    showAlert({
+        info:"确认删除该时间线？",
+        confirm:()=>{
+            const index = nowAllTimeLine.indexOf(timeLine)
+            if(index > -1){
+                nowAllTimeLine.splice(index,1)
+            }
+        }
+    })
 }
 
 //接受时间轴上的某个刻度的值，计算出该刻度的单位和文本
@@ -184,8 +204,11 @@ export function getStartScaleInfo(scaleValue:number,rule:TimeRule,unitEnd?:strin
         text
     }
 }
-//获取一个时间值，将最小单位设定为最小值时的时间值，用于生成第一个刻度
-export function getSmallestTimeValue(timeValue:number,rule:TimeRule,unitEnd?:string){
+
+//获取一个时间值将指定单位设定为1时的完整时间值
+
+//获取一个时间值，将指定最小单位设定为最小值时的时间值，用于生成第一个刻度
+export function getSmallestTime(timeValue:number,rule:TimeRule,unitEnd?:string){
     const timeArr = translateTimeValueToArr({
         value:timeValue,
         rule,
@@ -199,8 +222,36 @@ export function getSmallestTimeValue(timeValue:number,rule:TimeRule,unitEnd?:str
     const smallValue = translateTimeArrToValue(timeArr,rule)
     //再获得这个值相较于最小单位的值
     if(smallValue===false)return 0;
-    const startValue = translateTimeValueEqualToUnit(smallValue,rule,unitEnd)
-    return startValue
+    return smallValue
+}
+
+// 计算时间轴上任意一个时间的位置(相较于起始位置的left，单位px）
+// 注意这个时间必须是完整时间
+export function getTimeLocation(time:number,timeRule:TimeRule|false,startTime:number,tickSpacing:number,minUnit?:string,){
+    if(!timeRule)return;
+    //获取该对象的时间值相较于开始时间的差值
+    const distantTime = time - startTime;
+    //这个差值等于多少最小单位
+    const equalToUnit = translateTimeValueEqualToUnit(distantTime,timeRule,minUnit)
+    //乘以最小单位等于多少px
+    const x = equalToUnit * pxPerUnit
+    return x
+    // let tickTime = getSmallestTime(time,timeRule,minUnit)
+    // let tickValue = translateTimeValueEqualToUnit(tickTime,timeRule,minUnit)
+    // //获得这个tick所在的位置
+    // const x = (tickValue-startTime) * tickSpacing
+    // //如果没变则返回这个刻度的位置
+    // if(tickTime == time){
+    //     return x
+    // }
+    
+    // //否则计算比例
+    // const itemValue = translateTimeValueEqualToUnit(time,timeRule,minUnit)
+    // //1时间等于多少px？
+    // const pxPercent = 10//最小单位
+    // //获取差值
+    // const distance = (itemValue - tickValue) * pxPercent
+    // return x + distance
 }
 
 

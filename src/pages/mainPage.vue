@@ -41,9 +41,9 @@
 	
 	<!-- 弹窗 -->
 	<div class="popUpContainer" >
-		<!-- 遮罩层 -->
+		<!-- 弹窗遮罩层 -->
 		<popUpMaskVue></popUpMaskVue>
-		<popUpVue :key="popUp.index" v-for="popUp in popUpList" :popUp="popUp"></popUpVue>
+		<popUpVue :key="popUp.id" v-for="popUp in popUpList" :popUp="popUp"></popUpVue>
 	</div>
 
 </div>

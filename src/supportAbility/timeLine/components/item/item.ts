@@ -3,9 +3,14 @@ import { TimeLine } from "../../timeLine"
 import { showAlert } from "@/hooks/alert"
 import { getChapterByKey } from "@/hooks/all-articles/allArticles"
 import Status from "@/interfaces/Status"
+import { showQuickInfo } from "@/api/showQuickInfo"
+import { getTimeRule, translateTimeValueEqualToUnit } from "@/supportAbility/customTime/translateTime"
+import { TimeRule } from "@/supportAbility/customTime/customTime"
 
 //时间轴的组成部分
-export type TimeLineItem = 
+export type TimeLineItem = {
+    time:number
+} & (
 //事物类
 {
     label:[string,string],//分类名+事物名
@@ -13,7 +18,6 @@ export type TimeLineItem =
         typeKey:string,
         exitenceKey:string
     }
-    time:number
 }|
 //文章类
 {
@@ -22,7 +26,6 @@ export type TimeLineItem =
         fromKey:string[],
         articleKey:string
     }, 
-    time:number
 }|
 //属性类
 {
@@ -32,13 +35,12 @@ export type TimeLineItem =
         exitenceKey:string//事物
         statusKey:string//该关联属性
     },
-    time:number
-}
+})
 //获取时间轴上的对象，以列表形式返回 
 export function getTimeLineItems(timeLine:TimeLine){
     //根据类型找到这些对象的容器
     const targetType = timeLine.targetType
-    let itemList:TimeLineItem[] | null = []
+    let itemList:TimeLineItem[] = []
     switch(targetType){
         case "exitence":
             itemList = getTimeLineItems_Exitence(timeLine)
@@ -53,19 +55,20 @@ export function getTimeLineItems(timeLine:TimeLine){
             console.error("不支持的时间线目标类型")
             break;
     }
+
     return itemList
 }
 //获取事物组成的时间轴物体
 function getTimeLineItems_Exitence(timeLine:TimeLine){
     if(timeLine.targetType!="exitence"){
         console.error("错误传入了timeLine，目标类型不为事物")
-        return null
+        return []
     }
     const keyList = timeLine.key
     const itemList:TimeLineItem[] = []
     //遍历keyList，依次获取所有事物
     keyList.forEach(({sourceKey,targetKey}) => {
-        const typeKey = sourceKey[0]
+        const typeKey = sourceKey
         const type = getTimeLineItems_checkType(typeKey)
         if(!type){return null}
         //再寻找type中的targetKey
@@ -74,10 +77,19 @@ function getTimeLineItems_Exitence(timeLine:TimeLine){
             const exitenceKey = item.exitenceKey
             const statusKey = item.statusKey
             const tmpExitence = type.exitence.find((exitence)=>exitence.__key==exitenceKey)
-            if(!tmpExitence) return null
-            //获取事物的item
+            if(!tmpExitence){
+                return null
+            }
+            //获取事物的对应属性
             const status = getExitenceStatusByKey(statusKey,tmpExitence.status)
-            if(status && status?.setting?.timeRule == timeLine.timeRuleKey){
+            //存在该属性，并且在该属性如果存在timeRule的话要求timeRule相同
+            if(status){
+                const exitenceTimeRule = status?.setting?.timeRule
+                //如果存在事物属性额外修改了timeRule则要求为同一个timeRule
+                if(exitenceTimeRule && exitenceTimeRule != timeLine.timeRuleKey){
+                    console.error("事物的对应时间属性已被修改，无法在当前时间轴中生效")
+                    return;
+                }
                 //要求该属性存在且使用相同的时间规则
                 itemList.push({
                     label:[type.name,tmpExitence.name],
@@ -95,7 +107,7 @@ function getTimeLineItems_Exitence(timeLine:TimeLine){
 }
 //获取文章组成的时间轴物体
 function getTimeLineItems_Article(timeLine:TimeLine){
-    if(timeLine.targetType != "article")return null
+    if(timeLine.targetType != "article")return []
     const keyList = timeLine.key
     const itemList:TimeLineItem[] = [] 
     //遍历key
@@ -115,7 +127,7 @@ function getTimeLineItems_Article(timeLine:TimeLine){
                     fromKey:tmpArticle.from,
                     articleKey
                 },
-                time:tmpArticle[timeLine.timeStatus]
+                time:tmpArticle[timeLine.timeStatusKey]
             })
         })
         
@@ -126,22 +138,22 @@ function getTimeLineItems_Article(timeLine:TimeLine){
 function getTimeLineItems_Status(timeLine:TimeLine){
     if(timeLine.targetType!="status"){
         console.error("错误传入了timeLine，目标类型不为属性")
-        return null
+        return []
     }
     const keyList = timeLine.key
     const itemList:TimeLineItem[] = [] 
     //获取type的key
     const typeKey = keyList.sourceKey[0]
     const type = getTimeLineItems_checkType(typeKey)
-    if(!type){return null}
+    if(!type){return []}
     //获取exitence
     const exitenceKey = keyList.sourceKey[1]
     const exitence = type.exitence.find((exitence)=>exitence.__key == exitenceKey)
-    if(!exitence){return null}
+    if(!exitence){return []}
     //获取关联属性
     const relationStatusKey = keyList.targetKey
     const relationStatus = getExitenceStatusByKey(relationStatusKey,exitence.status,type.typeStatus)
-    if(!relationStatus){return null}
+    if(!relationStatus){return []}
     //获取指定的时间子属性,以及其他子属性的name和key字典
     const relationSource:Record<string,Status> = relationStatus?.setting["relationSource"]
     let timeStatus:Status|null = null
@@ -154,7 +166,7 @@ function getTimeLineItems_Status(timeLine:TimeLine){
             otherStatusLib[status.__key] = status.name
         }
     }
-    if(timeStatus == null)return null;
+    if(timeStatus == null)return [];
     //判断该时间子属性使用的timeRule是否一致
     //不一致的情况下使用该时间子属性记录的timeRule
     const timeRule:string = timeStatus.setting["timeRule"]
@@ -186,12 +198,10 @@ function getTimeLineItems_Status(timeLine:TimeLine){
 
 //一个获取type的复用函数
 function getTimeLineItems_checkType(typeKey:string){
+    console.log(typeKey)
     const type = nowAllExitence.types.find((type)=>type.__key == typeKey)
     if(!type){
-        showAlert({
-            info:"未能找到指定的分类，或许您已经将其删除",
-            confirm:()=>{}
-        })
+        showQuickInfo("未能找到指定的分类，或许您已经将其删除")
         return null
     }
     return type
@@ -207,3 +217,5 @@ function checkTimeRuleSame(timeRuleKey:string,timeLine:TimeLine){
         timeLine.timeRuleKey = timeRuleKey
     }
 }
+
+ 

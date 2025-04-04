@@ -1,20 +1,29 @@
 <template>
-    <div class="timeLineItem" :class="index%2==0?'top':'bottom'" @click="clickItem">
-        {{ itemLabel }}
+    <div class="timeLineItem" 
+        :class="index%2==0?'top':'bottom'" 
+        :style="{left:position+'px'}"
+        @click="clickItem">
+        {{ getLabel() }}
     </div>
 </template>
 
 <script setup lang='ts'>
-    import { computed} from 'vue';
-import { TimeLineItem } from './item';
+    import { TimeLineItem } from './item';
 import { getExitenceByKey, getTypeByKey, showExitenceOnPopUp } from '@/hooks/all-exitence/allExitence';
-
 import { showArticleOnMain } from '@/hooks/pages/mainPage/showOnMain';
 import { getArticleByKey } from '@/hooks/all-articles/allArticles';
+import { computed, inject } from 'vue';
     const {item,type,index} = defineProps<{item:TimeLineItem,type:"exitence"|"article"|"status",index:number}>()
     
+    const getX = inject<(itemTime:number)=>number>("getItemX",()=>{return 0})
+
+    //item的位置
+    const position = computed(()=>{
+       return getX(item.time)
+    })
+
     //item显示的内容
-    const itemLabel = computed(()=>{
+    function getLabel(){
         switch(type){
             //事物显示分类名+事物名
             case "exitence":
@@ -28,7 +37,7 @@ import { getArticleByKey } from '@/hooks/all-articles/allArticles';
             default:
                 return null
         }
-    })
+    }
     
     //点击到指定对象显示相关弹窗
     function clickItem(){

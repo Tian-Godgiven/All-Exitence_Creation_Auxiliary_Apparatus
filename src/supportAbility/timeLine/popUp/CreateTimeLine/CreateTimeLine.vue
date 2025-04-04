@@ -37,15 +37,16 @@
 </template>
 
 <script setup lang='ts'>
-    import { computed, ref, watch} from 'vue';
+    import { computed, reactive, ref, watch, watchEffect} from 'vue';
     import Button from '@/components/global/Button.vue';
-import { hideCreateTimeLine} from '../../timeLine';
-import { getTimeRule, getTimeRuleUnits, translateTimeValueToArr } from '@/supportAbility/customTime/translateTime';
+import { createTimeLine, hideCreateTimeLine, TimeLine} from '../../timeLine';
+import { getTimeRule, getTimeRuleUnits, translateTimeArrToValue, translateTimeValueToArr } from '@/supportAbility/customTime/translateTime';
 import { isString } from 'lodash';
 import Selector from '@/components/global/Selector.vue';
 import ShowTarget from './ShowTarget/ShowTarget.vue';
-import { chooseTarget, minTimeValue, targetList, targetType,timeRuleKey } from './createTimeLine';
+import { chooseTarget, getTargetKeyList, minTimeValue, targetList, targetType,timeRuleKey } from './createTimeLine';
 import DateUnitValue from '@/components/all-exitence/status/statusValue/dateUnitValue.vue';
+import { TimeRule } from '@/supportAbility/customTime/customTime';
     
     //选择的目标类型
     const typeList = [
@@ -121,8 +122,8 @@ import DateUnitValue from '@/components/all-exitence/status/statusValue/dateUnit
         minUnit.value = tmp.value
     })
 
-
     //起始时间值数组,为当前选择的对象中，时间值最小的对象的最小时间单位为最小值时的值
+    let startTime = 0
     const startTimeArr = computed(()=>{
         if(!timeRule.value)return false
         if(minTimeValue.value == Infinity)return false
@@ -139,11 +140,40 @@ import DateUnitValue from '@/components/all-exitence/status/statusValue/dateUnit
             lastUnit.value = 1
         }
         
-        return timeArr
+        return reactive(timeArr)
+    })
+    //修改数组的值为起始时间值
+    watchEffect(()=>{
+        startTime = 0
+        if(!timeRule.value)return false
+        if(!startTimeArr.value)return false
+        //设定起始时间的值
+        const tmp = translateTimeArrToValue(startTimeArr.value,timeRule.value)
+        if(tmp){
+            startTime = tmp;
+        }
+        else{
+            startTime = 0
+        }
     })
 
     //确认，返回当前编辑的对象
     function confirm(){
+        const key = getTargetKeyList(targetType.value,targetList.value)
+        if(!key)return false;
+        //形成一个完整的时间轴对象
+        const timeLine = {
+            timeRuleKey:timeRuleKey.value, // 时间线规则的key，"date" 或其他值
+            now: startTime,  // 当前时间线的位置，默认从最早的对象开始
+            unitStart: maxUnit.value,  // 当前时间线的最大单位
+            unitEnd: minUnit.value,   // 当前时间线的最小单位
+            targetType: targetType.value,  // 明确指定目标类型为 "article"
+            key,
+            timeStatusKey: timeStatusKey.value  
+        }
+        //将这个时间线添加到当前时间线中
+        createTimeLine(timeLine as TimeLine)
+        
         hideCreateTimeLine()
     }
     //取消
