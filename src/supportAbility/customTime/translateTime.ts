@@ -320,7 +320,7 @@ const dateUnits = ["年","月","日","时","分","秒"]
         const idleDate = new Date(1970,0,1)
         //当前时间戳
         const date = new Date(value)
-        console.log(date)
+        console.error(date)
         //获取指定单位的值
         let targetValue = getUnitValueByUnitName(unitName)
         if(!decimalMode)return targetValue

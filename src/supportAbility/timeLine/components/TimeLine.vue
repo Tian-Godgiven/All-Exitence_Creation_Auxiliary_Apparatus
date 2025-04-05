@@ -28,7 +28,7 @@
     import { computed, provide, ref, useTemplateRef } from 'vue';
     import { getTimeLineItems} from './item/item';
     import Item from "./item/Item.vue"
-    import { getTimeRule, translateTimeValueEqualToUnit } from '@/supportAbility/customTime/translateTime';
+    import { getTimeRule, translateTimeUnitValueToValue, translateTimeValueEqualToUnit } from '@/supportAbility/customTime/translateTime';
     import Line from "./Line.vue"
     import {getTimeLocation, deleteTimeLine, editTimeLine, getSmallestTime, TimeLine } from '../timeLine';
     import Button from '@/components/global/Button.vue';
@@ -113,7 +113,6 @@
         //当前时间在时间轴上的位置，若无则设定为0
         const nowTime = timeLine.now
         if(!nowTime)return 0
-        console.log(new Date(nowTime),new Date(startTime.value))
         const x = getTimeLocation(nowTime,timeRule,startTime.value,pxPerUnit.value,minUnit.value)
         if(!x)return 0
         return x 
@@ -153,16 +152,20 @@
     }
     function dragEnd(){
         isDragging = false
-        //设定当前的时间轴位置为当前时间
+        //当前的时间轴位置为当前最小单位的值
+        const minUnitValue = timeLineLeft.value / pxPerUnit.value
+        //转化为实际的时间轴的值
+        if(minUnit.value && timeRule){
+            const realTime = startIndex.value + minUnitValue
+            const tmp = translateTimeUnitValueToValue(realTime,minUnit.value,timeRule)
+            if(tmp){
+                console.log(tmp,new Date(tmp))
+                timeLine.now = tmp
+                return;
+            }
+        }
+        timeLine.now = minUnitValue
     }
-
-    //时间轴当前位置
-
-
-
-
-    
-
 </script>
 
 <style scoped lang='scss'>

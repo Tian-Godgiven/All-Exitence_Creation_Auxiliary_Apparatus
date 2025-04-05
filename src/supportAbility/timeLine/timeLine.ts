@@ -8,7 +8,6 @@ import { nowProjectInfo } from "@/hooks/project/projectData";
 import { translateTimeArrToValue, translateTimeUnitValueToValue, translateTimeValueEqualToUnit, translateTimeValueToArr, translateTimeValueToCarryover } from "../customTime/translateTime";
 import { TimeRule } from "../customTime/customTime";
 import { showAlert } from "@/hooks/alert";
-import { TimeLineItem } from "./components/item/item";
 
 //注册辅助功能对象
 export const timeLineSignUpItem:SupportAbilitySignUpItem={
