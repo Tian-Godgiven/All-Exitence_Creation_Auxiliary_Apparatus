@@ -173,21 +173,20 @@
     function dragEnd(){
         isDragging = false
         //当前的时间轴位置为当前最小单位的值
-        const minUnitValue = timeLineLeft.value / pxPerUnit.value
+        const minUnitValue = -timeLineLeft.value / pxPerUnit.value
         let nowValue = minUnitValue
         //转化为实际的时间轴的值
         if(minUnit.value && timeRule){
-            const realTime = startIndex.value + minUnitValue
+            const realTime = startIndex.value - minUnitValue
             const tmp = translateTimeUnitValueToValue(realTime,minUnit.value,timeRule)
             if(tmp){
                 nowValue = tmp
-                return;
             }
         }
-        if(nowValue < startTime.value){
+        if(nowValue > startTime.value){
             nowValue = startTime.value
         }
-        timeLine.now =nowValue
+        timeLine.now = nowValue
     }
 </script>
 

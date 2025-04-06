@@ -166,9 +166,6 @@ export function getTickInfo(scaleValue:number,rule:TimeRule,unitEnd?:string){
     const text = carryoverArr.map(unit=>{
         return unit.value.toString() + unit.name
     })
-    if(carryoverArr.length >= 1){
-        console.log(scaleValue,text)
-    }
     //进位越多刻度越长
     const carryoverNum = carryoverArr.length
     return {
