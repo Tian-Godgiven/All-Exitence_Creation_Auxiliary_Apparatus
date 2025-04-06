@@ -147,27 +147,34 @@ export function getTickInfo(scaleValue:number,rule:TimeRule,unitEnd?:string){
         width:1,
     };
     //scale的值是相较于最小单位的，因此需要进行一道转化
+    let value = scaleValue
     if(unitEnd){
         //获取其完整值
         const tmp = translateTimeUnitValueToValue(scaleValue,unitEnd,rule)
-        if(tmp)scaleValue = tmp
+        if(tmp){
+            value = tmp
+        }
     }
     //获取该刻度值相较于最小单位的进位
     const carryoverArr = translateTimeValueToCarryover({
-        value:scaleValue,
+        value,
         rule,
         unitEnd
     })
+    
     //刻度文本为进位的值和名称
     const text = carryoverArr.map(unit=>{
         return unit.value.toString() + unit.name
     })
+    if(carryoverArr.length >= 1){
+        console.log(scaleValue,text)
+    }
     //进位越多刻度越长
     const carryoverNum = carryoverArr.length
     return {
         height:5+2*carryoverNum,
         width:1+0.5*carryoverNum,
-        text
+        text:text.length>0?text:null
     }
 }
 //接受时间轴的第一个刻度的值，计算出刻度的单位和文本

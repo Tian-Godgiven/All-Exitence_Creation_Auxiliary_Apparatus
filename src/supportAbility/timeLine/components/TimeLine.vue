@@ -25,7 +25,7 @@
 </template>
  
 <script setup lang='ts'>
-    import { computed, provide, ref, useTemplateRef } from 'vue';
+    import { computed, provide, reactive, ref, useTemplateRef } from 'vue';
     import { getTimeLineItems} from './item/item';
     import Item from "./item/Item.vue"
     import { getTimeRule, translateTimeUnitValueToValue, translateTimeValueEqualToUnit } from '@/supportAbility/customTime/translateTime';
@@ -82,30 +82,46 @@
         //将指定位置聚焦，移动其到中心
     }
 
-    //每个刻度占据的宽度像素值
-    const tickSpacing = 20
-    provide("tickSpacing",tickSpacing)
-    //每个刻度所等于的最小单位值
-    //每个单位的等比值增大4次（1,2,3,4倍）再换用更大的单位
-    let tickEquelUnit = 1 
+    const setting = reactive({
+        space:20,
+        equelUnit:1
+    })
     //1最小单位等于多少px
     const pxPerUnit = computed(()=>{
-        return tickSpacing/tickEquelUnit
+        return setting.space/setting.equelUnit
     })
 
-    //已放大的次数
-    let scaleTimes = 0
-    //放大时间轴，让单位时间的时间轴的长度变长
+    provide("timeLineSetting",setting)
+
+    //放大时间轴，让时间轴涵盖的时间值变小
     function upScale(){
-        //当前的最小单位与次小单位之间比例
-        
-    }
-    //缩小时间轴,让单位时间的时间轴的长度变短
-    function downScale(){
-        if(tickEquelUnit>1){
-            tickEquelUnit -= 1
+        //优先减少刻度值，不少于1倍
+        if(setting.equelUnit > 1){
+            setting.equelUnit -= 1
         }
-        //换用
+        //增加刻度间隔
+        else if(setting.space < 50){
+            setting.space += 10
+        }
+        //否则换用更小的最小刻度
+        else{
+            
+        }
+    }
+    //缩小时间轴,让时间轴涵盖的时间值变大，减少刻度间隔或让单个刻度的值增加
+    function downScale(){
+        //优先减少刻度间隔
+        if(setting.space > 10){
+            setting.space -= 10
+        }
+        //否则增大刻度值，不超过4倍
+        else if(setting.equelUnit <= 4){
+            setting.equelUnit += 1
+        }
+        //否则换用更大的最小刻度
+        else{
+
+        }
     }
 
     //拖动时间轴
@@ -124,7 +140,11 @@
     //时间线线条svg的长度
     const lineWidth = computed(()=>{
         const width = wrapper.value?.clientWidth??300
-        return width - timeLineLeft.value
+        const length = width - timeLineLeft.value
+        if(length < 100){
+            return 100
+        }
+        return length
     })
     
     function dragStart(e:MouseEvent|TouchEvent){
@@ -154,17 +174,20 @@
         isDragging = false
         //当前的时间轴位置为当前最小单位的值
         const minUnitValue = timeLineLeft.value / pxPerUnit.value
+        let nowValue = minUnitValue
         //转化为实际的时间轴的值
         if(minUnit.value && timeRule){
             const realTime = startIndex.value + minUnitValue
             const tmp = translateTimeUnitValueToValue(realTime,minUnit.value,timeRule)
             if(tmp){
-                console.log(tmp,new Date(tmp))
-                timeLine.now = tmp
+                nowValue = tmp
                 return;
             }
         }
-        timeLine.now = minUnitValue
+        if(nowValue < startTime.value){
+            nowValue = startTime.value
+        }
+        timeLine.now =nowValue
     }
 </script>
 
