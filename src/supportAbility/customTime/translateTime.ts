@@ -4,6 +4,7 @@ import { CustomTimeRule, CustomTimeRuleUnit, customTimeLib, TimeRule } from "./c
 import { showPopUp } from "@/hooks/pages/popUp"
 import Selector from "./popUp/Selector.vue"
 import { shallowRef } from "vue"
+import { isString } from "lodash"
 
 
 // 写在前面：由于涉及大量的类型翻译，加上时间规则上对date（地球历法）和自定义时间规则的区分
@@ -131,7 +132,96 @@ export function getTimeRuleUnits(timeRule:TimeRule,unitFrom?:string,unitEnd?:str
     return unitList
 }
 
+//获取指定时间规则的，更大或更小的单位，当前单位默认为最小单位
+export function getTimeRuleBiggerUnit(rule:TimeRule,nowUnit?:string,howMuch:number=1){
+    const unitList = getTimeRuleUnits(rule)
+    let biggerUnit
+    if(!nowUnit){
+        //返回倒数第n大的单位
+        const index = unitList.length - howMuch
+        biggerUnit = returnBiggerUnit(index)
+    }
+    else{
+        //找到当前单位的位置
+        const index = unitList.findIndex(unit=>{
+            if(isString(unit)){
+                return unit == nowUnit
+            }
+            else{
+                return unit.name == nowUnit
+            }
+        })
+        //返回比他大howMuch位的单位(前howMuch位)
+        biggerUnit = returnBiggerUnit(index-howMuch)
+    }
+    if(!isString(biggerUnit)){
+        biggerUnit = biggerUnit?.name
+    }
+    //如果最终没有得到目标单位，或者得到的结果与当前单位一致
+    if(biggerUnit && biggerUnit!=nowUnit){
+        return biggerUnit
+    }
+    return false
 
+    //递归函数
+    function returnBiggerUnit(index:number){
+        console.log(index,unitList)
+        //找到最小单位了
+        if(index == unitList.length-1){
+            return unitList.at(index)
+        }
+        const targetUnit = unitList.at(index)
+        //没有找到则往后找
+        if(!targetUnit){
+            return returnBiggerUnit(index+1)
+        }
+        return targetUnit
+    }
+}
+export function getTimeRuleSmallerUnit(rule:TimeRule,nowUnit?:string,howMuch:number=1){
+    const unitList = getTimeRuleUnits(rule)
+    let biggerUnit
+    if(!nowUnit){
+        //返回第二大的单位
+        biggerUnit = returnSmallerUnit(1)
+    }
+    else{
+        //找到当前单位的位置
+        const index = unitList.findIndex(unit=>{
+            if(isString(unit)){
+                return unit == nowUnit
+            }
+            else{
+                return unit.name == nowUnit
+            }
+        })
+        //返回比他小howMuch位的单位(后howMuch位)
+        biggerUnit = returnSmallerUnit(index+howMuch)
+    }
+    //获得字符串
+    if(!isString(biggerUnit)){
+        biggerUnit = biggerUnit?.name
+    }
+    //如果最终没有得到目标单位，或者得到的结果与当前单位一致
+    if(biggerUnit && biggerUnit!=nowUnit){
+        return biggerUnit
+    }
+    return false
+
+    //递归函数
+    function returnSmallerUnit(index:number){
+        //找到最小单位了
+        if(index == unitList.length-1){
+            return unitList.at(index)
+        }
+        const targetUnit = unitList.at(index)
+        //没有找到则往后找
+        if(!targetUnit){
+            return returnSmallerUnit(index+1)
+        }
+        return targetUnit
+    }
+}
 
 //翻译时间表达式，返回一个字符串
 export function translateTimeValueToString({
@@ -570,6 +660,7 @@ const dateUnits = ["年","月","日","时","分","秒"]
             return value
         }
     }
+
 
 
 

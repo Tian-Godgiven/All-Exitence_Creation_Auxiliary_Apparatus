@@ -28,10 +28,11 @@
     import { computed, provide, reactive, ref, useTemplateRef } from 'vue';
     import { getTimeLineItems} from './item/item';
     import Item from "./item/Item.vue"
-    import { getTimeRule, translateTimeUnitValueToValue, translateTimeValueEqualToUnit } from '@/supportAbility/customTime/translateTime';
+    import { getTimeRule, getTimeRuleBiggerUnit, getTimeRuleSmallerUnit, translateTimeUnitValueToValue, translateTimeValueEqualToUnit } from '@/supportAbility/customTime/translateTime';
     import Line from "./Line.vue"
     import {getTimeLocation, deleteTimeLine, editTimeLine, getSmallestTime, TimeLine } from '../timeLine';
     import Button from '@/components/global/Button.vue';
+import { Setter } from 'node_modules/date-fns/parse/_lib/Setter';
     const {timeLine} = defineProps<{timeLine:TimeLine}>()
 
     // 时间轴上的各个对象
@@ -54,8 +55,9 @@
     //使用的时间规则
     const timeRule = getTimeRule(timeLine.timeRuleKey)
     //使用的最小单位
+    const timeLineMinUnit = ref(timeLine.unitEnd)
     const minUnit = computed(()=>{
-        return timeLine.unitEnd
+        return timeLineMinUnit.value  
     })
     /*这个时间轴的起始值
     即最小时间值对象的时间值最接近的，对应时间规则中的指定最小单位的值*/
@@ -74,14 +76,15 @@
 
     //提供给子元素
     provide("timeRule",timeRule)
-    provide("minUnit",minUnit.value)
-    provide("startTime",startIndex.value)
+    provide("minUnit",minUnit)
+    provide("startTime",startIndex)
 
     //点击到时间轴
     function clickLine(){
         //将指定位置聚焦，移动其到中心
     }
 
+    //时间轴设置
     const setting = reactive({
         space:20,
         equelUnit:1
@@ -90,7 +93,6 @@
     const pxPerUnit = computed(()=>{
         return setting.space/setting.equelUnit
     })
-
     provide("timeLineSetting",setting)
 
     //放大时间轴，让时间轴涵盖的时间值变小
@@ -103,9 +105,16 @@
         else if(setting.space < 50){
             setting.space += 10
         }
-        //否则换用更小的最小刻度
-        else{
-            
+        //否则换用更大1位的最小刻度
+        else if(timeRule){
+            const smaller = getTimeRuleSmallerUnit(timeRule,minUnit.value)
+            if(smaller){
+                timeLineMinUnit.value = smaller
+                timeLine.unitEnd = smaller
+                //重置设置
+                setting.equelUnit = 4;
+                setting.space = 10
+            }
         }
     }
     //缩小时间轴,让时间轴涵盖的时间值变大，减少刻度间隔或让单个刻度的值增加
@@ -119,8 +128,15 @@
             setting.equelUnit += 1
         }
         //否则换用更大的最小刻度
-        else{
-
+        else if(timeRule){
+            const bigger = getTimeRuleBiggerUnit(timeRule,minUnit.value)
+            if(bigger){
+                timeLineMinUnit.value = bigger
+                timeLine.unitEnd = bigger
+                //重置设置
+                setting.equelUnit = 1;
+                setting.space = 50
+            }
         }
     }
 

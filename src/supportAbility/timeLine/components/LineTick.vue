@@ -14,7 +14,7 @@
 
 <script setup lang='ts'>
 import { TimeRule } from '@/supportAbility/customTime/customTime';
-import { computed, inject } from 'vue';
+import { computed, inject, ref, Ref } from 'vue';
 import { getStartTickInfo, getTickInfo } from '../timeLine';
 
     const {index} = defineProps<{
@@ -22,9 +22,9 @@ import { getStartTickInfo, getTickInfo } from '../timeLine';
     }>()
 
     const timeRule = inject<TimeRule>("timeRule","date")
-    const minUnit = inject<string>("minUnit")
+    const minUnit:Ref<string|undefined> = inject("minUnit",ref(undefined))
     //开始时间
-    const startTime = inject<number>("startTime",0)
+    const startTime = inject<Ref<number>>("startTime")
     const setting = inject("timeLineSetting",{
         space:10,
         equelUnit:1
@@ -33,19 +33,26 @@ import { getStartTickInfo, getTickInfo } from '../timeLine';
     const tick = computed(()=>{
          //刻度参数
         const x = (index*setting.space)/setting.equelUnit
-        const value = startTime + index
+        if(startTime){
+            const value = startTime.value + index
         return {
             x,value
         }
+        }
+        return {
+            x,
+            value: index
+        }
+        
     })
     const info = computed(()=>{
         //刻度info
         let info
         if(tick.value.x == 0){
-            info = getStartTickInfo(tick.value.value,timeRule,minUnit)
+            info = getStartTickInfo(tick.value.value,timeRule,minUnit.value)
         }
         else{
-            info = getTickInfo(tick.value.value,timeRule,minUnit)
+            info = getTickInfo(tick.value.value,timeRule,minUnit.value)
         }
         return info
     })
