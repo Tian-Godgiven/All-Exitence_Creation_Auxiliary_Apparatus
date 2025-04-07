@@ -3,6 +3,7 @@
         @mousedown="dragStart" 
         @mousemove="dragLine" 
         @mouseup="dragEnd">
+    <div>{{ timeLine.name??"未命名" }}</div>
     <div class="ability">
         <Button @click="upScale" name="放大"></Button>
         <Button @click="downScale" name="缩小"></Button>
@@ -33,6 +34,7 @@
     import {getTimeLocation, deleteTimeLine, getSmallestTime, TimeLine, getBiggerUnit, getSmallerUnit } from '../timeLine';
     import Button from '@/components/global/Button.vue';
 import { showEditTimeLine } from '../popUp/editTimeLine/editTimeLine';
+import DownLineInput from '@/components/other/input/downLineInput.vue';
     const {timeLine} = defineProps<{timeLine:TimeLine}>()
 
     // 时间轴上的各个对象

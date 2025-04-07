@@ -1,5 +1,8 @@
 <template>
 <div class="createTimeLine" ref="pageRef">
+
+    <DownLineInput v-model="newTimeLine.name" placeholder="输入名称"></DownLineInput>
+
     <div class="chooseTarget">
         <div class="chooseType">目标类型:
             <Selector class="selector" 
@@ -46,6 +49,7 @@ import Selector from '@/components/global/Selector.vue';
 import ShowTarget from './ShowTarget/ShowTarget.vue';
 import { chooseTarget, editTarget, getKeyList, getTargetList, hideEditTimeLine, minTimeValue, targetList, timeStatusKey, targetType,timeRuleKey } from './editTimeLine';
 import DateUnitValue from '@/components/all-exitence/status/statusValue/dateUnitValue.vue';
+import DownLineInput from '@/components/other/input/downLineInput.vue';
     
     //选择的目标类型
     const typeList = [
@@ -56,7 +60,7 @@ import DateUnitValue from '@/components/all-exitence/status/statusValue/dateUnit
 
     //初始值为空
     const idle:TimeLine = {
-        name:"",
+        name:"未命名时间轴",
         key:[],
         targetType: "exitence",
         timeRuleKey: "date",
@@ -209,6 +213,7 @@ import DateUnitValue from '@/components/all-exitence/status/statusValue/dateUnit
         if(!key)return false;
         //形成一个完整的时间轴对象
         const timeLine = {
+            name:newTimeLine.value.name,
             timeRuleKey:timeRuleKey.value, // 时间线规则的key，"date" 或其他值
             setting:{
                 now:nowTime,
