@@ -25,7 +25,7 @@
 </template>
  
 <script setup lang='ts'>
-    import { computed, provide, reactive, ref, useTemplateRef } from 'vue';
+    import { computed, provide, reactive, ref, useTemplateRef, watch } from 'vue';
     import { getTimeLineItems} from './item/item';
     import Item from "./item/Item.vue"
     import { getTimeRule, translateTimeUnitValueToValue, translateTimeValueEqualToUnit } from '@/supportAbility/customTime/translateTime';
@@ -86,8 +86,14 @@ import { showEditTimeLine } from '../popUp/editTimeLine/editTimeLine';
 
     //时间轴设置
     const setting = reactive({
-        space:20,
-        equelUnit:1
+        space:timeLine.setting?.space??20,
+        equelUnit:timeLine.setting?.equelUnit??1
+    })
+    watch(setting,()=>{
+        timeLine.setting["space"] = setting.space
+        timeLine.setting["equelUnit"] = setting.equelUnit
+    },{
+        deep:true
     })
     //1最小单位等于多少px
     const pxPerUnit = computed(()=>{
@@ -137,15 +143,14 @@ import { showEditTimeLine } from '../popUp/editTimeLine/editTimeLine';
             } 
         }
     }
+    //监听并修改
 
     //拖动时间轴
     const timeLineLeft = ref(function(){
         //当前时间在时间轴上的位置，若无则设定为0
         const nowTime = timeLine.setting.now
-        console.log(nowTime,startTime.value)
         if(!nowTime)return 0
         const x = getTimeLocation(nowTime,timeRule,startTime.value,pxPerUnit.value,minUnit.value)
-        console.log(x)
         if(!x)return 0
         return -x 
     }()) //时间线当前的移动距离
@@ -192,12 +197,10 @@ import { showEditTimeLine } from '../popUp/editTimeLine/editTimeLine';
         // (由于时间轴是向右移动的所以left为负值)
         const minUnitValue = -timeLineLeft.value / pxPerUnit.value
         let nowValue = minUnitValue
-        console.log("当前left等于多少最小单位值",minUnitValue)
         //转化为实际的时间值
         if(minUnit.value && timeRule){
             //这个最小单位值要加到起始值上
             nowValue = startIndex.value + minUnitValue
-            console.log("当前最小单位总值",nowValue)
             //该最小单位的值等于多少自然值
             const tmp = translateTimeUnitValueToValue(nowValue,minUnit.value,timeRule)
             if(tmp){

@@ -33,6 +33,8 @@ type TimeLineBase = {
     setting:{
         now:number|null, //当前时间,默认为最小时间
         start:number|null, //起始时间，默认为最小时间
+        space?:number,//刻度间隔
+        equelUnit?:number//刻度代表多少值
     },
     unitStart?: string;  // 当前时间线的最大单位
     unitEnd?: string;    // 当前时间线的最小单位
