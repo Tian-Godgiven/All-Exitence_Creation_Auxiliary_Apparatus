@@ -57,8 +57,6 @@ import Selector from '@/components/global/Selector.vue';
         return newRule
     })
     
-    
-    
     //数符选项
     const numFormatList = [
         {label:"简体中文数字",value:"简体中文数字"},

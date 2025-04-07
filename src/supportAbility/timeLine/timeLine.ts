@@ -1,7 +1,7 @@
 import { SupportAbilitySignUpItem } from "@/static/list/supportAbilityList";
 import TimeLineVue from "./TimeLine.vue";
 import { showPopUp } from "@/hooks/pages/popUp";
-import { reactive, ref, shallowRef, toRaw } from "vue";
+import { reactive, shallowRef, toRaw } from "vue";
 import { tryReadFileAtPath, writeFileAtPath } from "@/hooks/fileSysytem";
 import { addToRightPage } from "@/hooks/pages/rightPage";
 import { nowProjectInfo } from "@/hooks/project/projectData";
@@ -25,6 +25,7 @@ export const timeLineSignUpItem:SupportAbilitySignUpItem={
  */
 // 通用时间线属性（共有的部分）
 type TimeLineBase = {
+    name:string,
     targetType: "status"|"exitence"|"article",
     timeRuleKey: "date" | string;  // 时间线规则的key，"date" 或其他值
     now: number | null;  // 当前时间线的位置，默认从最早的对象开始
@@ -97,7 +98,7 @@ async function changeTimeLine(projectPath:string){
 }
 
 //显示时间线弹窗
-function showTimeLinePopUp(){
+export function showTimeLinePopUp(){
     showPopUp({
         vue:shallowRef(TimeLineVue),
         "buttons":null,
@@ -105,26 +106,19 @@ function showTimeLinePopUp(){
     })
 }
 
-//显示创建时间轴弹窗
-export const ifShowCreatePage = ref(false)
-export function showCreateTimeLine(){
-    showTimeLinePopUp()
-    //切换到创建时间轴页面
-    ifShowCreatePage.value = true
-}
-export function hideCreateTimeLine(){
-    //切换走创建时间轴页面
-    ifShowCreatePage.value = false
-}
+
 
 //创建新的时间轴
 export function createTimeLine(timeLine:TimeLine){
     //向当前的总时间轴对象中添加该时间轴
     nowAllTimeLine.push(timeLine)
 }
-//编辑
-export function editTimeLine(timeLine:TimeLine){
-
+//编辑/更新时间轴
+export function editTimeLine(timeLine:TimeLine,newTimeLine:TimeLine){
+    const index = nowAllTimeLine.indexOf(timeLine)
+    if(index>=0){
+        nowAllTimeLine[index] = newTimeLine
+    }
 }
 
 //删除
@@ -140,8 +134,11 @@ export function deleteTimeLine(timeLine:TimeLine){
     })
 }
 
+
+/** 工具函数 */
+
 //接受时间轴上的某个刻度的值，计算出该刻度的单位和文本
-export function getTickInfo(scaleValue:number,rule:TimeRule,unitEnd?:string){
+export function getTickInfo(scaleValue:number,rule:TimeRule,unitEnd?:string,start:boolean=false){
     if(!rule)return {
         height:5,
         width:1,
@@ -155,59 +152,40 @@ export function getTickInfo(scaleValue:number,rule:TimeRule,unitEnd?:string){
             value = tmp
         }
     }
-    //获取该刻度值相较于最小单位的进位
-    const carryoverArr = translateTimeValueToCarryover({
-        value,
-        rule,
-        unitEnd
-    })
-    
-    //刻度文本为进位的值和名称
-    const text = carryoverArr.map(unit=>{
+
+    //获取刻度值文本
+    let textArr
+    //如果是起始刻度
+    if(start){
+        //获取该刻度值相较于最小单位的所有值
+        textArr = translateTimeValueToArr({
+            value,
+            rule,
+            unitEnd
+        })
+    }
+    else{
+        //获取该刻度值相较于最小单位的进位
+        textArr = translateTimeValueToCarryover({
+            value,
+            rule,
+            unitEnd
+        })
+    }
+
+    //刻度文本为各个单位的值和名称
+    const text = textArr.map(unit=>{
         return unit.value.toString() + unit.name
     })
+
     //进位越多刻度越长
-    const carryoverNum = carryoverArr.length
+    const length = textArr.length
     return {
-        height:5+2*carryoverNum,
-        width:1+0.5*carryoverNum,
+        height:5+2*length,
+        width:1+0.5*length,
         text:text.length>0?text:null
     }
 }
-//接受时间轴的第一个刻度的值，计算出刻度的单位和文本
-export function getStartTickInfo(scaleValue:number,rule:TimeRule,unitEnd?:string){
-    if(!rule)return {
-        height:5,
-        width:1,
-    };
-    //scale的值是相较于最小单位的，因此需要进行一道转化
-    if(unitEnd){
-        //获取其完整值
-        const tmp = translateTimeUnitValueToValue(scaleValue,unitEnd,rule)
-        if(tmp){
-            scaleValue = tmp
-        }
-    }
-    //获取该刻度值相较于最小单位的值
-    const timeArr = translateTimeValueToArr({
-        value:scaleValue,
-        rule,
-        unitEnd
-    })
-    //刻度文本为各个单位的值和名称
-    const text = timeArr.map(unit=>{
-        return unit.value.toString() + unit.name
-    })
-    //进位越多刻度越长
-    const carryoverNum = timeArr.length
-    return {
-        height:5+2*carryoverNum,
-        width:1+0.5*carryoverNum,
-        text
-    }
-}
-
-//获取一个时间值将指定单位设定为1时的完整时间值
 
 //获取一个时间值，将指定最小单位设定为最小值时的时间值，用于生成第一个刻度
 export function getSmallestTime(timeValue:number,rule:TimeRule,unitEnd?:string){

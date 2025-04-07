@@ -13,7 +13,7 @@
     </div>
 
     <SlidePage :show="ifShowCreatePage">
-        <CreateTimeLine></CreateTimeLine>
+        <EditTimeLine></EditTimeLine>
     </SlidePage>
     
 </div>
@@ -24,13 +24,14 @@
 <script setup lang='ts'>
     import Button from '@/components/global/Button.vue';
     import TimeLine from './components/TimeLine.vue'
-    import CreateTimeLine from "./popUp/CreateTimeLine/CreateTimeLine.vue"
-    import { ifShowCreatePage, nowAllTimeLine, showCreateTimeLine } from './timeLine';
+    import EditTimeLine from "./popUp/editTimeLine/EditPage.vue"
+    import { nowAllTimeLine } from './timeLine';
     import SlidePage from '@/components/other/SlidePage.vue';
+    import { ifShowCreatePage ,showEditTimeLine} from './popUp/editTimeLine/editTimeLine.ts';
 
-    //显示新建时间线
+    //新建时间线
     function createNew(){
-        showCreateTimeLine()
+        showEditTimeLine(null)
     }
 
     //管理模式

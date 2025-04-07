@@ -18,7 +18,7 @@ import { PopUp,closePopUp } from '@/hooks/pages/popUp';
 import { targetStatus, getList, getSelectionArticles } from './chooseArticle';
 import ChooseArticleOption from './ChooseArticleOption.vue';
 import Button from '@/components/global/Button.vue';
-import {returnValue_Article} from '../CreateTimeLine/createTimeLine';
+import {returnValue_Article} from '../editTimeLine/editTimeLine';
 
     const {popUp} = defineProps<{popUp:PopUp}>()
     //选择作为目标属性的文章事件

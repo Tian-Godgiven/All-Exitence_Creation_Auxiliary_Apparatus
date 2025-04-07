@@ -15,7 +15,7 @@
 <script setup lang='ts'>
 import { TimeRule } from '@/supportAbility/customTime/customTime';
 import { computed, inject, ref, Ref } from 'vue';
-import { getStartTickInfo, getTickInfo } from '../timeLine';
+import { getTickInfo } from '../timeLine';
 
     const {index} = defineProps<{
         index:number
@@ -49,7 +49,7 @@ import { getStartTickInfo, getTickInfo } from '../timeLine';
         //刻度info
         let info
         if(tick.value.x == 0){
-            info = getStartTickInfo(tick.value.value,timeRule,minUnit.value)
+            info = getTickInfo(tick.value.value,timeRule,minUnit.value,true)
         }
         else{
             info = getTickInfo(tick.value.value,timeRule,minUnit.value)

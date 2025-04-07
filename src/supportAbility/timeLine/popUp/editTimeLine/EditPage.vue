@@ -16,10 +16,10 @@
     <ShowTarget :targetType :targetList></ShowTarget>
 
     <div>选择最大单位
-        <Selector placeholder="无选项" v-model="maxUnit" :list="timeRuleUnits"></Selector>
+        <Selector placeholder="无选项" v-model="newTimeLine.unitStart" :list="timeRuleUnits"></Selector>
     </div>
     <div>选择最小单位
-        <Selector placeholder="无选项" v-model="minUnit" :list="minUnitList"></Selector>
+        <Selector placeholder="无选项" v-model="newTimeLine.unitEnd" :list="minUnitList"></Selector>
     </div>
     <div>起始时间：
         <div class="startTime" v-if="startTimeArr">
@@ -39,22 +39,49 @@
 <script setup lang='ts'>
     import { computed, reactive, ref, watch, watchEffect} from 'vue';
     import Button from '@/components/global/Button.vue';
-import { createTimeLine, hideCreateTimeLine, TimeLine} from '../../timeLine';
+import { createTimeLine,editTimeLine,TimeLine} from '../../timeLine';
 import { getTimeRule, getTimeRuleUnits, translateTimeArrToValue, translateTimeValueToArr } from '@/supportAbility/customTime/translateTime';
-import { isString } from 'lodash';
+import { cloneDeep, isString } from 'lodash';
 import Selector from '@/components/global/Selector.vue';
 import ShowTarget from './ShowTarget/ShowTarget.vue';
-import { chooseTarget, getTargetKeyList, minTimeValue, targetList, targetType,timeRuleKey } from './createTimeLine';
+import { chooseTarget, editTarget, getKeyList, getTargetList, hideEditTimeLine, minTimeValue, targetList, timeStatusKey, targetType,timeRuleKey } from './editTimeLine';
 import DateUnitValue from '@/components/all-exitence/status/statusValue/dateUnitValue.vue';
-import { TimeRule } from '@/supportAbility/customTime/customTime';
     
     //选择的目标类型
     const typeList = [
         {value:"exitence",label:"事物"},
         {value:"status",label:"事物属性"},
-        {value:"article",label:"文章"},
+        // {value:"article",label:"文章"},
     ]
 
+    //初始值为空
+    const idle = {
+        name:"",
+        targetType: null,
+        timeRuleKey: null,  // 时间线规则的key，"date" 或其他值
+        now: null,  // 当前时间线的位置，默认从最早的对象开始
+        unitStart: undefined,  // 当前时间线的最大单位
+        unitEnd: undefined,    // 当前时间线的最小单位
+    }
+    //编辑对象是源对象的拷贝
+    const newTimeLine = computed(()=>{
+        let tmp:any = editTarget.value
+        //若为空则创建新规则
+        if(tmp == null){
+            tmp = idle
+        }
+        //拷贝编辑对象
+        let newTimeLine = reactive<TimeLine>(cloneDeep(tmp))
+        return newTimeLine
+    })
+
+    //获取编辑对象时，设置编辑对象的初始值
+    watch(newTimeLine,()=>{
+        targetList.value = getTargetList(newTimeLine.value.targetType,newTimeLine.value.key)
+        timeRuleKey.value = newTimeLine.value.timeRuleKey
+        // minTimeValue = ref(0) //最小时间值
+        timeStatusKey.value = newTimeLine.value.timeStatusKey        
+    })
 
     //使用的时间规则
     const timeRule = computed(()=>{
@@ -62,14 +89,13 @@ import { TimeRule } from '@/supportAbility/customTime/customTime';
         return rule
     })
 
-    //目标属性的key：适用于文章or属性类型
-    const timeStatusKey = ref<string>("")
-    //仅在选择事物属性时有效，列出指定事物属性中可以被选为时间属性子属性
-    const statusKeyList = computed(()=>{
-        //否则可选项为目标中存在时间类属性
-        
-    })
+        // //仅在选择事物属性时有效，列出指定事物属性中可以被选为时间属性子属性
+        // const statusKeyList = computed(()=>{
+        //     //否则可选项为目标中存在时间类属性
+            
+        // })
 
+    
     //所有可选时间单位，也用于最大时间单位选项
     const timeRuleUnits = computed(()=>{
         if(!timeRule.value)return false
@@ -92,37 +118,35 @@ import { TimeRule } from '@/supportAbility/customTime/customTime';
         
     })
     //选择最大时间单位
-    const maxUnit = ref("")
     watch(timeRuleUnits,()=>{
         if(timeRuleUnits.value){
             const tmp = timeRuleUnits.value[0]
-            maxUnit.value = tmp.value
+            newTimeLine.value.unitStart = tmp.value
             return;
         }
-        maxUnit.value = ""
+        newTimeLine.value.unitStart = ""
     })
     //最小时间单位的选项
     const minUnitList = computed(()=>{
         if(!timeRuleUnits.value)return false
         if(targetList.value.length==0)return false
         const maxIndex = timeRuleUnits.value.findIndex(unit=>{
-            return unit.value == maxUnit.value
+            return unit.value == newTimeLine.value.unitStart
         })
         return timeRuleUnits.value.slice(maxIndex+1)
     })
     //最小单位
-    const minUnit = ref("")
     watch(minUnitList,()=>{
         if(!minUnitList.value){
-            minUnit.value = "";
+            newTimeLine.value.unitEnd = "";
             return;
         }
         const tmp = minUnitList.value.at(-1)
         if(!tmp)return;
-        minUnit.value = tmp.value
+        newTimeLine.value.unitEnd = tmp.value
     })
 
-    //起始时间值数组,为当前选择的对象中，时间值最小的对象的最小时间单位为最小值时的值
+    //起始时间值,为当前选择的对象中，时间值最小的对象的最小时间单位为最小值时的值
     let startTime = 0
     const startTimeArr = computed(()=>{
         if(!timeRule.value)return false
@@ -131,8 +155,8 @@ import { TimeRule } from '@/supportAbility/customTime/customTime';
         const timeArr = translateTimeValueToArr({
             value:minTimeValue.value,
             rule:timeRule.value,
-            unitFrom:maxUnit.value,
-            unitEnd:minUnit.value
+            unitFrom:newTimeLine.value.unitStart,
+            unitEnd:newTimeLine.value.unitEnd
         })
         //要将其中最小的单位的值设为1
         const lastUnit = timeArr.at(-1)
@@ -155,30 +179,38 @@ import { TimeRule } from '@/supportAbility/customTime/customTime';
         else{
             startTime = 0
         }
+        console.log(startTime)
     })
 
     //确认，返回当前编辑的对象
     function confirm(){
-        const key = getTargetKeyList(targetType.value,targetList.value)
+        const key = getKeyList(targetType.value,targetList.value)
         if(!key)return false;
         //形成一个完整的时间轴对象
         const timeLine = {
             timeRuleKey:timeRuleKey.value, // 时间线规则的key，"date" 或其他值
             now: startTime,  // 当前时间线的位置，默认从最早的对象开始
-            unitStart: maxUnit.value,  // 当前时间线的最大单位
-            unitEnd: minUnit.value,   // 当前时间线的最小单位
             targetType: targetType.value,  // 明确指定目标类型为 "article"
+            unitEnd:newTimeLine.value.unitEnd,
+            unitStart:newTimeLine.value.unitStart,
             key,
             timeStatusKey: timeStatusKey.value  
         }
-        //将这个时间线添加到当前时间线中
-        createTimeLine(timeLine as TimeLine)
+        console.log(timeLine)
+        if(editTarget.value){
+            editTimeLine(editTarget.value,timeLine as TimeLine)
+        }
+        else{
+            //将这个时间线添加到当前时间线中
+            createTimeLine(timeLine as TimeLine)
+        }
         
-        hideCreateTimeLine()
+        
+        hideEditTimeLine()
     }
     //取消
     function quit(){
-        hideCreateTimeLine()
+        hideEditTimeLine()
     }
 </script>
 

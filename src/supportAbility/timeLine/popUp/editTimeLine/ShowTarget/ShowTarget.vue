@@ -8,13 +8,12 @@
 
 <script setup lang='ts'>
     import { computed} from 'vue';
-    import { TargetList } from './showTarget';
     import ShowExitence from './child/ShowExitence.vue';
     import ShowArticle from './child/ShowArticle.vue';
     import ShowStatus from './child/ShowStatus.vue';
     const {targetType,targetList} = defineProps<{
         targetType:"exitence"|"article"|"status",
-        targetList:TargetList
+        targetList:any[]
     }>()
     //显示指定类型对象的内容
     const vueList = {

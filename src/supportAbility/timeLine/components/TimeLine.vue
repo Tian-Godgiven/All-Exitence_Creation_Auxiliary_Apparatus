@@ -6,7 +6,7 @@
     <div class="ability">
         <Button @click="upScale" name="放大"></Button>
         <Button @click="downScale" name="缩小"></Button>
-        <Button @click="editTimeLine(timeLine)" name="编辑"></Button>
+        <Button @click="showEditTimeLine(timeLine)" name="编辑"></Button>
         <Button @click="deleteTimeLine(timeLine)" name="删除"></Button>
     </div>
     <div class="wrapper"  
@@ -30,9 +30,9 @@
     import Item from "./item/Item.vue"
     import { getTimeRule, getTimeRuleBiggerUnit, getTimeRuleSmallerUnit, translateTimeUnitValueToValue, translateTimeValueEqualToUnit } from '@/supportAbility/customTime/translateTime';
     import Line from "./Line.vue"
-    import {getTimeLocation, deleteTimeLine, editTimeLine, getSmallestTime, TimeLine } from '../timeLine';
+    import {getTimeLocation, deleteTimeLine, getSmallestTime, TimeLine } from '../timeLine';
     import Button from '@/components/global/Button.vue';
-import { Setter } from 'node_modules/date-fns/parse/_lib/Setter';
+import { showEditTimeLine } from '../popUp/editTimeLine/editTimeLine';
     const {timeLine} = defineProps<{timeLine:TimeLine}>()
 
     // 时间轴上的各个对象
@@ -64,7 +64,9 @@ import { Setter } from 'node_modules/date-fns/parse/_lib/Setter';
     const startTime = computed<number>(()=>{
         if(!timeRule)return 0
         const minTime = itemList.value[0]?.time
-        return getSmallestTime(minTime,timeRule,minUnit.value)
+        const tmp = getSmallestTime(minTime,timeRule,minUnit.value)
+        console.log(tmp)
+        return tmp
     })
     // 这个时间轴传递给tick的起始index值，使用这个值来计算每个tick的文本
     const startIndex = computed(()=>{
@@ -78,11 +80,6 @@ import { Setter } from 'node_modules/date-fns/parse/_lib/Setter';
     provide("timeRule",timeRule)
     provide("minUnit",minUnit)
     provide("startTime",startIndex)
-
-    //点击到时间轴
-    function clickLine(){
-        //将指定位置聚焦，移动其到中心
-    }
 
     //时间轴设置
     const setting = reactive({
@@ -136,7 +133,7 @@ import { Setter } from 'node_modules/date-fns/parse/_lib/Setter';
                 //重置设置
                 setting.equelUnit = 1;
                 setting.space = 50
-            }
+            } 
         }
     }
 

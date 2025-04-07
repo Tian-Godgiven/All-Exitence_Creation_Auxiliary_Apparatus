@@ -10,8 +10,9 @@
 <script setup lang='ts'>
 
 import Button from '@/components/global/Button.vue';
+import { ChooseArticleList } from '../../../ChooseArticle/chooseArticle';
 
-    const {targets} = defineProps<{targets:List}>()
+    const {targets} = defineProps<{targets:ChooseArticleList}>()
     function deleteTarget(i:number,j:number){
         //从列表中删除
         targets[i].target.splice(j,1)

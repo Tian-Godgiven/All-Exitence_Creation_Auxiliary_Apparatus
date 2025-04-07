@@ -54,7 +54,7 @@ import { getList, getSelectionExitence, getTimeRuleList } from './chooseExitence
 import ChooseExitenceOption from './ChooseExitenceOption.vue';
 import SwitchExpand from '@/components/other/SwitchExpand.vue';
 import Selector from '@/components/global/Selector.vue';
-import { returnValue_Exitence } from '../CreateTimeLine/createTimeLine';
+import { returnValue_Exitence } from '../editTimeLine/editTimeLine';
 
     const {popUp} = defineProps<{popUp:PopUp}>()
     
