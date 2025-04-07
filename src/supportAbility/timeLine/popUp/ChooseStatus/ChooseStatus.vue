@@ -42,7 +42,6 @@ import Button from '@/components/global/Button.vue';
     function confirm(){
         const key = getChosenKey()
         if(key){
-            console.log(key)
             returnValue(key)
             closePopUp(popUp)
         }

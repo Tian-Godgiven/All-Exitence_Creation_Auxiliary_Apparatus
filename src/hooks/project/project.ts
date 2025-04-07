@@ -180,7 +180,6 @@ export async function createProject(name:string,info:string=""){
         for (const ability of supportAbilityList) {
             if(ability.createProject){
                 const func =  ability.createProject
-                console.log("创建了辅助功能",ability.name)
                 await func(projectPath)
             }
         }

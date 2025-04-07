@@ -1,4 +1,4 @@
-import { addDays, addHours, addMilliseconds, addMinutes, addMonths, addSeconds, addYears, differenceInDays, differenceInHours, differenceInMilliseconds, differenceInMinutes, differenceInMonths, differenceInSeconds, differenceInYears, getDate, getDay, getDaysInMonth, getHours, getMilliseconds, getMinutes, getMonth, getSeconds, isLeapYear } from "date-fns"
+import { addDays, addHours, addMilliseconds, addMinutes, addMonths, addSeconds, addYears, differenceInDays, differenceInHours, differenceInMilliseconds, differenceInMinutes, differenceInMonths, differenceInSeconds, differenceInYears, getDate, getDay, getDaysInMonth, getHours, getMilliseconds, getMinutes, getMonth, getSeconds } from "date-fns"
 import { TimeUnit } from "element-plus"
 import { CustomTimeRule, CustomTimeRuleUnit, customTimeLib, TimeRule } from "./customTime"
 import { showPopUp } from "@/hooks/pages/popUp"
@@ -132,6 +132,13 @@ export function getTimeRuleUnits(timeRule:TimeRule,unitFrom?:string,unitEnd?:str
     return unitList
 }
 
+/**
+ * 
+ * @param rule 时间规则
+ * @param nowUnit 当前单位
+ * @param howMuch 比其大或小n号的单位
+ * @returns 
+ */
 //获取指定时间规则的，更大或更小的单位，当前单位默认为最小单位
 export function getTimeRuleBiggerUnit(rule:TimeRule,nowUnit?:string,howMuch:number=1){
     const unitList = getTimeRuleUnits(rule)
@@ -157,15 +164,15 @@ export function getTimeRuleBiggerUnit(rule:TimeRule,nowUnit?:string,howMuch:numb
     if(!isString(biggerUnit)){
         biggerUnit = biggerUnit?.name
     }
-    //如果最终没有得到目标单位，或者得到的结果与当前单位一致
+    console.log(biggerUnit,nowUnit)
     if(biggerUnit && biggerUnit!=nowUnit){
         return biggerUnit
     }
+    //如果最终没有得到目标单位，或者得到的结果与当前单位一致则返回false
     return false
 
     //递归函数
     function returnBiggerUnit(index:number){
-        console.log(index,unitList)
         //找到最小单位了
         if(index == unitList.length-1){
             return unitList.at(index)
@@ -180,10 +187,10 @@ export function getTimeRuleBiggerUnit(rule:TimeRule,nowUnit?:string,howMuch:numb
 }
 export function getTimeRuleSmallerUnit(rule:TimeRule,nowUnit?:string,howMuch:number=1){
     const unitList = getTimeRuleUnits(rule)
-    let biggerUnit
+    let smallerUnit
     if(!nowUnit){
         //返回第二大的单位
-        biggerUnit = returnSmallerUnit(1)
+        smallerUnit = returnSmallerUnit(1)
     }
     else{
         //找到当前单位的位置
@@ -196,16 +203,18 @@ export function getTimeRuleSmallerUnit(rule:TimeRule,nowUnit?:string,howMuch:num
             }
         })
         //返回比他小howMuch位的单位(后howMuch位)
-        biggerUnit = returnSmallerUnit(index+howMuch)
+        smallerUnit = returnSmallerUnit(index+howMuch)
     }
     //获得字符串
-    if(!isString(biggerUnit)){
-        biggerUnit = biggerUnit?.name
+    if(!isString(smallerUnit)){
+        smallerUnit = smallerUnit?.name
     }
+    console.log(smallerUnit,nowUnit)
     //如果最终没有得到目标单位，或者得到的结果与当前单位一致
-    if(biggerUnit && biggerUnit!=nowUnit){
-        return biggerUnit
+    if(smallerUnit && smallerUnit!=nowUnit){
+        return smallerUnit
     }
+    
     return false
 
     //递归函数
@@ -241,6 +250,7 @@ export function translateTimeValueToString({
     //用的是自定义规则
     else{
         //备忘：自定义时间表达式的翻译没有做完
+        //未完成
         console.log("这里还没有做哦")
     }
 }
@@ -651,7 +661,6 @@ const dateUnits = ["年","月","日","时","分","秒"]
                 const smallValue = (value%unit.equalToMin)/equalToMin
                 //小数部分
                 const decimal = Number((smallValue/unit.equal).toFixed(2))
-                console.log(decimal)
                 return decimal + targetValue
             }
             return targetValue

@@ -29,7 +29,6 @@ export function doNotOverContainer(
     }
     //动画
     function gsapAnimate(direction:"left"|"top",num:number){
-        console.log("正在进行动画",direction,num)
         gsap.to(dom,{
             [direction]:`${num}px`,
             duration:animateTime,

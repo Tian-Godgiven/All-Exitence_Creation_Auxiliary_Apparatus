@@ -236,7 +236,6 @@ export function completeMission(mission:Mission){
 export async function failMission(mission:Mission){
     //再次挑战？
     const result = await tryAgain(mission)
-    console.log(result)
     if(!result){
         changeMissionState(mission,"failed")
     }
@@ -294,7 +293,6 @@ export function tryAgain(mission:Mission){
 export function startMissionListTimeout(){
     //每分钟更新一次
     setInterval(()=>{
-        console.log("更新了")
         //更新列表中所有正在进行的任务的时间
         nowMissionList.doing.forEach((mission)=>{
             updateMissionTime(mission)

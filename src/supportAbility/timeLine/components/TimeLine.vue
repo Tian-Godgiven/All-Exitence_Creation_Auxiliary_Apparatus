@@ -28,9 +28,9 @@
     import { computed, provide, reactive, ref, useTemplateRef } from 'vue';
     import { getTimeLineItems} from './item/item';
     import Item from "./item/Item.vue"
-    import { getTimeRule, getTimeRuleBiggerUnit, getTimeRuleSmallerUnit, translateTimeUnitValueToValue, translateTimeValueEqualToUnit } from '@/supportAbility/customTime/translateTime';
+    import { getTimeRule, translateTimeUnitValueToValue, translateTimeValueEqualToUnit } from '@/supportAbility/customTime/translateTime';
     import Line from "./Line.vue"
-    import {getTimeLocation, deleteTimeLine, getSmallestTime, TimeLine } from '../timeLine';
+    import {getTimeLocation, deleteTimeLine, getSmallestTime, TimeLine, getBiggerUnit, getSmallerUnit } from '../timeLine';
     import Button from '@/components/global/Button.vue';
 import { showEditTimeLine } from '../popUp/editTimeLine/editTimeLine';
     const {timeLine} = defineProps<{timeLine:TimeLine}>()
@@ -55,17 +55,20 @@ import { showEditTimeLine } from '../popUp/editTimeLine/editTimeLine';
     //使用的时间规则
     const timeRule = getTimeRule(timeLine.timeRuleKey)
     //使用的最小单位
-    const timeLineMinUnit = ref(timeLine.unitEnd)
     const minUnit = computed(()=>{
-        return timeLineMinUnit.value  
+        return timeLine.unitEnd
     })
     /*这个时间轴的起始值
     即最小时间值对象的时间值最接近的，对应时间规则中的指定最小单位的值*/
     const startTime = computed<number>(()=>{
         if(!timeRule)return 0
-        const minTime = itemList.value[0]?.time
+        let minTime = itemList.value[0]?.time
+        //如果时间轴设置中的起始时间更小
+        const timeLineStart = timeLine.setting.start
+        if(timeLineStart && timeLineStart < minTime){
+            minTime = timeLineStart
+        }
         const tmp = getSmallestTime(minTime,timeRule,minUnit.value)
-        console.log(tmp)
         return tmp
     })
     // 这个时间轴传递给tick的起始index值，使用这个值来计算每个tick的文本
@@ -104,9 +107,8 @@ import { showEditTimeLine } from '../popUp/editTimeLine/editTimeLine';
         }
         //否则换用更大1位的最小刻度
         else if(timeRule){
-            const smaller = getTimeRuleSmallerUnit(timeRule,minUnit.value)
+            const smaller = getSmallerUnit(timeRule,minUnit.value)
             if(smaller){
-                timeLineMinUnit.value = smaller
                 timeLine.unitEnd = smaller
                 //重置设置
                 setting.equelUnit = 4;
@@ -124,11 +126,10 @@ import { showEditTimeLine } from '../popUp/editTimeLine/editTimeLine';
         else if(setting.equelUnit <= 4){
             setting.equelUnit += 1
         }
-        //否则换用更大的最小刻度
+        //否则换用更大1位的最小刻度
         else if(timeRule){
-            const bigger = getTimeRuleBiggerUnit(timeRule,minUnit.value)
+            const bigger = getBiggerUnit(timeRule,minUnit.value)
             if(bigger){
-                timeLineMinUnit.value = bigger
                 timeLine.unitEnd = bigger
                 //重置设置
                 setting.equelUnit = 1;
@@ -140,7 +141,7 @@ import { showEditTimeLine } from '../popUp/editTimeLine/editTimeLine';
     //拖动时间轴
     const timeLineLeft = ref(function(){
         //当前时间在时间轴上的位置，若无则设定为0
-        const nowTime = timeLine.now
+        const nowTime = timeLine.setting.now
         if(!nowTime)return 0
         const x = getTimeLocation(nowTime,timeRule,startTime.value,pxPerUnit.value,minUnit.value)
         if(!x)return 0
@@ -199,7 +200,7 @@ import { showEditTimeLine } from '../popUp/editTimeLine/editTimeLine';
         if(nowValue > startTime.value){
             nowValue = startTime.value
         }
-        timeLine.now = nowValue
+        timeLine.setting.now = nowValue
     }
 </script>
 

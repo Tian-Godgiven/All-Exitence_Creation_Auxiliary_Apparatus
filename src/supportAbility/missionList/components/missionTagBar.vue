@@ -18,7 +18,6 @@ import { ref } from 'vue';
     function addTag(event:Event){
         event.stopPropagation();
         if(newTag.value != ""){
-            console.log(tags)
             tags.push(newTag.value)
             newTag.value = ""
         }

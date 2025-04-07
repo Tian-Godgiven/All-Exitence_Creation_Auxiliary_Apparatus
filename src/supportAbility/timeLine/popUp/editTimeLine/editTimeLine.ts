@@ -11,7 +11,7 @@ type TargetType = "exitence"|"article"|"status"
 
 //显示创建时间轴弹窗
 export const ifShowCreatePage = ref(false)//控制是否显示
-export const editTarget = ref<TimeLine|null>(null)
+export const editTarget = ref<TimeLine|null|false>(false)
 export function showEditTimeLine(targetTimeLine:TimeLine|null){
     showTimeLinePopUp()
     //切换到创建时间轴页面
@@ -21,6 +21,14 @@ export function showEditTimeLine(targetTimeLine:TimeLine|null){
 export function hideEditTimeLine(){
     //切换走创建时间轴页面
     ifShowCreatePage.value = false
+    setTimeout(()=>{
+        //重置各项参数
+        editTarget.value = false
+        targetList.value = []
+        timeRuleKey.value = ""
+        minTimeValue.value = Infinity 
+        timeStatusKey.value = ""
+    },500)
 }
 
 //当前选择的目标类型
@@ -162,7 +170,7 @@ export function getTargetList(type:TargetType,key:any){
 //通过弹窗的返回函数获得目标列表+时间规则+最小时间单元
 export const targetList = ref<any>([])//目标列表，显示时间轴上的目标对象
 export const timeRuleKey = ref("")//时间规则Key
-export const minTimeValue = ref(0) //最小时间值
+export const minTimeValue = ref<number>(Infinity) //最小时间值
 export const timeStatusKey = ref("")//文章类型使用的标识符
 
 //通过弹窗来获取上述值，具体的获取函数见下方
@@ -186,7 +194,10 @@ export function chooseTarget(){
     export function returnValue_Exitence(list:any,newTimeRuleKey:string,minTime:number){
         //选中的事物类型列表即为目标列表targetList，其也会提供最小时间值
         targetList.value = list
-        minTimeValue.value = minTime
+        //如果当前最小时间比指定的最小时间更小则不变
+        if(minTimeValue.value > minTime){
+            minTimeValue.value = minTime
+        }
         timeRuleKey.value = newTimeRuleKey
     }
 
@@ -195,7 +206,10 @@ export function chooseTarget(){
         targetList.value = list 
         timeStatusKey.value = status
         timeRuleKey.value = "date"
-        minTimeValue.value = minTime
+        //如果当前最小时间比指定的最小时间更小则不变
+        if(minTimeValue.value > minTime){
+            minTimeValue.value = minTime
+        }
     }
 
 

@@ -45,11 +45,11 @@ import Selector from '@/components/global/Selector.vue';
         units:[{name:"",target:false}],
         __key:nanoid()
     }
-    //编辑对象是源对象的拷贝
+    //编辑对象是目标对象的拷贝
     const newRule = computed(()=>{
         let tmp = editTarget.value
         //若为空则创建新规则
-        if(tmp == null){
+        if(!tmp){
             tmp = idle
         }
         //拷贝编辑对象
@@ -103,7 +103,6 @@ import Selector from '@/components/global/Selector.vue';
         }
         //返回管理页面
         hideEditPage()
-        
     }
     //取消返回
     function quit(){

@@ -5,9 +5,11 @@ import { reactive, shallowRef, toRaw } from "vue";
 import { tryReadFileAtPath, writeFileAtPath } from "@/hooks/fileSysytem";
 import { addToRightPage } from "@/hooks/pages/rightPage";
 import { nowProjectInfo } from "@/hooks/project/projectData";
-import { translateTimeArrToValue, translateTimeUnitValueToValue, translateTimeValueEqualToUnit, translateTimeValueToArr, translateTimeValueToCarryover } from "../customTime/translateTime";
+import { getTimeRuleUnits, translateTimeArrToValue, translateTimeUnitValueToValue, translateTimeValueEqualToUnit, translateTimeValueToArr, translateTimeValueToCarryover } from "../customTime/translateTime";
 import { TimeRule } from "../customTime/customTime";
 import { showAlert } from "@/hooks/alert";
+import { isString } from "lodash";
+import { el } from "date-fns/locale";
 
 //注册辅助功能对象
 export const timeLineSignUpItem:SupportAbilitySignUpItem={
@@ -28,7 +30,10 @@ type TimeLineBase = {
     name:string,
     targetType: "status"|"exitence"|"article",
     timeRuleKey: "date" | string;  // 时间线规则的key，"date" 或其他值
-    now: number | null;  // 当前时间线的位置，默认从最早的对象开始
+    setting:{
+        now:number|null, //当前时间,默认为最小时间
+        start:number|null, //起始时间，默认为最小时间
+    },
     unitStart?: string;  // 当前时间线的最大单位
     unitEnd?: string;    // 当前时间线的最小单位
 };
@@ -219,5 +224,68 @@ export function getTimeLocation(time:number,timeRule:TimeRule|false,startTime:nu
     return x
 }
 
+//获取指定时间规则中更大或更小的一个单位，但不会是最大单位
+export function getBiggerUnit(timeRule:TimeRule,nowUnit?:string){
+    const unitList = getTimeRuleUnits(timeRule)
+    
+    let biggerIndex:number
+    //如果没有单位，则认为是最小单位，返回上一级单位
+    if(!nowUnit){
+        biggerIndex = unitList.length-1
+    }
+    else{
+        //获取当前位置
+        const nowIndex = unitList.findIndex((unit)=>{
+            if(isString(unit)){
+                return unit == nowUnit;
+            }
+            else{
+                return unit.name == nowUnit
+            }
+        })
+        //上一级单位的index
+        biggerIndex = nowIndex-1
+    }
+    //要求不会是最大单位
+    if(biggerIndex <= 0){
+        return false
+    }
+    let biggerUnit:any = unitList[biggerIndex]
+    if(!isString(biggerUnit)){
+        biggerUnit = biggerUnit.name
+    }
+    return biggerUnit as string
+}
+
+export function getSmallerUnit(timeRule:TimeRule,nowUnit?:string){
+    const unitList = getTimeRuleUnits(timeRule)
+    
+    let smallerIndex:number
+    //如果没有单位，则认为是最小单位，返回false
+    if(!nowUnit){
+        return false
+    }
+    //获取当前位置
+    const nowIndex = unitList.findIndex((unit)=>{
+        if(isString(unit)){
+            return unit == nowUnit;
+        }
+        else{
+            return unit.name == nowUnit
+        }
+    })
+    //下一级单位的index
+    smallerIndex = nowIndex+1
+    
+    //要求不会越界
+    if(smallerIndex >= unitList.length){
+        return false
+    }
+    let smallerUnit:any = unitList[smallerIndex]
+    if(!isString(smallerUnit)){
+        smallerUnit = smallerUnit.name
+    }
+    return smallerUnit as string
+}
 
 

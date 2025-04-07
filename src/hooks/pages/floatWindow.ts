@@ -15,7 +15,6 @@ export function addFloatWindow(vue:Component){
         __key
     }
     floatWindows.value.push(item)
-    console.log(__key)
     return __key
 }
 //删除指定key的悬浮窗

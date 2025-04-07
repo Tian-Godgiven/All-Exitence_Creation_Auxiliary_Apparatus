@@ -196,7 +196,6 @@ function getTimeLineItems_Status(timeLine:TimeLine){
 
 //一个获取type的复用函数
 function getTimeLineItems_checkType(typeKey:string){
-    console.log(typeKey)
     const type = nowAllExitence.types.find((type)=>type.__key == typeKey)
     if(!type){
         showQuickInfo("未能找到指定的分类，或许您已经将其删除")

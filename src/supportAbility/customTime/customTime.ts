@@ -82,7 +82,8 @@ export function deleteCustomTimeRule(rule:CustomTimeRule){
 }
 
 //编辑/修改指定的自定义时间表达式
-export function editCustomTimeRule(rule:CustomTimeRule,newRule:CustomTimeRule){
+export function editCustomTimeRule(rule:CustomTimeRule|false,newRule:CustomTimeRule){
+    if(!rule)return;
     const index = customTimeLib.indexOf(rule)
     if(index>=0){
         customTimeLib[index] = newRule
@@ -140,7 +141,7 @@ export function showCustomTimeManager(){
 //是否显示编辑页面
 export const ifShowEditPage = ref(false)
 //编辑页面使用的对象
-export const editTarget = ref<CustomTimeRule|null>(null)
+export const editTarget = ref<CustomTimeRule|null|false>(null)
 //显示编辑页面
 export function showEditPage(targetRule:CustomTimeRule|null){
     ifShowEditPage.value = true
@@ -149,6 +150,10 @@ export function showEditPage(targetRule:CustomTimeRule|null){
 //隐藏编辑页面
 export function hideEditPage(){
     ifShowEditPage.value = false
+    setTimeout(()=>{
+        editTarget.value = false
+    },500)
+    
 }
 
 //给rule的unit排序

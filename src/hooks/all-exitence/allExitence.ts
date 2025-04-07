@@ -52,9 +52,9 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
 
     // 获取key对应的分类对象
     export function getTypeByKey(typeKey:string){
-        return nowAllExitence.types.find((type)=>{
+        return nowAllExitence.types.find((type)=>
             type.__key == typeKey
-        })
+        )
     }
 
     //向万物中添加新的分类

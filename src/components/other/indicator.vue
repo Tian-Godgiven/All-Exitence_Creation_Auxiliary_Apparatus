@@ -25,8 +25,6 @@ const { edge, gap } = defineProps<{
   gap: string;
 }>();
 
-console.log(edge)
-
 type Orientation = "horizontal" | "vertical";
 
 const edgeToOrientationMap: Record<Edge, Orientation> = {

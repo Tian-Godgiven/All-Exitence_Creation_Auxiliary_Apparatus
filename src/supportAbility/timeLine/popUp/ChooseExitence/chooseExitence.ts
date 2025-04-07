@@ -256,7 +256,6 @@ export function getSelectionExitence(list: TItem[]) {
             return;
         }
         //判断这个事物的时间值是否小于当前最小时间
-        console.log(targetStatus,minTimeValue)
         if(targetStatus.time < minTimeValue){
             minTimeValue = targetStatus.time
         }
