@@ -142,10 +142,12 @@ import { showEditTimeLine } from '../popUp/editTimeLine/editTimeLine';
     const timeLineLeft = ref(function(){
         //当前时间在时间轴上的位置，若无则设定为0
         const nowTime = timeLine.setting.now
+        console.log(nowTime,startTime.value)
         if(!nowTime)return 0
         const x = getTimeLocation(nowTime,timeRule,startTime.value,pxPerUnit.value,minUnit.value)
+        console.log(x)
         if(!x)return 0
-        return x 
+        return -x 
     }()) //时间线当前的移动距离
     let startLeft = 0//时间线在移动之前的移动距离
     let isDragging = false //正在拖动
@@ -186,18 +188,24 @@ import { showEditTimeLine } from '../popUp/editTimeLine/editTimeLine';
     }
     function dragEnd(){
         isDragging = false
-        //当前的时间轴位置为当前最小单位的值
+        //当前的时间轴位置对应的当前最小单位的值
+        // (由于时间轴是向右移动的所以left为负值)
         const minUnitValue = -timeLineLeft.value / pxPerUnit.value
         let nowValue = minUnitValue
-        //转化为实际的时间轴的值
+        console.log("当前left等于多少最小单位值",minUnitValue)
+        //转化为实际的时间值
         if(minUnit.value && timeRule){
-            const realTime = startIndex.value - minUnitValue
-            const tmp = translateTimeUnitValueToValue(realTime,minUnit.value,timeRule)
+            //这个最小单位值要加到起始值上
+            nowValue = startIndex.value + minUnitValue
+            console.log("当前最小单位总值",nowValue)
+            //该最小单位的值等于多少自然值
+            const tmp = translateTimeUnitValueToValue(nowValue,minUnit.value,timeRule)
             if(tmp){
                 nowValue = tmp
             }
         }
-        if(nowValue > startTime.value){
+        //如果当前值差太远（看不到了）则设置为起始值
+        if(nowValue < startTime.value){
             nowValue = startTime.value
         }
         timeLine.setting.now = nowValue
