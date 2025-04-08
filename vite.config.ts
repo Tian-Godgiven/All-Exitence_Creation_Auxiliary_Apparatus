@@ -2,13 +2,22 @@ import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import path from 'path'
 import postcsspxtoviewport from 'postcss-px-to-viewport'
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 
 const host = process.env.TAURI_DEV_HOST;
 
 // https://vitejs.dev/config/
 export default defineConfig(async () => ({
   plugins: [
-    vue()],
+    vue(),
+    createSvgIconsPlugin({
+      iconDirs: [path.resolve(process.cwd(), 'src/static/icon')],
+      symbolId: 'icon-[dir]-[name]', // 支持目录层级
+      inject: 'body-last',    // DOM插入位置
+      customDomId: '__svg_icons' // 自定义容器ID
+    })
+
+  ],
 
   // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
   //

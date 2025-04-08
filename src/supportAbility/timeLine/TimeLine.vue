@@ -3,7 +3,7 @@
     <div class="manage">
         <div class="topBar">
             <Button @click="createNew" name="新建"></Button>
-            <Button @click="manageMode" name="管理"></Button>
+            <Button @click="manageTimeLine" name="管理"></Button>
         </div>
         <div class="container">
             <TimeLine v-for="timeLine,index in nowAllTimeLine" 
@@ -28,15 +28,18 @@
     import { nowAllTimeLine } from './timeLine';
     import SlidePage from '@/components/other/SlidePage.vue';
     import { ifShowCreatePage ,showEditTimeLine} from './popUp/editTimeLine/editTimeLine.ts';
+import { provide, ref } from 'vue';
 
     //新建时间线
     function createNew(){
         showEditTimeLine(null)
     }
 
+    const manageMode = ref(false)
+    provide("manageMode",manageMode)
     //管理模式
-    function manageMode(){
-        
+    function manageTimeLine(){
+        manageMode.value = !manageMode.value
     }
     
 </script>

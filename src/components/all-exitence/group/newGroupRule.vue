@@ -28,7 +28,7 @@
             </div>
         </div>
 
-        <div class="button" @click="confirm">新建</div>
+        <Button class="button" @click="confirm" name="新建"></Button>
 
         
     </div>
@@ -43,6 +43,7 @@
 import { showQuickInfo } from '@/api/showQuickInfo';
 import { groupRuleSimbolList } from '@/static/list/groupRuleList';
 import Selector from '@/components/global/Selector.vue';
+import Button from '@/components/global/Button.vue';
 
     //分组所在的分类对象
     const type = inject<any>("type")

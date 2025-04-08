@@ -19,6 +19,7 @@
 		<div class="choices">
 			<div class="choice" v-for="(choice,index) in choices">
 				<div class="text">{{choice}}</div>
+			
 				<div class="button" @click="deleteChoice(index)">删除</div>
 			</div>
 		</div>

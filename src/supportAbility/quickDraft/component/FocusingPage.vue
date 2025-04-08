@@ -3,7 +3,8 @@
     v-if="quickDraftItem != null">
     <div class="topButtons">
         <Button 
-            :icon="index == 0? 'leftArrow-disabled':'leftArrow'" 
+            icon="leftArrow" 
+            :disabled="index==0"
             name="上一暂记对象" 
             @click="focusLastItem"/>
         <Button 
@@ -16,8 +17,9 @@
             name="折叠悬浮窗" 
             @click="fold"/>
         <Button 
-            :icon="index == nowQuickDraft.length-1? 'rightArrow-disabled':'rightArrow'" 
+            icon="rightArrow" 
             name="下一暂记对象" 
+            :disabled="index == nowQuickDraft.length-1"
             @click="focusNextItem"/>
     </div>
     <Button class="createNewButton" 
@@ -105,7 +107,7 @@
     function showManagePage(){
         //收起暂记版，弹出弹窗
         if(float){
-            
+            //未完成
         }
         //切换至弹窗
         else{

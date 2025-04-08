@@ -17,10 +17,13 @@
 				:list="valueTypes">
 			</Selector>
 
-			<div class="button" @click="switchSetting">设置</div>
-            <div class="button" @click="confirm">
+			<Button class="button" @click="switchSetting" name="设置" icon="setting"></Button>
+            <Button class="button" @click="confirm" name="确认">
+				<slot name="confirm"></slot>
+			</Button>
+			<!-- <div class="button" @click="confirm">
                 <slot name="confirm"></slot>
-            </div>
+            </div> -->
 		</div>
 
 		<!-- 额外输入栏 -->
@@ -42,6 +45,7 @@
 	import statusNameVue from './statusName.vue';
 	import { showQuickInfo } from '@/api/showQuickInfo';
 	import { cloneDeep } from 'lodash';
+	import Button from '@/components/global/Button.vue';
 import Selector from '@/components/global/Selector.vue';
 
 	// 需要编辑的属性初值

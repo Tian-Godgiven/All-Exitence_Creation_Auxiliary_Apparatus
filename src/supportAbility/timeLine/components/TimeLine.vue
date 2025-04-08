@@ -5,10 +5,16 @@
         @mouseup="dragEnd">
     <div>{{ timeLine.name??"未命名" }}</div>
     <div class="ability">
-        <Button @click="upScale" name="放大"></Button>
-        <Button @click="downScale" name="缩小"></Button>
-        <Button @click="showEditTimeLine(timeLine)" name="编辑"></Button>
-        <Button @click="deleteTimeLine(timeLine)" name="删除"></Button>
+        <div v-if="!manageMode">
+            <Button @click="upScale" name="放大"></Button>
+            <Button @click="downScale" name="缩小"></Button>
+            <Button @click="showEditTimeLine(timeLine)" name="编辑"></Button>
+        </div>
+        <div v-if="manageMode">
+            <Button @click="upTimeLine(timeLine)" name="上移" icon="upArrow" :disabled="timeLineIndex == 0"></Button>
+            <Button @click="downTimeLine(timeLine)" name="下移" icon="downArrow" :disabled="timeLineIndex == nowAllTimeLine.length-1"></Button>
+            <Button @click="deleteTimeLine(timeLine)" name="删除"></Button>
+        </div>
     </div>
     <div class="wrapper"  
         ref="wrapper"
@@ -26,16 +32,22 @@
 </template>
  
 <script setup lang='ts'>
-    import { computed, provide, reactive, ref, useTemplateRef, watch } from 'vue';
+    import { computed, inject, provide, reactive, ref, useTemplateRef, watch } from 'vue';
     import { getTimeLineItems} from './item/item';
     import Item from "./item/Item.vue"
     import { getTimeRule, translateTimeUnitValueToValue, translateTimeValueEqualToUnit } from '@/supportAbility/customTime/translateTime';
     import Line from "./Line.vue"
-    import {getTimeLocation, deleteTimeLine, getSmallestTime, TimeLine, getBiggerUnit, getSmallerUnit } from '../timeLine';
+    import {getTimeLocation, deleteTimeLine, getSmallestTime, TimeLine, getBiggerUnit, getSmallerUnit, upTimeLine, downTimeLine, nowAllTimeLine } from '../timeLine';
     import Button from '@/components/global/Button.vue';
 import { showEditTimeLine } from '../popUp/editTimeLine/editTimeLine';
-import DownLineInput from '@/components/other/input/downLineInput.vue';
     const {timeLine} = defineProps<{timeLine:TimeLine}>()
+    //时间轴的Index
+    const timeLineIndex = computed(()=>{
+        const tmp = nowAllTimeLine.indexOf(timeLine)
+        return tmp
+    })
+    //管理模式
+    const manageMode = inject("manageMode",false)
 
     // 时间轴上的各个对象
     const itemList = computed(()=>{
@@ -145,7 +157,7 @@ import DownLineInput from '@/components/other/input/downLineInput.vue';
             } 
         }
     }
-    //监听并修改
+
 
     //拖动时间轴
     const timeLineLeft = ref(function(){
@@ -225,8 +237,10 @@ import DownLineInput from '@/components/other/input/downLineInput.vue';
     overflow: hidden;
     cursor: grab;
     .ability{
-        display: flex;
-        height: 40px;
+        >div{
+            display: flex;
+            height: 50px;
+        }
     }
     .wrapper {
         position: relative;

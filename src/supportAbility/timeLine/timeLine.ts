@@ -9,7 +9,6 @@ import { getTimeRuleUnits, translateTimeArrToValue, translateTimeUnitValueToValu
 import { TimeRule } from "../customTime/customTime";
 import { showAlert } from "@/hooks/alert";
 import { isString } from "lodash";
-import { el } from "date-fns/locale";
 
 //注册辅助功能对象
 export const timeLineSignUpItem:SupportAbilitySignUpItem={
@@ -139,6 +138,26 @@ export function deleteTimeLine(timeLine:TimeLine){
             }
         }
     })
+}
+
+//改变时间轴的顺序
+//上移
+export function upTimeLine(timeLine:TimeLine){
+    const index = nowAllTimeLine.indexOf(timeLine)
+    if(index > 0){
+        //交换上一个timeLine
+        [nowAllTimeLine[index], nowAllTimeLine[index-1]]
+        = [nowAllTimeLine[index-1], nowAllTimeLine[index]]
+    }
+}
+//下移
+export function downTimeLine(timeLine:TimeLine){
+    const index = nowAllTimeLine.indexOf(timeLine)
+    if(index > -1 && index < nowAllTimeLine.length-1){
+        //交换下一个timeLine
+        [nowAllTimeLine[index], nowAllTimeLine[index+1]]
+        = [nowAllTimeLine[index+1], nowAllTimeLine[index]]
+    }
 }
 
 

@@ -69,8 +69,8 @@ import DownLineInput from '@/components/other/input/downLineInput.vue';
             now:null,
             start:null
         },
-        unitStart: undefined,  // 当前时间线的最大单位
-        unitEnd: undefined,    // 当前时间线的最小单位
+        unitStart: "年",  // 当前时间线的最大单位
+        unitEnd: "日",    // 当前时间线的最小单位
     }
     //编辑对象是源对象的拷贝
     const newTimeLine = computed(()=>{
@@ -169,7 +169,7 @@ import DownLineInput from '@/components/other/input/downLineInput.vue';
     //时间轴的当前时间和起始时间
     //默认为当前选择的对象中，时间值最小的对象的最小时间单位为最小值时的值
     let nowTime:number|null = null
-    let startTime :number|null = null
+    let startTime :number|null = 0
     // 编辑时间，默认为当前的最小时间
     const editTimeArr = computed(()=>{
         if(!timeRule.value)return false
@@ -190,17 +190,21 @@ import DownLineInput from '@/components/other/input/downLineInput.vue';
     })
     // 若编辑时间大于最小时间，则now为编辑时间，否则起始时间为编辑时间
     watch(editTimeArr,()=>{
-        if(!timeRule.value)return false
-        if(!editTimeArr.value)return false
-        //设定起始时间的值
-        const value = translateTimeArrToValue(editTimeArr.value,timeRule.value)
-        if(!value)return;
+        let value = 0
+        if(timeRule.value && editTimeArr.value){
+            //设定起始时间的值
+            const tmp = translateTimeArrToValue(editTimeArr.value,timeRule.value)
+            if(tmp){
+                value = tmp
+            }
+        }
         //编辑时间大于最小时间，设定now为编辑时间
         if(value > minTimeValue.value){
             nowTime = value;
         }
         //否则设定start为编辑时间
         else{
+            console.log(startTime,"是value")
             startTime = value
         }
     },{
