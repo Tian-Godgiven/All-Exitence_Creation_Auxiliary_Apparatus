@@ -42,14 +42,14 @@
 <script setup lang='ts'>
     import { computed, reactive, watch} from 'vue';
     import Button from '@/components/global/Button.vue';
-import { createTimeLine,editTimeLine,TimeLine} from '../../timeLine';
-import { getTimeRule, getTimeRuleUnits, translateTimeArrToValue, translateTimeValueToArr } from '@/supportAbility/customTime/translateTime';
-import { cloneDeep, isString } from 'lodash';
-import Selector from '@/components/global/Selector.vue';
-import ShowTarget from './ShowTarget/ShowTarget.vue';
-import { chooseTarget, editTarget, getKeyList, getTargetList, hideEditTimeLine, minTimeValue, targetList, timeStatusKey, targetType,timeRuleKey } from './editTimeLine';
-import DateUnitValue from '@/components/all-exitence/status/statusValue/dateUnitValue.vue';
-import DownLineInput from '@/components/other/input/downLineInput.vue';
+    import { createTimeLine,editTimeLine,TimeLine} from '../../timeLine';
+    import { getTimeRule, getTimeRuleUnits, translateTimeArrToValue, translateTimeValueToArr } from '@/supportAbility/customTime/translateTime';
+    import { cloneDeep, isString } from 'lodash';
+    import Selector from '@/components/global/Selector.vue';
+    import ShowTarget from './ShowTarget/ShowTarget.vue';
+    import { chooseTarget, editTarget, getKeyList, getTargetList, hideEditTimeLine, minTimeValue, targetList, timeStatusKey, targetType,timeRuleKey } from './editTimeLine';
+    import DateUnitValue from '@/components/all-exitence/status/statusValue/dateUnitValue.vue';
+    import DownLineInput from '@/components/other/input/downLineInput.vue';
     
     //选择的目标类型
     const typeList = [

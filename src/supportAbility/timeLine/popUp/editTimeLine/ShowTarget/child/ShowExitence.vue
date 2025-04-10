@@ -10,7 +10,7 @@
             <div>{{ i == 1? type.name:"" }}</div>
             <div>{{ type.exitence[i-1].name }}</div>
             <div>{{ type.exitence[i-1].status.name }}</div>
-            <Button icon="delete" name="删除" @click="deleteTarget(type,i-1)"></Button>
+            <Button class="icon" icon="delete" name="删除" @click="deleteTarget(type,i-1)"></Button>
         </div>
     </div>
 </div>
@@ -34,6 +34,8 @@ import { TargetList } from '../../../ChooseExitence/chooseExitence';
 .row{
     display: grid;
     grid-template-columns: 1fr 0.8fr 1fr 40px;
+    height: 45px;
+    align-items: center;
     >div{
         white-space: nowrap;
         overflow: hidden;

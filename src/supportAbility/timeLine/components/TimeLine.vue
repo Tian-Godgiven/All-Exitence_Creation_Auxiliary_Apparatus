@@ -3,19 +3,20 @@
         @mousedown="dragStart" 
         @mousemove="dragLine" 
         @mouseup="dragEnd">
-    <div>{{ timeLine.name??"未命名" }}</div>
-    <div class="ability">
-        <div v-if="!manageMode">
+    <div class="title">
+        <div class="name">{{ timeLine.name??"未命名" }}</div>
+        <div class="ability" v-if="!manageMode">
             <Button @click="upScale" name="放大"></Button>
             <Button @click="downScale" name="缩小"></Button>
             <Button @click="showEditTimeLine(timeLine)" name="编辑"></Button>
         </div>
-        <div v-if="manageMode">
+        <div class="ability" v-else>
             <Button @click="upTimeLine(timeLine)" name="上移" icon="upArrow" :disabled="timeLineIndex == 0"></Button>
             <Button @click="downTimeLine(timeLine)" name="下移" icon="downArrow" :disabled="timeLineIndex == nowAllTimeLine.length-1"></Button>
             <Button @click="deleteTimeLine(timeLine)" name="删除"></Button>
         </div>
     </div>
+   
     <div class="wrapper"  
         ref="wrapper"
         :style="{ left: timeLineLeft + 'px' }">
@@ -39,7 +40,7 @@
     import Line from "./Line.vue"
     import {getTimeLocation, deleteTimeLine, getSmallestTime, TimeLine, getBiggerUnit, getSmallerUnit, upTimeLine, downTimeLine, nowAllTimeLine } from '../timeLine';
     import Button from '@/components/global/Button.vue';
-import { showEditTimeLine } from '../popUp/editTimeLine/editTimeLine';
+    import { showEditTimeLine } from '../popUp/editTimeLine/editTimeLine';
     const {timeLine} = defineProps<{timeLine:TimeLine}>()
     //时间轴的Index
     const timeLineIndex = computed(()=>{
@@ -61,13 +62,16 @@ import { showEditTimeLine } from '../popUp/editTimeLine/editTimeLine';
     })
     // 对象获取其在时间轴上的位置
     const getItemX = (itemTime:number)=>{
-        const x = getTimeLocation(itemTime,timeRule,startTime.value,pxPerUnit.value,minUnit.value) 
+        const x = getTimeLocation(itemTime,timeRule.value,startTime.value,pxPerUnit.value,minUnit.value) 
         return x
     }
     provide("getItemX",getItemX)
 
     //使用的时间规则
-    const timeRule = getTimeRule(timeLine.timeRuleKey)
+    const timeRule = computed(()=>{
+        console.log(timeLine.timeRuleKey)
+        return getTimeRule(timeLine.timeRuleKey)
+    }) 
     //使用的最小单位
     const minUnit = computed(()=>{
         return timeLine.unitEnd
@@ -75,26 +79,26 @@ import { showEditTimeLine } from '../popUp/editTimeLine/editTimeLine';
     /*这个时间轴的起始值
     即最小时间值对象的时间值最接近的，对应时间规则中的指定最小单位的值*/
     const startTime = computed<number>(()=>{
-        if(!timeRule)return 0
+        if(!timeRule.value)return 0
         let minTime = itemList.value[0]?.time
         //如果时间轴设置中的起始时间更小
         const timeLineStart = timeLine.setting.start
         if(timeLineStart && timeLineStart < minTime){
             minTime = timeLineStart
         }
-        const tmp = getSmallestTime(minTime,timeRule,minUnit.value)
+        const tmp = getSmallestTime(minTime,timeRule.value,minUnit.value)
         return tmp
     })
     // 这个时间轴传递给tick的起始index值，使用这个值来计算每个tick的文本
     const startIndex = computed(()=>{
-        if(!timeRule)return 0
+        if(!timeRule.value)return 0
         //把它变成刻度的值，不包含小数点
-        const startValue = translateTimeValueEqualToUnit(startTime.value,timeRule,minUnit.value)
+        const startValue = translateTimeValueEqualToUnit(startTime.value,timeRule.value,minUnit.value)
         return startValue
     })
 
     //提供给子元素
-    provide("timeRule",timeRule)
+    provide("timeRule",timeRule.value)
     provide("minUnit",minUnit)
     provide("startTime",startIndex)
 
@@ -126,8 +130,8 @@ import { showEditTimeLine } from '../popUp/editTimeLine/editTimeLine';
             setting.space += 10
         }
         //否则换用更大1位的最小刻度
-        else if(timeRule){
-            const smaller = getSmallerUnit(timeRule,minUnit.value)
+        else if(timeRule.value){
+            const smaller = getSmallerUnit(timeRule.value,minUnit.value)
             if(smaller){
                 timeLine.unitEnd = smaller
                 //重置设置
@@ -147,8 +151,8 @@ import { showEditTimeLine } from '../popUp/editTimeLine/editTimeLine';
             setting.equelUnit += 1
         }
         //否则换用更大1位的最小刻度
-        else if(timeRule){
-            const bigger = getBiggerUnit(timeRule,minUnit.value)
+        else if(timeRule.value){
+            const bigger = getBiggerUnit(timeRule.value,minUnit.value)
             if(bigger){
                 timeLine.unitEnd = bigger
                 //重置设置
@@ -164,7 +168,7 @@ import { showEditTimeLine } from '../popUp/editTimeLine/editTimeLine';
         //当前时间在时间轴上的位置，若无则设定为0
         const nowTime = timeLine.setting.now
         if(!nowTime)return 0
-        const x = getTimeLocation(nowTime,timeRule,startTime.value,pxPerUnit.value,minUnit.value)
+        const x = getTimeLocation(nowTime,timeRule.value,startTime.value,pxPerUnit.value,minUnit.value)
         if(!x)return 0
         return -x 
     }()) //时间线当前的移动距离
@@ -212,11 +216,11 @@ import { showEditTimeLine } from '../popUp/editTimeLine/editTimeLine';
         const minUnitValue = -timeLineLeft.value / pxPerUnit.value
         let nowValue = minUnitValue
         //转化为实际的时间值
-        if(minUnit.value && timeRule){
+        if(minUnit.value && timeRule.value){
             //这个最小单位值要加到起始值上
             nowValue = startIndex.value + minUnitValue
             //该最小单位的值等于多少自然值
-            const tmp = translateTimeUnitValueToValue(nowValue,minUnit.value,timeRule)
+            const tmp = translateTimeUnitValueToValue(nowValue,minUnit.value,timeRule.value)
             if(tmp){
                 nowValue = tmp
             }
@@ -236,12 +240,25 @@ import { showEditTimeLine } from '../popUp/editTimeLine/editTimeLine';
     height: 300px;
     overflow: hidden;
     cursor: grab;
-    .ability{
-        >div{
-            display: flex;
+    .title{
+        display: flex;
+        width: 100%;
+        height: 40px;
+        .name{
+            width: 70%;
+        }
+        .ability{
+            width: 30%;
             height: 50px;
+            display: flex;
+            justify-content: flex-end;
+            .button{
+                width: 50px;
+                height: 50px;
+            }
         }
     }
+    
     .wrapper {
         position: relative;
         width: 100%;

@@ -13,15 +13,15 @@
 </template>
 
 <script setup lang='ts'>
-import { TimeRule } from '@/supportAbility/customTime/customTime';
-import { computed, inject, ref, Ref } from 'vue';
+import { computed, ComputedRef, inject, ref, Ref } from 'vue';
 import { getTickInfo } from '../timeLine';
+import { TimeRule } from '@/supportAbility/customTime/customTime';
 
     const {index} = defineProps<{
         index:number
     }>()
 
-    const timeRule = inject<TimeRule>("timeRule","date")
+    const timeRule:TimeRule = inject("timeRule","date")
     const minUnit:Ref<string|undefined> = inject("minUnit",ref(undefined))
     //开始时间
     const startTime = inject<Ref<number>>("startTime")
@@ -30,8 +30,8 @@ import { getTickInfo } from '../timeLine';
         equelUnit:1
     })
 
+    //刻度参数
     const tick = computed(()=>{
-         //刻度参数
         const x = (index*setting.space)/setting.equelUnit
         if(startTime){
             const value = startTime.value + index

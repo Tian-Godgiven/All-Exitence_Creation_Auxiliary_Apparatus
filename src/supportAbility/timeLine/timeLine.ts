@@ -9,6 +9,7 @@ import { getTimeRuleUnits, translateTimeArrToValue, translateTimeUnitValueToValu
 import { TimeRule } from "../customTime/customTime";
 import { showAlert } from "@/hooks/alert";
 import { isString } from "lodash";
+import { nanoid } from "nanoid";
 
 //注册辅助功能对象
 export const timeLineSignUpItem:SupportAbilitySignUpItem={
@@ -27,6 +28,7 @@ export const timeLineSignUpItem:SupportAbilitySignUpItem={
 // 通用时间线属性（共有的部分）
 type TimeLineBase = {
     name:string,
+    __key?:string,
     targetType: "status"|"exitence"|"article",
     timeRuleKey: "date" | string;  // 时间线规则的key，"date" 或其他值
     setting:{
@@ -116,6 +118,7 @@ export function showTimeLinePopUp(){
 
 //创建新的时间轴
 export function createTimeLine(timeLine:TimeLine){
+    timeLine.__key = nanoid()
     //向当前的总时间轴对象中添加该时间轴
     nowAllTimeLine.push(timeLine)
 }

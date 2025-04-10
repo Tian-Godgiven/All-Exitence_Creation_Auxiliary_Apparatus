@@ -7,7 +7,7 @@
         </div>
         <div class="container">
             <TimeLine v-for="timeLine,index in nowAllTimeLine" 
-                :key="index" :timeLine>
+                :key="timeLine.__key??index" :timeLine>
             </TimeLine>
         </div>
     </div>
@@ -28,7 +28,7 @@
     import { nowAllTimeLine } from './timeLine';
     import SlidePage from '@/components/other/SlidePage.vue';
     import { ifShowCreatePage ,showEditTimeLine} from './popUp/editTimeLine/editTimeLine.ts';
-import { provide, ref } from 'vue';
+    import { provide, ref } from 'vue';
 
     //新建时间线
     function createNew(){

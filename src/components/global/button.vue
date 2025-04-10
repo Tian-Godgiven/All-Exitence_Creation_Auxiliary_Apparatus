@@ -29,9 +29,6 @@
         .buttonIcon{
             width: 100%;
             height: 100%;
-            &.disabled{
-// 未完成
-            }
         }
     }
 </style>
