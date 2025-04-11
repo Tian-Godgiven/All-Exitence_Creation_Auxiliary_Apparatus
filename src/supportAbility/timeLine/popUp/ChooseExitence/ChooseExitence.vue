@@ -13,7 +13,6 @@
             </template>
             <template #inner>
                 <div v-for="child in type.child">
-                    <!-- 分组 -->
                     <SwitchExpand v-if="'child' in child" class="group">
                         <template #title>
                             <ChooseInNode :item="child" :parent="type">
@@ -26,7 +25,6 @@
                             </ChooseInNode>
                         </template>
                     </SwitchExpand>
-                    <!-- 事物 -->
                     <ChooseInNode v-else
                         :parent="type"
                         :item="child">
@@ -58,17 +56,20 @@ import { returnValue_Exitence } from '../editTimeLine/editTimeLine';
 
     const {popUp} = defineProps<{popUp:PopUp}>()
     
-    const list = computed(()=>{
-        return getList(timeRuleKey.value)
-    })
-
     //可选择的时间规则列表，默认选项为data(日期)
     const timeRuleList = computed(()=>{
         return getTimeRuleList()
     })
     //当前选中的时间规则的key
     const timeRuleKey = ref<string>("date")
-    
+
+    //树列表
+    const list = computed(()=>{
+        const list = getList(timeRuleKey.value)
+        
+        return list
+    })
+    console.log(list.value)
     //确认
     function confirm(){
         //获取选中的值

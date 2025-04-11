@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang='ts'>
-import { computed, ComputedRef, inject, ref, Ref } from 'vue';
+import { computed, inject, ref, Ref } from 'vue';
 import { getTickInfo } from '../timeLine';
 import { TimeRule } from '@/supportAbility/customTime/customTime';
 
