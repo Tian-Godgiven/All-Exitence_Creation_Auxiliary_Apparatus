@@ -1,6 +1,5 @@
 <template>
     <div class="container">
-
         <div class="top">
             <div class="targetTitle" >
                 <textAreaVue

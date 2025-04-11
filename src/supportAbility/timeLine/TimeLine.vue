@@ -2,8 +2,11 @@
 <div class="timeLinePopUp">
     <div class="manage">
         <div class="topBar">
-            <Button @click="createNew" name="新建"></Button>
-            <Button @click="manageTimeLine" name="管理"></Button>
+            <div class="title">时间轴管理</div>
+            <div class="buttons">
+                <Button @click="createNew" name="新建"></Button>
+                <Button @click="manageTimeLine" name="管理"></Button>
+            </div>
         </div>
         <div class="container">
             <TimeLine v-for="timeLine,index in nowAllTimeLine" 
@@ -52,7 +55,16 @@
     height: 100%;
     .manage{
         .topBar{
-
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            .title{
+                
+            }
+            .buttons{
+                display: flex;
+                justify-content: flex-end;
+            }
         }
         .container{
             height: calc(100% - 50px);

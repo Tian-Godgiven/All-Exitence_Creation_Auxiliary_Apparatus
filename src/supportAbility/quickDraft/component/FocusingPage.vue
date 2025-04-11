@@ -117,10 +117,8 @@
 </script>
 
 <style scoped lang='scss'>
-    @use "@/static/style/global.scss" as global;
-
     .focusingPage{
-        background-color: global.$bgColor;
+        background-color: $bgColor;
         padding-top: 20px;
         .topButtons{
             height: 60px;

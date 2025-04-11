@@ -71,7 +71,11 @@ export default defineConfig(async () => ({
       },
       preprocessorOptions: {
         scss: {
-          api: 'modern-compiler'
+          api: 'modern-compiler',
+          additionalData:
+            `@use "@/static/style/variables/font-text.scss" as *;
+             @use "@/static/style/variables/color.scss" as *;
+            `
         }
       }
 	  },

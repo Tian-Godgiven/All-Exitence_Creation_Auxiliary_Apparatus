@@ -45,9 +45,8 @@ import Button from '@/components/global/Button.vue';
 </script>
 
 <style lang="scss" scoped>
-@use "@/static/style/global.scss" as global;
 	.popUp{
-		background-color: global.$bgColor;
+		background-color: $bgColor;
 		width: 650px;
 		height: 80%;
 		max-width: 100%;

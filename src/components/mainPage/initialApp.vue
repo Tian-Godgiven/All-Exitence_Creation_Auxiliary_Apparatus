@@ -32,7 +32,6 @@
 
 <style scoped lang='scss'>
     @use "@/static/style/rightPage.scss";
-    @use "@/static/style/global.scss" as global;
     .title{
 		padding-top:40px;
         min-height: 70px;
@@ -45,8 +44,8 @@
 		word-break: break-all;
 		word-wrap: break-word;
 
-		font-size: global.$midFontSize;
-		color: global.$textColor;
+		font-size: $midFontSize;
+		color: $textColor;
 
         text-align: center;
     }

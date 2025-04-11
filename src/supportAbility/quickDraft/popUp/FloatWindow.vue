@@ -103,13 +103,12 @@ import { doNotOverContainer } from '@/api/doNotOverContainer';
 </script>
 
 <style scoped lang='scss'>
-@use "@/static/style/global.scss" as global;
     .quickDraftFloatWindow{
         position: absolute;
-        color: global.$antiBgColor;
-        background-color: global.$bgColor;
+        color: $antiBgColor;
+        background-color: $bgColor;
         border-radius: 10px;
-        box-shadow: 0px 0px 10px 1px global.$bgColor40;
+        box-shadow: 0px 0px 10px 1px $bgColor40;
         z-index: 999;
         &.fold{
             width: 100px;

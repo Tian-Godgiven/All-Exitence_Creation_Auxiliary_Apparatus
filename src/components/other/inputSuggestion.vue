@@ -53,12 +53,10 @@
         document.removeEventListener('click',clickEvent)
     })
 </script>
-vue
-<style scoped lang='scss'>
-    @use "@/static/style/global.scss" as global;
 
+<style scoped lang='scss'>
     .inputSuggestion{
-        background-color: global.$bgColor;
+        background-color: $bgColor;
         box-sizing:content-box;
         border: 3px solid black;
         padding: 10px;

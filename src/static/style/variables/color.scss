@@ -1,8 +1,8 @@
 //颜色
-$bgColor: rgb(255, 255, 255);
-$antiBgColor: rgb(0,0,0);
+$bgColor: rgb(255, 255, 255); //背景颜色
+$antiBgColor: rgb(0,0,0); //反色
 
-$back85:lightgrey;
+$back85:lightgrey; 
 $bgColor90:rgb(230,230,230);
 $bgColor80:rgb(210,210,210);
 $bgColor70:rgb(190,190,190);
@@ -14,12 +14,3 @@ $textColor: rgb(0,0,0);
 $buttonColor:rgb(50,50,50);
 
 $rightButtonColor:rgb(230,230,230);
-
-//字体
-
-$innerTitleFontSize:min(30px,45px);
-
-$bigFontSize:2.3rem;
-$midFontSize:1.5rem;
-$littleMidFontSize:1.2rem;
-$smallFontSize:1rem;

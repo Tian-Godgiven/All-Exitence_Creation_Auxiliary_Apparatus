@@ -1,12 +1,12 @@
-// 页面尺寸
-@use "@/static/style/global.scss" as global;
+@use "@/static/style/variables/font-text.scss" as *;
+@use "@/static/style/variables/color.scss" as *;
 @use "@/static/style/globalStyle.scss";
 
 .leftPage{
 	top:0; 
 	height: 100%;
 	width: 650px;
-	background-color: global.$bgColor;
+	background-color: $bgColor;
 	position: absolute;
 	z-index: 5;
 	> .titleBar{
@@ -53,14 +53,14 @@
 
 // 用于【万物】和【文本】两个大型标题框
 .leftPageBigTitleBar {
-	background-color: global.$bgColor90;
+	background-color: $bgColor90;
 	height: 110px;
 	@extend .titleBar;
 	.titleName{
 		font-weight: 600;
 		width: 250px;
 		height: 100%;
-		font-size: global.$bigFontSize;
+		font-size: $bigFontSize;
 	}
 	.manageName{
 		font-size: 1.8rem;
@@ -72,35 +72,35 @@
 
 // 用于[分类]和[章节]两个中型标题框
 .leftPageMidTitleBar{
-	background-color: global.$bgColor80;
+	background-color: $bgColor80;
 	height: 70px;
 	@extend .titleBar;
 	.titleName{
 		height: 65px;
-		font-size: global.$midFontSize;
+		font-size: $midFontSize;
 	}
 }
 
 // 用于分组
 .leftPageGroup{
-	background-color: global.$bgColor70;
+	background-color: $bgColor70;
 	height: 60px;
 	@extend .titleBar;
 	.titleName{
 		height: 55px;
 		font-style: italic;
-		font-size: global.$smallFontSize;
+		font-size: $smallFontSize;
 	}
 }
 
 // 用于事物对象
 .leftPageExitence{
-	background-color: global.$bgColor;
+	background-color: $bgColor;
 	max-height: 110px;
 	padding: 10px;
 	.name{
 		position: relative;
-		font-size: global.$midFontSize;
+		font-size:$midFontSize;
 		word-break: break-all;
 		overflow: hidden;                  /* 隐藏超出部分 */
 		text-overflow: ellipsis;           /* 显示省略号 */
@@ -124,12 +124,12 @@
 }
 // 用于文章对象
 .leftPageArticle{
-	background-color: global.$bgColor;
+	background-color: $bgColor;
 	width: 100%;
 	box-sizing: border-box;
 	padding: 10px 20px; 
 	.title{
-		font-size: global.$midFontSize;
+		font-size: $midFontSize;
 		word-break: break-all;
 		overflow: hidden;                  /* 隐藏超出部分 */
 		text-overflow: ellipsis;           /* 显示省略号 */
@@ -141,7 +141,7 @@
 	.preview{
 		width: 100%;
 		max-height: 120px;
-		font-size: global.$smallFontSize;
+		font-size: $smallFontSize;
 		display: -webkit-box;              /* 使用弹性盒子布局 */
 		-webkit-box-orient: vertical;      /* 设置为纵向排列 */
 		line-clamp: 3;
@@ -154,6 +154,6 @@
 // 左侧页面通用分割线
 .leftPageSeparator{
 	height: 0.5px;
-	background-color: global.$bgColor70;
+	background-color: $bgColor70;
 	margin: 5px 20px;
 }

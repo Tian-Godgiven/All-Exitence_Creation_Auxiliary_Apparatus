@@ -31,12 +31,11 @@
 </script>
 
 <style lang="scss" scoped>
-	@use "@/static/style/global.scss" as global;
 	.inputSupport{
 		display: flex;
 		width: 100%;
 		height: 50px;
-		background-color: global.$buttonColor;
+		background-color: $buttonColor;
 		position: absolute;
 		bottom: 0;
 		left: 0;

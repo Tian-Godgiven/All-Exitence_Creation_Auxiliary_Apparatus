@@ -115,10 +115,9 @@ onUnmounted(()=>{
 
 <style lang="scss" scoped>
 @use "@/static/style/leftPage.scss";
-@use "@/static/style/global.scss" as global;
 	.group{
 		position: relative;
-		border: global.$antiBgColor 5px solid;
+		border: $antiBgColor 5px solid;
 		.titleBar{
 			@extend .leftPageGroup;
 		}

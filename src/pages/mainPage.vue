@@ -7,10 +7,10 @@
 		
 	<!-- 首页顶部 -->
 	<div class="titleBar">
-		<buttonVue class="leftPageShowButton" @click="showLeft()" name="显示左侧" icon="showLeft"></buttonVue>
+		<Button class="leftPageShowButton" @click="showLeft()" name="显示左侧" icon="showLeft"></Button>
 		<div class="projectName" @click="switchProjectPage">{{ projectName }}</div>
 		<div class="buttons">
-			<buttonVue v-for="(button) in buttons" 
+			<Button v-for="(button) in buttons" 
 				@click="button.click"
 				:name="button.name"
 				:icon="button.icon"/>
@@ -53,7 +53,7 @@
 import { popUpList, showPopUp } from '@/hooks/pages/popUp'
 import { showLeft, switchProjectPage} from '@/hooks/pages/pageChange';
 import {touchStart,touchMove,touchEnd } from '@/hooks/pages/mainPage/mainTouch'
-import buttonVue from '@/components/global/Button.vue';
+import Button from '@/components/global/Button.vue';
 import projectPageVue from './projectPage.vue';
 import leftPageVue from '@/pages/leftPage.vue';
 import rightPageVue from '@/pages/rightPage.vue';
@@ -121,8 +121,6 @@ import { Icon } from '@/static/list/iconList';
 </script>
 
 <style lang="scss" scoped>
-	@use "@/static/style/mainPage.scss" as mainPage;
-	@use "@/static/style/global.scss" as global;
 	.mainPage{
 		z-index: 0;
 		width: 100vw;
@@ -153,7 +151,7 @@ import { Icon } from '@/static/list/iconList';
 		.mainInner{
 			width: calc(100% - 50px);
 			height: calc(100% - 110px);
-			background-color: global.$bgColor;
+			background-color: $bgColor;
 			position: relative;
 			margin: 0px 25px;
 			overflow: hidden;

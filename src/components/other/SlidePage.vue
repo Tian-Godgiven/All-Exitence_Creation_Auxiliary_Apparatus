@@ -31,14 +31,13 @@
 </script>
 
 <style scoped lang='scss'>
-@use "@/static/style/global.scss" as global;
 .slidePage{
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: global.$bgColor;
+    background-color: $bgColor;
     z-index: 1;
     transform: translate(100%,0);
     padding: inherit;

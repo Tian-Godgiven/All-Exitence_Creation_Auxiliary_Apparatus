@@ -81,7 +81,6 @@
 </script>
 
 <style scoped lang='scss'>
-@use "@/static/style/global.scss" as global;
 @use "@/static/style/globalStyle.scss";
 .mission{
     box-sizing: border-box;
@@ -106,7 +105,7 @@
     width: 100%;
     //原本只显示3行内容+1行标签
     .missionInner{
-        color: global.$bgColor40;
+        color: $bgColor40;
     }
     .missionInner::-webkit-scrollbar{
         width: 0;

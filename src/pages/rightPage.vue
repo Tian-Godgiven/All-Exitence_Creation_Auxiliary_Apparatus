@@ -41,7 +41,6 @@ import { rightAbilityList } from '@/static/list/rightAbilityList';
 </script>
 
 <style lang="scss" scoped>
-@use "@/static/style/global.scss" as global;
 	// 右侧页面按键通用样式
 	.rightPage{
 		pointer-events: none;
@@ -73,7 +72,7 @@ import { rightAbilityList } from '@/static/list/rightAbilityList';
 		height: 100px;
 		width: 100px;
 		border-radius: 50%;
-		background-color: global.$rightButtonColor;
+		background-color: $rightButtonColor;
 		box-shadow: 0px 3px 6px 1px rgb(99, 99, 99);
 		margin:15px;
 		margin-top: 20px;

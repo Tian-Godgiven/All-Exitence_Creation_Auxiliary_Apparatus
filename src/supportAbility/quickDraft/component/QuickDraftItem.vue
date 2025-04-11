@@ -97,7 +97,6 @@ import Indicator from '@/components/other/indicator.vue';
 
 <style scoped lang='scss'>
 @use "@/static/style/globalStyle.scss";
-@use "@/static/style/global.scss" as global;
 .quickDraftItem{
     box-sizing: border-box;
     position: relative;
@@ -107,7 +106,7 @@ import Indicator from '@/components/other/indicator.vue';
     .inner{
         min-height: 1.5rem;
         max-height: 4rem;
-        color: global.$bgColor40;
+        color: $bgColor40;
         overflow: hidden;
         @extend .dontShowMoreText;
     }
