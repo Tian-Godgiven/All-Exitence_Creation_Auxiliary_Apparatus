@@ -41,7 +41,7 @@ import { showQuickInfo } from '@/api/showQuickInfo';
 </script>
 
 <style scoped lang='scss'>
-    @use "@/static/style/popUp.scss";
+    @use "@/static/style/components/popUp.scss";
     .editProjectInfo{
         width: 100%;
         .buttons{

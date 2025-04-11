@@ -54,7 +54,7 @@ import Button from '@/components/global/Button.vue';
 </script>
 
 <style scoped lang='scss'>
-@use "@/static/style/popUp.scss";
+@use "@/static/style/components/popUp.scss";
     .finalButtons{
         @extend .finalButtons;
     }

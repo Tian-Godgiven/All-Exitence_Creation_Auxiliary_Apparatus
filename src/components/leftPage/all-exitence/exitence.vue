@@ -126,13 +126,37 @@ onUnmounted(()=>{
 </script>
 
 <style lang="scss" scoped>
-	@use "@/static/style/leftPage.scss";
-	.exitence{
+.exitence{
+	position: relative;
+	background-color: $bgColor;
+	max-height: 110px;
+	padding: 10px;
+	.name{
 		position: relative;
-		@extend .leftPageExitence;
+		font-size:$midFontSize;
+		word-break: break-all;
+		overflow: hidden;                  /* 隐藏超出部分 */
+		text-overflow: ellipsis;           /* 显示省略号 */
+		display: -webkit-box;
+		-webkit-line-clamp: 2; /* 显示两行，超出的部分显示省略号 */
+		line-clamp: 2;
+		-webkit-box-orient: vertical;
 		.manageButtons{
-			float: right;
 			display: flex;
+			font-size: 1rem;
+			position: absolute;
+			right: 0;
+			top: 0;
+			height: 100%;
+			width: 100px;
 		}
 	}
+	.preview{
+		display: flex;
+	}
+	.manageButtons{
+		float: right;
+		display: flex;
+	}
+}
 </style>

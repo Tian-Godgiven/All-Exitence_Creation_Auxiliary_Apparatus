@@ -124,10 +124,33 @@ onUnmounted(()=>{
 </script>
 
 <style lang="scss" scoped>
-	@use "@/static/style/leftPage.scss";
 	.article{
 		position: relative;
-		@extend .leftPageArticle;
+		background-color: $bgColor;
+		width: 100%;
+		box-sizing: border-box;
+		padding: 10px 20px; 
+		.title{
+			font-size: $midFontSize;
+			word-break: break-all;
+			overflow: hidden;                  /* 隐藏超出部分 */
+			text-overflow: ellipsis;           /* 显示省略号 */
+			display: -webkit-box;
+			-webkit-line-clamp: 2; /* 显示两行，超出的部分显示省略号 */
+			line-clamp: 2;
+			-webkit-box-orient: vertical;
+		}
+		.preview{
+			width: 100%;
+			max-height: 120px;
+			font-size: $smallFontSize;
+			display: -webkit-box;              /* 使用弹性盒子布局 */
+			-webkit-box-orient: vertical;      /* 设置为纵向排列 */
+			line-clamp: 3;
+			-webkit-line-clamp: 3;             /* 限制显示 3 行文本 */
+			overflow: hidden;                  /* 隐藏超出部分 */
+			text-overflow: ellipsis;           /* 显示省略号 */
+		}
 		.manageButtons{
 			float: right;
 			display: flex;

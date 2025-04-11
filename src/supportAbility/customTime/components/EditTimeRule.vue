@@ -111,7 +111,7 @@ import Selector from '@/components/global/Selector.vue';
 </script>
 
 <style scoped lang='scss'>
-@use "@/static/style/popUp.scss";
+@use "@/static/style/components/popUp.scss";
 .editTimeRule{
     .selectBar{
         display: grid;

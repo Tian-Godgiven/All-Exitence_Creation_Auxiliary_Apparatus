@@ -128,7 +128,7 @@ import { nanoid } from 'nanoid';
 
 <style lang="scss" scoped>
 @use "@/static/style/components/inputs.scss";
-@use "@/static/style/popUp.scss";
+@use "@/static/style/components/popUp.scss";
 	.editType{
 		height: 100%;
 	}

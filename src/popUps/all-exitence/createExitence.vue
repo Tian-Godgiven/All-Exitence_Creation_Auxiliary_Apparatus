@@ -123,7 +123,7 @@ import { nanoid } from 'nanoid';
 </script>
 
 <style scoped lang='scss'>
-    @use "@/static/style/popUp.scss";
+    @use "@/static/style/components/popUp.scss";
     .top{
         display: flex;
         height: 100px;

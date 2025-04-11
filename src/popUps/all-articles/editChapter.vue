@@ -32,7 +32,7 @@
 </script>
 
 <style scoped lang='scss'>
-@use "@/static/style/popUp.scss";
+@use "@/static/style/components/popUp.scss";
     .chapterName{
 			position: relative;
 			margin-top:auto;

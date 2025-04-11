@@ -39,7 +39,7 @@ import { closePopUp, PopUp } from '@/hooks/pages/popUp';
 </script>
 
 <style scoped lang='scss'>
-    @use "@/static/style/popUp.scss";
+    @use "@/static/style/components/popUp.scss";
     .alert{
         .info{
             white-space: pre-wrap;

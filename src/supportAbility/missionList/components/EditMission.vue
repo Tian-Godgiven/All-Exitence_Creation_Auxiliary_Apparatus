@@ -109,7 +109,7 @@
 
 <style scoped lang='scss'>
 @use "@/static/style/globalStyle.scss";
-@use "@/static/style/popUp.scss";
+@use "@/static/style/components/popUp.scss";
 .editMission{
     .topButtons{
         width: 100%;

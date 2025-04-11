@@ -287,7 +287,7 @@ import { explainExpression, multiStatusPart } from '@/hooks/expression/multiStat
 </script>
 
 <style lang="scss" scoped>
-	@use "@/static/style/popUp.scss";
+	@use "@/static/style/components/popUp.scss";
 
 	.showArea{
 		width: 100%;

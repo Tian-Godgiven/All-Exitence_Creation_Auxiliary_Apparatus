@@ -29,7 +29,7 @@
 </script>
 
 <style lang="scss" scoped>
-	@use "@/static/style/popUp.scss";
+	@use "@/static/style/components/popUp.scss";
 	.textInput{
 		width: 100%;
 		max-height: 300px;

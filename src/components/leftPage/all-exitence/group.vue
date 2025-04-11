@@ -114,12 +114,19 @@ onUnmounted(()=>{
 </script>
 
 <style lang="scss" scoped>
-@use "@/static/style/leftPage.scss";
+@use "@/static/style/components/leftPage.scss";
 	.group{
 		position: relative;
 		border: $antiBgColor 5px solid;
 		.titleBar{
-			@extend .leftPageGroup;
+			background-color: $bgColor70;
+			height: 60px;
+			@extend .titleBar;
+			.titleName{
+				height: 55px;
+				font-style: italic;
+				font-size: $smallFontSize;
+			}
 		}
 	}
 	.separator{

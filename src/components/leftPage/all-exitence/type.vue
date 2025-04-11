@@ -136,11 +136,17 @@ onUnmounted(()=>{
 </script>
 
 <style lang="scss" scoped>
-@use "@/static/style/leftPage.scss";
+@use "@/static/style/components/leftPage.scss";
 	.type{
 		position: relative;
 		.titleBar{
-			@extend .leftPageMidTitleBar;
+			background-color: $bgColor80;
+			height: 70px;
+			@extend .titleBar;
+			.titleName{
+				height: 65px;
+				font-size: $midFontSize;
+			}
 		}
 	}
 	.separator{

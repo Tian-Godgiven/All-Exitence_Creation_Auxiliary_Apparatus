@@ -118,9 +118,49 @@ import { Chapter } from '@/class/Chapter';
 </script>
 
 <style lang="scss" scoped>
-	@use "@/static/style/leftPage.scss";
-	.leftPage{
-		@extend .leftPage;
+@use "@/static/style/components/leftPage.scss";
+.leftPage{
+	top:0; 
+	height: 100%;
+	width: 650px;
+	background-color: $bgColor;
+	position: absolute;
+	z-index: 5;
+	> .titleBar{
+		background-color: $bgColor90;
+		height: 110px;
+		@extend .titleBar;
+		.titleName{
+			font-weight: 600;
+			width: 250px;
+			height: 100%;
+			font-size: $bigFontSize;
+		}
+		.manageName{
+			font-size: 1.8rem;
+		}
+		.titleButtons{
+			width: 400px;
+		}
+		.titleButtons{
+			.button{
+				width: 100px;
+				height: 100%;
+				box-sizing: border-box;
+			}
+		}
 	}
+	> .inner{
+		overflow: auto;
+		scrollbar-width: none;
+		height: calc(100% - 110px);
+		scroll-p{
+			height: 100%;
+			.scrollBottom{
+				height: 30%;
+			}
+		}
+	}
+}
 
 </style>

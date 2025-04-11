@@ -58,24 +58,24 @@
 </template>
 
 <script setup lang="ts" name="chapterVue"> 
-import { onMounted, onUnmounted, ref, inject, computed } from "vue";
-import articleVue from "./article.vue"
-import chapterVue from "./chapter.vue"
-import { addArticle, createChapter, focusOnChapter,focusOnArticle, deleteChapter ,updateChapter} from "@/hooks/all-articles/allArticles";
-import { showControlPanel } from "@/hooks/controlPanel";
-import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine"
-import {draggable,dropTargetForElements} from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
-import {type Edge} from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
-import { setCustomNativeDragPreview } from "@atlaskit/pragmatic-drag-and-drop/element/set-custom-native-drag-preview";
-import { pointerOutsideOfPreview } from "@atlaskit/pragmatic-drag-and-drop/element/pointer-outside-of-preview";
-import { Chapter } from "@/class/Chapter";
-import {
-    attachInstruction,
-    extractInstruction,
-} from '@atlaskit/pragmatic-drag-and-drop-hitbox/tree-item';
-import longTapContainerVue from "../../other/longTapContainer.vue";
-import indicatorVue from "@/components/other/indicator.vue";
-import { DragState } from '@/api/dragToSort';
+	import { onMounted, onUnmounted, ref, inject, computed } from "vue";
+	import articleVue from "./article.vue"
+	import chapterVue from "./chapter.vue"
+	import { addArticle, createChapter, focusOnChapter,focusOnArticle, deleteChapter ,updateChapter} from "@/hooks/all-articles/allArticles";
+	import { showControlPanel } from "@/hooks/controlPanel";
+	import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine"
+	import {draggable,dropTargetForElements} from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
+	import {type Edge} from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
+	import { setCustomNativeDragPreview } from "@atlaskit/pragmatic-drag-and-drop/element/set-custom-native-drag-preview";
+	import { pointerOutsideOfPreview } from "@atlaskit/pragmatic-drag-and-drop/element/pointer-outside-of-preview";
+	import { Chapter } from "@/class/Chapter";
+	import {
+		attachInstruction,
+		extractInstruction,
+	} from '@atlaskit/pragmatic-drag-and-drop-hitbox/tree-item';
+	import longTapContainerVue from "../../other/longTapContainer.vue";
+	import indicatorVue from "@/components/other/indicator.vue";
+	import { DragState } from '@/api/dragToSort';
 
 	let {chapter,from,level} = defineProps<{chapter:Chapter,from:any,level:number}>()
 	//展开与切换展开
@@ -113,130 +113,130 @@ import { DragState } from '@/api/dragToSort';
 		}
 	}
 
-let cleanup = ()=>{}
-onMounted(()=>{
-	if(chapterRef.value == null || handlerRef.value==null)return;
+	let cleanup = ()=>{}
+	onMounted(()=>{
+		if(chapterRef.value == null || handlerRef.value==null)return;
 
-	cleanup = combine(
-		draggable({
-			element:chapterRef.value,
-			dragHandle:handlerRef.value,
-			//设置初始的data
-			getInitialData() {
-				return getChapterData(chapter)
-			},
-			onGenerateDragPreview({ nativeSetDragImage }) {
-				// 自定义预览内容
-				setCustomNativeDragPreview({
-					nativeSetDragImage,
-					getOffset: pointerOutsideOfPreview({
-						x: "16px",
-						y: "8px",
-					}),
-					render({ container }) {
-						dragState.value = { type: "preview", container };
-					},
-				});
-			},
-			onDrag(){
-				dragState.value = {type:"dragging"}
-			},
-			onDrop(){
-				dragState.value = idle
-			}
-		}),
-		dropTargetForElements({
-			element:chapterRef.value,
-			canDrop({source}){
-				if(source.element == chapterRef.value){
-					return false
-				}
-				const type = source.data.type
-				if(type == "chapter" || type == "article"){
-					return true
-				}
-				return false
-			},
-			getData({input,element}){
-				const data = getChapterData(chapter)
-				return attachInstruction(data, {
-					input,
-					element,
-					currentLevel: level, //该元素的level
-					indentPerLevel: level*20, //该元素的缩进
-					mode: 'standard'
-				});
-			},
-			getIsSticky() {
-				return true;
-			},
-			onDragEnter({self,location}){
-				if(location.current.dropTargets[0] == self){
-					changeState(self)
-				}
-				//否则默认状态
-				else{
+		cleanup = combine(
+			draggable({
+				element:chapterRef.value,
+				dragHandle:handlerRef.value,
+				//设置初始的data
+				getInitialData() {
+					return getChapterData(chapter)
+				},
+				onGenerateDragPreview({ nativeSetDragImage }) {
+					// 自定义预览内容
+					setCustomNativeDragPreview({
+						nativeSetDragImage,
+						getOffset: pointerOutsideOfPreview({
+							x: "16px",
+							y: "8px",
+						}),
+						render({ container }) {
+							dragState.value = { type: "preview", container };
+						},
+					});
+				},
+				onDrag(){
+					dragState.value = {type:"dragging"}
+				},
+				onDrop(){
 					dragState.value = idle
 				}
-			},
-			onDrag({self,location}){
-				if(location.current.dropTargets[0] == self){
-					//如果状态已经改变了，则不变
-					const instruction = extractInstruction(self.data)
-					if(!instruction)return
-					let edge :Edge|null = null
-					if(instruction.type == "reorder-above"){
-						edge = "top"
+			}),
+			dropTargetForElements({
+				element:chapterRef.value,
+				canDrop({source}){
+					if(source.element == chapterRef.value){
+						return false
 					}
-					else if(instruction.type == "reorder-below"){
-						edge = "bottom"
+					const type = source.data.type
+					if(type == "chapter" || type == "article"){
+						return true
 					}
-					if(dragState.value.type!="be-dragging-over" || dragState.value.edge != edge){
+					return false
+				},
+				getData({input,element}){
+					const data = getChapterData(chapter)
+					return attachInstruction(data, {
+						input,
+						element,
+						currentLevel: level, //该元素的level
+						indentPerLevel: level*20, //该元素的缩进
+						mode: 'standard'
+					});
+				},
+				getIsSticky() {
+					return true;
+				},
+				onDragEnter({self,location}){
+					if(location.current.dropTargets[0] == self){
 						changeState(self)
 					}
-				}
-				//否则默认状态
-				else{
+					//否则默认状态
+					else{
+						dragState.value = idle
+					}
+				},
+				onDrag({self,location}){
+					if(location.current.dropTargets[0] == self){
+						//如果状态已经改变了，则不变
+						const instruction = extractInstruction(self.data)
+						if(!instruction)return
+						let edge :Edge|null = null
+						if(instruction.type == "reorder-above"){
+							edge = "top"
+						}
+						else if(instruction.type == "reorder-below"){
+							edge = "bottom"
+						}
+						if(dragState.value.type!="be-dragging-over" || dragState.value.edge != edge){
+							changeState(self)
+						}
+					}
+					//否则默认状态
+					else{
+						dragState.value = idle
+					}
+				},
+				// 拖离时重置元素状态
+				onDragLeave() {
 					dragState.value = idle
-				}
-			},
-			// 拖离时重置元素状态
-			onDragLeave() {
-				dragState.value = idle
-			},
-			onDrop() {
-				dragState.value = idle
-			},
+				},
+				onDrop() {
+					dragState.value = idle
+				},
 
-		})
-	)
-})
+			})
+		)
+	})
 
-onUnmounted(()=>{
-	cleanup()
-})
+	onUnmounted(()=>{
+		cleanup()
+	})
 
-function changeState(self:any){
-	// self为该元素的简易数据
-	const instruction = extractInstruction(self.data)
-	if(!instruction)return
-	let edge:Edge|null = null
-	let enter : boolean|null = false
-	if(instruction.type == "reorder-above"){
-		edge = "top"
+	function changeState(self:any){
+		// self为该元素的简易数据
+		const instruction = extractInstruction(self.data)
+		if(!instruction)return
+		let edge:Edge|null = null
+		let enter : boolean|null = false
+		if(instruction.type == "reorder-above"){
+			edge = "top"
+		}
+		else if(instruction.type == "reorder-below"){
+			edge = "bottom"
+		}
+		else if(instruction.type == "make-child"){
+			enter = true
+		}
+		else{
+			return null
+		}
+		// 修改该元素的状态为:正在被拖入，会显示提示线条，并设置其所处的边界（上or下
+		dragState.value = { type: "be-dragging-over", enter, edge };
 	}
-	else if(instruction.type == "reorder-below"){
-		edge = "bottom"
-	}
-	else if(instruction.type == "make-child"){
-		enter = true
-	}
-	else{
-		return null
-	}
-	// 修改该元素的状态为:正在被拖入，会显示提示线条，并设置其所处的边界（上or下
-	dragState.value = { type: "be-dragging-over", enter, edge };
-}
 
 
 	//点击插入章节
@@ -272,11 +272,16 @@ function changeState(self:any){
 
  
 <style lang="scss" scoped>
-@use "@/static/style/leftPage.scss";
+@use "@/static/style/components/leftPage.scss";
 	.chapter{
 		position: relative;
 		.titleBar{
-			@extend .leftPageMidTitleBar;
+			background-color: $bgColor80;
+			height: 70px;
+			.titleName{
+				height: 65px;
+				font-size: $midFontSize;
+			}
 		}
 		.innerBar{
 			display: flex;

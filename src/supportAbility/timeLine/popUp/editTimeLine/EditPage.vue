@@ -246,7 +246,7 @@
 </script>
 
 <style scoped lang='scss'>
-@use "@/static/style/popUp.scss";
+@use "@/static/style/components/popUp.scss";
 .chooseTarget{
     width: 100%;
     .chooseType{
