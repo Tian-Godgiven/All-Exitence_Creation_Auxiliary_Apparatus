@@ -283,6 +283,8 @@ import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expr
 </script>
 
 <style scoped lang='scss'>
+.container{
+    width: 100%;
     .textArea{
         position: relative;
         min-height: inherit;
@@ -304,5 +306,7 @@ import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expr
         text-decoration-color: rgb(125, 125, 125)!important;
         color:rgb(125, 125, 125)!important;
     }
+}
+    
 
 </style>

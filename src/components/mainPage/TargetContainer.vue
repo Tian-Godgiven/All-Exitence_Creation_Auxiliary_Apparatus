@@ -1,20 +1,48 @@
-@use "@/static/style/variables/font-text.scss" as *;
-@use "@/static/style/variables/color.scss" as *;
+<template>
+<div class="container">
+    <div class="top" :class="ifInfo?'showInfo':''">
+        <div class="targetTitle" :style="{
+            'text-align':titleAlign,
+        }">
+            <slot name="title"></slot>
+        </div>
+        <div>
+            <slot  name="topBar"></slot>
+        </div>
+    </div>
+    
+    <div class="targetInner">
+        <slot name="inner"></slot>
+    </div>
+    <div class="targetInfo" v-if="ifInfo"> 
+        <slot name="info"></slot>
+    </div>
+</div>
+</template>
 
-// mainPage中显示不同对象的统一基础样式
-.targetContainer{
+<script setup lang='ts'>
+    const {titleAlign="center",ifInfo=true} = defineProps<{
+        titleAlign?:"center"|"right"|"left",//标题的对齐方向
+        ifInfo?:boolean//是否显示Info框
+    }>()
+</script>
+
+<style scoped lang='scss'>
+.container{
 	width: 100%;
 	height: 100%;
 	.top{
 		min-height: 70px;
 		width: 100%;
 		position: relative;
-		padding-top:40px;
 		display: flex;
+        &.showInfo{
+            padding-top: 40px;
+        }
 		.targetTitle{
 			min-height: 70px;
-			width: 100%;
-			
+            width: 100%;
+            flex-grow: 1;
 			font-weight: bold;
 			display: flex;
 			align-items: center;
@@ -50,6 +78,5 @@
 		text-align: center;
 		z-index: 2;
 	}
-	
 }
-
+</style>

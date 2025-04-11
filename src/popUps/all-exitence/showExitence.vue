@@ -1,31 +1,40 @@
 <template>
-    <div class="container">
-        <div class="top">
-            <div class="targetTitle">
-                <div>{{ exitence.name }}</div>
-            </div>
-            <div class="buttons">
-                <div class="button" @click="clickJumpToExitence">跳转至事物</div>
-            </div>
+<TargetContainer title-align="left" :if-info="false">
+    <template #title>
+        <div class="title">{{ exitence.name }}</div>
+    </template>
+	<template #topBar>
+		<div class="buttons">
+            <div class="button" @click="clickJumpToExitence">跳转至事物</div>
         </div>
-        <div class="targetInner" ref="inner">
-            <exitenceStatusVue 
-                :disabled="true"
-				v-for="(,index) in exitence.status" 
-				v-model:status="exitence.status[index]">
-			</exitenceStatusVue>
-
-			<div class="scrollSpace"></div>
-        </div>
-    </div>
+	</template>
+    <template #inner ref="inner">
+        <exitenceStatusVue 
+            :disabled="true"
+            v-for="(status,index) in exitence.status" 
+            :key="status.__key"
+            v-model:status="exitence.status[index]">
+        </exitenceStatusVue>
+        <div class="scrollSpace"></div>
+    </template>
+</TargetContainer>
 </template>
 
 <script setup lang='ts'>
 import { provide} from 'vue';
 import exitenceStatusVue from '@/components/all-exitence/exitence/exitenceStatus.vue';
 import { showExitenceOnMain } from '@/hooks/pages/mainPage/showOnMain';
-import { closePopUp } from '@/hooks/pages/popUp';
-    const {props,popUp} = defineProps(["props","popUp","returnValue"])
+import { closePopUp, PopUp } from '@/hooks/pages/popUp';
+import TargetContainer from '@/components/mainPage/TargetContainer.vue';
+import { Type } from '@/class/Type';
+import { Exitence } from '@/class/Exitence';
+    const {props,popUp} = defineProps<{
+        props:{
+            type:Type,
+            exitence:Exitence
+        },
+        popUp:PopUp
+    }>()
     const {type,exitence} = props
     
     provide("type",type)//提供该事物所在的分类
@@ -39,25 +48,18 @@ import { closePopUp } from '@/hooks/pages/popUp';
 </script>
 
 <style scoped lang='scss'>
-	@use "@/static/style/mainPage.scss";
-    .container{
-        position: relative;
-        @extend .targetContainer;
-        .top{
-            padding-top: 0;
-        }
-		.targetTitle{
-            > div{
-                width: 100%;
-			    text-align: left;
-            }
+	// @use "@/static/style/mainPage.scss";
+    // .container{
+    //     position: relative;
+    //     .top{
+    //         padding-top: 0;
+    //     }
             
-		}
-		.targetInner{
-			.scrollSpace{
+    .title{
+        width: 100%;
+    }
+    .scrollSpace{
 				width: 100%;
 				height: 30%;
 			}
-		}
-    }
 </style>

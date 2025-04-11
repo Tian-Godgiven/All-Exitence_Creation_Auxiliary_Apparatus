@@ -1,36 +1,38 @@
 <template>
-	<div class="container">
-        <div class="top">
-            <textAreaVue class="targetTitle"
-				@input="changeName"
-				mode="string"
-                placeholder="输入名称"
-                v-model="exitence.name"
-                :inputSupport="true">
-            </textAreaVue>
-			<div class="exitenceAbility">
-				<Button @click="switchControlMode" name="属性管理"></Button>
-				<Button @click="setExitence" name="事物设置"></Button>
-				<Button @click="addNewStatus" name="新增属性"></Button>
-			</div>
-        </div>
-        <div class="targetInner" ref="inner">
-			<draggableListVue
-				:dragHandle="true"
-				:showHandle="showDrag"
-				v-slot="{element:status}"
-				:list="exitenceStatus">
-				<exitenceStatusVue 
-					:key="status.__key"
-					:status="status">
-				</exitenceStatusVue>
-			</draggableListVue>
-            
-
-			<div class="scrollSpace"></div>
-        </div>
-        <div class="targetInfo">属性数: {{statusNum}}</div>
-    </div>
+<TargetContainer title-align="left">
+    <template #title>
+        <textAreaVue 
+			@input="changeName"
+			mode="string"
+			placeholder="输入名称"
+			v-model="exitence.name"
+			:inputSupport="true">
+		</textAreaVue>
+    </template>
+	<template #topBar>
+		<div class="exitenceAbility">
+			<Button @click="switchControlMode" name="属性管理"></Button>
+			<Button @click="setExitence" name="事物设置"></Button>
+			<Button @click="addNewStatus" name="新增属性"></Button>
+		</div>
+	</template>
+    <template #inner ref="inner">
+        <draggableListVue
+			:dragHandle="true"
+			:showHandle="showDrag"
+			v-slot="{element:status}"
+			:list="exitenceStatus">
+			<exitenceStatusVue 
+				:key="status.__key"
+				:status="status">
+			</exitenceStatusVue>
+		</draggableListVue>
+		<div class="scrollSpace"></div>
+    </template>
+    <template #info>
+        属性数: {{statusNum}}
+    </template>
+</TargetContainer>
 </template>
 
 <script setup lang="ts" name="">
@@ -43,6 +45,7 @@
 	import Status from '@/interfaces/Status';
 	import Button from '../global/Button.vue';
 	import { showPopUp } from '@/hooks/pages/popUp';
+	import TargetContainer from './TargetContainer.vue';
 
 	let {exitence} = defineProps(["exitence"])
 
@@ -127,22 +130,12 @@
 </script>
 
 <style lang="scss" scoped>
-	@use "@/static/style/mainPage.scss";
-    .container{
-        @extend .targetContainer;
-		.targetTitle{
-			text-align: left;
-		}
-		.targetInner{
-			.scrollSpace{
-				width: 100%;
-				height: 30%;
-			}
-		}
-		.top{
-			.exitenceAbility{
-				display: flex;
-			}
-		}
-    }
+	.scrollSpace{
+		width: 100%;
+		height: 30%;
+	}
+
+	.exitenceAbility{
+		display: flex;
+	}
 </style>
