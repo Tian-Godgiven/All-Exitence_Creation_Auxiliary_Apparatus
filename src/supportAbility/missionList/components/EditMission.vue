@@ -108,7 +108,7 @@
 </script>
 
 <style scoped lang='scss'>
-@use "@/static/style/components/global.scss";
+@use "@/static/style/components/page.scss";
 @use "@/static/style/components/popUp.scss";
 .editMission{
     .topButtons{
@@ -129,9 +129,7 @@
         }
     }
     .title{
-        width: 100%;
-        margin-top: 6px;
-        @extend .titleDownLine;
+        @extend .titleDownLineInput;
     }
     
     .inner{

@@ -81,7 +81,6 @@
 </script>
 
 <style scoped lang='scss'>
-@use "@/static/style/components/global.scss";
 .mission{
     box-sizing: border-box;
     width: 100%;
@@ -94,7 +93,6 @@
 
 .contentBar{
     width: calc(100% - 150px);
-    
 }
 .title{
     width: 100%;
