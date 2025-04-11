@@ -1,30 +1,27 @@
 <template>
-    <div class="container">
-        <div class="textArea"
-            :class="showPlaceholder ? 'showPlaceholder':null"
-            :inputSupport = "inputSupport"
-            ref="textArea"
-            :contenteditable="mode != 'disabled'?true:false"
-            :placeholder="placeholder"
-            inputmode="text"
-            tabindex="0"
-            @click="clickEvent"
-            @input="onInput"
-            @blur="onBlur"
-            @focus="onFocus">
-        </div>
-        <slot name="scrollSpace"></slot>
-    </div>
+<div class="textArea"
+    :class="showPlaceholder ? 'showPlaceholder':null"
+    :inputSupport = "inputSupport"
+    ref="textArea"
+    :contenteditable="mode != 'disabled'?true:false"
+    :placeholder="placeholder"
+    inputmode="text"
+    tabindex="0"
+    @click="clickEvent"
+    @input="onInput"
+    @blur="onBlur"
+    @focus="onFocus">
+</div>
 </template>
 
 <script setup lang='ts'>
-import { focusOnEnd } from '@/api/focusOnEnd';
-import { showInputSupport } from '@/hooks/inputSupport/inputSupport';
-import { onMounted, ref, useTemplateRef, watch } from 'vue';
-import { checkInputSuggestion, hideInputSuggestion, InputSuggestionList, showInputSuggestion } from '@/hooks/inputSupport/inputSuggestion/inputSuggestion';
-import { addInputLast, addInputLastDiv, deleteInputLast } from '@/api/cursorAbility';
-import { findTargetDivs } from '@/hooks/findTargetDiv';
-import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expression/textAreaContent';
+    import { focusOnEnd } from '@/api/focusOnEnd';
+    import { showInputSupport } from '@/hooks/inputSupport/inputSupport';
+    import { onMounted, ref, useTemplateRef, watch } from 'vue';
+    import { checkInputSuggestion, hideInputSuggestion, InputSuggestionList, showInputSuggestion } from '@/hooks/inputSupport/inputSuggestion/inputSuggestion';
+    import { addInputLast, addInputLastDiv, deleteInputLast } from '@/api/cursorAbility';
+    import { findTargetDivs } from '@/hooks/findTargetDiv';
+    import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expression/textAreaContent';
 
     const textArea = useTemplateRef('textArea');
     let showPlaceholder = ref(true) //当前是否显示placeholder
@@ -283,9 +280,7 @@ import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expr
 </script>
 
 <style scoped lang='scss'>
-.container{
-    width: 100%;
-    .textArea{
+.textArea{
         position: relative;
         min-height: inherit;
         font-size: inherit;
@@ -300,13 +295,12 @@ import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expr
         :focus{
             border: none;
         }
+        &.showPlaceholder{
+            font-size: 1em;
+            text-decoration-color: rgb(125, 125, 125)!important;
+            color:rgb(125, 125, 125)!important;
+        }
     }
-    .textArea.showPlaceholder{
-        font-size: 1em;
-        text-decoration-color: rgb(125, 125, 125)!important;
-        color:rgb(125, 125, 125)!important;
-    }
-}
     
 
 </style>

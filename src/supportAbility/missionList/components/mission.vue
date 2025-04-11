@@ -81,7 +81,7 @@
 </script>
 
 <style scoped lang='scss'>
-@use "@/static/style/globalStyle.scss";
+@use "@/static/style/components/global.scss";
 .mission{
     box-sizing: border-box;
     width: 100%;
@@ -99,7 +99,7 @@
 .title{
     width: 100%;
     font-size: 1.2rem;
-    @extend .dontShowMoreText;
+    @include textMaxLine(1)
 }
 .inner{
     width: 100%;
@@ -121,9 +121,7 @@
 }
 .inner.unexpend{
     .missionInner{
-        max-height: 4rem;
-        overflow: hidden;
-        @extend .dontShowMoreText;
+        @include textMaxLine(3);//最多3行
     }
     .tags{
         max-height: 1.5rem;

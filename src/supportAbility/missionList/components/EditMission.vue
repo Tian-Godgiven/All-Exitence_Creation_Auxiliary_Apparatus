@@ -108,7 +108,7 @@
 </script>
 
 <style scoped lang='scss'>
-@use "@/static/style/globalStyle.scss";
+@use "@/static/style/components/global.scss";
 @use "@/static/style/components/popUp.scss";
 .editMission{
     .topButtons{

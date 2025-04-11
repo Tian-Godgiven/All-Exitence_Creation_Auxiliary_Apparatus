@@ -1,6 +1,6 @@
 @use "@/static/style/variables/font-text.scss" as *;
 @use "@/static/style/variables/color.scss" as *;
-@use "@/static/style/globalStyle.scss";
+@use "@/static/style/mixin/global.scss" as *;
 
 
 // 通用标题框
@@ -17,7 +17,7 @@
 		align-items: center;
 		>.text{
 			width: 100%;
-			@extend .dontShowMoreText;
+			@include textMaxLine(1);
 		}
 	}
 }

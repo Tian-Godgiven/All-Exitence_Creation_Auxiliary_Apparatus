@@ -5,7 +5,7 @@
             <TextArea class="inner"
                 placeholder="无内容"
                 v-model="quickDraftItem.inner"
-                :mode="'disabled'">
+                mode="disabled">
             </TextArea>
             <div class="times">
                 <Time class="time" 
@@ -38,7 +38,7 @@
     </LongTapContainer>
 
     <Teleport v-if="dragState.type=='preview'" :to="dragState.container">
-        <div class="chapterShadow">{{  }}</div>
+        <div class="chapterShadow"></div>
     </Teleport>
 </div>
     
@@ -49,11 +49,11 @@
     import { deleteQuickDraftItem, QuickDraftItem, showFocusingPage } from '../quickDraft';
     import TextArea from '@/components/other/textArea/textArea.vue';
     import Time from '@/components/global/time.vue';
-import LongTapContainer from '@/components/other/longTapContainer.vue';
-import { showControlPanel } from '@/hooks/controlPanel';
-import { DragState, getCombine } from '@/api/dragToSort';
+    import LongTapContainer from '@/components/other/longTapContainer.vue';
+    import { showControlPanel } from '@/hooks/controlPanel';
+    import { DragState, getCombine } from '@/api/dragToSort';
 
-import Indicator from '@/components/other/indicator.vue';
+    import Indicator from '@/components/other/indicator.vue';
     const {quickDraftItem,manageMode} = defineProps<{quickDraftItem:QuickDraftItem,manageMode:boolean}>()
     //长按显示控制面板
     function longTap(){
@@ -96,19 +96,16 @@ import Indicator from '@/components/other/indicator.vue';
 </script>
 
 <style scoped lang='scss'>
-@use "@/static/style/globalStyle.scss";
 .quickDraftItem{
     box-sizing: border-box;
     position: relative;
     border: 3px solid black;
 .content{
-    //只显示3行内容
+    //只显示3行内容:未完成，实际上只显示了1行
     .inner{
         min-height: 1.5rem;
-        max-height: 4rem;
         color: $bgColor40;
-        overflow: hidden;
-        @extend .dontShowMoreText;
+        @include textMaxLine(3);
     }
     .times{
         display: flex;

@@ -75,6 +75,7 @@ export default defineConfig(async () => ({
           additionalData:
             `@use "@/static/style/variables/font-text.scss" as *;
              @use "@/static/style/variables/color.scss" as *;
+             @use "@/static/style/mixin/global.scss" as *;
             `
         }
       }

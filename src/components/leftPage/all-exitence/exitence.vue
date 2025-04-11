@@ -42,7 +42,7 @@ import { Exitence } from '@/class/Exitence';
 		}
 		return exitence.name
 	})
-	//显示事物的预览内容
+	//显示事物的预览内容：其对应的预览属性的值
 	let preview = computed(()=>{
 		const key = exitence.setting?.previewStatus
 		if(!key){return ""}
@@ -134,13 +134,7 @@ onUnmounted(()=>{
 	.name{
 		position: relative;
 		font-size:$midFontSize;
-		word-break: break-all;
-		overflow: hidden;                  /* 隐藏超出部分 */
-		text-overflow: ellipsis;           /* 显示省略号 */
-		display: -webkit-box;
-		-webkit-line-clamp: 2; /* 显示两行，超出的部分显示省略号 */
-		line-clamp: 2;
-		-webkit-box-orient: vertical;
+		@include textMaxLine(2);//最多显示两行
 		.manageButtons{
 			display: flex;
 			font-size: 1rem;
@@ -153,6 +147,7 @@ onUnmounted(()=>{
 	}
 	.preview{
 		display: flex;
+		@include textMaxLine(3);//最多显示3行
 	}
 	.manageButtons{
 		float: right;
