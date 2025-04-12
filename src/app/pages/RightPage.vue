@@ -1,21 +1,21 @@
 <template>
 	<div class="rightPage">
 		<!-- 右侧切换键 -->
-		<buttonVue class="rightPageSwitchButton" 
+		<Button class="rightPageSwitchButton" 
 			:style="{transform: 'rotate(' + rotateDegree + 'deg)'}"
 			name="switchRight"
 			icon="rightUp"
 			@click="clickSwitch()">
-		</buttonVue>
+		</Button>
 
 		<div class="buttons" :style="{right:rightWidth}">
-			<buttonVue 
+			<Button
 				:key="Symbol()"
 				:icon="null"
 				:name="abilitiy.name"
 				@click="abilitiy.click"
 				v-for="(abilitiy) in abilities">
-			</buttonVue>
+			</Button>
 		</div>
 	</div>
 	
@@ -24,7 +24,7 @@
 <script setup lang="ts" name="RightPage">
 import { rightMaxWidth, rightShowWidth, rotateDegree, switchRight } from '@/hooks/pages/pageChange';
 import { computed } from 'vue';
-import buttonVue from '@/components/global/Button.vue';
+import Button from '@/components/global/Button.vue';
 import { rightAbilityList } from '@/static/list/rightAbilityList';
 	// 由于右侧页面是从右往左的，因此实际设定的是该页面的right属性
 	let rightWidth = computed(()=>{

@@ -1,6 +1,6 @@
 <template>
-	<!-- 左侧页面专用的mask遮罩层 -->
-	<div class="leftPageMask"
+	<!-- 页面专用的mask遮罩层 -->
+	<div class="pageMask"
 		v-show="ifMask" 
 		:style="{
 			backgroundColor: `rgba(0, 0, 0, ${maskAlpha})`}"
@@ -9,11 +9,11 @@
 </template>
 
 <script setup lang='ts'>
-    import { ifMask,maskAlpha,clickMask } from '@/hooks/pages/masks/pageMask';
+    import { ifMask,maskAlpha,clickMask } from "@/hooks/pages/masks/pageMask.ts"
 </script>
 
 <style scoped lang='scss'>
-    .leftPageMask{
+    .pageMask{
 		position: absolute;
 		left:0;
 		top:0;
