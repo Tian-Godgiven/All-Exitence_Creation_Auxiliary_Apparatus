@@ -1,25 +1,57 @@
 <template>
-    <div class="projectPage" :style="{height:pageHeight}" projectPage>
-        <div class="projectInfo">
-            <projectInfoVue v-for="project in projectList" :project="project"></projectInfoVue>
-        </div>
-        <div class="bottom">
-            <div class="createProject" @click="createNewProject">创建新项目</div>
-        </div>
-        
+<div class="projectPage" ref="projectRef">
+    <div class="projectInfo">
+        <projectInfoVue v-for="project in projectList" :project="project"></projectInfoVue>
     </div>
+    <div class="bottom">
+        <div class="createProject" @click="createNewProject">创建新项目</div>
+    </div>
+</div>
 </template>
 
 <script setup lang='ts'>
-    import { projectShowHeight } from '@/hooks/pages/pageChange';
+    import { changeMaskAlpha, hideMask, ifShowProject, showMask } from '@/hooks/pages/pageChange';
     import { createNewProject, nowProjectList } from '@/hooks/project/project';
     import projectInfoVue from '@/components/projectPage/projectInfo.vue';
-    import { computed } from 'vue';
-    
-    const pageHeight = computed(()=>{
-        return projectShowHeight.value + "px"
-    }) 
-    
+    import { computed, useTemplateRef, watch } from 'vue';
+    import gsap from 'gsap';
+
+    const projectRef = useTemplateRef("projectRef")
+    //显示与隐藏该页面的动画
+    watch(ifShowProject,()=>{
+        if(!projectRef.value)return;
+        if(ifShowProject.value){
+            gsap.to(projectRef.value,{
+                y:"0%",
+                duration:0.5,
+                ease:"power2.inOut",
+                onStart:()=>{
+                    showMask(()=>{
+                        ifShowProject.value = false
+                    })
+                },
+                onUpdate:()=>{
+                    const yPercent = gsap.getProperty(projectRef.value, "y") as number
+                    changeMaskAlpha((1-yPercent/100) * 0.4)
+                },
+            })
+        }
+        else{
+            gsap.to(projectRef.value,{
+                y:"100%",
+                duration:0.5,
+                ease:"power2.inOut",
+                onUpdate:()=>{
+                    const yPercent = gsap.getProperty(projectRef.value, "y") as number
+                    changeMaskAlpha((1-yPercent/100) * 0.4)
+                },
+                onComplete:()=>{
+                    hideMask()
+                }
+            })
+        }
+    })
+        
     const projectList = computed(()=>{
         return nowProjectList.value
     })
@@ -30,11 +62,12 @@
     .projectPage{
         position: absolute;
         bottom: 0;
-        max-height: 80%;
+        height: 80%;
         width: 100%;
         background-color: black;
         z-index: 2;
         overflow: hidden;
+        transform: translate(0,100%);
         .bottom{
             position: absolute;
             bottom: 0;

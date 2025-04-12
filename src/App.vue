@@ -1,5 +1,8 @@
 <template>
-<div class="app">
+<div class="app" 
+    @pointerdown="touchStart"
+	  @pointermove.stop.prevent="touchMove"
+	  @pointerup="touchEnd">
     <!-- 主页面 -->
     <MainPage/>
     <!-- 项目管理页面 -->
@@ -22,6 +25,7 @@
 import { initApp } from "./hooks/app/app";
 import { initProject } from "./hooks/project/project";
 import { startAutoSave } from "./hooks/project/saveProject";
+import {touchStart,touchMove,touchEnd } from '@/hooks/pages/mainPage/mainTouch'
 import MainPage from "@/app/pages/MainPage.vue"
 import ProjectPage from "@/app/pages/ProjectPage.vue";
 import LeftPage from "@/app/pages/LeftPage.vue";
@@ -50,6 +54,8 @@ startAutoSave()
     }
   }
   .app{
+    position: relative;
+    overflow: hidden;
     width: 100vw;
     height: 100vh;
     z-index: 0;

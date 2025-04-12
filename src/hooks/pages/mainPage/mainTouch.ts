@@ -13,45 +13,42 @@ let distantX:number
 let ifVertical = false
 let ifHorizontal = false
 // 是否已经开始了滑动
-let startMove = true
+let startMove = false
 // 根据屏幕宽度控制滑动速度和阈值 
 const rpxShow = managePx(200) // 滑动显示阈值
 const rpxHide = managePx(300) // 滑动隐藏阈值
 const rpxSpeed = managePx(2) // 滑动速度阈值
 
 // 滑动事件本身
-export const touchStart = (e:any)=>{
+export const touchStart = (e:PointerEvent)=>{
 	if(!changePage.value){
 		return false
 	}
-	startX = e.touches[0].clientX
-	startY = e.touches[0].clientY
+	startMove = true
+	startX = e.clientX
+	startY = e.clientY
 	moveStartX = startX
 	touchStartTime = Date.now()
 }
 // 滑动行动中
-export function touchMove(e:any){
-	if(!changePage.value){
-		return false
-	}
+export function touchMove(e:PointerEvent){
+	if(!changePage.value)return false
+	if(!startMove)return false
 	// 若为竖直滑动，则不会显示页面
-	if(ifVertical){
-		return false 
-	}
+	if(ifVertical)return false
+	
 	// 否则禁止上下滑动
 	e.preventDefault()
-	
-	if(startMove){
-		hideInputSupport()
-		startMove = false
-	}
+
+	//开始滑动时，隐藏输入辅助栏
+	hideInputSupport()
 	
 	// 移动距离
-	let movingX = moveStartX - e.touches[0].clientX
-	moveStartX = e.touches[0].clientX
-	moveStartY = e.touches[0].clientY
+	let movingX = moveStartX - e.clientX
+	moveStartX = e.clientX
+	moveStartY = e.clientY
 	distantX = startX - moveStartX
-	
+
 	const angle = getLineAngle(startX,startY,moveStartX,moveStartY)
 	// 滑动角度在30~150,210~330为竖直方向滑动
 	if(!ifHorizontal && ((angle > 20 && angle < 160) || (angle > 200 && angle < 340))){
@@ -85,11 +82,7 @@ export function touchMove(e:any){
 }
 // 滑动结束时
 export function touchEnd(){
-	if(!changePage.value){
-		return false
-	}
-	
-	startMove = true
+	if(!changePage.value)return false
 	let touchEndTime = Date.now()
 	let moveDistant = distantX
 	let moveTime = touchEndTime - touchStartTime
@@ -138,6 +131,7 @@ export function touchEnd(){
 			hidePage("left")
 		}
 	}
+	startMove = false
 }
 
 // 获取角度判断滑动方向

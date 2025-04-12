@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang='ts'>
-    import { ifMask,maskAlpha,clickMask } from "@/hooks/pages/masks/pageMask.ts"
+    import { ifMask,maskAlpha,clickMask } from "@/hooks/pages/pageChange.ts"
 </script>
 
 <style scoped lang='scss'>

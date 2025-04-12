@@ -1,6 +1,5 @@
 import { ref } from 'vue';
 import managePx from "../../api/managePx"
-import { changeMaskAlpha, hideMask, ifMask, maskAlphaMax, showMask } from './masks/pageMask';
 
 // 是否允许切换左右页面事件，在弹窗出现时阻止滑动事件
 export const changePage = ref(true)
@@ -15,32 +14,18 @@ export function disableChangePage(){
 export let leftShowWidth = ref(0) //左侧显示的宽度，页面本身的宽度固定
 export const leftMaxWidth = managePx(650) //左侧页面最大宽度
 export let leftShowing = false
+// 显示左侧页面
+export function showLeft(){
+	showPage("left")
+	changePageMask("left")
+}
 
 // 控制右侧页面显示
 export let rightShowWidth = ref(0)
 export const rightMaxWidth = managePx(150)
 export let rightShowing = false
-export const rotateDegree = ref(0) //切换按钮的旋转角度
-
-// 控制项目页面显示
-export let projectShowHeight = ref(0)
-const projectMaxHeight = (window.innerHeight * 0.8)
-export let projectShowing = false
-
-// 切换项目页面的显示
-export function switchProjectPage(){
-	if(projectShowing){
-		hidePage("project")
-	}
-	else{
-		showPage("project")
-		changePageMask('project')
-	}
-}
-
 // 切换右侧页面显示
 export function switchRight(){
-	rotateDegree.value += 180
 	if(rightShowing){
 		hidePage("right")
 	}
@@ -48,11 +33,27 @@ export function switchRight(){
 		showPage("right")
 	}
 }
-// 显示左侧页面
-export function showLeft(){
-	showPage("left")
-	changePageMask("left")
+
+// 控制项目页面显示
+export const ifShowProject = ref(false)
+export function showProjectPage(){
+	ifShowProject.value = true
 }
+export function hideProjectPage(){
+	ifShowProject.value = false
+}
+// 切换项目页面的显示
+export function switchProjectPage(){
+	if(!ifShowProject.value){
+		showProjectPage()
+	}
+	else{
+		hideProjectPage()
+	}
+}
+
+
+
 
 // 隐藏页面
 const hideAnimateTime = 15
@@ -71,10 +72,8 @@ export function hidePage(pageName:'left'|'right'|'project') {
 			var maxValue = rightMaxWidth
 			break;
 		case 'project':
-			var changeTarget = projectShowHeight
-			var maxValue = projectMaxHeight
-			var whileAnimating = ()=>changePageMask('project')
-			break;
+			hideProjectPage()
+			return;
 	}
 	// 动画运行速度
 	const speed = Math.abs(maxValue) / hideAnimateTime
@@ -93,8 +92,6 @@ export function hidePage(pageName:'left'|'right'|'project') {
 		}
 	};
 	reduce();
-	
-	
 }
 // 显示页面
 export function showPage(pageName:'left'|'right'|'project') {
@@ -111,10 +108,8 @@ export function showPage(pageName:'left'|'right'|'project') {
 			var maxValue = rightMaxWidth
 			break;
 		case 'project':
-			var changeTarget = projectShowHeight
-			var maxValue = projectMaxHeight
-			var whileAnimating = ()=>changePageMask('project')
-			break;
+			showProjectPage()
+			return;
 	}
 
 	// 每帧移动速度
@@ -136,7 +131,7 @@ export function showPage(pageName:'left'|'right'|'project') {
 
 // 控制页面遮罩层的显示与透明度
 export function changePageMask(pageName:"left"|"project"){
-	const persent = pageName == "left"? (leftShowWidth.value/leftMaxWidth) : (projectShowHeight.value/projectMaxHeight)
+	const persent = (leftShowWidth.value/leftMaxWidth)
 	//显示遮罩层，并设置点击事件为点击时隐藏
 	if(!ifMask.value){
 		showMask(()=>{
@@ -150,4 +145,23 @@ export function changePageMask(pageName:"left"|"project"){
 	changeMaskAlpha(maskAlpha)
 }
 
+export let ifMask = ref(false)
+export let maskAlpha = ref(0.6)
+export const maskAlphaMax = 0.6
 
+let clickEvent:()=>void
+
+export function showMask(func:()=>void){
+	ifMask.value = true
+	clickEvent = func
+}
+export function hideMask(){
+	ifMask.value = false
+}
+export function changeMaskAlpha(newAlpha:number){
+	newAlpha.toFixed(2)
+	maskAlpha.value = newAlpha
+}
+export function clickMask(){
+	clickEvent()
+}

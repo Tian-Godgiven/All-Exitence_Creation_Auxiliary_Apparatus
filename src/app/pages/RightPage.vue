@@ -1,13 +1,5 @@
 <template>
 	<div class="rightPage">
-		<!-- 右侧切换键 -->
-		<Button class="rightPageSwitchButton" 
-			:style="{transform: 'rotate(' + rotateDegree + 'deg)'}"
-			name="switchRight"
-			icon="rightUp"
-			@click="clickSwitch()">
-		</Button>
-
 		<div class="buttons" :style="{right:rightWidth}">
 			<Button
 				:key="Symbol()"
@@ -22,7 +14,7 @@
 </template>
 
 <script setup lang="ts" name="RightPage">
-import { rightMaxWidth, rightShowWidth, rotateDegree, switchRight } from '@/hooks/pages/pageChange';
+import { rightMaxWidth, rightShowWidth} from '@/hooks/pages/pageChange';
 import { computed } from 'vue';
 import Button from '@/components/global/Button.vue';
 import { rightAbilityList } from '@/static/list/rightAbilityList';
@@ -33,10 +25,6 @@ import { rightAbilityList } from '@/static/list/rightAbilityList';
 	
 	//功能按键列表
 	let abilities = rightAbilityList
-	//点击切换右侧，同时也会旋转按钮
-	function clickSwitch(){
-		switchRight()
-	}
 	
 </script>
 
@@ -80,10 +68,5 @@ import { rightAbilityList } from '@/static/list/rightAbilityList';
 		flex-shrink: 0
 	}
 	
-	.rightPageSwitchButton{
-		@extend .button;
-		position: relative;
-		z-index: 2;
-		transition: transform 0.5s ease;
-	}
+	
 </style>

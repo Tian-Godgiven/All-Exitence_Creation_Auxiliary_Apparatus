@@ -1,9 +1,5 @@
 <template>
-	<!-- 弹窗影响滑动事件 -->
-<div class="mainPage" 
-	@touchstart="touchStart" 
-	@touchmove="touchMove" 
-	@touchend="touchEnd">
+<div class="mainPage" >
 		
 	<!-- 首页顶部 -->
 	<div class="titleBar">
@@ -23,6 +19,14 @@
 		<showArticleOnMainVue :article="showOnMain.target" v-else-if="showOnMain.type == 'article'"/>
 		<showExitenceOnMainVue :exitence="showOnMain.target" v-else-if="showOnMain.type == 'exitence'"/>
 	</div>
+
+	<!-- 快捷键 -->
+	<Button class="switchButton" 
+		:style="{transform: 'rotate(' + rotateDegree + 'deg)'}"
+		name="快捷键"
+		icon="rightUp"
+		@click="switchButton">
+	</Button>
 	
 	<!-- 输入辅助栏 -->
 	<inputSupportVue/>
@@ -32,20 +36,19 @@
 </template>
 
 <script setup lang="ts">
-import { showPopUp } from '@/hooks/pages/popUp'
-import { showLeft, switchProjectPage} from '@/hooks/pages/pageChange';
-import {touchStart,touchMove,touchEnd } from '@/hooks/pages/mainPage/mainTouch'
-import Button from '@/components/global/Button.vue';
-import inputSupportVue from '@/components/mainPage/inputSupport.vue';
-import inputSuggestionVue from '@/components/other/inputSuggestion.vue';
-import showInfoOnMainVue from '@/components/mainPage/showInfoOnMain.vue';
-import showArticleOnMainVue from '@/components/mainPage/showArticleOnMain.vue';
-import showExitenceOnMainVue from '@/components/mainPage/showExitenceOnMain.vue';
-import { showOnMain } from '@/hooks/pages/mainPage/showOnMain';
-import { computed, ref, watch } from 'vue';
-import { nowProjectInfo } from '@/hooks/project/projectData';
-import { saveAll } from '@/hooks/project/saveProject';
-import { Icon } from '@/static/list/iconList';
+	import { showPopUp } from '@/hooks/pages/popUp'
+	import { showLeft, switchProjectPage} from '@/hooks/pages/pageChange';
+	import Button from '@/components/global/Button.vue';
+	import inputSupportVue from '@/components/mainPage/inputSupport.vue';
+	import inputSuggestionVue from '@/components/other/inputSuggestion.vue';
+	import showInfoOnMainVue from '@/components/mainPage/showInfoOnMain.vue';
+	import showArticleOnMainVue from '@/components/mainPage/showArticleOnMain.vue';
+	import showExitenceOnMainVue from '@/components/mainPage/showExitenceOnMain.vue';
+	import { showOnMain } from '@/hooks/pages/mainPage/showOnMain';
+	import { computed, ref, watch } from 'vue';
+	import { nowProjectInfo } from '@/hooks/project/projectData';
+	import { saveAll } from '@/hooks/project/saveProject';
+	import { Icon } from '@/static/list/iconList';
 
 // 功能按键
 	const buttons:{icon:Icon,name:string,click:()=>any}[] = [{
@@ -84,45 +87,70 @@ import { Icon } from '@/static/list/iconList';
 	},{
 		deep:false
 	})
+//快捷键
+	const rotateDegree = ref(0)//旋转角度
+	function switchButton(){
+		//旋转按键
+		rotateDegree.value += 180
+		//功能面板：未完成
+	}
 
 </script>
 
 <style lang="scss" scoped>
-	.mainPage{
+.mainPage{
+	width: 100%;
+	height: 100%;
+	// 标题栏
+	.titleBar{
+		position: relative;
 		width: 100%;
-		height: 100%;
-		// 标题栏
-		.titleBar{
-			position: relative;
-			width: 100%;
-			height: 110px;
+		height: 110px;
+		display: flex;
+		box-shadow: rgb(114, 114, 114) 0 4px 8px;
+		z-index: 1;
+		.leftPageShowButton{
+			width: 90px;
+		}
+		.projectName{
+			font-size: 1.1rem;
 			display: flex;
-			box-shadow: rgb(114, 114, 114) 0 4px 8px;
-			z-index: 1;
-			.leftPageShowButton{
-				width: 90px;
-			}
-			.projectName{
-				font-size: 1.1rem;
-				display: flex;
-				text-align: center;
-				align-items: center;
-				width: 360px;
-			}
-			.buttons{
-				width: 300px;
-				display: flex;
-			}
+			text-align: center;
+			align-items: center;
+			width: 360px;
 		}
-		.mainInner{
-			width: calc(100% - 50px);
-			height: calc(100% - 110px);
-			background-color: $bgColor;
-			position: relative;
-			margin: 0px 25px;
-			overflow: hidden;
-			z-index: 0;
+		.buttons{
+			width: 300px;
+			display: flex;
 		}
-		
 	}
+	// 内容
+	.mainInner{
+		width: calc(100% - 50px);
+		height: calc(100% - 110px);
+		background-color: $bgColor;
+		position: relative;
+		margin: 0px 25px;
+		overflow: hidden;
+		z-index: 0;
+	}
+	// 快捷键
+	.switchButton{
+		position: absolute;
+		right: 9vw;
+		top:75vh;
+		pointer-events: all;
+		height: 110px;
+		width: 110px;
+		border-radius: 50%;
+		background-color: $rightButtonColor;
+		box-shadow: 0px 3px 6px 1px rgb(99, 99, 99);
+		margin:15px;
+		margin-top: 20px;
+		z-index: 2;
+		flex-shrink: 0;
+		transition: transform 0.5s ease;
+	}
+	
+}
 </style>
