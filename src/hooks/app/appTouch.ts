@@ -12,6 +12,8 @@ let distantX:number
 // 判断是否为竖向/横向滑动
 let ifVertical = false
 let ifHorizontal = false
+// 当前正在执行哪个方向的滑动
+let movingDirection:"right"|"left"|null = null
 // 是否已经开始了滑动
 let startMove = false
 // 根据屏幕宽度控制滑动速度和阈值 
@@ -45,6 +47,8 @@ export function touchMove(e:PointerEvent){
 	
 	// 移动距离
 	let movingX = Math.abs(moveStartX - e.clientX)
+	let direction:"right"|"left" = (moveStartX - e.clientX)>0?"right":"left"
+
 	moveStartX = e.clientX
 	moveStartY = e.clientY
 	distantX = startX - moveStartX
@@ -60,9 +64,9 @@ export function touchMove(e:PointerEvent){
 		ifHorizontal = true
 	}
 	// 显示右侧页面/隐藏左侧页面
-	if(distantX > 0){
-		// 如果此时左侧界面已显示，逐渐隐藏左侧页面
-		if(leftShowing){
+	if(direction == "right"){
+		// 如果当前在移动左侧页面，或者左侧页面显示，则隐藏左侧页面
+		if(movingDirection == "left" || leftShowing){
 			leftShowWidth.value = Math.max(leftShowWidth.value - movingX, 0);
 			changePageMaskWithPage("left")
 		}
@@ -70,12 +74,14 @@ export function touchMove(e:PointerEvent){
 		else if(!rightShowing){
 			rightShowWidth.value = Math.min(rightShowWidth.value + movingX, rightMaxWidth);
 			changePageMaskWithPage("right")
+			//正在逐渐显示右侧页面
+			movingDirection = "right"
 		}
 	}
 	// [向右滑] aka [左滑]
-	else if(distantX < 0){
+	else if(direction=="left"){
 		//如果右侧页面已显示，隐藏右侧页面
-		if(rightShowing){
+		if(rightShowing || movingDirection == "right"){
 			rightShowWidth.value = Math.min(rightShowWidth.value - movingX, rightMaxWidth);
 			changePageMaskWithPage("right")
 		}
@@ -84,6 +90,7 @@ export function touchMove(e:PointerEvent){
 			leftShowWidth.value = Math.min(leftShowWidth.value + movingX, leftMaxWidth)
 			//逐渐显示遮罩层
 			changePageMaskWithPage("left")
+			movingDirection = "left"
 		}
 	}
 }
@@ -100,6 +107,7 @@ export function touchEnd(){
 	distantX = 0
 	ifVertical = false
 	ifHorizontal = false
+	movingDirection = null
 	let slideSpeed = x / moveTime
 	// [向左滑] aka [右滑]
 	if(direction=="right"){

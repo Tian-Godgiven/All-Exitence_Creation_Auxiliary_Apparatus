@@ -21,15 +21,18 @@ import AbilityGroup from '@/components/rightPage/AbilityGroup.vue';
 </script>
 
 <style lang="scss" scoped>
-	// 右侧页面
-	.rightPage{
-		position: absolute;
-		background-color: $bgColor;
-		right: 0;
-		top:0;
-		width:70vw;
-		height: 100%;
-		z-index: 5;
-		overflow: hidden;
+// 右侧页面
+.rightPage{
+	position: absolute;
+	background-color: $bgColor;
+	right: 0;
+	top:0;
+	width:70vw;
+	height: 100%;
+	z-index: 5;
+	overflow: hidden;
+	.title{
+		font-size: 1.5rem;
 	}
+}
 </style>

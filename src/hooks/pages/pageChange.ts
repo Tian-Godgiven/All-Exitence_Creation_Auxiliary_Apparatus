@@ -13,7 +13,7 @@ export function disableChangePage(){
 // 控制左侧页面显示
 export let leftShowWidth = ref(0) //左侧显示的宽度，页面本身的宽度固定
 export const leftMaxWidth = managePx(650) //左侧页面最大宽度
-export let leftShowing = false
+export let leftShowing = false//左侧页面是否完全显示
 // 显示左侧页面
 export function showLeft(){
 	showPage("left")

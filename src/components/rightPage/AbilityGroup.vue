@@ -4,7 +4,6 @@
     <div class="container">
         <Ability v-for="ability in list" :ability></Ability>
     </div>
-    
 </div>
 </template>
 
