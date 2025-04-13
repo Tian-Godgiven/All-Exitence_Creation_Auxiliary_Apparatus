@@ -70,6 +70,7 @@ export function hidePage(pageName:'left'|'right'|'project') {
 			rightShowing = false
 			var changeTarget = rightShowWidth
 			var maxValue = rightMaxWidth
+			var whileAnimating = ()=>changePageMaskWithPage('right');
 			break;
 		case 'project':
 			hideProjectPage()
@@ -106,6 +107,7 @@ export function showPage(pageName:'left'|'right'|'project') {
 			rightShowing = true
 			var changeTarget = rightShowWidth
 			var maxValue = rightMaxWidth
+			var whileAnimating = ()=>changePageMaskWithPage('right');
 			break;
 		case 'project':
 			showProjectPage()

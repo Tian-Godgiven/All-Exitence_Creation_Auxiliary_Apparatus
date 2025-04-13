@@ -28,7 +28,8 @@ import AbilityGroup from '@/components/rightPage/AbilityGroup.vue';
 		right: 0;
 		top:0;
 		width:70vw;
-		z-index: 1;
+		height: 100%;
+		z-index: 5;
 		overflow: hidden;
 	}
 </style>

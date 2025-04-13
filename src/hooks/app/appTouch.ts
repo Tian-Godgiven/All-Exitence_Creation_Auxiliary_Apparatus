@@ -16,7 +16,7 @@ let ifHorizontal = false
 let startMove = false
 // 根据屏幕宽度控制滑动速度和阈值 
 const rpxShow = managePx(200) // 滑动显示阈值
-const rpxHide = managePx(300) // 滑动隐藏阈值
+const rpxHide = managePx(200) // 滑动隐藏阈值
 const rpxSpeed = managePx(2) // 滑动速度阈值
 
 // 滑动开始
@@ -69,6 +69,7 @@ export function touchMove(e:PointerEvent){
 		// 如果此时左侧页面未显示，并且右侧界面未显示，则逐渐显示右侧页面
 		else if(!rightShowing){
 			rightShowWidth.value = Math.min(rightShowWidth.value + movingX, rightMaxWidth);
+			changePageMaskWithPage("right")
 		}
 	}
 	// [向右滑] aka [左滑]
@@ -76,9 +77,10 @@ export function touchMove(e:PointerEvent){
 		//如果右侧页面已显示，隐藏右侧页面
 		if(rightShowing){
 			rightShowWidth.value = Math.min(rightShowWidth.value - movingX, rightMaxWidth);
+			changePageMaskWithPage("right")
 		}
 		// 如果此时左侧界面未显示，逐渐显示左侧页面
-		if(!leftShowing){
+		else if(!leftShowing){
 			leftShowWidth.value = Math.min(leftShowWidth.value + movingX, leftMaxWidth)
 			//逐渐显示遮罩层
 			changePageMaskWithPage("left")
@@ -89,7 +91,8 @@ export function touchMove(e:PointerEvent){
 export function touchEnd(){
 	if(!changePage.value)return false
 	let touchEndTime = Date.now()
-	let moveDistant = distantX
+	let direction = distantX>0?"right":"left" //判读方向
+	const x = Math.abs(distantX)
 	let moveTime = touchEndTime - touchStartTime
 	
 	// 数据初始化
@@ -97,25 +100,24 @@ export function touchEnd(){
 	distantX = 0
 	ifVertical = false
 	ifHorizontal = false
-	let slideSpeed = Math.abs(moveDistant) / moveTime
+	let slideSpeed = x / moveTime
 	// [向左滑] aka [右滑]
-	if(moveDistant > 0){
-		//如果左侧界面显示，
+	if(direction=="right"){
+		//如果左侧界面显示
 		if(leftShowing){
 			// 并且滑动距离达到阈值 或 滑动速度达到阈值，则令左侧界面隐藏
-			if(Math.abs(moveDistant) > rpxHide || slideSpeed > rpxSpeed){
+			if(x > rpxHide || slideSpeed > rpxSpeed){
 				hidePage("left")
 			}
 			//否则隐藏失败，令隐藏的部分自动显示
 			else{
 				showPage("left")
 			}
-			
 		}
 		//如果左侧页面未显示，并且右侧页面未显示
 		else if(!rightShowing){
 			//滑动范围达到阈值或滑动速度达到阈值，则令右侧显示
-			if(moveDistant > rightMaxWidth/2 || slideSpeed > rpxSpeed){
+			if(x > rpxShow || slideSpeed > rpxSpeed){
 				showPage("right")
 			}
 			//如果显示失败，令显示的部分自动隐藏
@@ -125,15 +127,29 @@ export function touchEnd(){
 		}
 	}
 	// [向右滑] aka [左滑]
-	else if(moveDistant < 0){
-		// 如果左侧页面未显示 并且 (滑动幅度大于100rpx 或 滑动速度大于10px/ms)
-		if(!leftShowing && (Math.abs(moveDistant) > rpxShow || slideSpeed > rpxSpeed)){
-			//则令左侧页面显示
-			showPage("left")
+	else if(direction=="left"){
+		//如果右侧界面显示,令其隐藏
+		if(rightShowing){
+			// 并且滑动距离达到阈值 或 滑动速度达到阈值，则令右侧界面隐藏
+			if(x > rpxHide || slideSpeed > rpxSpeed){
+				hidePage("right")
+			}
+			//否则隐藏失败，令隐藏的部分自动显示
+			else{
+				showPage("right")
+			}
 		}
-		// 否则打开失败，令其隐藏
-		else{
-			hidePage("left")
+		//如果右侧页面未显示，并且左侧页面未显示
+		else if(!leftShowing){
+			//滑动范围达到阈值或滑动速度达到阈值，则令左侧显示
+			//注意这里滑动范围阈值较低
+			if(x > rpxShow || slideSpeed > rpxSpeed){
+				showPage("left")
+			}
+			//如果显示失败，令显示的部分自动隐藏
+			else{
+				hidePage("left")
+			}
 		}
 	}
 	startMove = false

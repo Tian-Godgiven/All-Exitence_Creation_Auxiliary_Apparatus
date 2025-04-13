@@ -1,37 +1,27 @@
 <template>
-<div>
-	<div class="leftPage" :style="{left:leftWidth}">
-		<div class="titleBar">
-			<div class="titleButtons">
-				<div class="button" @click="switchManage">管理</div>
-				<div class="button">搜索</div>
-				<div class="button" @click="switchExpending">展开收起</div>
-				<div class="button" @click="createNew">新建</div>
-				<div class="moreButton" @click="showMoreButton">
-					显示更多
-					<div v-show="showMore">
-						<div>导入导出</div>
-						<div>切换项目</div>
-					</div>
+<div class="leftPage" :style="{left:leftWidth}">
+	<div class="titleBar">
+		<div class="titleButtons">
+			<div class="button" @click="switchManage">管理</div>
+			<div class="button">搜索</div>
+			<div class="button" @click="switchExpending">展开收起</div>
+			<div class="button" @click="createNew">新建</div>
+			<div class="moreButton" @click="showMoreButton">
+				显示更多
+				<div v-show="showMore">
+					<div>导入导出</div>
+					<div>切换项目</div>
 				</div>
 			</div>
-			
-			<div class="titleName manageName" @click="switchManage" v-show="manageMode">结束管理</div>
-			<div class="titleName" @click="changeModel" v-show="!manageMode">{{model?"万物":"文本"}}</div>
-			
 		</div>
-
-		<div class="inner">
-			<!-- 万物区 -->
-			<allExitenceVue v-show="model"></allExitenceVue>
-			<!-- 文本区 -->
-			<allArticlesVue v-show="!model"></allArticlesVue>
-			<!-- 底部填充区 -->
-			<div class="scrollBottom"></div>
-		</div>
-		</div>
-
-
+		<div class="titleName manageName" @click="switchManage" v-show="manageMode">结束管理</div>
+		<div class="titleName" @click="changeModel" v-show="!manageMode">{{model?"万物":"文本"}}</div>
+	</div>
+	<div class="inner">
+		<allExitenceVue v-show="model"></allExitenceVue>
+		<allArticlesVue v-show="!model"></allArticlesVue>
+		<div class="scrollBottom"></div>
+	</div>
 </div>
 </template>
 
