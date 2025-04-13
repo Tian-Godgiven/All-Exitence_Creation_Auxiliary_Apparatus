@@ -1,9 +1,7 @@
 <template>
     <div 
-        @mousedown="touchStart"
-        @touchstart="touchStart" 
-        @mouseup="touchEnd"
-        @touchend="touchEnd">
+        @pointerdown="touchStart"
+        @pointerup="touchEnd" >
         <slot></slot>
     </div>
 </template>

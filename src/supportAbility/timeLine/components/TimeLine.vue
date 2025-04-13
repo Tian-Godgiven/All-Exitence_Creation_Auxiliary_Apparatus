@@ -1,8 +1,8 @@
 <template>
 <div class="timeLine"
-        @mousedown="dragStart" 
-        @mousemove="dragLine" 
-        @mouseup="dragEnd">
+        @pointerdown="dragStart" 
+        @pointermove="dragLine" 
+        @pointerup="dragEnd">
     <div class="title">
         <div class="name">{{ timeLine.name??"未命名" }}</div>
         <div class="ability" v-if="!manageMode">
@@ -186,26 +186,15 @@
         return length
     })
     
-    function dragStart(e:MouseEvent|TouchEvent){
+    function dragStart(e:PointerEvent){
         isDragging = true
         startLeft = timeLineLeft.value
-        if (e instanceof MouseEvent) {
-            startX = e.pageX;  // 鼠标事件
-        } 
-        else{
-            startX = e.touches[0].pageX;  // 触摸事件
-        }
+        startX = e.pageX;
     }
     //拖动时间轴
-    function dragLine(e:MouseEvent|TouchEvent){
+    function dragLine(e:PointerEvent){
         if(!isDragging)return;
-        let nowX
-        if (e instanceof MouseEvent) {
-            nowX = e.pageX;  // 鼠标事件
-        } 
-        else{
-            nowX = e.touches[0].pageX;  // 触摸事件
-        }
+        let nowX = e.pageX;
         const moveX = nowX - startX; // 计算鼠标移动的距离
         timeLineLeft.value = startLeft + moveX; // 更新时间线位置
     }
