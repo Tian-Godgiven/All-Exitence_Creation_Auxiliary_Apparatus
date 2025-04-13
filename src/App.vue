@@ -25,7 +25,7 @@
 import { initApp } from "./hooks/app/app";
 import { initProject } from "./hooks/project/project";
 import { startAutoSave } from "./hooks/project/saveProject";
-import {touchStart,touchMove,touchEnd } from '@/hooks/pages/mainPage/mainTouch'
+import {touchStart,touchMove,touchEnd } from '@/hooks/app/appTouch'
 import MainPage from "@/app/pages/MainPage.vue"
 import ProjectPage from "@/app/pages/ProjectPage.vue";
 import LeftPage from "@/app/pages/LeftPage.vue";

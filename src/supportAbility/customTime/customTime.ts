@@ -51,7 +51,7 @@ async function initCustomTime(){
         "name":"自定义时间",
         "click":()=>showCustomTimeManager(),
         "iconName":"customTime"
-    })
+    },"客制化")
 }
 
 //保存

@@ -1,6 +1,6 @@
 import managePx from "@/api/managePx"
-import { hideInputSupport } from "../../inputSupport/inputSupport"
-import { changePage, hidePage, leftMaxWidth, changePageMask, leftShowing, leftShowWidth, rightMaxWidth, rightShowing, rightShowWidth, showPage } from "../pageChange"
+import { hideInputSupport } from "@/hooks/inputSupport/inputSupport"
+import { changePage, hidePage, leftMaxWidth, leftShowing, leftShowWidth, rightMaxWidth, rightShowing, rightShowWidth, showPage, changePageMaskWithPage } from "@/hooks/pages/pageChange"
 
 // 滑动相关数据
 let touchStartTime = 0
@@ -19,7 +19,7 @@ const rpxShow = managePx(200) // 滑动显示阈值
 const rpxHide = managePx(300) // 滑动隐藏阈值
 const rpxSpeed = managePx(2) // 滑动速度阈值
 
-// 滑动事件本身
+// 滑动开始
 export const touchStart = (e:PointerEvent)=>{
 	if(!changePage.value){
 		return false
@@ -44,11 +44,12 @@ export function touchMove(e:PointerEvent){
 	hideInputSupport()
 	
 	// 移动距离
-	let movingX = moveStartX - e.clientX
+	let movingX = Math.abs(moveStartX - e.clientX)
 	moveStartX = e.clientX
 	moveStartY = e.clientY
 	distantX = startX - moveStartX
 
+	//计算滑动角度
 	const angle = getLineAngle(startX,startY,moveStartX,moveStartY)
 	// 滑动角度在30~150,210~330为竖直方向滑动
 	if(!ifHorizontal && ((angle > 20 && angle < 160) || (angle > 200 && angle < 340))){
@@ -58,12 +59,12 @@ export function touchMove(e:PointerEvent){
 	else{
 		ifHorizontal = true
 	}
-	// [向左滑] aka [右滑]
+	// 显示右侧页面/隐藏左侧页面
 	if(distantX > 0){
 		// 如果此时左侧界面已显示，逐渐隐藏左侧页面
 		if(leftShowing){
 			leftShowWidth.value = Math.max(leftShowWidth.value - movingX, 0);
-			changePageMask("left")
+			changePageMaskWithPage("left")
 		}
 		// 如果此时左侧页面未显示，并且右侧界面未显示，则逐渐显示右侧页面
 		else if(!rightShowing){
@@ -72,11 +73,15 @@ export function touchMove(e:PointerEvent){
 	}
 	// [向右滑] aka [左滑]
 	else if(distantX < 0){
+		//如果右侧页面已显示，隐藏右侧页面
+		if(rightShowing){
+			rightShowWidth.value = Math.min(rightShowWidth.value - movingX, rightMaxWidth);
+		}
 		// 如果此时左侧界面未显示，逐渐显示左侧页面
 		if(!leftShowing){
-			leftShowWidth.value = Math.min(leftShowWidth.value - movingX, leftMaxWidth)
+			leftShowWidth.value = Math.min(leftShowWidth.value + movingX, leftMaxWidth)
 			//逐渐显示遮罩层
-			changePageMask("left")
+			changePageMaskWithPage("left")
 		}
 	}
 }

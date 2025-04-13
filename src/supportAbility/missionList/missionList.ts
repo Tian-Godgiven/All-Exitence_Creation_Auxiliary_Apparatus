@@ -74,7 +74,7 @@ export async function initMissionList(){
         name:"任务列表",
         click:()=>showMissionListPopUp(),
         iconName:"missionList"
-    })
+    },"创作计划")
 }
 
 //保存任务列表

@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang='ts'>
-    import { changeMaskAlpha, hideMask, ifShowProject, showMask } from '@/hooks/pages/pageChange';
+    import { changePageMask, ifShowProject} from '@/hooks/pages/pageChange';
     import { createNewProject, nowProjectList } from '@/hooks/project/project';
     import projectInfoVue from '@/components/projectPage/projectInfo.vue';
     import { computed, useTemplateRef, watch } from 'vue';
@@ -25,14 +25,11 @@
                 y:"0%",
                 duration:0.5,
                 ease:"power2.inOut",
-                onStart:()=>{
-                    showMask(()=>{
-                        ifShowProject.value = false
-                    })
-                },
                 onUpdate:()=>{
                     const yPercent = gsap.getProperty(projectRef.value, "y") as number
-                    changeMaskAlpha((1-yPercent/100) * 0.4)
+                    changePageMask((1-yPercent/100),()=>{
+                        ifShowProject.value = false
+                    })
                 },
             })
         }
@@ -43,11 +40,8 @@
                 ease:"power2.inOut",
                 onUpdate:()=>{
                     const yPercent = gsap.getProperty(projectRef.value, "y") as number
-                    changeMaskAlpha((1-yPercent/100) * 0.4)
+                    changePageMask((1-yPercent/100))
                 },
-                onComplete:()=>{
-                    hideMask()
-                }
             })
         }
     })

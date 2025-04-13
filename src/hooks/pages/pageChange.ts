@@ -17,12 +17,12 @@ export let leftShowing = false
 // 显示左侧页面
 export function showLeft(){
 	showPage("left")
-	changePageMask("left")
+	changePageMaskWithPage("left")
 }
 
 // 控制右侧页面显示
 export let rightShowWidth = ref(0)
-export const rightMaxWidth = managePx(150)
+export const rightMaxWidth = window.innerWidth * 0.7
 export let rightShowing = false
 // 切换右侧页面显示
 export function switchRight(){
@@ -64,7 +64,7 @@ export function hidePage(pageName:'left'|'right'|'project') {
 			leftShowing = false
 			var changeTarget = leftShowWidth
 			var maxValue = leftMaxWidth
-			var whileAnimating = ()=>changePageMask('left');
+			var whileAnimating = ()=>changePageMaskWithPage('left');
 			break;
 		case 'right':
 			rightShowing = false
@@ -100,7 +100,7 @@ export function showPage(pageName:'left'|'right'|'project') {
 			leftShowing = true
 			var changeTarget = leftShowWidth
 			var maxValue = leftMaxWidth
-			var whileAnimating = ()=>changePageMask('left');
+			var whileAnimating = ()=>changePageMaskWithPage('left');
 			break;
 		case 'right':
 			rightShowing = true
@@ -129,18 +129,23 @@ export function showPage(pageName:'left'|'right'|'project') {
 	reduce();
 }
 
+// 控制左右两侧页面显示时的遮罩层透明度变化
+export function changePageMaskWithPage(pageName:"left"|"right"){
+	const clickMask = ()=>hidePage(pageName)
+	const percent = pageName=='left'?leftShowWidth.value/leftMaxWidth:rightShowWidth.value/rightMaxWidth
+	changePageMask(percent,clickMask)
+}
+
 // 控制页面遮罩层的显示与透明度
-export function changePageMask(pageName:"left"|"project"){
-	const persent = (leftShowWidth.value/leftMaxWidth)
+export function changePageMask(maskAlphaPercent:number,clickMask?:()=>void){
 	//显示遮罩层，并设置点击事件为点击时隐藏
-	if(!ifMask.value){
+	if(!ifMask.value && clickMask){
 		showMask(()=>{
-			// 点击遮罩层隐藏指定页面
-			hidePage(pageName)
+			clickMask()
 		})
 	}
 	//遮罩层透明度按比例变化
-	const maskAlpha = maskAlphaMax * persent
+	const maskAlpha = maskAlphaMax * maskAlphaPercent
 	//同时逐渐改变遮罩层透明度
 	changeMaskAlpha(maskAlpha)
 }
@@ -161,6 +166,9 @@ export function hideMask(){
 export function changeMaskAlpha(newAlpha:number){
 	newAlpha.toFixed(2)
 	maskAlpha.value = newAlpha
+	if(newAlpha==0){
+		hideMask()
+	}
 }
 export function clickMask(){
 	clickEvent()

@@ -56,7 +56,7 @@ function initQuickDraft(){
         "iconName":"quickDraft",
         "click":()=>showQuickDraftPopUp(),
         "name":"暂记版"
-    })
+    },"灵感迸发")
 }
 //保存 
 async function saveQuickDraft(){

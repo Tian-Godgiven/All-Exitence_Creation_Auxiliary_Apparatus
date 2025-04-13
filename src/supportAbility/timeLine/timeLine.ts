@@ -87,7 +87,7 @@ function initTimeLine(){
         "name":"时间轴",
         "click":()=>showTimeLinePopUp(),
         "iconName":"timeLine"
-    })
+    },"可视化")
 }
 //保存
 function saveTimeLine(){
