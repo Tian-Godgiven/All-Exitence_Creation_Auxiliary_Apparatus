@@ -1,14 +1,11 @@
 <template>
-<!-- 外层ul控制卡片范围 -->
-    <div class="floatBtn"
-        :class="[{moveBtn: allowMove}, `${btnType}Btn`]"
-        @mousedown="touchStart"
-        @mousemove="touchMove"
-        @mouseup="touchEnd"
-    >
-        <slot></slot>
-    </div>
-
+<div class="floatBtn"
+    :class="[{moveBtn: allowMove}, `${btnType}Btn`]"
+    @pointerdown="touchStart"
+    @pointermove="touchMove"
+    @pointerup="touchEnd">
+    <slot></slot>
+</div>
 </template>
 
 <script setup lang='ts'>
@@ -44,7 +41,7 @@ import { ref } from 'vue'
     // 元素原始位置
     let oldNodePos= {x:0,y:0}
     let btnType= ref('right')
-    function touchStart(ev:MouseEvent) {
+    function touchStart(ev:PointerEvent) {
         const selectDom = ev.currentTarget as HTMLElement
         // 需要进行长按:设置定时器
         if(ifLongTap){
@@ -71,7 +68,7 @@ import { ref } from 'vue'
         selectDom.style.top = `${offsetTop}px`;
         
     }
-    function touchMove(ev:MouseEvent) {
+    function touchMove(ev:PointerEvent) {
         // 清空长按定时器
         if (timeOutEvent)clearTimeout(timeOutEvent);
         if (allowMove) {
@@ -86,7 +83,7 @@ import { ref } from 'vue'
             selectDom.style.top = `${pageY - tops}px`;
         }
     }
-    function touchEnd(ev:MouseEvent) {
+    function touchEnd(ev:PointerEvent) {
         const selectDom = ev.currentTarget as HTMLElement
         // 清空定时器
         if(timeOutEvent)clearTimeout(timeOutEvent);

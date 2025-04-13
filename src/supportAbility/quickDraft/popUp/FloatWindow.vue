@@ -5,7 +5,7 @@
         :onMove="onMove" 
         :click="click" 
         :allowEdge="foldFloatWindow"
-        class="quickDraftFloatWindow"
+        class="quickDraftFloatWindow"  
         :style="{
             top:position[0]+'px',
             left:position[1]+'px'
@@ -51,7 +51,7 @@ import { doNotOverContainer } from '@/api/doNotOverContainer';
         setTimeout(()=>{
             //不要超出边缘
             if(!floatWindowRef.value)return
-            const dom = floatWindowRef.value.$el.nextElementSibling
+            const dom = floatWindowRef.value.$el
             //记录展开前的位置
             position[0] = dom.offsetTop
             position[1] = dom.offsetLeft
@@ -62,7 +62,7 @@ import { doNotOverContainer } from '@/api/doNotOverContainer';
     function fold(){
         switchFoldFloatWindow(true)
         if(!floatWindowRef.value)return
-        const dom = floatWindowRef.value.$el.nextElementSibling
+        const dom = floatWindowRef.value.$el
         dom.style.top = position[0]+"px"
         dom.style.left = position[1]+"px"
     }

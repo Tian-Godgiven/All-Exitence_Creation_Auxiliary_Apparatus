@@ -5,7 +5,7 @@
         <Ability v-for="ability in list" :ability></Ability>
     </div>
 </div>
-</template>
+</template> 
 
 <script setup lang='ts'>
     import { RightAbility } from '@/static/list/rightAbilityList';
