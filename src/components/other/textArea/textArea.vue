@@ -18,7 +18,7 @@
     import { focusOnEnd } from '@/api/focusOnEnd';
     import { showInputSupport } from '@/hooks/inputSupport/inputSupport';
     import { onMounted, ref, useTemplateRef, watch } from 'vue';
-    import { checkInputSuggestion, hideInputSuggestion, InputSuggestionList, showInputSuggestion } from '@/hooks/inputSupport/inputSuggestion/inputSuggestion';
+    import { checkInputSuggestion, hideInputSuggestion, InputSuggestionList, showInputSuggestion } from '@/supportAbility/inputSuggestion/inputSuggestion/inputSuggestion';
     import { addInputLast, addInputLastDiv, deleteInputLast } from '@/api/cursorAbility';
     import { findTargetDivs } from '@/hooks/findTargetDiv';
     import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expression/textAreaContent';
@@ -118,24 +118,32 @@
         return newContent
     }
 
-    
     //同步输入，判断输入补全提示
-    function onInput(event:any){
+    function onInput(event:Event){
+        const inputEvent = event as InputEvent
         //同步输入位置
         const selection = window.getSelection();
         if(selection) selectionRange = selection.getRangeAt(0);
-        const newInput = event.data
+        const newInput = inputEvent.data
         listenInput(newInput)
     }
     //输入监听
     function listenInput(newInput:any){
         //同步content的内容
         const newContent = syncContent()
-        //如果需要输入建议，则检查有效输入的内容是否存在输入建议
-        if(!inputSuggestionList)return;
+        //无效输入内容
+        if(newInput==null||newInput==undefined)return false;
         // 将新的输入内容添加到有效输入
-        if(!newInput)return false;
         effectInput += newInput
+        // 输入建议功能
+        ifInputSuggestion(newInput)
+        //执行input事件，返回新的内容和新输入的内容
+        emits("input",newContent,newInput)
+    }
+    //是否需要输入建议
+    function ifInputSuggestion(newInput:string){
+        //不需要则返回
+        if(!inputSuggestionList)return;
         //检查是否存在输入建议
         const content = checkInputSuggestion(inputSuggestionList,effectInput)
         // 有输入建议：显示输入补全框，如果完成了输入提示则进行一次同步
@@ -167,11 +175,6 @@
             hideInputSuggestion()
             effectInput = ""
         }
-        
-        
-        //执行input事件，返回新输入的内容
-        emits("input",newContent,newInput)
-        
     }
 
     //内容监听

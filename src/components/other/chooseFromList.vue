@@ -40,7 +40,7 @@ import { closePopUp } from '../../hooks/pages/popUp';
 	}
 
 	if(chooseNum){
-		console.log(chooseNum,"这个功尚未实装")
+		//未完成
 	}
 	
 	

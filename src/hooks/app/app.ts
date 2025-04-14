@@ -1,9 +1,8 @@
 import { exists, mkdir } from "@tauri-apps/plugin-fs"
 import { initAppSetting } from "./appSetting"
 import { appData, createDirByPath, createFileToPath, ifExists } from "../fileSysytem"
-import { initGlobalInputSuggestion } from "../../supportAbility/inputSuggestion/globalInputSuggestion"
 import { supportAbilityList } from "@/static/list/supportAbilityList"
-import { nowProjectInfo } from "../project/projectData"
+import { nowProjectPath } from "../project/projectData"
 
 //初始化应用程序
 export async function initApp(){
@@ -29,8 +28,6 @@ export async function initApp(){
 
     //初始化软件设置
     await initAppSetting()
-    //初始化全局输入建议
-    await initGlobalInputSuggestion()
     //初始化辅助功能
     await initSupportAbility()
 }
@@ -53,7 +50,9 @@ export async function saveApp(){
     //保存辅助功能
     supportAbilityList.forEach(ability=>{
         if(ability.save){
-            ability.save()
+            //传入当前项目的路径名称，注意其仅到当前项目所在的文件夹
+            const projectPath = "projects/" + nowProjectPath.value
+            ability.save(projectPath)
         }
     })
 }

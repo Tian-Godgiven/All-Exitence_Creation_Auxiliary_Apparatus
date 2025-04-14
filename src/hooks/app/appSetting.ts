@@ -9,7 +9,6 @@ export async function initAppSetting(){
     const tmp = await readFileFromPath("appData","appSetting.json")
     if(!tmp){
         //未完成
-        console.log("")
     }
     Object.assign(appSetting,tmp)
 }

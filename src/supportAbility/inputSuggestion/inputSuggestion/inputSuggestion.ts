@@ -1,8 +1,7 @@
 import { addInputLastDiv, deleteInputLast, getInputPosition } from "@/api/cursorAbility";
 import { addInputLast } from "@/api/cursorAbility"
-import { globalInputSuggestionListData } from "@/supportAbility/inputSuggestion/globalInputSuggestion";
-import { projectInputSuggestionListData } from "@/hooks/project/projectData";
-import { computed, ref } from "vue";
+import { globalInputSuggestionList, projectInputSuggestionList } from "@/supportAbility/inputSuggestion/main";
+import { ref } from "vue";
 import { ExitenceJumpData, jumpDivHtml } from "./jumpDiv";
 import { Type } from "@/class/Type";
 import { Exitence } from "@/class/Exitence";
@@ -19,7 +18,6 @@ export interface suggestionItem{
     target?:any,
     attr?:any
 }
-
 //文件中存储的字符串输入建议单元
 export interface stringItem{
     text:string,//字符串文本
@@ -54,33 +52,18 @@ export const inputText = ref("")
 // 完成输入提示时的回调事件
 export const onInputSuggestion = ref(()=>{})
 
-// 在应用中使用的项目内的输入提示表+全局输入提示表
-export const projectInputSuggestionList = computed(()=>{
-    return projectInputSuggestionListData
-})
-export const globalInputSuggestionList = computed(()=>{
-    return globalInputSuggestionListData
-})
-
-//创建一张空的输入建议表 
-export function createInputSuggestionList(){
-    return {
-        string:[],
-        exitence:{}
-    }
-}
-
 //根据名称获取目标输入建议表
 export function getInputSuggestionList(name:"project"|"global"|"all"):InputSuggestionList{
     //分别返回项目/全局/所有的输入建议表
     switch(name){
         case "project":
-            return projectInputSuggestionList.value;
+            return projectInputSuggestionList;
         case "global":
-            return globalInputSuggestionList.value;
+            return globalInputSuggestionList;
         case "all":
-            return {...globalInputSuggestionList.value,...projectInputSuggestionList}
-    }
+            const all = {...globalInputSuggestionList,...projectInputSuggestionList}
+            return all
+        }
 }
 
 //点击一个输入提示对象
@@ -123,7 +106,7 @@ function getTargetList(type:string,position?:"global"|"project"):InputSuggestion
         }
     }
     //获取目标列表
-    const list:any = (position == "global"? globalInputSuggestionListData : projectInputSuggestionListData)
+    const list:any = (position == "global"? globalInputSuggestionList : projectInputSuggestionList)
     return list
 }
 

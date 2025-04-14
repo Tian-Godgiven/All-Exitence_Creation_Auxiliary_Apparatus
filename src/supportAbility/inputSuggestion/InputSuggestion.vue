@@ -1,6 +1,5 @@
 <template>
-    <div
-        class="inputSuggestion" 
+    <div class="inputSuggestion" 
         v-show="ifShow" 
         ref="container"
         :style="css">
@@ -13,7 +12,7 @@
 
 <script setup lang='ts'>
     import managePx from '@/api/managePx';
-    import { ifShow,content,positionCSS, hideInputSuggestion, onInputSuggestion, clickSuggestionItem } from '@/hooks/inputSupport/inputSuggestion/inputSuggestion';
+    import { ifShow,content,positionCSS, hideInputSuggestion, onInputSuggestion, clickSuggestionItem } from '@/supportAbility/inputSuggestion/inputSuggestion/inputSuggestion';
     import { computed, onMounted, onUnmounted, ref } from 'vue';
     const css = computed(()=>{
         //如果left会使其超出，则左移这个差值

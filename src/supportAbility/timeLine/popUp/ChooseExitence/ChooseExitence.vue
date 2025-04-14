@@ -69,7 +69,6 @@ import { returnValue_Exitence } from '../editTimeLine/editTimeLine';
         
         return list
     })
-    console.log(list.value)
     //确认
     function confirm(){
         //获取选中的值

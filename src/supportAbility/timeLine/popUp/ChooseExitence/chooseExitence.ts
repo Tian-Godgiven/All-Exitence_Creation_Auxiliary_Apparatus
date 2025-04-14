@@ -89,7 +89,6 @@ export function getList(timeRuleKey:string):TItem[]{
             child:[...groupList,...noGroupList]
         }
     })
-    console.log(list)
     return reactive(list)
 }
 

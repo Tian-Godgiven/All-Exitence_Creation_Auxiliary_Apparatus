@@ -69,7 +69,6 @@
 
     //使用的时间规则
     const timeRule = computed(()=>{
-        console.log(timeLine.timeRuleKey)
         return getTimeRule(timeLine.timeRuleKey)
     }) 
     //使用的最小单位

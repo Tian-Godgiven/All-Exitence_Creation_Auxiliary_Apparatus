@@ -8,13 +8,12 @@ import { nanoid } from "nanoid"
 import FloatWindow from "./popUp/FloatWindow.vue"
 import { addFloatWindow, deleteFloatWindow} from "@/hooks/pages/floatWindow"
 import { SupportAbilitySignUpItem } from "@/static/list/supportAbilityList"
-import { nowProjectInfo } from "@/hooks/project/projectData"
 
 //注册对象
 export const quickDraftItem:SupportAbilitySignUpItem = {
     name:"quickDraft",
     init:()=>initQuickDraft(),
-    save:()=>saveQuickDraft(),
+    save:(projectPath)=>saveQuickDraft(projectPath),
     //同步and创建
     syncProject:async(projectPath)=>await changeQuickDraft(projectPath)
 }
@@ -59,12 +58,13 @@ function initQuickDraft(){
     },"灵感迸发")
 }
 //保存 
-async function saveQuickDraft(){
+async function saveQuickDraft(projectPath:string|null){
+    if(projectPath==null)return;
     //保存当前聚焦对象的key
     const focusingKey = focusingItem.value?.__key ?? null
     nowQuickDraftSetting.focusingItem = focusingKey
     //保存设置和item
-    const dataPath = `projects/${nowProjectInfo.pathName}/data`
+    const dataPath = `${projectPath}/data`
     await writeFileAtPath(dataPath,"quickDraft.json",{
         items:toRaw(nowQuickDraft),
         setting:toRaw(nowQuickDraftSetting)

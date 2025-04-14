@@ -4,7 +4,6 @@ import { showPopUp } from "@/hooks/pages/popUp";
 import { reactive, shallowRef, toRaw } from "vue";
 import { tryReadFileAtPath, writeFileAtPath } from "@/hooks/fileSysytem";
 import { addToRightPage } from "@/hooks/pages/rightPage";
-import { nowProjectInfo } from "@/hooks/project/projectData";
 import { getTimeRuleUnits, translateTimeArrToValue, translateTimeUnitValueToValue, translateTimeValueEqualToUnit, translateTimeValueToArr, translateTimeValueToCarryover } from "../customTime/translateTime";
 import { TimeRule } from "../customTime/customTime";
 import { showAlert } from "@/hooks/alert";
@@ -15,10 +14,10 @@ import { nanoid } from "nanoid";
 export const timeLineSignUpItem:SupportAbilitySignUpItem={
     name:"timeLine",
     "init":initTimeLine,
-    "save":saveTimeLine,
+    "save":(projectPath)=>{saveTimeLine(projectPath)},
     "call":showTimeLinePopUp,
-    "syncProject":async (projectPathName)=>{
-        changeTimeLine(projectPathName)
+    "syncProject":async (projectPath)=>{
+        changeTimeLine(projectPath)
     }
 }
 
@@ -90,9 +89,11 @@ function initTimeLine(){
     },"可视化")
 }
 //保存
-function saveTimeLine(){
-    const dataPath = "projects/"+nowProjectInfo.pathName+"/data"
-    writeFileAtPath(dataPath,"timeLine.json",toRaw(nowAllTimeLine))
+function saveTimeLine(projectPath:string|null){
+    if(projectPath){
+        const dataPath = projectPath+"/data"
+        writeFileAtPath(dataPath,"timeLine.json",toRaw(nowAllTimeLine))
+    }
 }
 //切换项目
 async function changeTimeLine(projectPath:string){

@@ -46,7 +46,7 @@
 	import chooseFromListVue from '@/components/other/chooseFromList.vue';
 	import textAreaVue from '@/components/other/textArea/textArea.vue';
 	import { showQuickInfo } from '@/api/showQuickInfo';
-	import { suggestionItem } from '@/hooks/inputSupport/inputSuggestion/inputSuggestion';
+	import { suggestionItem } from '@/supportAbility/inputSuggestion/inputSuggestion/inputSuggestion';
 import Status from '@/interfaces/Status';
 import { deleteInputLast } from '@/api/cursorAbility';
 import { explainExpression, multiStatusPart } from '@/hooks/expression/multiStatusValue';

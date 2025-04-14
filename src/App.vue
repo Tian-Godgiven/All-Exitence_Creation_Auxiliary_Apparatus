@@ -24,7 +24,7 @@
 <script setup lang="ts">
 import { initApp } from "./hooks/app/app";
 import { initProject } from "./hooks/project/project";
-import { startAutoSave } from "./hooks/project/saveProject";
+import { startAutoSave } from "./hooks/app/autoSave";
 import {touchStart,touchMove,touchEnd } from '@/hooks/app/appTouch'
 import MainPage from "@/app/pages/MainPage.vue"
 import ProjectPage from "@/app/pages/ProjectPage.vue";

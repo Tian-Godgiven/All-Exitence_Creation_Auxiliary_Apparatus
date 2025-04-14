@@ -1,4 +1,4 @@
-import { JumpData } from "@/hooks/inputSupport/inputSuggestion/jumpDiv";
+import { JumpData } from "@/supportAbility/inputSuggestion/inputSuggestion/jumpDiv";
 
 //获取当前屏幕上的光标底部的视口位置
 export function getInputPosition(){

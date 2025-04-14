@@ -164,7 +164,6 @@ export function getTimeRuleBiggerUnit(rule:TimeRule,nowUnit?:string,howMuch:numb
     if(!isString(biggerUnit)){
         biggerUnit = biggerUnit?.name
     }
-    console.log(biggerUnit,nowUnit)
     if(biggerUnit && biggerUnit!=nowUnit){
         return biggerUnit
     }
@@ -209,7 +208,6 @@ export function getTimeRuleSmallerUnit(rule:TimeRule,nowUnit?:string,howMuch:num
     if(!isString(smallerUnit)){
         smallerUnit = smallerUnit?.name
     }
-    console.log(smallerUnit,nowUnit)
     //如果最终没有得到目标单位，或者得到的结果与当前单位一致
     if(smallerUnit && smallerUnit!=nowUnit){
         return smallerUnit
@@ -251,7 +249,6 @@ export function translateTimeValueToString({
     else{
         //备忘：自定义时间表达式的翻译没有做完
         //未完成
-        console.log("这里还没有做哦")
     }
 }
 

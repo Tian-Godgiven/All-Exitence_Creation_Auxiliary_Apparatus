@@ -1,28 +1,24 @@
-import { reactive, ref, shallowReactive } from "vue"
+import { reactive, ref } from "vue"
 import { readFileFromPath,writeFileAtPath } from "../fileSysytem"
 import { changeNowAllExitence } from "../all-exitence/allExitence"
 import { changeNowAllArticles } from "../all-articles/allArticles"
-import { createInputSuggestionList } from "../inputSupport/inputSuggestion/inputSuggestion"
 import { Type } from "@/class/Type"
 import { supportAbilityList } from "@/static/list/supportAbilityList"
 import { ProjectInfo } from "./project"
 
-//当前项目的文件夹路径
+//当前项目的文件夹路径，注意其只包含其文件夹
 export const nowProjectPath = ref<string|null>(null)
 //当前项目的信息
 export const nowProjectInfo = reactive<ProjectInfo>(
     {name:"",lastTarget:null,pathName:"",time:0}
 )
-//项目中的输入提示表
-const defaultList = createInputSuggestionList()
-export const projectInputSuggestionListData = shallowReactive(defaultList)
-
+ 
 //同步当前项目的数据
 export async function syncProject(projectPath:string){
     try{
         //修改当前项目路径
         nowProjectPath.value = projectPath
-        //真实路径
+        //项目路径
         projectPath = `projects/${projectPath}`
 
         //同步项目设置

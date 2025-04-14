@@ -5,7 +5,7 @@ import { reactive } from "vue";
 import Status from "@/interfaces/Status";
 import { Group } from "@/class/Group";
 import { nanoid } from "nanoid";
-import { addExitenceInputSuggestion, changeExitenceInputSuggestion, deleteExitenceInputSuggestion } from "../inputSupport/inputSuggestion/inputSuggestion";
+import { addExitenceInputSuggestion, changeExitenceInputSuggestion, deleteExitenceInputSuggestion } from "../../supportAbility/inputSuggestion/inputSuggestion/inputSuggestion";
 import { showAlert } from "../alert";
 import { filterExitenceByRule } from "../expression/groupRule";
 import { isArray } from "lodash";
@@ -15,7 +15,6 @@ export const nowAllExitence = reactive<{types:Type[]}>({types:[]})
 
 //修改当前万物
 export function changeNowAllExitence(newAllExitence:{types:Type[]}){
-    //不知道为什么有时会传一个字符串过来？？？
     if(typeof newAllExitence != "object"){
         newAllExitence = JSON.parse(newAllExitence)
     }

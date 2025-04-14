@@ -50,7 +50,6 @@ export function changeNowAllArticles(newAllArticles:any){
     export function focusOnArticle(article:Article){
         //将其所处的chapter展开
         //未完成
-        console.log(article)
         //在主页面显示该文章
 
         //未完成
@@ -114,7 +113,6 @@ export function changeNowAllArticles(newAllArticles:any){
     export function focusOnChapter(chapter:Chapter){
         //将其展开
         //未完成
-        console.log(chapter)
         //将其聚焦
     }
 

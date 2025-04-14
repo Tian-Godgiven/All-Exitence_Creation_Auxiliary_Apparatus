@@ -1,6 +1,5 @@
 <template>
 <div class="mainPage" >
-		
 	<!-- 首页顶部 -->
 	<div class="titleBar">
 		<Button class="leftPageShowButton" @click="showLeft()" name="显示左侧" icon="showLeft"></Button>
@@ -31,7 +30,7 @@
 	<!-- 输入辅助栏 -->
 	<inputSupportVue/>
 	<!-- 输入提示组件 -->
-	<inputSuggestionVue/>
+	<InputSuggestion/>
 </div>
 </template>
 
@@ -40,14 +39,14 @@
 	import { showLeft, switchProjectPage} from '@/hooks/pages/pageChange';
 	import Button from '@/components/global/Button.vue';
 	import inputSupportVue from '@/components/mainPage/inputSupport.vue';
-	import inputSuggestionVue from '@/components/other/inputSuggestion.vue';
+	import InputSuggestion from '@/supportAbility/inputSuggestion/InputSuggestion.vue';
 	import showInfoOnMainVue from '@/components/mainPage/showInfoOnMain.vue';
 	import showArticleOnMainVue from '@/components/mainPage/showArticleOnMain.vue';
 	import showExitenceOnMainVue from '@/components/mainPage/showExitenceOnMain.vue';
 	import { showOnMain } from '@/hooks/pages/mainPage/showOnMain';
 	import { computed, ref, watch } from 'vue';
 	import { nowProjectInfo } from '@/hooks/project/projectData';
-	import { saveAll } from '@/hooks/project/saveProject';
+	import { saveAll } from '@/hooks/app/autoSave';
 	import { Icon } from '@/static/list/iconList';
 
 // 功能按键

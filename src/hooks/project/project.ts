@@ -1,12 +1,14 @@
-import { ref } from "vue";
+import { ref, toRaw } from "vue";
 import { appSetting, changeAppSetting } from "../app/appSetting";
-import { createDirByPath, createFileToPath, deleteAtPath, ifExists, readDirAsArray, readFileFromPath, renameToAtPath } from "../fileSysytem";
+import { createDirByPath, createFileToPath, deleteAtPath, ifExists, readDirAsArray, readFileFromPath, renameToAtPath, writeFileAtPath } from "../fileSysytem";
 import { showPopUp } from "../pages/popUp";
 import { nowProjectInfo, nowProjectPath, saveProjectInfo, syncProject } from "./projectData";
 import { showAlert } from "../alert";
 import { hidePage } from "../pages/pageChange";
 import { showInitialAppOnMain, showInitialProjectOnMain, showOnMain, showTargetOnMain } from "../pages/mainPage/showOnMain";
 import { supportAbilityList } from "@/static/list/supportAbilityList";
+import { nowAllExitence } from "../all-exitence/allExitence";
+import { nowAllArticles } from "../all-articles/allArticles";
 
 export type ProjectLastTarget = 
     {from:string,targetKey:string,type:"exitence"}|//事物
@@ -20,7 +22,8 @@ export interface ProjectInfo{
 }
 
 export const nowProjectList = ref<any>([])
-//软件启动时，初始化项目系统
+
+//初始化项目系统
 export async function initProject(){
     //打开上一次的项目文件
     const lastProjectPath = appSetting?.lastProjectPath
@@ -44,6 +47,37 @@ export async function initProject(){
         return arr; // 返回更新后的数组
     }, Promise.resolve([])); // 初始值为一个 resolved 的空数组
 }
+//保存当前项目
+export async function saveProject(){
+    if(!nowProjectPath.value){
+        return false
+    }
+    try{
+        //当前项目的路径
+        const projectPath = "projects/"+ nowProjectPath.value
+        //当前万物
+        const allExitence = nowAllExitence
+        await writeFileAtPath(projectPath,"all-exitence.json",toRaw(allExitence))
+        //文章
+        const allArticles = nowAllArticles
+        await writeFileAtPath(projectPath,"all-articles.json",toRaw(allArticles))
+        //保存项目数据
+        await saveProjectData(projectPath)
+        //项目设置
+    }
+    catch(err){
+        alert(err)
+        console.error(err)
+        return false
+    }
+    return true
+}
+
+//保存当前项目数据
+async function saveProjectData(projectPath:string){
+    // const dataPath = projectPath+"/data"
+    
+}
 
 
 //不存在任何项目时的页面
@@ -52,7 +86,6 @@ export function onNoProject(){
     nowProjectPath.value = null
     nowProjectInfo.name = "点击此处创建新项目"
 }
-
 //项目内不存在任何数据时的页面
 export function onNoContent(){
     showInitialProjectOnMain()

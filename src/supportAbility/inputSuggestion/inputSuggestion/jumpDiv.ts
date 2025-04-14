@@ -49,6 +49,7 @@ export function jumpDivHtml(data:any){
                 //判断该别名是否存在于别名属性中
                 const statusKey = setting?.nickName
                 const status = getExitenceStatusByKey(statusKey,exitence.status,type.typeStatus)
+                if(!status)return false;
                 if(isArray(status.value) && status.value.includes(data.text)){
                     return data.text
                 }
