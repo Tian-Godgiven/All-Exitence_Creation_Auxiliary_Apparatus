@@ -186,8 +186,6 @@
         unWatch = watch(content,()=>{ 
             const doms = translateToFrontEndContent(content.value)
             loadDom(doms)
-        },{
-            immediate:true
         })
     }
     function stopWatch(){

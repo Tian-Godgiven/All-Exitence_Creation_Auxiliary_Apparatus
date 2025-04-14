@@ -1,7 +1,7 @@
 import { addInputLastDiv, deleteInputLast, getInputPosition} from "@/api/cursorAbility";
 import { addInputLast } from "@/api/cursorAbility"
 import { globalInputSuggestionList, projectInputSuggestionList } from "@/supportAbility/inputSuggestion/main";
-import { ref, watch } from "vue";
+import { ref } from "vue";
 import { ExitenceJumpData, jumpDivHtml } from "./jumpDiv";
 import { Type } from "@/class/Type";
 import { Exitence } from "@/class/Exitence";
