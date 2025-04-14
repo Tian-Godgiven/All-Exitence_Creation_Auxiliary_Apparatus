@@ -4,8 +4,6 @@
         ref="container"
         :style="css">
         <div class="suggestionItem" v-for="item in content" 
-            @pointerdown="mouseStart"
-            @pointerup="mouseEnd"
             @click="itemClick(item)">
             <div class="text">{{ item.text }}</div>
             <div class="info">{{ item.info }}</div>
@@ -32,32 +30,14 @@
         const top = positionCSS.value.top + "px"
         return {left,top}
     })
-    let theRange:any
     // 点击一个输入提示组件
     function itemClick(item:SuggestionItem){
-        console.log("点击输入提示修改之前的range",theRange)
         //触发其点击事件
         clickSuggestionItem(item)
         //隐藏输入提示
         hideInputSuggestion()
-        // //返回一个输入提示影响
-        // inputSuggestionEvent.value()
-    }
-    function mouseStart(){
-        const selection = window.getSelection()
-        if(!selection)return;
-        //记录当前选区
-        const range = selection.getRangeAt(0)
-        theRange = range
-        console.log("点击输入提示前的range",theRange.startOffset)
-    }
-    function mouseEnd(){
-        console.log("点击输入提示后，修改之前的range",theRange.startOffset)
-        const selection = window.getSelection()
-        if(!selection)return;
-        const range = selection.getRangeAt(0)
-        theRange = range
-        console.log("点击输入提示后的range",theRange.startOffset)
+        //返回一个输入提示影响
+        inputSuggestionEvent.value()
     }
 //点击之外的部分隐藏
     const container = ref()

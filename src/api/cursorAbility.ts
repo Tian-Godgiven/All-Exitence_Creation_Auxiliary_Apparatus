@@ -92,8 +92,6 @@ export function addInputLastDiv(htmlText:string,range?:Range|null,data?:JumpData
     if(!range){
         range = selection.getRangeAt(0);
     }
-
-    console.log(range)
     
     // 插入div到选区位置
     range.deleteContents(); // 删除选区内的内容（如果有）

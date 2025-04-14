@@ -297,7 +297,6 @@ export function autoCompleteDom(input:string,domHTML:string){
 
 // 补全：补全一个跳转div
 function autoCompleteJumpDiv(input:string,data:any,range:Range|null){
-    console.log("补全div之前的range",range)
     //获取跳转div的html
     const domHTML = jumpDivHtml(data)
     if(!domHTML){
