@@ -1,7 +1,7 @@
 <template>
 <div class="app" 
     @pointerdown="touchStart"
-	  @pointermove.stop.prevent="touchMove"
+	  @pointermove.stop="touchMove"
 	  @pointerup="touchEnd">
     <!-- 主页面 -->
     <MainPage/>
@@ -59,6 +59,7 @@ startAutoSave()
     width: 100vw;
     height: 100vh;
     z-index: 0;
+    user-select: none;
   }
   
 </style>

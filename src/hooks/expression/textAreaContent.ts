@@ -1,5 +1,5 @@
 import { divWeakMap } from "@/api/cursorAbility";
-import { isJumpDiv, JumpData, jumpDivHtml } from "../../supportAbility/inputSuggestion/inputSuggestion/jumpDiv";
+import { isJumpDiv, JumpData, jumpDivHtml } from "../../supportAbility/inputSuggestion/suggester/jumpDiv";
 import { showQuickInfo } from "@/api/showQuickInfo";
 
 //输入区域的内容对象为纯文本或跳转对象

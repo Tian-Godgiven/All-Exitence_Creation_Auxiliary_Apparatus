@@ -1,7 +1,7 @@
-import { addInputLastDiv, deleteInputLast, getInputPosition } from "@/api/cursorAbility";
+import { addInputLastDiv, deleteInputLast, getInputPosition} from "@/api/cursorAbility";
 import { addInputLast } from "@/api/cursorAbility"
 import { globalInputSuggestionList, projectInputSuggestionList } from "@/supportAbility/inputSuggestion/main";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { ExitenceJumpData, jumpDivHtml } from "./jumpDiv";
 import { Type } from "@/class/Type";
 import { Exitence } from "@/class/Exitence";
@@ -10,7 +10,7 @@ import { translateToTextContent } from "@/hooks/expression/textAreaContent";
 import { isString } from "lodash";
 
 //前端页面中的通用输入建议单元
-export interface suggestionItem{
+export interface SuggestionItem{
     text:string,
     type:string,
     info?:string,
@@ -19,14 +19,14 @@ export interface suggestionItem{
     attr?:any
 }
 //文件中存储的字符串输入建议单元
-export interface stringItem{
+export interface StringItem{
     text:string,//字符串文本
     showText?:string,//显示在输入建议的标题内容
     info?:string,//显示在输入建议的解释性信息
-    click?:(input:string,item:stringItem)=>void, //点击该输入提示项的事件
+    click?:(input:string,item:StringItem)=>void, //点击该输入提示项的事件
 }
 //输入建议单元in文件：事物
-export interface exitenceItem{
+export interface ExitenceItem{
     text:string,//事物的名称
     target:string,//事物所在的分类的key
     info?:string//说明性文本
@@ -35,22 +35,19 @@ export interface exitenceItem{
 }
 //输入建议列表in文件
 export interface InputSuggestionList{
-    string:stringItem[],
+    string:StringItem[],
     exitence:{ 
-        [key:string]:exitenceItem
+        [key:string]:ExitenceItem
     },
 }
 
-// 输入提示div所需要显示的内容
-export const content = ref<any>([])
-// 是否显示输入提示
-export const ifShow = ref(false)
-// 输入提示的位置
-export const positionCSS = ref({left:0,top:0})
-//已经输入了的内容
-export const inputText = ref("")
-// 完成输入提示时的回调事件
-export const onInputSuggestion = ref(()=>{})
+//提示器所使用的变量
+export let range:Range|null = null//显示输入提示前的光标位置
+export const content = ref<SuggestionItem[]>([])// 输入提示div内所需要显示的内容
+export const ifShow = ref(false)// 是否显示输入提示
+export const positionCSS = ref({left:0,top:0})// 输入提示的位置
+export const inputText = ref("")//已经输入了的内容
+export const inputSuggestionEvent = ref(()=>{})// 完成输入提示时的回调事件
 
 //根据名称获取目标输入建议表
 export function getInputSuggestionList(name:"project"|"global"|"all"):InputSuggestionList{
@@ -67,7 +64,7 @@ export function getInputSuggestionList(name:"project"|"global"|"all"):InputSugge
 }
 
 //点击一个输入提示对象
-export function clickSuggestionItem(item:suggestionItem){
+export function clickSuggestionItem(item:SuggestionItem){
     const input = inputText.value
     switch(item.type){
         //字符串自动补全
@@ -87,7 +84,7 @@ export function clickSuggestionItem(item:suggestionItem){
                 exitenceData["nickName"] = true
             }
             //自动补全一个跳转div
-            autoCompleteJumpDiv(input,exitenceData)
+            autoCompleteJumpDiv(input,exitenceData,range)
             break;
         default:
             console.error("错误：未定义的输入建议类型")
@@ -111,7 +108,7 @@ function getTargetList(type:string,position?:"global"|"project"):InputSuggestion
 }
 
 //向输入提示表中新增字符串类输入建议项
-export function addStringSuggestion(item:stringItem,position?:"global"|"project"){
+export function addStringSuggestion(item:StringItem,position?:"global"|"project"){
     const list = getTargetList("string",position)
     list.string.push(item)
 }
@@ -121,7 +118,7 @@ export function addExitenceInputSuggestion(type:Type,exitence:Exitence){
     //目标列表
     const list = getTargetList("exitence","project")
     //事物类型的跳转对象是其type和exitence的key组成的数组
-    const item:exitenceItem = {
+    const item:ExitenceItem = {
         text:exitence.name, 
         info:"创建的事物",
         target:type.__key
@@ -166,27 +163,46 @@ export function deleteExitenceInputSuggestion(exitenceKey:string){
     delete list.exitence[exitenceKey]
 }
 
-// 在指定位置显示输入提示
-export function showInputSuggestion(tmp:{
+/**
+ * 在指定位置显示输入提示,并保存当前光标位置
+ * @param input 当前已经输入的内容
+ * @param suggestionContent 在提示器内显示的输入提示对象
+ * @param oldRange 显示提示器时的光标位置
+ * @param onInputSuggestion 提示器内容触发时的事件
+ * @param position 提示器的显示位置 
+ */
+export function showInputSuggester({input,suggestionContent,oldRange,onInputSuggestion,position}:{
     input:string,
     suggestionContent:any[],
+    oldRange?:Range,
     onInputSuggestion?:()=>void,
-    position?:any
+    position?:{left:number,top:number}
 }){
+    //显示提示器
     ifShow.value = true;
-    content.value = tmp.suggestionContent
-    inputText.value = tmp.input //已经输入的内容
-    if(tmp.onInputSuggestion){
-        onInputSuggestion.value = tmp.onInputSuggestion
-    }
-    if(tmp.position){
-        positionCSS.value = tmp.position
-    }
+    //记录变量
+    content.value = suggestionContent
+    //已经输入的内容
+    inputText.value = input 
+    //光标位置
+    if(oldRange){range = oldRange}
     else{
-        const tmp = getInputPosition()
-        if(tmp){
-            positionCSS.value = tmp
+        //记录当前光标的位置
+        const selection = window.getSelection()
+        if(selection){
+            const newRange = selection.getRangeAt(0)
+            range = newRange
         }
+    }
+    
+    if(onInputSuggestion){
+        inputSuggestionEvent.value = onInputSuggestion
+    }
+    if(position){positionCSS.value = position}
+    else{
+        //记录当前光标的left和top
+        const tmp = getInputPosition()
+        if(tmp){positionCSS.value = tmp}
     }
 }
 
@@ -205,7 +221,7 @@ export function checkInputSuggestion(
     if(isString(inputSuggestionList)){
         inputSuggestionList = getInputSuggestionList(inputSuggestionList)
     }   
-    const arr:suggestionItem[] = [] //存储所有的输入提示
+    const arr:SuggestionItem[] = [] //存储所有的输入提示
     //先判断事物类型的item
     const allExitence = inputSuggestionList.exitence
     for(let key in allExitence){
@@ -276,11 +292,12 @@ export function autoCompleteDom(input:string,domHTML:string){
     //先删除input内容
     deleteInputLast(input.length)
     //再添加dom对象
-    addInputLastDiv(domHTML)
+    addInputLastDiv(domHTML,range)
 }
 
 // 补全：补全一个跳转div
-export function autoCompleteJumpDiv(input:string,data:any){
+function autoCompleteJumpDiv(input:string,data:any,range:Range|null){
+    console.log("补全div之前的range",range)
     //获取跳转div的html
     const domHTML = jumpDivHtml(data)
     if(!domHTML){
@@ -289,5 +306,5 @@ export function autoCompleteJumpDiv(input:string,data:any){
     //先删除input内容
     deleteInputLast(input.length)
     //再添加dom对象
-    addInputLastDiv(domHTML,null,data)
+    addInputLastDiv(domHTML,range,data)
 }

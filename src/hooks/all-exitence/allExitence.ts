@@ -5,7 +5,7 @@ import { reactive } from "vue";
 import Status from "@/interfaces/Status";
 import { Group } from "@/class/Group";
 import { nanoid } from "nanoid";
-import { addExitenceInputSuggestion, changeExitenceInputSuggestion, deleteExitenceInputSuggestion } from "../../supportAbility/inputSuggestion/inputSuggestion/inputSuggestion";
+import { addExitenceInputSuggestion, changeExitenceInputSuggestion, deleteExitenceInputSuggestion } from "../../supportAbility/inputSuggestion/suggester/inputSuggestion";
 import { showAlert } from "../alert";
 import { filterExitenceByRule } from "../expression/groupRule";
 import { isArray } from "lodash";

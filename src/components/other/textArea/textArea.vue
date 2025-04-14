@@ -18,7 +18,7 @@
     import { focusOnEnd } from '@/api/focusOnEnd';
     import { showInputSupport } from '@/hooks/inputSupport/inputSupport';
     import { onMounted, ref, useTemplateRef, watch } from 'vue';
-    import { checkInputSuggestion, hideInputSuggestion, InputSuggestionList, showInputSuggestion } from '@/supportAbility/inputSuggestion/inputSuggestion/inputSuggestion';
+    import { checkInputSuggestion, hideInputSuggestion, InputSuggestionList, showInputSuggester } from '@/supportAbility/inputSuggestion/suggester/inputSuggestion';
     import { addInputLast, addInputLastDiv, deleteInputLast } from '@/api/cursorAbility';
     import { findTargetDivs } from '@/hooks/findTargetDiv';
     import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expression/textAreaContent';
@@ -26,7 +26,7 @@
     const textArea = useTemplateRef('textArea');
     let showPlaceholder = ref(true) //当前是否显示placeholder
     let effectInput = "" //有效输入
-    let selectionRange:any //记录光标上一次聚焦的位置
+    let selectionRange:Range //记录光标上一次聚焦的位置
 
     //占位符，是否启用输入辅助，输入建议列表，输入模式
     let {placeholder,inputSupport=false,inputSuggestionList,mode} = defineProps<{
@@ -121,9 +121,11 @@
     //同步输入，判断输入补全提示
     function onInput(event:Event){
         const inputEvent = event as InputEvent
-        //同步输入位置
-        const selection = window.getSelection();
-        if(selection) selectionRange = selection.getRangeAt(0);
+        // //同步输入位置
+        // const selection = window.getSelection();
+        // if(selection){
+        //     selectionRange = selection.getRangeAt(0)
+        // }
         const newInput = inputEvent.data
         listenInput(newInput)
     }
@@ -148,8 +150,9 @@
         const content = checkInputSuggestion(inputSuggestionList,effectInput)
         // 有输入建议：显示输入补全框，如果完成了输入提示则进行一次同步
         if(content){
-            showInputSuggestion({
+            showInputSuggester({
                 input:effectInput,
+                oldRange:selectionRange,
                 "suggestionContent":content,
                 "onInputSuggestion":()=>{
                     syncContent()
@@ -162,7 +165,7 @@
         //可行则更新有效输入
         if(content2){
             effectInput = newInput
-            showInputSuggestion({
+            showInputSuggester({
                 input:effectInput,
                 "suggestionContent":content2,
                 "onInputSuggestion":()=>{
@@ -208,7 +211,6 @@
             effectInput = ""
         }
         oldPosition = newPosition
-        
     }
     //取消聚焦
     function onBlur(){
@@ -252,7 +254,10 @@
             focusOnEnd(textArea.value)
         }
         //添加相应class的div并更新selectionRange
-		selectionRange = addInputLastDiv(domHTML,selectionRange)
+		const newRange = addInputLastDiv(domHTML,selectionRange)
+        if(newRange){
+            selectionRange = newRange
+        }
     }
     //向该输入区中添加一段文本
     function addContent(text:string){
@@ -260,7 +265,11 @@
         if(!selectionRange){
             focusOnEnd(textArea.value)
         }
-        selectionRange = addInputLast(text,selectionRange)
+        const newRange = addInputLast(text,selectionRange)
+        if(newRange){
+            selectionRange = newRange
+        }
+        
     }
     //删除输入区的前n个内容
     function deleteContent(length:number){

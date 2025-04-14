@@ -30,7 +30,7 @@
 	<!-- 输入辅助栏 -->
 	<inputSupportVue/>
 	<!-- 输入提示组件 -->
-	<InputSuggestion/>
+	<Suggester/>
 </div>
 </template>
 
@@ -39,7 +39,6 @@
 	import { showLeft, switchProjectPage} from '@/hooks/pages/pageChange';
 	import Button from '@/components/global/Button.vue';
 	import inputSupportVue from '@/components/mainPage/inputSupport.vue';
-	import InputSuggestion from '@/supportAbility/inputSuggestion/InputSuggestion.vue';
 	import showInfoOnMainVue from '@/components/mainPage/showInfoOnMain.vue';
 	import showArticleOnMainVue from '@/components/mainPage/showArticleOnMain.vue';
 	import showExitenceOnMainVue from '@/components/mainPage/showExitenceOnMain.vue';
@@ -48,6 +47,7 @@
 	import { nowProjectInfo } from '@/hooks/project/projectData';
 	import { saveAll } from '@/hooks/app/autoSave';
 	import { Icon } from '@/static/list/iconList';
+	import Suggester from '@/supportAbility/inputSuggestion/suggester/Suggester.vue';
 
 // 功能按键
 	const buttons:{icon:Icon,name:string,click:()=>any}[] = [{

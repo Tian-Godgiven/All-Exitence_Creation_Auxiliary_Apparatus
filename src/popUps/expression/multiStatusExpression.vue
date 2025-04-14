@@ -46,7 +46,7 @@
 	import chooseFromListVue from '@/components/other/chooseFromList.vue';
 	import textAreaVue from '@/components/other/textArea/textArea.vue';
 	import { showQuickInfo } from '@/api/showQuickInfo';
-	import { suggestionItem } from '@/supportAbility/inputSuggestion/inputSuggestion/inputSuggestion';
+	import { SuggestionItem } from '@/supportAbility/inputSuggestion/suggester/inputSuggestion';
 import Status from '@/interfaces/Status';
 import { deleteInputLast } from '@/api/cursorAbility';
 import { explainExpression, multiStatusPart } from '@/hooks/expression/multiStatusValue';
@@ -78,7 +78,7 @@ import { explainExpression, multiStatusPart } from '@/hooks/expression/multiStat
 		const suggestionStatus = typeStatus.map((status: Status) =>
 			createSuggestionItem("quoteStatus",status.__key,status.name, "属性"));
 		// 合并两个数组
-		const inputSuggestionList: suggestionItem[] = [...suggestionParts, ...suggestionStatus];
+		const inputSuggestionList: SuggestionItem[] = [...suggestionParts, ...suggestionStatus];
 	// 向输入框中添加内容
 	function addItem(value:any,type:string){
 		//引用类型添加引用div

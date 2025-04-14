@@ -1,4 +1,4 @@
-import { JumpData } from "@/supportAbility/inputSuggestion/inputSuggestion/jumpDiv";
+import { JumpData } from "@/supportAbility/inputSuggestion/suggester/jumpDiv";
 
 //获取当前屏幕上的光标底部的视口位置
 export function getInputPosition(){
@@ -46,14 +46,15 @@ export function getInputLast(){
 }
 
 //向当前屏幕上的光标后添加一段文本内容
-export function addInputLast(text:string,range?:any){
+export function addInputLast(text:string,range?:Range){
     const selection = window.getSelection();  // 获取当前的文本选区
-    if (!selection) return;
+    if (!selection) return false;
 
-     // 如果没有传入range，则获取当前选区中的range
+    // 如果没有传入range，则获取当前选区中的range
     if(!range){
         range = selection.getRangeAt(0);
     }
+
     // 创建一个新的文本节点
     const textNode = document.createTextNode(text);
     // 插入文本节点到选区的位置
@@ -67,18 +68,18 @@ export function addInputLast(text:string,range?:any){
     selection.addRange(range);  // 重新设置选区，光标位于文本后面
 
     //返回新的selectionRange
-    return selection.getRangeAt(0)
+    return range
 }
 
 //向当前屏幕上的光标后添加一个dom,并存储可能存在的跳转目标数据
 export const divWeakMap:WeakMap<HTMLElement,JumpData> = new WeakMap
-export function addInputLastDiv(htmlText:string,range?:any,data?:JumpData){
+export function addInputLastDiv(htmlText:string,range?:Range|null,data?:JumpData){
     // 创建一个临时的 DOM 元素并插入 HTML
     let div:any = document.createElement('div');
     div.innerHTML = htmlText; // 将 HTML 转换为 DOM 节点
     div = div.firstChild
     if(!div) return;
-
+    
     if(data){
         // 为div绑定Weakmap数据
         divWeakMap.set(div, data);
@@ -87,16 +88,18 @@ export function addInputLastDiv(htmlText:string,range?:any,data?:JumpData){
     const selection = window.getSelection();
     if (!selection) return;
 
-     // 如果没有传入range，则获取当前选区中的range
+    // 如果没有传入range，则获取当前选区中的range
     if(!range){
         range = selection.getRangeAt(0);
     }
+
+    console.log(range)
     
     // 插入div到选区位置
     range.deleteContents(); // 删除选区内的内容（如果有）
     range.insertNode(div); // 插入新创建的div元素
 
-    // 调整光标位置
+    // 调整光标位置到div后面
     const newRange = document.createRange();
     newRange.setStartAfter(div);
     newRange.setEndAfter(div);
