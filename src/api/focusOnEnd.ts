@@ -1,7 +1,9 @@
 // 传入一个dom对象，将光标移至其最后的位置，常用于重新聚焦contenteditable元素
-export function focusOnEnd(dom:any){
+export function focusOnEnd(dom:Element|null){
     if (dom) {
-        dom.focus()
+        if(dom instanceof HTMLElement){
+            dom.focus()
+        }
         const range = document.createRange();
         const selection = window.getSelection();
         if(!selection){

@@ -42,7 +42,6 @@ export interface InputSuggestionList{
 }
 
 //提示器所使用的变量
-export let range:Range|null = null//显示输入提示前的光标位置
 export const content = ref<SuggestionItem[]>([])// 输入提示div内所需要显示的内容
 export const ifShow = ref(false)// 是否显示输入提示
 export const positionCSS = ref({left:0,top:0})// 输入提示的位置
@@ -84,7 +83,7 @@ export function clickSuggestionItem(item:SuggestionItem){
                 exitenceData["nickName"] = true
             }
             //自动补全一个跳转div
-            autoCompleteJumpDiv(input,exitenceData,range)
+            autoCompleteJumpDiv(input,exitenceData)
             break;
         default:
             console.error("错误：未定义的输入建议类型")
@@ -171,10 +170,9 @@ export function deleteExitenceInputSuggestion(exitenceKey:string){
  * @param onInputSuggestion 提示器内容触发时的事件
  * @param position 提示器的显示位置 
  */
-export function showInputSuggester({input,suggestionContent,oldRange,onInputSuggestion,position}:{
+export function showInputSuggester({input,suggestionContent,onInputSuggestion,position}:{
     input:string,
     suggestionContent:any[],
-    oldRange?:Range,
     onInputSuggestion?:()=>void,
     position?:{left:number,top:number}
 }){
@@ -184,16 +182,6 @@ export function showInputSuggester({input,suggestionContent,oldRange,onInputSugg
     content.value = suggestionContent
     //已经输入的内容
     inputText.value = input 
-    //光标位置
-    if(oldRange){range = oldRange}
-    else{
-        //记录当前光标的位置
-        const selection = window.getSelection()
-        if(selection){
-            const newRange = selection.getRangeAt(0)
-            range = newRange
-        }
-    }
     
     if(onInputSuggestion){
         inputSuggestionEvent.value = onInputSuggestion
@@ -292,11 +280,11 @@ export function autoCompleteDom(input:string,domHTML:string){
     //先删除input内容
     deleteInputLast(input.length)
     //再添加dom对象
-    addInputLastDiv(domHTML,range)
+    addInputLastDiv(domHTML)
 }
 
 // 补全：补全一个跳转div
-function autoCompleteJumpDiv(input:string,data:any,range:Range|null){
+function autoCompleteJumpDiv(input:string,data:any){
     //获取跳转div的html
     const domHTML = jumpDivHtml(data)
     if(!domHTML){
@@ -305,5 +293,5 @@ function autoCompleteJumpDiv(input:string,data:any,range:Range|null){
     //先删除input内容
     deleteInputLast(input.length)
     //再添加dom对象
-    addInputLastDiv(domHTML,range,data)
+    addInputLastDiv(domHTML,null,data)
 }

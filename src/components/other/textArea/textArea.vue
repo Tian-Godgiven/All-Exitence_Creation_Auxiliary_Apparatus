@@ -41,7 +41,7 @@
 
     //允许通过父组件访问textArea的一些方法
     defineExpose({
-        "focusOnEnd":()=>focusOnEnd(textArea),
+        "focusOnEnd":()=>focusOnEnd(textArea.value),
         "addDom":addDom,
         "addContent":addContent,
         "getContentDom":getContentDom,
@@ -152,7 +152,6 @@
         if(content){
             showInputSuggester({
                 input:effectInput,
-                oldRange:selectionRange,
                 "suggestionContent":content,
                 "onInputSuggestion":()=>{
                     syncContent()

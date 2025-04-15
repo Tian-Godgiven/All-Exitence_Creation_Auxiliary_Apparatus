@@ -75,14 +75,14 @@ export function addInputLast(text:string,range?:Range){
 export const divWeakMap:WeakMap<HTMLElement,JumpData> = new WeakMap
 export function addInputLastDiv(htmlText:string,range?:Range|null,data?:JumpData){
     // 创建一个临时的 DOM 元素并插入 HTML
-    let div:any = document.createElement('div');
+    let div = document.createElement('div');
     div.innerHTML = htmlText; // 将 HTML 转换为 DOM 节点
-    div = div.firstChild
-    if(!div) return;
-    
-    if(data){
+    //实际上要添加的dom
+    const targetDom = div.firstChild
+    if(!targetDom) return;
+    if(targetDom instanceof HTMLElement && data){
         // 为div绑定Weakmap数据
-        divWeakMap.set(div, data);
+        divWeakMap.set(targetDom, data);
     }
 
     const selection = window.getSelection();
@@ -95,12 +95,12 @@ export function addInputLastDiv(htmlText:string,range?:Range|null,data?:JumpData
     
     // 插入div到选区位置
     range.deleteContents(); // 删除选区内的内容（如果有）
-    range.insertNode(div); // 插入新创建的div元素
+    range.insertNode(targetDom); // 插入新创建的div元素
 
     // 调整光标位置到div后面
     const newRange = document.createRange();
-    newRange.setStartAfter(div);
-    newRange.setEndAfter(div);
+    newRange.setStartAfter(targetDom);
+    newRange.setEndAfter(targetDom);
     selection.removeAllRanges();
     selection.addRange(newRange);
 
@@ -109,7 +109,7 @@ export function addInputLastDiv(htmlText:string,range?:Range|null,data?:JumpData
 }
 
 //删除屏幕上光标前的一段内容
-export function deleteInputLast(length:number,range?:any){
+export function deleteInputLast(length:number,range?:Range){
     // 获取当前的文本选区
     const selection = window.getSelection();  
     if (!selection) return;

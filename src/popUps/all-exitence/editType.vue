@@ -1,48 +1,46 @@
 <template>
-	<div class="editType">
-		<div class="top">
-			<downLineInputVue 
-				v-model="name"
-				class="typeName"
-				placeholder="输入分类名称"/>
-			<div class="button" @click="prepareStatus">预制属性</div>
-		</div>
+<div class="editType">
+	<div class="top">
+		<downLineInputVue 
+			v-model="name"
+			class="typeName"
+			placeholder="输入分类名称"/>
+		<Button class="button" name="预制属性" @click="prepareStatus"></Button>
+	</div>
 
-		<!-- 内容 -->
-		<div class="inner">
-			<!-- 修改顺序 -->
-			<draggableListVue 
-				:drag-handle="true"
-				:list="typeStatus" 
-				v-slot="{element:status,index}">
-				<typeStatusVue 
-					@deleteStatus="deleteStatus(index)" 
-					:key="status.__key"
-					:status="status">
-				</typeStatusVue>
-			</draggableListVue>
-			
+	<!-- 内容 -->
+	<div class="inner">
+		<!-- 修改顺序 -->
+		<draggableListVue 
+			:drag-handle="true"
+			:list="typeStatus" 
+			v-slot="{element:status,index}">
+			<typeStatusVue 
+				@deleteStatus="deleteStatus(index)" 
+				:key="status.__key"
+				:status="status">
+			</typeStatusVue>
+		</draggableListVue>
+		
 
-			<!-- 创建新属性 -->
-			<newTypeStatusVue 
-				@createStatus="addStatus($event)">
-			</newTypeStatusVue>
+		<!-- 创建新属性 -->
+		<newTypeStatusVue :createStatus="addStatus"/>
 
-			<!-- 分类设置 -->
-			<div class="setting">
-				<div class="button" @click="showSettingBox = !showSettingBox">
-					分类设置
-				</div>
-				<settingBoxVue ref="settingBox" :show="showSettingBox"></settingBoxVue>
+		<!-- 分类设置 -->
+		<div class="setting">
+			<div class="button" @click="showSettingBox = !showSettingBox">
+				分类设置
 			</div>
-		</div>
-
-		<!-- 确认按键 -->
-		<div class="bottom">
-			<div class="button" @click="confirm">确认</div>
-			<div class="button" @click="closePopUp(popUp)">取消</div>
+			<settingBoxVue ref="settingBox" :show="showSettingBox"></settingBoxVue>
 		</div>
 	</div>
+
+	<!-- 确认按键 -->
+	<div class="bottom">
+		<div class="button" @click="confirm">确认</div>
+		<div class="button" @click="closePopUp(popUp)">取消</div>
+	</div>
+</div>
 </template>
 
 <script setup lang="ts" name="">
@@ -55,15 +53,18 @@ import { closePopUp } from '@/hooks/pages/popUp';
 import { checkTypeNameRepeat } from '@/hooks/all-exitence/allExitence';
 import { showQuickInfo } from '@/api/showQuickInfo';
 import { cloneDeep } from 'lodash';
+import Button from '@/components/global/Button.vue';
 import settingBoxVue from '@/components/all-exitence/setting/settingBox.vue';
 import { typeSettingList } from '@/static/list/settingList/typeSettingList';
 import { nanoid } from 'nanoid';
+import { Type } from '@/class/Type';
+import Status from '@/interfaces/Status';
 
 	const {props={},popUp,returnValue} = defineProps(["props","popUp","returnValue"])
     let {type} = props
 
 	//type存在则创建深拷贝，不存在则创建空type
-	const tmpType = type? reactive(cloneDeep(type)) : reactive({
+	const tmpType:Type = type? reactive(cloneDeep(type)) : reactive({
 		name:"",
 		typeStatus:reactive([]),
 		setting:reactive({})
@@ -81,7 +82,7 @@ import { nanoid } from 'nanoid';
 
 	}
 	//向分类中添加指定的属性，给予key标识符
-	function addStatus(newStatus:{[key:string]:any}){		
+	function addStatus(newStatus:Status){		
 		//给予key标识符
 		newStatus.__key = nanoid()
 		typeStatus.push(newStatus)
