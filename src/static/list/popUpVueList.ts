@@ -20,7 +20,6 @@ export let popUpVueList:{[key:string]:any} = {
 
 	"createChapter":editChapterVue,
 	"updateChapter":editChapterVue,
-
 	
 	"createType":editTypeVue,
 	"updateType":editTypeVue,

@@ -1,6 +1,9 @@
 <template>
 	<div class="newStatus">
-		<editStatusVue @confirm="createTypeStatus" :banValueType="banValueType">
+		<editStatusVue 
+			@confirm="createTypeStatus" 
+			:banValueType="banValueType"
+>
 			<template v-slot:confirm>新增</template>
 		</editStatusVue>
 	</div>
@@ -16,7 +19,7 @@
 		value:null,
 		valueType:"downLine",
 		setting:{},
-		__key:null
+		__key:""
 	})
 
 	// 不需要的类型

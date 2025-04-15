@@ -28,7 +28,7 @@
 </template>
 
 <script setup lang='ts'>
-    import { reactive, ref, toRaw, provide } from 'vue';
+    import { reactive, ref, toRaw, provide, onMounted } from 'vue';
     import downLineInputVue from '@/components/other/input/downLineInput.vue';
     import { closePopUp } from '@/hooks/pages/popUp';
     import settingBoxVue from '@/components/all-exitence/setting/settingBox.vue';

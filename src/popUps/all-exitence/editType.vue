@@ -92,12 +92,12 @@ import { nanoid } from 'nanoid';
 	}
 
 	//分类设置
-    const settingProps = {
+    const typeSetting = {
         target:tmpType,//实际上修改的是事物对象的setting
         optionList:typeSettingList,
         settingValue:tmpType.setting
     }
-    provide("settingProps",settingProps)
+    provide("settingProps",typeSetting)
 	const settingBox = ref()
 	//控制分类设置显示
 	const showSettingBox = ref(false)
@@ -119,7 +119,6 @@ import { nanoid } from 'nanoid';
 			showQuickInfo("分类设置不正确")
 			return false
 		}
-		
         returnValue(name.value,toRaw(typeStatus),toRaw(setting))
 		//关闭弹窗
 		closePopUp(popUp)

@@ -31,7 +31,7 @@ import { translateToTextContent } from '@/hooks/expression/textAreaContent';
 		return status["valueType"] || typeStatus["valueType"]
 	})
 	//优先使用两者覆盖后的setting
-	const statusSetting:any = computed(()=>{
+	const statusSetting = computed(()=>{
 		//如果两者不同，则使用覆盖后的setting
 		if(typeStatus && typeStatus != status){
 			return {...typeStatus.setting,...status?.setting}
@@ -45,18 +45,19 @@ import { translateToTextContent } from '@/hooks/expression/textAreaContent';
 	//监听属性值的改变
 	watch(()=>status.value,(value:any)=>{
 		//事物设置：指定属性值与事物名称同步
-		const syncWithName = statusSetting?.["exitenceSetting-syncWithName"]
+		const syncWithName = statusSetting.value["exitenceSetting-syncWithName"]
 		if(syncWithName){
 			const [typeKey,exitenceKey] = syncWithName
 			const type = nowAllExitence.types.find((type)=>type.__key == typeKey)
 			const exitence = type?.exitence.find((exitence)=>exitence.__key == exitenceKey)
 			if(exitence){
 				const newName = translateToTextContent(value)
+				console.log(newName)
 				changeExitenceName(exitence,newName,true)
 			}
 		}
 		//事物设置：指定属性值为事物的别名
-		const nickName = statusSetting?.["exitenceSetting-nickName"]
+		const nickName = statusSetting.value["exitenceSetting-nickName"]
 		if(nickName){
 			const [typeKey,exitenceKey] = nickName
 			const type = nowAllExitence.types.find((type)=>type.__key == typeKey)

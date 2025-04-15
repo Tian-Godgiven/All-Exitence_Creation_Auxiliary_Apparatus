@@ -1,6 +1,6 @@
 import Status from "@/interfaces/Status"
 
-import { SettingOption } from "@/interfaces/SettingOption"
+import { SettingOption } from "@/components/all-exitence/setting/setting"
 
 // 属性设置的内容项表
 export let statusSettingList:SettingOption<Status>[] = [
@@ -25,7 +25,7 @@ export let statusSettingList:SettingOption<Status>[] = [
 	// },
 	{
 		name:"unit",
-		value:null,
+		value:"",
 		text:"单位：",
 		type:"input",
 		select:(status)=>{
@@ -60,10 +60,10 @@ export let statusSettingList:SettingOption<Status>[] = [
 		},
 		choices:[{
 			value:"horizontal",
-			text:"横向"
+			label:"横向"
 		},{
 			value:"vertical",
-			text:"竖向"
+			label:"竖向"
 		}]
 	},
 	{
@@ -115,7 +115,7 @@ export let statusSettingList:SettingOption<Status>[] = [
 		"name":"inputPlaceholder",
 		"text":"属性值为空时的显示的占位符",
 		"type":"input",
-		"value":null,
+		"value":"",
 		select:(status)=>{
 			if(["downLine","inputBox"].includes(status.valueType)){
 				return true

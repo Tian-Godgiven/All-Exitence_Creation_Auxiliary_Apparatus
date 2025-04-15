@@ -241,12 +241,14 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
         exitence.name = newName
         // 改变输入建议列表中的名称
         changeExitenceInputSuggestion(exitence.__key,"name",newName)
-
         if(sync){return}//如果本来就是因为同步，则不继续
         // 事物设置：指定属性与事物名称同步
-        const syncStatusKey = exitence.setting.syncWithName
+        const syncStatusKey = exitence.setting.syncWithName 
+        console.log(exitence.setting)
         if(syncStatusKey){
+            console.log(syncStatusKey)
             const status = getExitenceStatusByKey(syncStatusKey,exitence.status)
+            console.log(status)
             if(!status)return false;
             status.value = newName
         }

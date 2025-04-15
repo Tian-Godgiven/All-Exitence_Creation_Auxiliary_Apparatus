@@ -1,27 +1,32 @@
 <template>
-    <!-- 设置箱，显示时会自动展开 -->
-    <div class="settingBox" :class="show? 'settingBox-show':''">
-		<div class="container"> <!--别删！对css样式有用！-->
-			<settingOptionVue 
-				v-for="(option,index) in options" 
-				:setOption="option"
-				:ref="`option-${index}`"/>
-		</div>
-    </div>
+<!-- 设置箱，显示时会自动展开 -->
+<div class="settingBox" :class="show? 'settingBox-show':''">
+	<div class="container"> <!--别删！对css样式有用！-->
+		<settingOptionVue 
+			v-for="(option,index) in options" 
+			:setOption="option"
+			:ref="`option-${index}`"/>
+	</div>
+</div>
 </template>
 
 <script setup lang='ts'>
     import { ref,computed, inject } from 'vue';
     import settingOptionVue from './settingOption.vue';
-    import { SettingOption } from '@/interfaces/SettingOption';
-    //控制显示,
-    const {show=true} = defineProps(["show"])
+    import { SettingOption, SettingProps } from '@/components/all-exitence/setting/setting';
+import { Exitence } from '@/class/Exitence';
+import { Type } from '@/class/Type';
+
+    const {show=true} = defineProps<{
+		show:boolean, //控制显示
+	}>()
+
     //设置目标,筛选目标,设置项表
-	const settingProps = inject<any>("settingProps",null)
+	const settingProps = inject<SettingProps<Exitence,Type>>("settingProps",null)
 	if(!settingProps){
 		console.error(`传递的设置变量不可用:${settingProps}`)
 	}
-
+ 
     let {target,selectTarget=null,optionList} = settingProps
     //请确保筛选目标是一个computed或ref对象
     if(!selectTarget){
@@ -34,16 +39,15 @@
 	})
 
 	//需要显示的设置项
-	let options = computed(()=>{
-		const tmp = optionList.reduce((acc:any,option:SettingOption)=>{
-			//满足该设置项的select需求或者该设置项不具备select
-			if(!option.select || option.select(selectTarget.value) == true){
-				acc.push(option)
+	let options = computed(() => {
+		return optionList.flatMap((option) => {
+			// 满足该设置项的select需求或者该设置项不具备select
+			if (!option.select || option.select(selectTarget) === true) {
+				return option; // 返回一个数组，这样 flatMap 会将其扁平化
 			}
-			return acc
-		},<any[]>[])
-		return tmp
-	})
+			return [];
+		});
+	});
 
 	// 选项子组件
 	const optionRefs:any = computed(()=>{

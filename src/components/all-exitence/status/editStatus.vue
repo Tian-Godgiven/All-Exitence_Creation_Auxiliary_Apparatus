@@ -1,38 +1,36 @@
 <template>
-	<div class="editStatus">
-		<div class="statusInfo">
-			<!-- 属性名 -->
-			<statusNameVue :status="status" :typeStatus="typeStatus" ></statusNameVue>
-			<!-- 属性值 -->
-			<statusValueVue :status="status" :typeStatus="typeStatus" class="statusValue"></statusValueVue>
-		</div>
-		
-		<!-- 属性类型与设置 -->
-		<div class="statusSet">
-			<Selector
-				@change="changeValueType"
-				class="selectValueType" 
-				v-model="status.valueType"
-				placeholder="选择类型"
-				:list="valueTypes">
-			</Selector>
-
-			<Button class="button" @click="switchSetting" name="设置" icon="setting"></Button>
-            <Button class="button" @click="confirm" name="确认">
-				<slot name="confirm"></slot>
-			</Button>
-			<!-- <div class="button" @click="confirm">
-                <slot name="confirm"></slot>
-            </div> -->
-		</div>
-
-		<!-- 额外输入栏 -->
-		<component :status="status" :is="statusBonusInputList[status.valueType]"></component>
-
-		<!-- 属性设置栏 -->
-		<settingBoxVue ref="settingBox" :show="showSettingBox"/>
-		
+<div class="editStatus">
+	<div class="statusInfo">
+		<statusNameVue :status="status" :typeStatus="typeStatus"/>
+		<statusValueVue :status="status" :typeStatus="typeStatus"/>
 	</div>
+	
+	<!-- 属性类型与设置 -->
+	<div class="statusSet">
+		<Selector
+			@change="changeValueType"
+			class="selectValueType" 
+			v-model="status.valueType"
+			placeholder="选择类型"
+			:list="valueTypes">
+		</Selector>
+
+		<Button class="button" @click="switchSetting" name="设置" icon="setting"></Button>
+		<Button class="button" @click="confirm" name="确认">
+			<slot name="confirm"></slot>
+		</Button>
+		<!-- <div class="button" @click="confirm">
+			<slot name="confirm"></slot>
+		</div> -->
+	</div>
+
+	<!-- 额外输入栏 -->
+	<component :status="status" :is="statusBonusInputList[status.valueType]"></component>
+
+	<!-- 属性设置栏 -->
+	<settingBoxVue ref="settingBox" :show="showSettingBox"/>
+	
+</div>
 </template>
 
 <script setup lang="ts" name=""> 
@@ -47,9 +45,11 @@
 	import { cloneDeep } from 'lodash';
 	import Button from '@/components/global/Button.vue';
 import Selector from '@/components/global/Selector.vue';
+import Status from '@/interfaces/Status';
 
+	
 	// 需要编辑的属性初值
-    let status = inject<any>("status")
+    let status = inject<Status>("status")
     let typeStatus = inject<any>("typeStatus")
     if(!status.name){
         status.name = cloneDeep(typeStatus.name);

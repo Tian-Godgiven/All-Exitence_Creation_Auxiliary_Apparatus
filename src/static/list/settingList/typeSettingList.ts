@@ -1,6 +1,6 @@
 import { Type } from "@/class/Type"
 import Status from "@/interfaces/Status"
-import { SettingOption } from "@/interfaces/SettingOption"
+import { SettingOption } from "@/components/all-exitence/setting/setting"
 
 // 属性设置的内容项表
 export let typeSettingList:SettingOption<Type>[] = [
@@ -17,11 +17,11 @@ export let typeSettingList:SettingOption<Type>[] = [
         choices:(type:Type)=>{
             //返回输入类属性组成的对象列表
             const allStatus = type.typeStatus
-            const tmpList:any[] = []
-            allStatus.forEach((status:Status)=>{
+            const tmpList = allStatus.flatMap((status:Status)=>{
                 if(["downLine","inputBox"].includes(status.valueType)){
-                    tmpList.push({value:status.__key,text:status.name})
+                    return {value:status.__key,label:status.name}
                 }
+                return []
             })
             return tmpList
         }
@@ -32,9 +32,8 @@ export let typeSettingList:SettingOption<Type>[] = [
         type:'choose',
         choices:(type:Type)=>{
             const allStatus = type.typeStatus
-            const tmpList:any[] = []
-            allStatus.forEach((status:Status)=>{
-                tmpList.push({value:status.__key,text:status.name})
+            const tmpList = allStatus.map((status:Status)=>{
+                return {value:status.__key,label:status.name}
             })
             return tmpList
         }
@@ -45,12 +44,11 @@ export let typeSettingList:SettingOption<Type>[] = [
         type:"choose",
         choices:(type:Type)=>{
             const allStatus = type.typeStatus
-            const tmpList:any[] = []
-            allStatus.forEach((status:Status)=>{
-                //返回tags类属性
+            const tmpList = allStatus.flatMap((status:Status)=>{
                 if(status.valueType == "tags"){
-                    tmpList.push({value:status.__key,text:status.name})
+                    return {value:status.__key,label:status.name}
                 }
+                return []
             })
             return tmpList
         }
