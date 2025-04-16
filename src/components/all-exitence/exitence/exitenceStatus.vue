@@ -1,12 +1,10 @@
 <template>
-    <div>
-        <!-- 显示属性 -->
-        <div :key="key" class="exitenceStatus" v-touch:longtap="showUpdateStatus">
-            <statusNameVue v-if="!ifNoName" :status="status" :typeStatus="typeStatus" :disabled="true"></statusNameVue>
-            <!-- 属性值 -->
-            <statusValueVue :status="status" :typeStatus="typeStatus" :disabled="disabled" class="value"></statusValueVue>
-        </div>
-    </div>
+<!-- 显示属性 -->
+<div :key="key" class="exitenceStatus" v-touch:longtap="showUpdateStatus">
+    <statusNameVue v-if="!ifNoName" :status="status" :typeStatus="typeStatus" :disabled="true"></statusNameVue>
+    <!-- 属性值 -->
+    <statusValueVue :status="status" :typeStatus="typeStatus" :disabled="disabled" class="value"></statusValueVue>
+</div>
 </template>
 
 <script setup lang='ts'>

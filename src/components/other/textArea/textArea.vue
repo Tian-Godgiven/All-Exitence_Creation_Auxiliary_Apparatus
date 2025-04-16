@@ -120,25 +120,28 @@
 
     //同步输入，判断输入补全提示
     function onInput(event:Event){
+        console.log("相应了")
         const inputEvent = event as InputEvent
-        // //同步输入位置
-        // const selection = window.getSelection();
-        // if(selection){
-        //     selectionRange = selection.getRangeAt(0)
-        // }
+        //同步输入位置
+        const selection = window.getSelection();
+        if(selection){
+            selectionRange = selection.getRangeAt(0)
+        }
         const newInput = inputEvent.data
+        console.log(newInput)
         listenInput(newInput)
     }
     //输入监听
-    function listenInput(newInput:any){
+    function listenInput(newInput:string|null){
         //同步content的内容
         const newContent = syncContent()
-        //无效输入内容
-        if(newInput==null||newInput==undefined)return false;
-        // 将新的输入内容添加到有效输入
-        effectInput += newInput
-        // 输入建议功能
-        ifInputSuggestion(newInput)
+        //无效输入内容不添加到有效输入
+        if(newInput){
+            // 将新的输入内容添加到有效输入
+            effectInput += newInput
+            // 输入建议功能
+            ifInputSuggestion(newInput)
+        }
         //执行input事件，返回新的内容和新输入的内容
         emits("input",newContent,newInput)
     }
@@ -244,6 +247,8 @@
         effectInput = ""
         emits("focus",content.value)
     }
+
+
     //向该输入区中添加一个dom元素
     function addDom(domHTML:string){
         //如果还没有聚焦过，则默认为末尾的位置

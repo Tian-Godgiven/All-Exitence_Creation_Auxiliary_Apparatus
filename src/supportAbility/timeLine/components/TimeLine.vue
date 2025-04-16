@@ -1,8 +1,8 @@
 <template>
 <div class="timeLine"
-        @pointerdown="dragStart" 
-        @pointermove="dragLine" 
-        @pointerup="dragEnd">
+        @pointerdown.stop="dragStart" 
+        @pointermove.stop="dragLine" 
+        @pointerup.stop="dragEnd">
     <div class="title">
         <div class="name">{{ timeLine.name??"未命名" }}</div>
         <div class="ability" v-if="!manageMode">

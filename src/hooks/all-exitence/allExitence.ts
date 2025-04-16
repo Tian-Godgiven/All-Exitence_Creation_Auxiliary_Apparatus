@@ -9,6 +9,7 @@ import { addExitenceInputSuggestion, changeExitenceInputSuggestion, deleteExiten
 import { showAlert } from "../alert";
 import { filterExitenceByRule } from "../expression/groupRule";
 import { isArray } from "lodash";
+import { deleteShowOnMain } from "../pages/mainPage/showOnMain";
 
 //当前万物
 export const nowAllExitence = reactive<{types:Type[]}>({types:[]})
@@ -109,7 +110,7 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
     export function deleteType(type:Type){
         //分别删除其中的事物
         type.exitence.forEach((exitence:Exitence)=>{
-            deleteExitence(exitence)
+            deleteExitence(exitence,type)
         })
         //再从项目中删除该分类
         const index = nowAllExitence.types.indexOf(type)
@@ -218,14 +219,15 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
             }
         })
     }
-    // 删除指定事物
-    export function deleteExitence(exitence:Exitence,type?:Type){
-        if(type){
-            const index = type.exitence.indexOf(exitence)
-            type.exitence.splice(index,1)
-        }
+    // 删除指定分类中的事物
+    export function deleteExitence(exitence:Exitence,type:Type){
         //删除事物的输入建议
         deleteExitenceInputSuggestion(exitence.__key)
+        //删除显示在页面上的情况
+        deleteShowOnMain(exitence)
+        //删除分类中的事物
+        const index = type.exitence.indexOf(exitence)
+        type.exitence.splice(index,1)
     }
 
 
@@ -342,12 +344,11 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
         type.groups.push(newGroup)
         return newGroup
     }
-    // 删除分组
+    // 删除分组，不会删除其中的事物
     export function deleteGroup(type:Type,group:Group){
         showAlert({
             info:`删除${type.name}中的分组${group.name}？`,
             confirm:()=>{
-                
                 //从type中移除这个group
                 const index = type.groups.indexOf(group)
                 type.groups.splice(index,1)

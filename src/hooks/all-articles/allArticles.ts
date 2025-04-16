@@ -4,6 +4,7 @@ import { Chapter } from "@/class/Chapter";
 import { Article } from "@/class/Article";
 import { showAlert } from "../alert";
 import { nanoid } from "nanoid";
+import { deleteShowOnMain, showOnMain } from "../pages/mainPage/showOnMain";
 
 //当前文章
 export const nowAllArticles = reactive<{
@@ -25,25 +26,36 @@ export function changeNowAllArticles(newAllArticles:any){
 //文本相关
     //向目标章节中插入一个新的空文本
     export function addArticle(chapter:Chapter){
-        //继承章节的from
+        //创建文本对象
         const from = [...chapter.from,chapter.__key]
         const now = Date.now()
         const newArticle:Article = new Article("","",from,nanoid(),now,now)
+        //添加到目标章节
+        chapter.articles.push(newArticle)
         return newArticle
     }
 
-    //从目标位置删除指定的文本
-    export function deleteArticle(from:any,article:Article){
-        const position = from == nowAllArticles ? from.name+"中的":""
+    //弹窗：从目标位置删除指定的文本
+    export function deleteArticlePopUp(from:{articles:Article[]},article:Article){
+        let position = ""
+        if("name" in from){
+            position = from.name+"中的"
+        }
         const title = article.title=="" ? "<未命名文本>":"文本："+article.title
         showAlert({
             "info":`删除${position}${title}？`,
             confirm:()=>{
-                const index = from.articles.indexOf(article)
-                from.articles.splice(index,1)
+                deleteArticle(from,article)
             }
         })
         
+    }
+    //删除文本
+    export function deleteArticle(from:{articles:Article[]},article:Article){
+        //如果删除的对象正在显示
+        deleteShowOnMain(article)
+        const index = from.articles.indexOf(article)
+        from.articles.splice(index,1)
     }
 
     //聚焦到指定文章
@@ -117,16 +129,23 @@ export function changeNowAllArticles(newAllArticles:any){
     }
 
     //删除指定章节
-    export function deleteChapter(from:any,chapter:Chapter){
+    export function deleteChapterPopUp(from:any,chapter:Chapter){
         //进行提示 
         showAlert({
             "info":`删除章节${chapter.name}及其中的所有内容？`,
             "confirm":()=>{
-                //从from中移除这个chapter
-                const index = from.chapters.indexOf(chapter)
-                from.chapters.splice(index,1)
+                deleteChapter(from,chapter)
             }
         })
+    }
+    function deleteChapter(from:{chapters:Chapter[]},chapter:Chapter){
+        //判断其中的文章是否显示在主页面
+        chapter.articles.forEach(article=>{
+            deleteShowOnMain(article)
+        })
+        //从from中移除这个chapter
+        const index = from.chapters.indexOf(chapter)
+        from.chapters.splice(index,1)
     }
 
     //更新指定章节的名称

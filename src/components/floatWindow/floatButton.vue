@@ -1,9 +1,9 @@
 <template>
 <div class="floatBtn"
     :class="[{moveBtn: allowMove}, `${btnType}Btn`]"
-    @pointerdown="touchStart"
+    @pointerdown.stop="touchStart"
     @pointermove="touchMove"
-    @pointerup="touchEnd">
+    @pointerup.stop="touchEnd">
     <slot></slot>
 </div>
 </template>

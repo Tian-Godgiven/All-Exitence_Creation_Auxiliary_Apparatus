@@ -1,8 +1,7 @@
 import { Article } from "@/class/Article"
-import { Chapter } from "@/class/Chapter"
 import { Exitence } from "@/class/Exitence"
 import { Type } from "@/class/Type"
-import { getArticleByKey, nowAllArticles } from "@/hooks/all-articles/allArticles"
+import { getArticleByKey } from "@/hooks/all-articles/allArticles"
 import { nowAllExitence } from "@/hooks/all-exitence/allExitence"
 import { ProjectLastTarget } from "@/hooks/project/project"
 import { reactive } from "vue"
@@ -81,10 +80,27 @@ export function showTargetOnMain({from,targetKey,type}:ProjectLastTarget){
     else if(type == "article"){
         //根据文章的from,从最外层找起
         const article = getArticleByKey(from,targetKey)
-        console.log(from,targetKey,article)
         if(!article){
             return false
         }
         showArticleOnMain(article)
+    }
+    else if(type == "info"){
+        switch(targetKey){
+            case "app":
+                showInitialAppOnMain()
+                break;
+            case "project":
+                showInitialProjectOnMain()
+                break;
+        }
+    }
+}
+
+//删除的对象正显示在主页面
+export function deleteShowOnMain(target:Exitence|Article){
+    if(target == showOnMain.target){
+        //切换到项目初始页面
+        showInitialProjectOnMain()
     }
 }

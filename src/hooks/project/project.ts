@@ -15,7 +15,8 @@ import { Type } from "@/class/Type"
 //项目上一次访问的目标
 export type ProjectLastTarget = 
     {from:string,targetKey:string,type:"exitence"}|//事物
-    {from:string[],targetKey:string,type:"article"}//或是文章
+    {from:string[],targetKey:string,type:"article"}|//或是文章
+    {from:null,targetKey:"app"|"project",type:"info"}
 //项目信息
 type ProjectInfo = {
     name:string,
@@ -97,7 +98,6 @@ export async function syncProject(projectPath:string){
 //读取项目信息，在主页面上显示指定内容
 function showRememberOnMain(){
     let target = nowProjectInfo.lastTarget
-    console.log(target)
     //如果为空，则显示指引页面
     if(!target){
         onNoContent()
@@ -141,18 +141,23 @@ export async function saveProject(){
 export async function saveProjectInfo(){
     //记录项目当前主页面的内容:切换项目or保存项目
     if(!nowProjectInfo?.pathName){return false}//在项目初始化时，也会尝试进行一场记录，此时跳过
-    //注意当前主页面可能是初始页面
-    if(!showOnMain.from){return false}
+    //空状态报错
+    if(!showOnMain.type){console.error("主页面对象为空！",showOnMain);return}
     //记录当前主页面的对象
-    console.log(showOnMain)
-    if(["article","exitence"].includes(showOnMain.type)){
-        const remenber = {
+    if(["article","exitence","info"].includes(showOnMain.type)){
+        const key = function(){
+            if(showOnMain.type == "info"){
+                return showOnMain.target
+            }
+            return showOnMain.target.__key
+        }()
+        const remember = {
             type:showOnMain.type,
             from:showOnMain.from,
-            targetKey:showOnMain.target.__key
+            targetKey:key,
         } as ProjectLastTarget
         //写进项目信息中
-        nowProjectInfo.lastTarget = remenber
+        nowProjectInfo.lastTarget = remember
     }
     //将项目信息写入
     await writeFileAtPath(`projects/${nowProjectInfo.pathName}`,"projectInfo.json",nowProjectInfo)

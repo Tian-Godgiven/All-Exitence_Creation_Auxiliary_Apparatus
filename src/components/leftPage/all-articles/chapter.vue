@@ -11,7 +11,7 @@
 			</div>
 
 			<div class="titleButtons manageButtons" v-show="manageMode">
-				<div @click="deleteChapter(from,chapter)">删除</div>
+				<div @click="deleteChapterPopUp(from,chapter)">删除</div>
 				<div ref="handlerRef">拖动</div>
 			</div>
 			
@@ -61,7 +61,7 @@
 	import { onMounted, onUnmounted, ref, inject, computed } from "vue";
 	import articleVue from "./article.vue"
 	import chapterVue from "./chapter.vue"
-	import { addArticle, createChapter, focusOnChapter,focusOnArticle, deleteChapter ,updateChapter} from "@/hooks/all-articles/allArticles";
+	import { addArticle, createChapter, focusOnChapter,focusOnArticle, deleteChapterPopUp ,updateChapter} from "@/hooks/all-articles/allArticles";
 	import { showControlPanel } from "@/hooks/controlPanel";
 	import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine"
 	import {draggable,dropTargetForElements} from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
@@ -260,7 +260,7 @@
 	function longtap(){
 		showControlPanel([{
 			text:"删除",
-			click:()=>{deleteChapter(from,chapter)}
+			click:()=>{deleteChapterPopUp(from,chapter)}
 		},{
 			text:"重命名",
 			click:()=>{updateChapter(chapter)}

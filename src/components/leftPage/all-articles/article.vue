@@ -4,7 +4,7 @@
 
 		<div class="manageButtons" v-show="manageMode">
 			<div class="button" @click="clickDeleteArticle($event)">删除</div>
-			<div class="button" ref="handlerRef">拖动</div>
+			<div class="button" ref="handlerRef" @pointerdown.stop>拖动</div>
 		</div>
 
 		<longTapContainerVue :disabled="manageMode" @longtap="longtap" @click="click">
@@ -28,7 +28,7 @@ import { hidePage } from '@/hooks/pages/pageChange';
 import { showArticleOnMain } from '@/hooks/pages/mainPage/showOnMain';
 import { computed,ref,onMounted,onUnmounted, inject } from 'vue';
 import { showControlPanel } from '@/hooks/controlPanel';
-import { deleteArticle } from '@/hooks/all-articles/allArticles';
+import { deleteArticlePopUp } from '@/hooks/all-articles/allArticles';
 import { translateToTextContent } from '@/hooks/expression/textAreaContent';
 import { trim } from 'lodash';
 import longTapContainerVue from "../../other/longTapContainer.vue";
@@ -70,7 +70,7 @@ import { DragState, getCombine } from '@/api/dragToSort';
 		showControlPanel([{
 			text:"删除",
 			click:()=>{
-				deleteArticle(from,article)
+				deleteArticlePopUp(from,article)
 			}
 		}])
 	}
@@ -81,7 +81,7 @@ import { DragState, getCombine } from '@/api/dragToSort';
 	}
 	function clickDeleteArticle(event:Event){
 		event.stopPropagation()
-		deleteArticle(from,article)
+		deleteArticlePopUp(from,article)
 	}
 
 	//拖拽功能的实现

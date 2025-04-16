@@ -92,7 +92,7 @@ import { Article } from '@/class/Article';
 							targetObject["chapters"].push(theSourceObject)
 						}
 						//设定source的from为targetObject
-						sourceObject.from = targetObject.from
+						sourceObject.from = [...targetObject.from]
 						sourceObject.from.push(targetObject.__key)						
 						//完成了，直接结束
 						return;
