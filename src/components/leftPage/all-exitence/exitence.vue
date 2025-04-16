@@ -3,7 +3,9 @@
 
 		<div class="manageButtons" v-show="manageMode">
 			<div class="button" @click="clickDeleteExitence($event)">删除</div>
-			<div class="button" ref="handlerRef">拖动</div>		
+			<DragHandler> 
+				<div class="button" ref="handlerRef">拖动</div>
+			</DragHandler>		
 		</div>
 
 		<longTapContainerVue :disabled="manageMode" @longtap="longtap" @click="click">
@@ -34,6 +36,7 @@ import { translateToTextContent } from '@/hooks/expression/textAreaContent';
 import indicatorVue from '@/components/other/indicator.vue';
 import { DragState, getCombine } from '@/api/dragToSort';
 import { Exitence } from '@/class/Exitence';
+import DragHandler from '@/components/global/DragHandler.vue';
 
 	let {exitence} = defineProps<{exitence:Exitence}>()
 	const name = computed(()=>{

@@ -4,7 +4,9 @@
 
 		<div class="manageButtons" v-show="manageMode">
 			<div class="button" @click="clickDeleteArticle($event)">删除</div>
-			<div class="button" ref="handlerRef" @pointerdown.stop>拖动</div>
+			<DragHandler>
+				<div class="button" ref="handlerRef">拖动</div>
+			</DragHandler>
 		</div>
 
 		<longTapContainerVue :disabled="manageMode" @longtap="longtap" @click="click">
@@ -35,6 +37,7 @@ import longTapContainerVue from "../../other/longTapContainer.vue";
 import { Article } from '@/class/Article';
 import indicatorVue from '@/components/other/indicator.vue';
 import { DragState, getCombine } from '@/api/dragToSort';
+import DragHandler from '@/components/global/DragHandler.vue';
 
 	let {article,from} = defineProps<{article:Article,from:any}>()
 	const manageMode = inject("manageMode",false)

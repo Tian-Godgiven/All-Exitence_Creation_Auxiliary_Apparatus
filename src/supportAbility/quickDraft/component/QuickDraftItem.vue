@@ -29,7 +29,9 @@
         
         <div class="sideBar" v-show="manageMode">
             <div @click="deleteQuickDraftItem(quickDraftItem)">删除</div>
-            <div ref="handlerRef">拖拽</div>
+            <DragHandler>
+                <div ref="handlerRef">拖动</div>
+            </DragHandler>
         </div>
         
         <Indicator v-if="dragState.type === 'be-dragging-edge' 
@@ -54,6 +56,7 @@
     import { DragState, getCombine } from '@/api/dragToSort';
 
     import Indicator from '@/components/other/indicator.vue';
+import DragHandler from '@/components/global/DragHandler.vue';
     const {quickDraftItem,manageMode} = defineProps<{quickDraftItem:QuickDraftItem,manageMode:boolean}>()
     //长按显示控制面板
     function longTap(){

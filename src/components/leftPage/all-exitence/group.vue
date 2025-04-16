@@ -8,7 +8,9 @@
 
 			<div class="titleButtons manageButtons" v-show="manageMode">
 				<div @click="deleteGroup(type,group)">删除</div>
-				<div ref="handlerRef">拖动</div>
+				<DragHandler>
+					<div ref="handlerRef">拖动</div>
+				</DragHandler>
 			</div>
 			
 			<longTapContainerVue class="titleName" :disabled="manageMode" @longtap = "longtap" @click="swicthExpending()">
@@ -43,6 +45,7 @@ import { Exitence } from '@/class/Exitence';
 import longTapContainerVue from "../../other/longTapContainer.vue";
 import indicatorVue from '@/components/other/indicator.vue';
 import { DragState, getCombine } from '@/api/dragToSort';
+import DragHandler from '@/components/global/DragHandler.vue';
 	
 	let {group,groupExitence} = defineProps<{group:Group,groupExitence:Exitence[]}>() 
 	const type = inject<any>("type")

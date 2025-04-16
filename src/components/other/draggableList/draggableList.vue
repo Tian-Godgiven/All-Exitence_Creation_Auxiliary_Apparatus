@@ -1,6 +1,7 @@
 <template>
 	<div class="draggableList">
 		<draggable 
+			@pointerdown.stop
 			:group="group"
 			:list = "list" 
 			itemKey=""

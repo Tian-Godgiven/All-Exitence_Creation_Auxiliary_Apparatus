@@ -12,7 +12,9 @@
 
 			<div class="titleButtons manageButtons" v-show="manageMode">
 				<div @click="deleteChapterPopUp(from,chapter)">删除</div>
-				<div ref="handlerRef">拖动</div>
+				<DragHandler>
+					<div ref="handlerRef">拖动</div>
+				</DragHandler>
 			</div>
 			
 			<longTapContainerVue class="titleName" 
@@ -76,6 +78,7 @@
 	import longTapContainerVue from "../../other/longTapContainer.vue";
 	import indicatorVue from "@/components/other/indicator.vue";
 	import { DragState } from '@/api/dragToSort';
+import DragHandler from "@/components/global/DragHandler.vue";
 
 	let {chapter,from,level} = defineProps<{chapter:Chapter,from:any,level:number}>()
 	//展开与切换展开
