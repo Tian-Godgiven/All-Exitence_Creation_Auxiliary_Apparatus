@@ -19,6 +19,7 @@ export function changeNowAllArticles(newAllArticles:any){
     }
     nowAllArticles.chapters = newAllArticles.chapters
     nowAllArticles.articles = newAllArticles.articles
+    console.log("当前所有文章",nowAllArticles)
 }
 
 //文本相关
@@ -28,7 +29,6 @@ export function changeNowAllArticles(newAllArticles:any){
         const from = [...chapter.from,chapter.__key]
         const now = Date.now()
         const newArticle:Article = new Article("","",from,nanoid(),now,now)
-        chapter.articles.push(newArticle)
         return newArticle
     }
 
@@ -149,7 +149,7 @@ export function changeNowAllArticles(newAllArticles:any){
     }
 
     //给出某个章节或文章的from，找到其父章节
-    export function getParentChapter(from:string[]){
+    function getParentChapter(from:string[]):{chapters:Chapter[],articles:Article[]}{
         //在最外层
         if(from.length == 0){
             //返回项目总文本
@@ -158,9 +158,9 @@ export function changeNowAllArticles(newAllArticles:any){
         //遍历from获取其父章节
         let tmp_parent = nowAllArticles
         from.forEach((key)=>{
-            const tmp = tmp_parent.chapters.find((chapter)=>{
+            const tmp = tmp_parent.chapters.find((chapter)=>
                 chapter.__key == key
-            })
+            )
             //替换当前父章节
             if(tmp){
                 tmp_parent = tmp
@@ -173,6 +173,7 @@ export function changeNowAllArticles(newAllArticles:any){
                 return false
             }
         })
+        return tmp_parent
     }
 
     //通过from和key找到某个chapter

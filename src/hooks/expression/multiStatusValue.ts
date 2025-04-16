@@ -311,9 +311,9 @@ export function getExpressionText(allStatus:any,allTypeStatus:any,expression:any
 
 //获取引用的属性目标
 export function getQuoteStatus(allStatus:any[],statusKey:string){
-    let tmp = allStatus.find((status:any)=>{
-        return status.__key == statusKey
-    })
+    let tmp = allStatus.find((status:any)=>
+        status.__key == statusKey
+    )
     
     if(tmp){
         return tmp
@@ -325,9 +325,9 @@ export function getQuoteStatus(allStatus:any[],statusKey:string){
 //递归获取引用part的值
 export function getQuotePart(parts:any,partKey:string){
     //寻找目标
-    const targetPart = parts.value.find((tmpPart:multiStatusPart)=>{
-        return tmpPart.__key == partKey
-    })
+    const targetPart = parts.value.find((tmpPart:multiStatusPart)=>
+        tmpPart.__key == partKey
+    )
     //递归寻找非引用part
     if(targetPart.valueType == "quotePart"){
         return getQuotePart(parts,targetPart)

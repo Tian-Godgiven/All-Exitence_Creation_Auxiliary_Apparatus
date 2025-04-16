@@ -44,7 +44,7 @@
 	import showExitenceOnMainVue from '@/components/mainPage/showExitenceOnMain.vue';
 	import { showOnMain } from '@/hooks/pages/mainPage/showOnMain';
 	import { computed, ref, watch } from 'vue';
-	import { nowProjectInfo } from '@/hooks/project/projectData';
+	import { nowProjectInfo } from '@/hooks/project/project';
 	import { saveAll } from '@/hooks/app/autoSave';
 	import { Icon } from '@/static/list/iconList';
 	import Suggester from '@/supportAbility/inputSuggestion/suggester/Suggester.vue';

@@ -2,7 +2,7 @@ import { Article } from "@/class/Article"
 import { Chapter } from "@/class/Chapter"
 import { Exitence } from "@/class/Exitence"
 import { Type } from "@/class/Type"
-import { nowAllArticles } from "@/hooks/all-articles/allArticles"
+import { getArticleByKey, nowAllArticles } from "@/hooks/all-articles/allArticles"
 import { nowAllExitence } from "@/hooks/all-exitence/allExitence"
 import { ProjectLastTarget } from "@/hooks/project/project"
 import { reactive } from "vue"
@@ -67,9 +67,7 @@ export function showInitialProjectOnMain(){
 }
 
 // 显示项目目标对象在主页面
-export function showTargetOnMain({from,targetKey,type}:
-    ProjectLastTarget
-){
+export function showTargetOnMain({from,targetKey,type}:ProjectLastTarget){
     //先找到该对象
     if(type == "exitence"){
         const targetType = nowAllExitence.types.find((type)=>type.__key == from)
@@ -82,14 +80,11 @@ export function showTargetOnMain({from,targetKey,type}:
     }
     else if(type == "article"){
         //根据文章的from,从最外层找起
-        let targetFrom:any = nowAllArticles
-        for(let key of from){
-            targetFrom = targetFrom.chapters.find((chapter:Chapter)=>chapter.__key == key)
-        }
-        const targetArticle = targetFrom?.articles.find((article:Article)=>article.__key == targetKey)
-        if(!targetArticle){
+        const article = getArticleByKey(from,targetKey)
+        console.log(from,targetKey,article)
+        if(!article){
             return false
         }
-        showArticleOnMain(targetArticle)
+        showArticleOnMain(article)
     }
 }

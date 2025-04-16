@@ -13,16 +13,14 @@
 <script setup lang='ts'>
     import { ref,computed, inject } from 'vue';
     import settingOptionVue from './settingOption.vue';
-    import { SettingOption, SettingProps } from '@/components/all-exitence/setting/setting';
-import { Exitence } from '@/class/Exitence';
-import { Type } from '@/class/Type';
+import { SettingOption } from './setting';
 
     const {show=true} = defineProps<{
 		show:boolean, //控制显示
 	}>()
 
     //设置目标,筛选目标,设置项表
-	const settingProps = inject<SettingProps<Exitence,Type>>("settingProps",null)
+	const settingProps = inject<any>("settingProps",null)
 	if(!settingProps){
 		console.error(`传递的设置变量不可用:${settingProps}`)
 	}
@@ -40,7 +38,7 @@ import { Type } from '@/class/Type';
 
 	//需要显示的设置项
 	let options = computed(() => {
-		return optionList.flatMap((option) => {
+		return optionList.flatMap((option:SettingOption<typeof selectTarget>) => {
 			// 满足该设置项的select需求或者该设置项不具备select
 			if (!option.select || option.select(selectTarget) === true) {
 				return option; // 返回一个数组，这样 flatMap 会将其扁平化

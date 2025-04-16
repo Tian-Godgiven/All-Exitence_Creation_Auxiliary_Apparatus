@@ -25,11 +25,9 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
 //分类相关
     //判断分类名称是否重复
     export function checkTypeNameRepeat(typeName:string,type?:Type){
-        const tmp = nowAllExitence.types?.find((type:Type)=>{
-            if(type.name == typeName){
-                return type
-            }
-        })
+        const tmp = nowAllExitence.types?.find((type:Type)=>
+            type.name == typeName
+        )
         //若重复
         if(tmp){
             //并且不与传入的type为同一个type
@@ -42,11 +40,9 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
 
     // 获取key对应的分类的属性
     export function getTypeStatusByKey(statusKey:string,allTypeStatus:Status[]):Status | undefined{
-        return allTypeStatus.find((tmp:Status)=>{
-            if(tmp.__key == statusKey){
-                return tmp
-            }
-        })
+        return allTypeStatus.find((tmp:Status)=>
+            tmp.__key == statusKey
+        )
     }
 
     // 获取key对应的分类对象
@@ -190,11 +186,9 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
         }
 
         //如果传入了分类属性，则返回完整属性
-        const typeStatus = allTypeStatus.find((tmp)=>{
-            if(tmp.__key == statusKey){
-                return tmp
-            }
-        })
+        const typeStatus = allTypeStatus.find((tmp)=>
+            tmp.__key == statusKey
+        )
         //没有找到分类属性，则还是返回事物属性
         if(!typeStatus)return status
 
@@ -244,11 +238,8 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
         if(sync){return}//如果本来就是因为同步，则不继续
         // 事物设置：指定属性与事物名称同步
         const syncStatusKey = exitence.setting.syncWithName 
-        console.log(exitence.setting)
         if(syncStatusKey){
-            console.log(syncStatusKey)
             const status = getExitenceStatusByKey(syncStatusKey,exitence.status)
-            console.log(status)
             if(!status)return false;
             status.value = newName
         }

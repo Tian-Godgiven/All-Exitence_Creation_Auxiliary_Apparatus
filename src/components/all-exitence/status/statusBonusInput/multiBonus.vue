@@ -111,7 +111,7 @@ import { multiStatusPart } from '@/hooks/expression/multiStatusValue';
 					return tmp
 				}
 			})
-			return tmp?.text + "属性"
+			return tmp?.label + "属性"
 		}
 		else if(part.valueType == "quoteStatus"){
 			const theStatus = allStatus.find((status:any)=>status.__key == part.value)

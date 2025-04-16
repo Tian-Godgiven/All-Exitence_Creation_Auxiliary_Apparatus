@@ -46,10 +46,11 @@
 	import Button from '@/components/global/Button.vue';
 import Selector from '@/components/global/Selector.vue';
 import Status from '@/interfaces/Status';
+import { defaultStatus } from '@/hooks/all-exitence/status';
 
 	
 	// 需要编辑的属性初值
-    let status = inject<Status>("status")
+    let status = inject<Status>("status",defaultStatus)
     let typeStatus = inject<any>("typeStatus")
     if(!status.name){
         status.name = cloneDeep(typeStatus.name);

@@ -52,7 +52,6 @@ import { translateToTextContent } from '@/hooks/expression/textAreaContent';
 			const exitence = type?.exitence.find((exitence)=>exitence.__key == exitenceKey)
 			if(exitence){
 				const newName = translateToTextContent(value)
-				console.log(newName)
 				changeExitenceName(exitence,newName,true)
 			}
 		}

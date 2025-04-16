@@ -1,19 +1,23 @@
-import { ref, toRaw } from "vue";
+import { reactive, ref, toRaw } from "vue";
 import { appSetting, changeAppSetting } from "../app/appSetting";
 import { createDirByPath, createFileToPath, deleteAtPath, ifExists, readDirAsArray, readFileFromPath, renameToAtPath, writeFileAtPath } from "../fileSysytem";
 import { showPopUp } from "../pages/popUp";
-import { nowProjectInfo, nowProjectPath, saveProjectInfo, syncProject } from "./projectData";
 import { showAlert } from "../alert";
 import { hidePage } from "../pages/pageChange";
 import { showInitialAppOnMain, showInitialProjectOnMain, showOnMain, showTargetOnMain } from "../pages/mainPage/showOnMain";
 import { supportAbilityList } from "@/static/list/supportAbilityList";
 import { nowAllExitence } from "../all-exitence/allExitence";
 import { nowAllArticles } from "../all-articles/allArticles";
+import { changeNowAllExitence } from "../all-exitence/allExitence"
+import { changeNowAllArticles } from "../all-articles/allArticles"
+import { Type } from "@/class/Type"
 
+//项目上一次访问的目标
 export type ProjectLastTarget = 
     {from:string,targetKey:string,type:"exitence"}|//事物
     {from:string[],targetKey:string,type:"article"}//或是文章
-export interface ProjectInfo{
+//项目信息
+type ProjectInfo = {
     name:string,
     pathName:string,
     time:Date | number,
@@ -21,9 +25,16 @@ export interface ProjectInfo{
     lastTarget:ProjectLastTarget|null //该项目在切换前主页面所显示的对象的信息
 }
 
+//app中所有项目列表
 export const nowProjectList = ref<any>([])
+//当前显示的项目的文件夹路径，注意其只包含其文件夹的名称
+export const nowProjectPath = ref<string|null>(null)
+//当前显示的项目信息
+export const nowProjectInfo = reactive<ProjectInfo>(
+    {name:"",lastTarget:null,pathName:"",time:0}
+)
 
-//初始化项目系统
+//初始化当前项目，读取项目列表
 export async function initProject(){
     //打开上一次的项目文件
     const lastProjectPath = appSetting?.lastProjectPath
@@ -47,11 +58,63 @@ export async function initProject(){
         return arr; // 返回更新后的数组
     }, Promise.resolve([])); // 初始值为一个 resolved 的空数组
 }
-//保存当前项目
-export async function saveProject(){
-    if(!nowProjectPath.value){
+//同步当前项目的数据
+export async function syncProject(projectPath:string){
+    try{
+        //修改当前项目路径
+        nowProjectPath.value = projectPath
+        //项目路径
+        projectPath = `projects/${projectPath}`
+
+        //同步项目设置
+        
+        //修改当前的项目信息
+        const tmp = await readFileFromPath(projectPath,"projectInfo.json")
+        Object.assign(nowProjectInfo,tmp)
+
+        //修改当前的万物和文章
+        let nowAllExitence = await readFileFromPath(projectPath,"all-exitence.json") as {types:Type[]}
+        changeNowAllExitence(nowAllExitence)
+        const nowAllArticles = await readFileFromPath(projectPath,"all-articles.json")
+        changeNowAllArticles(nowAllArticles)
+
+        //同步辅助功能
+        supportAbilityList.forEach(ability=>{
+            if(ability.syncProject){
+                ability.syncProject(projectPath)
+            }
+        })
+
+        return true
+    }
+    catch(err){
+        console.error(err)
+        //找不到指定路径，说明该项目已经不存在
         return false
     }
+    
+}
+//读取项目信息，在主页面上显示指定内容
+function showRememberOnMain(){
+    let target = nowProjectInfo.lastTarget
+    console.log(target)
+    //如果为空，则显示指引页面
+    if(!target){
+        onNoContent()
+    }
+    //否则显示上一次显示的内容
+    else{
+        const bool = showTargetOnMain(target)
+        //如果没有找到，则显示项目初始页面，不过除了用户直接操作数据文件的情况以外，基本上不会发生
+        if(bool===false){
+            onNoContent()
+        }
+    }
+}
+
+//保存当前项目
+export async function saveProject(){
+    if(!nowProjectPath.value){return false}
     try{
         //当前项目的路径
         const projectPath = "projects/"+ nowProjectPath.value
@@ -62,7 +125,9 @@ export async function saveProject(){
         const allArticles = nowAllArticles
         await writeFileAtPath(projectPath,"all-articles.json",toRaw(allArticles))
         //保存项目数据
-        await saveProjectData(projectPath)
+        await saveProjectData()
+        //保存项目信息
+        await saveProjectInfo()
         //项目设置
     }
     catch(err){
@@ -72,9 +137,28 @@ export async function saveProject(){
     }
     return true
 }
-
+//保存当前项目信息
+export async function saveProjectInfo(){
+    //记录项目当前主页面的内容:切换项目or保存项目
+    if(!nowProjectInfo?.pathName){return false}//在项目初始化时，也会尝试进行一场记录，此时跳过
+    //注意当前主页面可能是初始页面
+    if(!showOnMain.from){return false}
+    //记录当前主页面的对象
+    console.log(showOnMain)
+    if(["article","exitence"].includes(showOnMain.type)){
+        const remenber = {
+            type:showOnMain.type,
+            from:showOnMain.from,
+            targetKey:showOnMain.target.__key
+        } as ProjectLastTarget
+        //写进项目信息中
+        nowProjectInfo.lastTarget = remenber
+    }
+    //将项目信息写入
+    await writeFileAtPath(`projects/${nowProjectInfo.pathName}`,"projectInfo.json",nowProjectInfo)
+}
 //保存当前项目数据
-async function saveProjectData(projectPath:string){
+async function saveProjectData(){
     // const dataPath = projectPath+"/data"
     
 }
@@ -91,10 +175,10 @@ export function onNoContent(){
     showInitialProjectOnMain()
 }
 
-//移动到指定项目，同时会记录原项目当前所在的页面
+//从项目A移动到项目B，记录项目A的信息，读取项目B的信息
 export async function moveToProject(projectPath:string){
-    //记录旧项目此时的主页面显示的对象信息
-    await rememberMainTarget()
+    //记录旧项目此时的信息
+    await saveProjectInfo()
     //同步新项目的数据
     const tmp = await syncProject(projectPath)
     //同步数据成功
@@ -113,7 +197,6 @@ export async function moveToProject(projectPath:string){
         })
     }
 }
-
 //移动到下一个项目，通常用于当前项目已经不存在的情况
 export function moveToNextProject(index:number){
     //如果此时已经没有其他项目了，则显示软件初始页面
@@ -126,45 +209,8 @@ export function moveToNextProject(index:number){
     }
 }
 
-//记录项目当前主页面的内容
-async function rememberMainTarget(){
-    //在项目初始化时，也会尝试进行一场记录，此时跳过
-    if(!nowProjectInfo?.pathName){
-        return false
-    }
-    //注意当前主页面可能是初始页面
-    if(!showOnMain.from){return false}
-    //记录当前主页面的对象内容
-    if(["article","exitence"].includes(showOnMain.type)){
-        const remenber = {
-            type:showOnMain.type,
-            from:showOnMain.from,
-            targetKey:showOnMain.target.__key
-        } as ProjectLastTarget
-        //写进项目信息中
-        nowProjectInfo.lastTarget = remenber
-    }
-    
-    //保存这个项目信息
-    await saveProjectInfo()
-}
 
-//在主页面上显示新项目上一次显示的内容
-function showRememberOnMain(){
-    let target = nowProjectInfo.lastTarget
-    //如果为空，则显示指引页面
-    if(!target){
-        onNoContent()
-    }
-    //否则显示上一次显示的内容
-    else{
-        const bool = showTargetOnMain(target)
-        //如果没有找到，则显示项目初始页面，不过除了用户直接操作数据文件的情况以外，基本上不会发生
-        if(bool===false){
-            onNoContent()
-        }
-    }
-}
+
 
 //创建一个项目
 export async function createProject(name:string,info:string=""){
@@ -218,7 +264,6 @@ export async function createProject(name:string,info:string=""){
         }
     }
 }
-
 //通过弹窗输入信息创建一个新项目
 export async function createNewProject(){
     //创建弹窗并获得返回值
@@ -235,7 +280,7 @@ export async function createNewProject(){
     })
 }
 
-// 更新一个项目的名称和简介信息，同时也会尝试更新项目的文件夹名称
+// 更新指定项目的信息，同时也会尝试更新项目的文件夹名称
 async function updateProject(projectInfo:ProjectInfo,newName:string,newInfo:string){
     //覆盖原本的信息
     projectInfo.name = newName;
@@ -243,7 +288,9 @@ async function updateProject(projectInfo:ProjectInfo,newName:string,newInfo:stri
     //尝试使用newName更新项目文件夹的名称
     const newPathName = await renameToAtPath("projects",projectInfo.pathName,newName)
     projectInfo.pathName = newPathName
-    await saveProjectInfo()
+    //保存上述内容
+    await writeFileAtPath(`projects/${projectInfo.pathName}`,
+        "projectInfo.json",projectInfo)
 }
 
 //通过弹窗编辑项目的名称和简介信息
@@ -265,11 +312,7 @@ export function editProjectInfo(projectInfo:ProjectInfo){
 }
 
 //删除一个项目
-export async function deleteProject(projectInfo:{
-    name: string;
-    pathName: string;
-    [key: string]: any; 
-}){
+export async function deleteProject(projectInfo:ProjectInfo){
     //提示是否删除指定项目
     showAlert({
         "info":`是否删除项目:${projectInfo.name}\n项目路径：data/projects/${projectInfo.pathName}`,
@@ -285,6 +328,9 @@ export async function deleteProject(projectInfo:{
             }
         }
     })
-
 }
 
+
+
+
+ 

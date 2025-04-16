@@ -54,11 +54,7 @@
 	})
 	
 	//事物所属的分类
-	const type = nowAllExitence.types.find((type:Type)=>{
-		if(type.__key == exitence.typeKey){
-			return type
-		}
-    })
+	const type = nowAllExitence.types.find((type:Type)=>type.__key == exitence.typeKey)
 	
 	//显示事物的属性数量
 	const statusNum = computed(()=>{
@@ -67,6 +63,7 @@
 
 	//改变名称
 	function changeName(newName:string){
+		console.log("改变了名称")
 		changeExitenceName(exitence,newName)
 	}
 

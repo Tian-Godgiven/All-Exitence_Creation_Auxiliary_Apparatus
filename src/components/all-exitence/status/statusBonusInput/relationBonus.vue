@@ -73,7 +73,7 @@
 
     //获取属性值类型的中文名称
     function getValueType(value:string){
-        return statusValueTypeList.find((tmp)=>tmp.value==value)?.text
+        return statusValueTypeList.find((tmp)=>tmp.value==value)?.label
     }
 </script>
 
