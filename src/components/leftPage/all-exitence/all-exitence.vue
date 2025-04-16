@@ -15,11 +15,12 @@
 	import { reorderWithEdge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/util/reorder-with-edge";
 	import { Type } from '@/class/Type';
 
-		const nowTypes = computed(()=>{
-			return nowAllExitence.types
-		})
+	const nowTypes = computed(()=>{
+		return nowAllExitence.types
+	})
 
-		let cleanup = ()=>{}
+	//拖动排序方法
+	let cleanup = ()=>{}
 	onMounted(()=>{
 		cleanup = monitorForElements({
 			canMonitor({source}){

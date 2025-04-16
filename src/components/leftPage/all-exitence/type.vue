@@ -19,13 +19,12 @@
 			</longTapContainerVue>
 		</div>
 
-		<div class="inner" v-show="expending && !manageMode">
+		<div class="inner" v-show="expending || manageMode">
 			<groupVue v-for="group in type.groups" 
 				:key="group.__key" 
 				:group="group" 
 				:groupExitence="getExitenceInGroup(type.exitence,group)">
 			</groupVue>
-
 			<div v-for="exitence,index in showExitence">
 				<exitenceVue :key="exitence.__key" :exitence="exitence"></exitenceVue>
 				<div class="separator" v-if="index < showExitence.length-1"></div>
