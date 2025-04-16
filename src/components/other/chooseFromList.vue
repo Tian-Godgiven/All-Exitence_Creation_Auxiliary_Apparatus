@@ -11,17 +11,18 @@
 				{{showValue?showValue(option):option}}
 			</div>
 		</div>
-		<div class="buttons"> 
-			<div @click="confirm" class="button">确认</div>
-			<div @click="closePopUp(popUp)" class="button">取消</div>
-		</div>
+		<FinalButtons :buttons="[
+			{click:confirm,name:'确认'},
+			{click:()=>closePopUp(popUp),name:'取消'}]"/>
 	</div>
 </template>
 
 <script setup lang="ts" name="">
 import { ref, toRaw } from 'vue';
 import { closePopUp } from '../../hooks/pages/popUp';
-	const {props,returnValue,popUp} = defineProps(["props","returnValue","popUp"])
+import FinalButtons from '@/app/stacks/popUp/FinalButtons.vue';
+	
+const {props,returnValue,popUp} = defineProps(["props","returnValue","popUp"])
 	const {list,emptyInfo,info,chooseNum,selectRule,showValue,chooseValue} = props
 	//允许显示的项
 	let showList:any
@@ -82,7 +83,6 @@ import { closePopUp } from '../../hooks/pages/popUp';
 </script>
 
 <style lang="scss" scoped>
-	@use "@/static/style/components/popUp.scss";
 	.chooseFromList{
 		.showList{
 			width: 100%;
@@ -91,9 +91,6 @@ import { closePopUp } from '../../hooks/pages/popUp';
 			.option.selected{
 				background-color: lightblue;
 			}
-		}
-		.buttons{
-			@extend .finalButtons;
 		}
 	}
 </style>

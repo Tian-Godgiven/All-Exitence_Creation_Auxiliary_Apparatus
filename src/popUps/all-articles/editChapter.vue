@@ -1,12 +1,11 @@
 <template>
-    <div class="editChapter">
-        <div>{{ title }}</div>
-        <downLineInputVue class="chapterName" v-model="name" placeholder="输入章节名称"/>
-        <div class="buttons">
-            <div @click="confirm" class="button">确认</div>
-            <div @click="closePopUp(popUp)" class="button">取消</div>
-        </div>
-    </div>
+<div class="editChapter">
+    <div>{{ title }}</div>
+    <downLineInputVue class="chapterName" v-model="name" placeholder="输入章节名称"/>
+    <FinalButtons :buttons="[
+        {click:confirm,name:'确认'},
+        {click:()=>closePopUp(popUp),name:'取消'}]"/>
+</div>
 </template>
 
 <script setup lang='ts'>
@@ -14,7 +13,8 @@
     import downLineInputVue from '@/components/other/input/downLineInput.vue';
     import { closePopUp } from '@/hooks/pages/popUp';
     import { showQuickInfo } from '@/api/showQuickInfo';
-
+    import FinalButtons from '@/app/stacks/popUp/FinalButtons.vue';
+    
     const {props,popUp,returnValue} = defineProps(["props","popUp","returnValue"])
     const {chapter={name:""},title=null} = props 
     const name = ref(chapter.name)
@@ -32,7 +32,6 @@
 </script>
 
 <style scoped lang='scss'>
-@use "@/static/style/components/popUp.scss";
     .chapterName{
 			position: relative;
 			margin-top:auto;
@@ -40,7 +39,4 @@
 			width: 550px;
 			height: 60px;
 		}
-    .buttons{
-        @extend .finalButtons;
-    }
 </style>

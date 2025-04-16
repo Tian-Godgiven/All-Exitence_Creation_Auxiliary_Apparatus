@@ -23,10 +23,9 @@
             </template>
         </SwitchExpand>
     </div>
-    <div class="finalButtons">
-        <Button @click="confirm" name="确认"></Button>
-        <Button @click="closePopUp(popUp)" name="取消"></Button>
-    </div>
+    <FinalButtons :buttons="[
+        {click:confirm,name:'确认'},
+        {click:()=>closePopUp(popUp),name:'取消'}]"></FinalButtons>
 </template>
 
 <script setup lang='ts'>
@@ -35,7 +34,7 @@ import SwitchExpand from '@/components/other/SwitchExpand.vue';
 import ChooseStatusOption from './ChooseStatusOption.vue';
 import { closePopUp, PopUp } from '@/hooks/pages/popUp';
 import { showQuickInfo } from '@/api/showQuickInfo';
-import Button from '@/components/global/Button.vue';
+import FinalButtons from '@/app/stacks/popUp/FinalButtons.vue';
     const {popUp,returnValue} = defineProps<{popUp:PopUp,returnValue:(key:{sourceKey:[string,string],targetKey:string})=>{}}>()
     const list = getList()
     //返回选择的事物与选择的属性
@@ -54,8 +53,4 @@ import Button from '@/components/global/Button.vue';
 </script>
 
 <style scoped lang='scss'>
-@use "@/static/style/components/popUp.scss";
-    .finalButtons{
-        @extend .finalButtons;
-    }
 </style>

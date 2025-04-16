@@ -31,10 +31,9 @@
         <MissionTagBar :tags="tmpMission.tags"></MissionTagBar>
     </div>
     
-    <div class="finalButtons">
-        <Button @click="confirm" name="确认"></Button>
-        <Button @click="cancel" name="取消"></Button>
-    </div>
+    <FinalButtons :buttons="[
+        {click:confirm,name:'确认'},
+        {click:cancel,name:'取消'}]"/>
 </div>
 </template>
 
@@ -50,6 +49,7 @@
     import MissionTime from '../components/missionTime.vue';
     import MissionTagBar from '../components/missionTagBar.vue';
     import { editMissionReturn, editTarget, ifShowEditMission, Mission } from '../missionList';
+    import FinalButtons from '@/app/stacks/popUp/FinalButtons.vue';
     //获取编辑对象，若为null则为创建任务
     let mission = editTarget
     if(!mission.value){
@@ -109,7 +109,6 @@
 
 <style scoped lang='scss'>
 @use "@/static/style/components/page.scss";
-@use "@/static/style/components/popUp.scss";
 .editMission{
     .topButtons{
         width: 100%;
@@ -151,11 +150,6 @@
             margin-bottom: 15px;
             border-bottom: 3px solid rgb(168, 168, 168);
         }
-    }
-    
-
-    .finalButtons{
-        @extend .finalButtons;
     }
 }
 

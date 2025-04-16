@@ -6,11 +6,9 @@
 		left:popUp.position?.x,
 		top:popUp.position?.y
 	}">
-		<!-- 标题 -->
 		<div class="title">
 			<div class="titleName" v-if="name">{{ name }}</div>
 			<div class="titleSpace" v-else-if="buttons!=null"></div>
-			<!-- 按键 -->
 			<div class="titleButtons" v-if="buttons!=null">
 				<Button :icon="button.icon" :name="button.name" @click="button.click" v-for="(button) in buttons"></Button>
 			</div>
@@ -31,8 +29,7 @@ import { shallowRef } from 'vue';
 import { PopUp } from '@/hooks/pages/popUp'; 
 import { popUpVueList } from '@/static/list/popUpVueList';
 import Button from '@/components/global/Button.vue';
-	let tmp = defineProps(["popUp"])
-	let popUp:PopUp = tmp.popUp
+	const {popUp} = defineProps<{popUp:PopUp}>()
 	let {name,buttons,vueName,index} = popUp
 
 	let innerVue = shallowRef()

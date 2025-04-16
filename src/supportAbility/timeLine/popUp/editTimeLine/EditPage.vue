@@ -32,16 +32,16 @@
         </div>
     </div>
 
-    <div class="finalButtons">
-        <Button @click="confirm" name="确认"></Button>
-        <Button @click="quit" name="取消"></Button>
-    </div>
+    <FinalButtons :buttons="[
+        {click:confirm,name:'确认'},
+        {click:quit,name:'取消'}
+    ]"/>
 </div>
 </template>
 
 <script setup lang='ts'>
     import { computed, reactive, watch} from 'vue';
-    import Button from '@/components/global/Button.vue';
+    import FinalButtons from '@/app/stacks/popUp/FinalButtons.vue';
     import { createTimeLine,editTimeLine,TimeLine} from '../../timeLine';
     import { getTimeRule, getTimeRuleUnits, translateTimeArrToValue, translateTimeValueToArr } from '@/supportAbility/customTime/translateTime';
     import { cloneDeep, isString } from 'lodash';
@@ -54,7 +54,7 @@
     //选择的目标类型
     const typeList = [
         {value:"exitence",label:"事物"},
-        // {value:"status",label:"事物属性"},
+        // {value:"status",label:"事物属性"},//未完成
         {value:"article",label:"文章"},
     ]
 
@@ -245,7 +245,6 @@
 </script>
 
 <style scoped lang='scss'>
-@use "@/static/style/components/popUp.scss";
 .chooseTarget{
     width: 100%;
     .chooseType{
@@ -268,8 +267,4 @@
     flex-wrap: wrap;
     gap: 5px;
 }
-
-    .finalButtons{
-        @extend .finalButtons;
-    }
 </style>

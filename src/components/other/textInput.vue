@@ -7,10 +7,9 @@
 				placeholder="请输入文本内容">
 			</textAreaVue>
 		</div>
-		<div class="buttons">
-			<div class="button" @click="confirm()">确认</div>
-			<div class="button" @click="closePopUp(popUp)">取消</div>
-		</div>
+		<FinalButtons :buttons="[
+			{click:confirm,name:'确认'},
+			{click:()=>closePopUp(popUp),name:'取消'}]"/>
 	</div>
 </template>
 
@@ -18,6 +17,8 @@
 	import { ref } from 'vue';
 	import textAreaVue from '@/components/other/textArea/textArea.vue';
 	import { closePopUp } from '@/hooks/pages/popUp';
+	import FinalButtons from '@/app/stacks/popUp/FinalButtons.vue';
+
 	const inputText = ref("")
 	const {props={},returnValue,popUp} = defineProps(["props","returnValue","popUp"])
 	//纯文本or文件文本
@@ -29,15 +30,11 @@
 </script>
 
 <style lang="scss" scoped>
-	@use "@/static/style/components/popUp.scss";
 	.textInput{
 		width: 100%;
 		max-height: 300px;
 		.input{
 			width: 100%;
-		}
-		.buttons{
-			@extend .finalButtons;
 		}
 	}
 	

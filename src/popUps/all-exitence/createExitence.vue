@@ -19,16 +19,15 @@
                 <settingBoxVue :show="showSettingBox" ref="settingBox"/>
             </div>
         </div>
-        
-        <div class="buttons">
-            <div class="button" @click="confirm">确认</div>
-            <div class="button" @click="closePopUp(popUp)">取消</div>
-        </div>
+
+        <FinalButtons :buttons="[
+            {click:confirm,name:'确认'},
+            {click:()=>closePopUp(popUp),name:'取消'}]"/>
     </div>
 </template>
 
 <script setup lang='ts'>
-    import { reactive, ref, toRaw, provide, onMounted } from 'vue';
+    import { reactive, ref, toRaw, provide} from 'vue';
     import downLineInputVue from '@/components/other/input/downLineInput.vue';
     import { closePopUp } from '@/hooks/pages/popUp';
     import settingBoxVue from '@/components/all-exitence/setting/settingBox.vue';
@@ -38,6 +37,7 @@
 import { showQuickInfo } from '@/api/showQuickInfo';
 import Status from '@/interfaces/Status';
 import { nanoid } from 'nanoid';
+import FinalButtons from '@/app/stacks/popUp/FinalButtons.vue';
     const {props, popUp, returnValue} = defineProps(["props","popUp","returnValue"])
     const name = ref("")
     const type = props.type
@@ -123,7 +123,6 @@ import { nanoid } from 'nanoid';
 </script>
 
 <style scoped lang='scss'>
-    @use "@/static/style/components/popUp.scss";
     .top{
         display: flex;
         height: 100px;
@@ -158,10 +157,5 @@ import { nanoid } from 'nanoid';
                 padding: 5px;
             }
         }
-    }
-        
-    
-    .buttons{
-        @extend .finalButtons;
     }
 </style>

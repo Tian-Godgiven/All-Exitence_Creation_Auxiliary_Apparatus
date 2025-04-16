@@ -6,8 +6,8 @@ export interface AlertItem{
     confirm:null | ((...args:any[])=>any),
     quit?:()=>any,
     buttons?:{
-        buttonName:string,
-        func:()=>any
+        name:string,
+        click:()=>any
     }[]
 }
 //显示一个消息提示弹窗,其仅会在按键后关闭

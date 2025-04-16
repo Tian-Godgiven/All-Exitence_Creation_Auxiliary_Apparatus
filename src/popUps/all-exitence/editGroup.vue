@@ -1,12 +1,10 @@
 <template>
-    <div class="updateGroup">
-        <editGroupVue v-model="tmpGroup"></editGroupVue>
-
-        <div class="buttons">
-            <div class="button" @click="confirm">确认</div>
-            <div class="button" @click="closePopUp(popUp)">取消</div>
-        </div>
-    </div>
+<div class="updateGroup">
+    <editGroupVue v-model="tmpGroup"></editGroupVue>
+    <FinalButtons :buttons="[
+        {click:confirm,name:'确认'},
+        {click:()=>closePopUp(popUp),name:'取消'}]"/>
+</div>
 </template>
 
 <script setup lang='ts'>
@@ -15,6 +13,8 @@
     import editGroupVue from '@/components/all-exitence/group/editGroup.vue';
     import { showQuickInfo } from '@/api/showQuickInfo';
     import { cloneDeep } from 'lodash';
+    import FinalButtons from '@/app/stacks/popUp/FinalButtons.vue';
+
     const {props,popUp,returnValue} = defineProps(["props","popUp","returnValue"])
     //分组所在的分类,已经分组本身
     const {type,group=null} = props
@@ -48,8 +48,4 @@
 </script>
 
 <style scoped lang='scss'>
- @use "@/static/style/components/popUp.scss";
-    .buttons{
-        @extend .finalButtons;
-    }
 </style>

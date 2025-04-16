@@ -1,43 +1,41 @@
 <template>
-	<div>
-		<!-- 显示区 -->
-		<textAreaVue 
-			placeholder="输入表达式"
-			:inputSuggestionList="inputSuggestionList"
-			ref="textArea"
-			class="showArea"
-			v-model="inputValue"
-			:inputSupport="true"/>
-		<!-- 输入区 -->
-		<div class="inputArea">
-			<div class="quote">
-				<div @click="quoteStatus">引用属性</div>
-				<div @click="quotePart">引用部分</div>
-			</div>
-			<div class="keyBoard">
-				<div @click="clickButton('+')">+</div>
-				<div @click="clickButton('-')">-</div>
-				<div @click="clickButton('backSpace')" class="backSpace">退格</div>
-				
-				<div @click="clickButton('*')">*</div>
-				<div @click="clickButton('/')">/</div>
-				
-				<div @click="clickButton('%')">%</div>
-				<div @click="clickButton('^')">次方</div>
-				<div @click="clickButton('^^')">开方</div>
-			</div>
+<div>
+	<textAreaVue 
+		placeholder="输入表达式"
+		:inputSuggestionList="inputSuggestionList"
+		ref="textArea"
+		class="showArea"
+		v-model="inputValue"
+		:inputSupport="true"/>
+	<!-- 输入区 -->
+	<div class="inputArea">
+		<div class="quote">
+			<div @click="quoteStatus">引用属性</div>
+			<div @click="quotePart">引用部分</div>
 		</div>
-		
-		<!-- 待完成：写一个注意事项说清楚顺序执行，没有乘除优先 -->
-		<div class="errorArea">报错信息：
-			<div v-for="text in errorMsg" class="errorMsg">{{ text }}</div>
-		</div>
-
-		<div class="buttons">
-			<div class="button" @click="onConfirm">确认</div>
-			<div class="button" @click="closePopUp(popUp)">返回</div>
+		<div class="keyBoard">
+			<div @click="clickButton('+')">+</div>
+			<div @click="clickButton('-')">-</div>
+			<div @click="clickButton('backSpace')" class="backSpace">退格</div>
+			
+			<div @click="clickButton('*')">*</div>
+			<div @click="clickButton('/')">/</div>
+			
+			<div @click="clickButton('%')">%</div>
+			<div @click="clickButton('^')">次方</div>
+			<div @click="clickButton('^^')">开方</div>
 		</div>
 	</div>
+	
+	<!-- 未完成：写一个注意事项说清楚顺序执行，没有乘除优先 -->
+	<div class="errorArea">报错信息：
+		<div v-for="text in errorMsg" class="errorMsg">{{ text }}</div>
+	</div>
+
+	<FinalButtons :buttons="[
+		{click:onConfirm,name:'确认'},
+		{click:()=>{closePopUp(popUp)},name:'返回'}]"/>
+</div>
 </template>
 
 <script setup lang="ts" name="">
@@ -50,7 +48,9 @@
 import Status from '@/interfaces/Status';
 import { deleteInputLast } from '@/api/cursorAbility';
 import { explainExpression, multiStatusPart } from '@/hooks/expression/multiStatusValue';
-	const {props,popUp,returnValue} = defineProps(["props","popUp","returnValue"])
+import FinalButtons from '@/app/stacks/popUp/FinalButtons.vue';
+
+const {props,popUp,returnValue} = defineProps(["props","popUp","returnValue"])
 	const {parts,typeStatus} = props
 	//输入区组件
 	const textArea = ref()
@@ -287,7 +287,6 @@ import { explainExpression, multiStatusPart } from '@/hooks/expression/multiStat
 </script>
 
 <style lang="scss" scoped>
-	@use "@/static/style/components/popUp.scss";
 
 	.showArea{
 		width: 100%;
@@ -345,10 +344,6 @@ import { explainExpression, multiStatusPart } from '@/hooks/expression/multiStat
 			font-weight: bold;
 			color:red;
 		}
-	}
-
-	.buttons{
-		@extend .finalButtons;
 	}
 	
 </style>

@@ -22,11 +22,8 @@
 			</typeStatusVue>
 		</draggableListVue>
 		
-
-		<!-- 创建新属性 -->
 		<newTypeStatusVue :createStatus="addStatus"/>
 
-		<!-- 分类设置 -->
 		<div class="setting">
 			<div class="button" @click="showSettingBox = !showSettingBox">
 				分类设置
@@ -35,11 +32,10 @@
 		</div>
 	</div>
 
-	<!-- 确认按键 -->
-	<div class="bottom">
-		<div class="button" @click="confirm">确认</div>
-		<div class="button" @click="closePopUp(popUp)">取消</div>
-	</div>
+	<FinalButtons :buttons="[
+		{click:confirm,name:'确认'},
+		{click:()=>closePopUp(popUp),name:'取消'}]">
+	</FinalButtons>
 </div>
 </template>
 
@@ -59,7 +55,7 @@ import { typeSettingList } from '@/static/list/settingList/typeSettingList';
 import { nanoid } from 'nanoid';
 import { Type } from '@/class/Type';
 import Status from '@/interfaces/Status';
-
+import FinalButtons from '@/app/stacks/popUp/FinalButtons.vue';
 	const {props={},popUp,returnValue} = defineProps(["props","popUp","returnValue"])
     let {type} = props
 
@@ -128,7 +124,6 @@ import Status from '@/interfaces/Status';
 
 <style lang="scss" scoped>
 @use "@/static/style/components/inputs.scss";
-@use "@/static/style/components/popUp.scss";
 	.editType{
 		height: 100%;
 	}
@@ -166,8 +161,5 @@ import Status from '@/interfaces/Status';
                 padding: 5px;
             }
         }
-	}
-	.bottom{
-		@extend .finalButtons;
 	}
 </style>

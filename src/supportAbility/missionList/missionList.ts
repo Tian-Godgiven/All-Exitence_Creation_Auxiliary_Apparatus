@@ -194,8 +194,8 @@ export function finishMission(mission:Mission){
         "info":"已完成该任务？",
         "confirm":null,
         "buttons":[{
-            "buttonName":"已完成！",
-            func:()=>{
+            "name":"已完成！",
+            click:()=>{
                 //再来一次？
                 if(mission.repeatable){
                     repeatMission(mission)
@@ -205,16 +205,16 @@ export function finishMission(mission:Mission){
                 }
             }
         },{
-            "buttonName":`${ifMissionOnTime?"延长十分钟……！":"还没有"}`,
-            func:()=>{
+            "name":`${ifMissionOnTime?"延长十分钟……！":"还没有"}`,
+            click:()=>{
                 if(ifMissionOnTime && mission.timeLeft){
                     mission.timeLeft += 60000
                     showQuickInfo("加油哦！")
                 }
             }
         },{
-            "buttonName":"失败了……！",
-            func:()=>{
+            "name":"失败了……！",
+            click:()=>{
                 failMission(mission)
             }
         }]
@@ -247,8 +247,8 @@ export function repeatMission(mission:Mission){
         info:"再来一次？",
         confirm:null,
         buttons:[{
-            'buttonName':"好！",
-            func:()=>{
+            'name':"好！",
+            click:()=>{
                 //修改任务状态，重复次数+1
                 changeMissionState(mission,"doing")
                 mission.repeatTime += 1;
@@ -256,8 +256,8 @@ export function repeatMission(mission:Mission){
                 editMission(mission)
             }
         },{
-            'buttonName':'不了！',
-            func:()=>{showQuickInfo(
+            'name':'不了！',
+            click:()=>{showQuickInfo(
                 "可以在已完成任务中再来一次哦！"
             )}
         }]
@@ -271,16 +271,16 @@ export function tryAgain(mission:Mission){
             info:"再次挑战？",
             confirm:null,
             buttons:[{
-                "buttonName":"再来！",
-                func:()=>{
+                "name":"再来！",
+                click:()=>{
                     changeMissionState(mission,"doing")
                     //编辑任务内容,成功时修改为doing
                     editMission(mission)
                     resolve(true)
                 }
             },{
-                "buttonName":"算了……！",
-                func:()=>{
+                "name":"算了……！",
+                click:()=>{
                     resolve(false)
                     showQuickInfo("没关系的哦————！")
                 }
@@ -317,8 +317,8 @@ function updateMissionTime(mission:Mission){
                 info:`距离任务${missionTitle}结束还有10分钟`,
                 confirm:null,
                 buttons:[
-                    {"buttonName":"查看任务",func:()=>{showMissionAlert(mission)}},
-                    {"buttonName":"我知道了",func:()=>{}}
+                    {"name":"查看任务",click:()=>{showMissionAlert(mission)}},
+                    {"name":"我知道了",click:()=>{}}
                 ]
             })
         }

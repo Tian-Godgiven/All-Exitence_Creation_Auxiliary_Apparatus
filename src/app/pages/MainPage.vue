@@ -36,7 +36,7 @@
 
 <script setup lang="ts">
 	import { showPopUp } from '@/hooks/pages/popUp'
-	import { showLeft, switchProjectPage} from '@/hooks/pages/pageChange';
+	import { showLeft, showPage, switchProjectPage} from '@/hooks/pages/pageChange';
 	import Button from '@/components/global/Button.vue';
 	import inputSupportVue from '@/components/mainPage/inputSupport.vue';
 	import showInfoOnMainVue from '@/components/mainPage/showInfoOnMain.vue';
@@ -64,14 +64,9 @@
 			mask:true,
 		})}
 	},{
-		name:"创作日历",
-		icon:"canlendar",
-		click:()=>showPopUp({
-			name:"创作日历",
-			buttons:[],
-			vueName:"createCanlendar",
-			mask:true,
-		})	
+		name:"辅助功能",
+		icon:"showRight",
+		click:()=>showPage("right")	
 	}]
 
 // 首页内容栏

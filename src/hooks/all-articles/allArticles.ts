@@ -4,7 +4,7 @@ import { Chapter } from "@/class/Chapter";
 import { Article } from "@/class/Article";
 import { showAlert } from "../alert";
 import { nanoid } from "nanoid";
-import { deleteShowOnMain, showOnMain } from "../pages/mainPage/showOnMain";
+import { deleteShowOnMain } from "../pages/mainPage/showOnMain";
 
 //当前文章
 export const nowAllArticles = reactive<{

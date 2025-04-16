@@ -16,6 +16,7 @@ export const iconList:Record<string,string>= {
     "canlendar":"calendar",//日历
     "handSave":"saveFile",//保存文件
     "showLeft":"showLeft",//显示左侧页面
+    "showRight":"showRight",//显示右侧页面
     "rightUp":"rightUp",//右侧页面抬升
     "quickDraft":"quickDraft",//暂记版
     "timeLine":"",//时间线←

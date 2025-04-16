@@ -12,10 +12,9 @@
                 placeholder="项目信息"
             ></downLineInputVue>
         </div>
-        <div class="buttons">
-            <div class="button" @click="confirm">确认</div>
-            <div class="button" @click="closePopUp(popUp)">取消</div>
-        </div>
+        <FinalButtons :buttons="[
+            {name:'确认',click:confirm},
+            {name:'取消',click:()=>closePopUp(popUp)}]"/>  
     </div>
 </template>
 
@@ -24,6 +23,7 @@
     import downLineInputVue from '@/components/other/input/downLineInput.vue';
 import { closePopUp } from '@/hooks/pages/popUp';
 import { showQuickInfo } from '@/api/showQuickInfo';
+import FinalButtons from '@/app/stacks/popUp/FinalButtons.vue';
     const {props={project:{name:"",info:""}},returnValue,popUp} = defineProps(["props","returnValue","popUp"])
     const {project} = props 
     const name = ref(project.name)
@@ -41,11 +41,7 @@ import { showQuickInfo } from '@/api/showQuickInfo';
 </script>
 
 <style scoped lang='scss'>
-    @use "@/static/style/components/popUp.scss";
     .editProjectInfo{
         width: 100%;
-        .buttons{
-            @extend .finalButtons;
-        }
     }
 </style>

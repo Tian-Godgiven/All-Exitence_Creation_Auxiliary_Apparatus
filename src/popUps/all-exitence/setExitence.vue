@@ -1,12 +1,9 @@
 <template>
     <div class="setExitence">
-        <div>
-            <settingBoxVue ref="settingBox"></settingBoxVue>
-        </div>
-        <div class="buttons">
-            <div class="button" @click="confirm">确认</div>
-            <div class="button" @click="closePopUp(popUp)">取消</div>
-        </div>
+        <settingBoxVue :show="true" ref="settingBox"></settingBoxVue>
+        <FinalButtons :buttons="[
+            {click:confirm,name:'确认'},
+            {click:()=>closePopUp(popUp),name:'取消'}]"/>
     </div>
 </template>
 
@@ -17,6 +14,7 @@ import settingBoxVue from '@/components/all-exitence/setting/settingBox.vue';
 import { closePopUp } from '@/hooks/pages/popUp';
 import { cloneDeep } from 'lodash';
     import { ref, provide } from 'vue';
+    import FinalButtons from '@/app/stacks/popUp/FinalButtons.vue';
     const {props,popUp,returnValue} = defineProps(["props","popUp","returnValue"])
     const {exitence,type} = props
     //临时的修改对象
@@ -45,8 +43,5 @@ import { cloneDeep } from 'lodash';
 </script>
 
 <style scoped lang='scss'>
-@use "@/static/style/components/popUp.scss";
-    .bottom{
-		@extend .finalButtons;
-	}
+
 </style>

@@ -19,10 +19,9 @@
         </div>
     </div>
     
-    <div class="finalButtons">
-        <Button name="确认" @click="confirm"></Button>
-        <Button name="返回" @click="quit"></Button>
-    </div>
+    <FinalButtons :buttons="[
+        {click:confirm,name:'确认'},
+        {click:quit,name:'返回'}]"></FinalButtons>
 </div>
 </template>
 
@@ -36,7 +35,8 @@
     import { editTarget } from '../customTime'; 
     import { nanoid } from 'nanoid';
     import { showQuickInfo } from '@/api/showQuickInfo';
-import Selector from '@/components/global/Selector.vue';
+    import Selector from '@/components/global/Selector.vue';
+    import FinalButtons from '@/app/stacks/popUp/FinalButtons.vue';
 
     //初始值
     const idle:CustomTimeRule = {
@@ -111,7 +111,6 @@ import Selector from '@/components/global/Selector.vue';
 </script>
 
 <style scoped lang='scss'>
-@use "@/static/style/components/popUp.scss";
 .editTimeRule{
     .selectBar{
         display: grid;
@@ -139,9 +138,6 @@ import Selector from '@/components/global/Selector.vue';
             }
         }
         
-    }
-    .finalButtons{
-        @extend .finalButtons
     }
     
 }

@@ -9,22 +9,21 @@
                 <TimePicker v-model.number="tmpTime"></TimePicker>
             </div>
         </div>
-        <div class="finalButtons">
-            <Button @click="confirm" name="确认">确认</Button>
-            <Button @click="closePopUp(popUp)" name="取消">取消</Button>
-        </div>
+        <FinalButtons :buttons="[
+            {click:confirm,name:'确认'},
+            {click:()=>closePopUp(popUp),name:'取消'}
+        ]"/>
     </div>
    
 </template>
 
 <script setup lang='ts'>
     import { closePopUp, PopUp } from '@/hooks/pages/popUp';
-    import Button from '@/components/global/Button.vue';
     import { Ref, ref } from 'vue';
     import { cloneDeep } from 'lodash';
     import DatePicker from '@/components/other/timePicker/DatePicker.vue';
     import TimePicker from '@/components/other/timePicker/TimePicker.vue';
-    
+    import FinalButtons from '@/app/stacks/popUp/FinalButtons.vue';
     import TimeOutPicker from '@/components/other/timePicker/TimeOutPicker.vue';
     const {popUp,returnValue,props={}} = defineProps<{popUp:PopUp,returnValue:(a:number,b:number)=>void,props:any}>()
     let {planTime,limitTime} = props
@@ -50,15 +49,10 @@
 </script>
 
 <style scoped lang='scss'>
-@use "@/static/style/components/popUp.scss";
 .inner{
     .clock{
         display: flex;
     }
 }
-.finalButtons{
-    @extend .finalButtons;
-    
-    
-}
+
 </style>
