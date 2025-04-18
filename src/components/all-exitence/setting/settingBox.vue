@@ -16,7 +16,7 @@
 import { SettingOption } from './setting';
 
     const {show=true} = defineProps<{
-		show:boolean, //控制显示
+		show?:boolean, //控制显示
 	}>()
 
     //设置目标,筛选目标,设置项表

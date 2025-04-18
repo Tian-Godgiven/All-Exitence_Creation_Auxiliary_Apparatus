@@ -6,7 +6,7 @@ import alertVue from '@/popUps/alert.vue';
 import editProjectInfoVue from '@/popUps/project/editProjectInfo.vue';
 import editChapterVue from '@/popUps/all-articles/editChapter.vue';
 import controlPanelVue from '@/popUps/controlPanel.vue';
-import editTypeVue from '@/popUps/all-exitence/editType.vue';
+import EditType from '@/popUps/all-exitence/editType/EditType.vue';
 import editGroupVue from '@/popUps/all-exitence/editGroup.vue';
 import setExitenceVue from '@/popUps/all-exitence/setExitence.vue';
 
@@ -21,8 +21,8 @@ export let popUpVueList:{[key:string]:any} = {
 	"createChapter":editChapterVue,
 	"updateChapter":editChapterVue,
 	
-	"createType":editTypeVue,
-	"updateType":editTypeVue,
+	"createType":EditType,
+	"updateType":EditType,
 
 	"createGroup":editGroupVue,
 	"updateGroup":editGroupVue,

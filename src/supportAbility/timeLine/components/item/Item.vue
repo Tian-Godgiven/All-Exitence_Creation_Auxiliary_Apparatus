@@ -10,7 +10,7 @@
 <script setup lang='ts'>
     import { TimeLineItem } from './item';
 import { getExitenceByKey, getTypeByKey, showExitenceOnPopUp } from '@/hooks/all-exitence/allExitence';
-import { showArticleOnMain } from '@/hooks/pages/mainPage/showOnMain';
+import { showTargetOnMain } from '@/hooks/pages/mainPage/showOnMain';
 import { getArticleByKey } from '@/hooks/all-articles/allArticles';
 import { computed, inject } from 'vue';
     const {item,type,index} = defineProps<{item:TimeLineItem,type:"exitence"|"article"|"status",index:number}>()
@@ -64,7 +64,10 @@ import { computed, inject } from 'vue';
                 console.error("未找到文章",key)
                 return;
             }
-            showArticleOnMain(article)
+            showTargetOnMain({
+                type:"article",
+                target:article
+            })
         }
     }
 </script>

@@ -1,29 +1,29 @@
 <template>
-    <div class="createExitence">
-        <div class="top">
-            <downLineInputVue 
-				v-model="name"
-				class="exitenceName"
-				placeholder="输入事物名称"/>
-        </div>
-
-        <div class="inner">
-            <div class="tags">
-                <input type="checkbox" v-model="ifDefaultTags" @change="changeIfDefaultTags">
-                <div class="text">标签<span v-show="ifDefaultTags">：</span></div>
-                <tagsValueVue v-show="ifDefaultTags" :status="defaultTagStatus"/>
-            </div>
-
-            <div class="setting">
-                <div class="button" @click="swicthShowSettingBox">事物设置</div>
-                <settingBoxVue :show="showSettingBox" ref="settingBox"/>
-            </div>
-        </div>
-
-        <FinalButtons :buttons="[
-            {click:confirm,name:'确认'},
-            {click:()=>closePopUp(popUp),name:'取消'}]"/>
+<div class="createExitence">
+    <div class="top">
+        <downLineInputVue 
+            v-model="name"
+            class="exitenceName"
+            placeholder="输入事物名称"/>
     </div>
+
+    <div class="inner">
+        <div class="tags">
+            <input type="checkbox" v-model="ifDefaultTags" @change="changeIfDefaultTags">
+            <div class="text">标签<span v-show="ifDefaultTags">：</span></div>
+            <tagsValueVue v-show="ifDefaultTags" :status="defaultTagStatus"/>
+        </div>
+
+        <div class="setting">
+            <div class="button" @click="swicthShowSettingBox">事物设置</div>
+            <settingBoxVue :show="showSettingBox" ref="settingBox"/>
+        </div>
+    </div>
+
+    <FinalButtons :buttons="[
+        {click:confirm,name:'确认'},
+        {click:()=>closePopUp(popUp),name:'取消'}]"/>
+</div>
 </template>
 
 <script setup lang='ts'>

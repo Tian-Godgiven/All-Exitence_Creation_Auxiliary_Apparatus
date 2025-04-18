@@ -7,6 +7,7 @@
     :placeholder="placeholder"
     inputmode="text"
     tabindex="0"
+    @scrollend="scrollEnd"
     @click="clickEvent"
     @input="onInput"
     @blur="onBlur"
@@ -33,19 +34,20 @@
         placeholder?:string,
         inputSupport?:boolean,
         inputSuggestionList?:InputSuggestionList|"project"|"global"|"all"|null,
-        mode?:"string"|"all"|"disabled"
+        mode?:"string"|"all"|"disabled",
+        scrollEnd?:(e:Event)=>void
     }>()
     //初始值
     const content = defineModel<any>()
-    const emits = defineEmits(["input","blur","focus"])
+    const emits = defineEmits(["input","blur","focus","scrollEnd"])
 
     //允许通过父组件访问textArea的一些方法
     defineExpose({
         "focusOnEnd":()=>focusOnEnd(textArea.value),
-        "addDom":addDom,
-        "addContent":addContent,
-        "getContentDom":getContentDom,
-        "deleteContent":deleteContent
+        addDom,
+        addContent,
+        getContentDom,
+        deleteContent,
     })
         
     //显示占位符
@@ -120,7 +122,6 @@
 
     //同步输入，判断输入补全提示
     function onInput(event:Event){
-        console.log("相应了")
         const inputEvent = event as InputEvent
         //同步输入位置
         const selection = window.getSelection();
@@ -128,7 +129,6 @@
             selectionRange = selection.getRangeAt(0)
         }
         const newInput = inputEvent.data
-        console.log(newInput)
         listenInput(newInput)
     }
     //输入监听

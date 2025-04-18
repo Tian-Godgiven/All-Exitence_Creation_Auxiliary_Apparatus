@@ -23,7 +23,7 @@
 <script setup lang='ts'>
 import { provide} from 'vue';
 import exitenceStatusVue from '@/components/all-exitence/exitence/exitenceStatus.vue';
-import { showExitenceOnMain } from '@/hooks/pages/mainPage/showOnMain';
+import { showTargetOnMain } from '@/hooks/pages/mainPage/showOnMain';
 import { closePopUp, PopUp } from '@/hooks/pages/popUp';
 import TargetContainer from '@/components/mainPage/TargetContainer.vue';
 import { Type } from '@/class/Type';
@@ -43,7 +43,7 @@ import { Exitence } from '@/class/Exitence';
 
     function clickJumpToExitence(){
         closePopUp(popUp)
-        showExitenceOnMain(type,exitence)
+        showTargetOnMain({type:"exitence",target:exitence})
     }
 </script>
 

@@ -134,7 +134,7 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
             name = "未命名"+type.name
         }
         //创建该事物，并为其分配key
-        const newExitence = new Exitence(name,status,type.__key,setting,nanoid())
+        const newExitence = new Exitence(name,status,type.__key,setting,nanoid(),0)
         //添加分类中的属性
         const tmp:any[] = []
         type.typeStatus.forEach((status:Status)=>{

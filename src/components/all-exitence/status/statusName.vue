@@ -39,7 +39,7 @@ import { ref,watch } from 'vue';
 
 <style scoped lang='scss'>
     .statusName{
-        width: calc(150px - 1rem);
+        width: 4rem;
         box-sizing: border-box;
     }
     .separator{

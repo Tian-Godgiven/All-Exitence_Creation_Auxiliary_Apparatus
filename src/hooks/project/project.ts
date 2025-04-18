@@ -4,10 +4,10 @@ import { createDirByPath, createFileToPath, deleteAtPath, ifExists, readDirAsArr
 import { showPopUp } from "../pages/popUp";
 import { showAlert } from "../alert";
 import { hidePage } from "../pages/pageChange";
-import { showInitialAppOnMain, showInitialProjectOnMain, showOnMain, showTargetOnMain } from "../pages/mainPage/showOnMain";
+import { getShowOnMainInfo, showTargetOnMain } from "../pages/mainPage/showOnMain";
 import { supportAbilityList } from "@/static/list/supportAbilityList";
 import { nowAllExitence } from "../all-exitence/allExitence";
-import { nowAllArticles } from "../all-articles/allArticles";
+import { getArticleByKey, nowAllArticles } from "../all-articles/allArticles";
 import { changeNowAllExitence } from "../all-exitence/allExitence"
 import { changeNowAllArticles } from "../all-articles/allArticles"
 import { Type } from "@/class/Type"
@@ -96,18 +96,46 @@ export async function syncProject(projectPath:string){
     
 }
 //读取项目信息，在主页面上显示指定内容
-function showRememberOnMain(){
-    let target = nowProjectInfo.lastTarget
+function showLastTargetOnMain(){
+    let targetInfo = nowProjectInfo.lastTarget
     //如果为空，则显示指引页面
-    if(!target){
+    if(!targetInfo){
         onNoContent()
+        return;
     }
     //否则显示上一次显示的内容
-    else{
-        const bool = showTargetOnMain(target)
-        //如果没有找到，则显示项目初始页面，不过除了用户直接操作数据文件的情况以外，基本上不会发生
-        if(bool===false){
-            onNoContent()
+    showLastTarget(targetInfo)
+    
+    //获取上一次显示的对象
+    function showLastTarget({type,targetKey,from}:ProjectLastTarget){
+        if(type == "exitence"){
+            const theType = nowAllExitence.types.find((type)=>type.__key == from)
+            const exitence = theType?.exitence.find((exitence)=>exitence.__key == targetKey)
+            //找不到对象返回false
+            if(!theType || !exitence){
+                return false
+            }
+            showTargetOnMain({
+                type,
+                target:exitence
+             })
+        }
+        else if(type == "article"){
+            //根据文章的from,从最外层找起
+            const article = getArticleByKey(from,targetKey)
+            if(!article){
+                return false
+            }
+            showTargetOnMain({
+                type,
+                target:article
+             })
+        }
+        else if(type == "info"){
+            showTargetOnMain({
+                type,
+                target:targetKey
+             })
         }
     }
 }
@@ -141,24 +169,13 @@ export async function saveProject(){
 export async function saveProjectInfo(){
     //记录项目当前主页面的内容:切换项目or保存项目
     if(!nowProjectInfo?.pathName){return false}//在项目初始化时，也会尝试进行一场记录，此时跳过
-    //空状态报错
-    if(!showOnMain.type){console.error("主页面对象为空！",showOnMain);return}
-    //记录当前主页面的对象
-    if(["article","exitence","info"].includes(showOnMain.type)){
-        const key = function(){
-            if(showOnMain.type == "info"){
-                return showOnMain.target
-            }
-            return showOnMain.target.__key
-        }()
-        const remember = {
-            type:showOnMain.type,
-            from:showOnMain.from,
-            targetKey:key,
-        } as ProjectLastTarget
-        //写进项目信息中
-        nowProjectInfo.lastTarget = remember
+    //获取主页面信息
+    const showOnMainInfo = getShowOnMainInfo()
+    //写进项目信息中
+    if(showOnMainInfo){
+        nowProjectInfo.lastTarget = showOnMainInfo
     }
+    
     //将项目信息写入
     await writeFileAtPath(`projects/${nowProjectInfo.pathName}`,"projectInfo.json",nowProjectInfo)
 }
@@ -171,13 +188,19 @@ async function saveProjectData(){
 
 //不存在任何项目时的页面
 export function onNoProject(){
-    showInitialAppOnMain()
+    showTargetOnMain({
+        type:"info",
+        target:"app"
+    })
     nowProjectPath.value = null
     nowProjectInfo.name = "点击此处创建新项目"
 }
 //项目内不存在任何数据时的页面
 export function onNoContent(){
-    showInitialProjectOnMain()
+    showTargetOnMain({
+        type:"info",
+        target:"app"
+    })
 }
 
 //从项目A移动到项目B，记录项目A的信息，读取项目B的信息
@@ -189,7 +212,7 @@ export async function moveToProject(projectPath:string){
     //同步数据成功
     if(tmp){
         //在主页面上显示新项目上一次显示的内容
-        showRememberOnMain()
+        showLastTargetOnMain()
         //记录新项目为上一次打开的项目
         changeAppSetting("lastProjectPath",projectPath)
     }

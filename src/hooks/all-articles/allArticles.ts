@@ -29,7 +29,7 @@ export function changeNowAllArticles(newAllArticles:any){
         //创建文本对象
         const from = [...chapter.from,chapter.__key]
         const now = Date.now()
-        const newArticle:Article = new Article("","",from,nanoid(),now,now)
+        const newArticle:Article = new Article("","",from,nanoid(),now,now,0)
         //添加到目标章节
         chapter.articles.push(newArticle)
         return newArticle

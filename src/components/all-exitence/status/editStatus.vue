@@ -15,18 +15,12 @@
 			:list="valueTypes">
 		</Selector>
 
-		<Button class="button" @click="switchSetting" name="设置" icon="setting"></Button>
-		<Button class="button" @click="confirm" name="确认">
-			<slot name="confirm"></slot>
-		</Button>
-		<!-- <div class="button" @click="confirm">
-			<slot name="confirm"></slot>
-		</div> -->
+		<Button class="button" @click="switchSetting" name="设置"></Button>
+		<Button class="button" @click="confirm" :name="confirmText"></Button>
 	</div>
 
 	<!-- 额外输入栏 -->
 	<component :status="status" :is="statusBonusInputList[status.valueType]"></component>
-
 	<!-- 属性设置栏 -->
 	<settingBoxVue ref="settingBox" :show="showSettingBox"/>
 	
@@ -48,6 +42,10 @@ import Selector from '@/components/global/Selector.vue';
 import Status from '@/interfaces/Status';
 import { defaultStatus } from '@/hooks/all-exitence/status';
 
+	const {confirmText,banValueType} = defineProps<{
+		confirmText:string,
+		banValueType?:string[]
+	}>()
 	
 	// 需要编辑的属性初值
     let status = inject<Status>("status",defaultStatus)
@@ -61,8 +59,6 @@ import { defaultStatus } from '@/hooks/all-exitence/status';
     
 	// 选择属性类型
 	let valueTypes = statusValueTypeList
-	// 去除禁用属性
-	const {banValueType} = defineProps(["banValueType"])
 	if(banValueType){
 		valueTypes = valueTypes.reduce((acc,cur)=>{
 			if(!banValueType.includes(cur.value)){
@@ -110,8 +106,6 @@ import { defaultStatus } from '@/hooks/all-exitence/status';
 		}
         emit("confirm",status)
     }
-
-
 	
 </script>
 

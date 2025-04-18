@@ -76,11 +76,10 @@
 	})
 	//刷新内容
 	let refreshKey = ref(0)
-	watch(showOnMain,()=>{
+	watch(()=>showOnMain.target,()=>{
 		refreshKey.value+=1
-	},{
-		deep:false
 	})
+
 //快捷键
 	const rotateDegree = ref(0)//旋转角度
 	function switchButton(){

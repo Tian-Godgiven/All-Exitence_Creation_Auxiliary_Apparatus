@@ -1,23 +1,22 @@
 <template>
-	<div class="status">
-		<!-- 属性名 -->
-		<statusNameVue :status="status"></statusNameVue>
-		<!-- 属性值 -->
-		<statusValueVue :status="status" :typeStatus="status"  class="value"></statusValueVue>
-		
-		<div class="buttons">
-			<div class="button" @click="showUpdateStatus">编辑</div>
-			<div class="button" @click="deleteStatus">删除</div>
-		</div>
+<div class="status">
+	<statusName :status="status"></statusName>
+	<statusValue :status="status" :typeStatus="status"  class="value"></statusValue>
+	
+	<div class="buttons">
+		<Button @click="showUpdateStatus" name="编辑"></Button>
+		<Button @click="deleteStatus" name="删除"></Button>
 	</div>
+</div>
 </template>
 
 <script setup lang="ts" name="typeStatus">
 import { inject } from 'vue';
-import statusNameVue from '../status/statusName.vue';
-import statusValueVue from '../status/statusValue/statusValue.vue';
+import statusName from '@/components/all-exitence/status/statusName.vue';
+import statusValue from '@/components/all-exitence/status/statusValue/statusValue.vue';
 import { showPopUp } from '@/hooks/pages/popUp';
 import Status from '@/interfaces/Status';
+import Button from '@/components/global/Button.vue';
 	let {status} = defineProps(["status"])
 	const emits = defineEmits(["deleteStatus"])
 	//删除属性

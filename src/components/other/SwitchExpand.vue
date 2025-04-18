@@ -4,7 +4,7 @@
         <div class="icon" :class="expand?'expand':'unexpand'"></div>
         <slot class="content" name="title"></slot>
     </div>
-    <div class="inner"  ref="inner">
+    <div class="inner" ref="inner">
         <slot name="inner"></slot>
     </div>
     
@@ -13,10 +13,16 @@
 
 <script setup lang='ts'>
     import gsap from 'gsap';
-    import { ref } from 'vue';
+    import { onMounted, ref, useTemplateRef } from 'vue';
     const {startExpand=true} = defineProps<{startExpand?:boolean}>()
     const expand = ref(startExpand)
-    const inner = ref()
+    const inner = useTemplateRef("inner")
+    onMounted(()=>{
+        gsap.set(inner.value,{
+            height:expand.value?"auto":0
+        })
+    })
+    
     function switchExpand(){
         if(!inner.value)return false
         //收起
@@ -61,10 +67,10 @@
             flex-grow: 1;
         }
     }
-        .inner{
-            margin-left: 20px;
-            overflow: hidden;
-        }
+    .inner{
+        margin-left: 20px;
+        overflow: hidden;
+    }
     
 }
 

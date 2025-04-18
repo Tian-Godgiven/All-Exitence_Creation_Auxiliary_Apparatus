@@ -6,5 +6,6 @@ export class Article{
 		public __key:string,//文章标识符
 		public createTime:number, //文章创建时间
 		public updateTime:number, //文章上一次编辑时间
+		public lastScrollTop:number//上一次看到的滚动位置
 	){}
 }

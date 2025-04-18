@@ -27,7 +27,7 @@
 
 <script setup lang="ts" name="">
 import { hidePage } from '@/hooks/pages/pageChange';
-import { showExitenceOnMain } from '@/hooks/pages/mainPage/showOnMain';
+import { showTargetOnMain } from '@/hooks/pages/mainPage/showOnMain';
 import { computed, inject, onMounted, onUnmounted, ref } from 'vue'; 
 import longTapContainerVue from '../../other/longTapContainer.vue';
 import { showControlPanel } from '@/hooks/controlPanel';
@@ -77,7 +77,10 @@ import DragHandler from '@/components/global/DragHandler.vue';
 	}
 	function click(){
 		//点击将事物显示在主页面
-		showExitenceOnMain(type,exitence)
+		showTargetOnMain({
+			type:"exitence",
+			target:exitence
+		})
 		hidePage("left")
 	}
 

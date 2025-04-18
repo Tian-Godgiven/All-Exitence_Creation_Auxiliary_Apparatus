@@ -11,7 +11,7 @@
         </div>
     </div>
     
-    <div class="targetInner">
+    <div class="targetInner" ref="inner">
         <slot name="inner"></slot>
     </div>
     <div class="targetInfo" v-if="ifInfo"> 
@@ -21,10 +21,35 @@
 </template>
 
 <script setup lang='ts'>
+import { toNumber } from 'lodash';
+import { useTemplateRef } from 'vue';
+
     const {titleAlign="center",ifInfo=true} = defineProps<{
         titleAlign?:"center"|"right"|"left",//标题的对齐方向
         ifInfo?:boolean//是否显示Info框
     }>()
+	defineExpose({
+		getScrollTop,
+		setScrollTop
+	})
+	//获取滚动高度
+	const innerRef = useTemplateRef("inner")
+	function getScrollTop(){
+		if(innerRef.value)
+		return toNumber(innerRef.value.scrollTop.toFixed(2))
+	}
+	//设定滚动高度
+	function setScrollTop(scrollTop:number|"last"|"top"){
+		if(!innerRef.value)return;
+		if(scrollTop == "last"){
+			scrollTop = innerRef.value.scrollHeight
+		}
+		else if(scrollTop == "top"){
+			scrollTop = 0
+		}
+        innerRef.value.scrollTop = scrollTop
+        
+	}
 </script>
 
 <style scoped lang='scss'>

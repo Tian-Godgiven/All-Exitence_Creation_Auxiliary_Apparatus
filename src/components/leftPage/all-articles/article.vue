@@ -27,7 +27,7 @@
 
 <script setup lang="ts" name="article">
 import { hidePage } from '@/hooks/pages/pageChange';
-import { showArticleOnMain } from '@/hooks/pages/mainPage/showOnMain';
+import { showTargetOnMain } from '@/hooks/pages/mainPage/showOnMain';
 import { computed,ref,onMounted,onUnmounted, inject } from 'vue';
 import { showControlPanel } from '@/hooks/controlPanel';
 import { deleteArticlePopUp } from '@/hooks/all-articles/allArticles';
@@ -79,7 +79,10 @@ import DragHandler from '@/components/global/DragHandler.vue';
 	}
 	const click = ()=>{
 		//点击将文章显示在主页面
-		showArticleOnMain(article)
+		showTargetOnMain({
+			type:"article",
+			target:article
+		})
 		hidePage("left")
 	}
 	function clickDeleteArticle(event:Event){

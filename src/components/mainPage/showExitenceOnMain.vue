@@ -1,5 +1,5 @@
 <template>
-<TargetContainer title-align="left">
+<TargetContainer title-align="left" ref="containerRef">
     <template #title>
         <textAreaVue 
 			@input="changeName"
@@ -16,8 +16,9 @@
 			<Button @click="addNewStatus" name="新增属性"></Button>
 		</div>
 	</template>
-    <template #inner ref="inner">
-        <draggableListVue
+    <template #inner>
+        <draggableListVue 
+			ref="inner"
 			:dragHandle="true"
 			:showHandle="showDrag"
 			v-slot="{element:status}"
@@ -36,7 +37,7 @@
 </template>
 
 <script setup lang="ts" name="">
-	import { computed, provide, ref } from 'vue';
+	import { computed, onMounted, onUnmounted, provide, ref, useTemplateRef } from 'vue';
 	import textAreaVue from '@/components/other/textArea/textArea.vue';
 	import exitenceStatusVue from '@/components/all-exitence/exitence/exitenceStatus.vue';
 	import { changeExitenceName, nowAllExitence } from '@/hooks/all-exitence/allExitence';
@@ -46,6 +47,7 @@
 	import Button from '../global/Button.vue';
 	import { showPopUp } from '@/hooks/pages/popUp';
 	import TargetContainer from './TargetContainer.vue';
+import { showOnMain } from '@/hooks/pages/mainPage/showOnMain';
 
 	let {exitence} = defineProps(["exitence"])
 
@@ -63,7 +65,6 @@
 
 	//改变名称
 	function changeName(newName:string){
-		console.log("改变了名称")
 		changeExitenceName(exitence,newName)
 	}
 
@@ -94,7 +95,7 @@
 
 	//创建新属性
 	const ifNewStatus = ref(false)
-	const inner = ref()//事物属性内容
+	const containerRef = useTemplateRef("containerRef")
 	function addNewStatus(){
 		showPopUp({
 			name:"新增属性",
@@ -117,8 +118,31 @@
 		exitence.status.push(newStatus)
 		ifNewStatus.value = false
 		//滑动到最后
-		inner.value.scrollTop = inner.value.scrollHeight
+		containerRef.value?.setScrollTop("last")
 	}
+
+    // 记录文档滑动位置
+    function getScrollTop(){
+        //当前滑动位置
+        if(containerRef.value){
+            const scrollTop = containerRef.value.getScrollTop()
+            if(scrollTop){
+                showOnMain.scrollTop = scrollTop
+                return;
+            }
+        }
+        showOnMain.scrollTop = 0
+        return 0
+    }
+    onMounted(()=>{
+        //设定当前的滑动高度
+        if(!containerRef.value)return;
+		containerRef.value.setScrollTop(exitence.lastScrollTop)
+        window.addEventListener("getShowOnMainScrollTop",getScrollTop)
+    })
+    onUnmounted(()=>{
+        window.removeEventListener("getShowOnMainScrollTop",getScrollTop)
+    })
 
 	provide("type",type)//提供该事物所在的分类
 	provide("allStatus",exitence.status)//提供所有属性

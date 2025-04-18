@@ -45,7 +45,7 @@ import groupVue from "./group.vue"
 import exitenceVue from "./exitence.vue"
 import { computed, provide, inject,ref, onMounted, onUnmounted, Ref } from "vue";
 import { createExitence,createGroupPopUp, deleteTypePopUp, getExitenceInGroup, getNoGroupExitence, updateTypePopUp } from "@/hooks/all-exitence/allExitence";
-import { showExitenceOnMain } from "@/hooks/pages/mainPage/showOnMain";
+import { showTargetOnMain } from "@/hooks/pages/mainPage/showOnMain";
 import { hidePage } from "@/hooks/pages/pageChange";
 import { showControlPanel } from "@/hooks/controlPanel";
 import { Type } from "@/class/Type";
@@ -85,7 +85,10 @@ import DragHandler from "@/components/global/DragHandler.vue";
 	async function clickCreateExitence(){
 		const exitence = await createExitence(type)
 		hidePage("left")
-		showExitenceOnMain(type,exitence)
+		showTargetOnMain({
+			type:"exitence",
+			target:exitence
+		})
 	}
 	//长按显示控制面板
 	function longtap(){

@@ -1,6 +1,8 @@
 <template>
-<editStatusVue @confirm="confirm" :banValueType="banValueType">
-	<template v-slot:confirm>{{ confirmText }}</template>
+<editStatusVue 
+	@confirm="confirm" 
+	:confirmText="confirmText"
+	:banValueType="banValueType">
 </editStatusVue>
 </template>
 

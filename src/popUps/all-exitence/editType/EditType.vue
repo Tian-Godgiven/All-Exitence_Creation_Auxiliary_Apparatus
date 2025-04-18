@@ -8,28 +8,30 @@
 		<Button class="button" name="预制属性" @click="prepareStatus"></Button>
 	</div>
 
-	<!-- 内容 -->
 	<div class="inner">
-		<!-- 修改顺序 -->
-		<draggableListVue 
-			:drag-handle="true"
-			:list="typeStatus" 
-			v-slot="{element:status,index}">
-			<typeStatusVue 
-				@deleteStatus="deleteStatus(index)" 
-				:key="status.__key"
-				:status="status">
-			</typeStatusVue>
-		</draggableListVue>
+		<SwitchExpand>
+			<template #title @click="switchExpand">分类属性</template>
+			<template #inner>
+				<draggableListVue 
+					:drag-handle="true"
+					:list="typeStatus" 
+					v-slot="{element:status,index}">
+					<TypeStatus 
+						@deleteStatus="deleteStatus(index)" 
+						:key="status.__key"
+						:status="status">
+					</TypeStatus>
+				</draggableListVue>
+				<NewTypeStatus :createStatus="addStatus"/>
+			</template>
+		</SwitchExpand>
 		
-		<newTypeStatusVue :createStatus="addStatus"/>
-
-		<div class="setting">
-			<div class="button" @click="showSettingBox = !showSettingBox">
-				分类设置
-			</div>
-			<settingBoxVue ref="settingBox" :show="showSettingBox"></settingBoxVue>
-		</div>
+		<SwitchExpand :start-expand="false">
+			<template #title @click="switchSetting">分类设置</template>
+			<template #inner>
+				<settingBoxVue ref="settingBox"></settingBoxVue>
+			</template>
+		</SwitchExpand>
 	</div>
 
 	<FinalButtons :buttons="[
@@ -43,8 +45,8 @@
 import { provide, reactive, ref, toRaw } from 'vue'; 
 import downLineInputVue from '@/components/other/input/downLineInput.vue';
 import draggableListVue from '@/components/other/draggableList/draggableList.vue';
-import typeStatusVue from '@/components/all-exitence/type/typeStatus.vue';
-import newTypeStatusVue from '@/components/all-exitence/type/newTypeStatus.vue';
+import NewTypeStatus from './NewTypeStatus.vue';
+import TypeStatus from './TypeStatus.vue';
 import { closePopUp } from '@/hooks/pages/popUp';
 import { checkTypeNameRepeat } from '@/hooks/all-exitence/allExitence';
 import { showQuickInfo } from '@/api/showQuickInfo';
@@ -56,6 +58,7 @@ import { nanoid } from 'nanoid';
 import { Type } from '@/class/Type';
 import Status from '@/interfaces/Status';
 import FinalButtons from '@/app/stacks/popUp/FinalButtons.vue';
+import SwitchExpand from '@/components/other/SwitchExpand.vue';
 	const {props={},popUp,returnValue} = defineProps(["props","popUp","returnValue"])
     let {type} = props
 
@@ -96,8 +99,6 @@ import FinalButtons from '@/app/stacks/popUp/FinalButtons.vue';
     }
     provide("settingProps",typeSetting)
 	const settingBox = ref()
-	//控制分类设置显示
-	const showSettingBox = ref(false)
 
 	//确认创建分类
 	function confirm(){
@@ -124,42 +125,43 @@ import FinalButtons from '@/app/stacks/popUp/FinalButtons.vue';
 
 <style lang="scss" scoped>
 @use "@/static/style/components/inputs.scss";
-	.editType{
-		height: 100%;
-	}
-	.top{
-		display: flex;
-		height: 100px;
+.editType{
+	height: 100%;
+}
+.top{
+	display: flex;
+	height: 100px;
+	position: relative;
+	.typeName{
 		position: relative;
-		.typeName{
-			position: relative;
-			top:-20px;
-			margin-top:auto;
-			font-size: 1.4rem;
-			width: 550px;
-			height: 60px;
-		}
-		.button{
-			height: 80px;
-			width: 80px;
-			border: 3px solid black;
-			margin: 10px
-		}
+		top:-20px;
+		margin-top:auto;
+		font-size: 1.4rem;
+		width: 550px;
+		height: 60px;
 	}
-	.inner{
+	.button{
+		height: 80px;
+		width: 80px;
+		border: 3px solid black;
+		margin: 10px
+	}
+}
+.inner{
+	width: 100%;
+	overflow: auto;
+	scrollbar-width: none;
+	max-height: calc(100% - 200px);
+	.setting{
 		width: 100%;
-		overflow: auto;
-		max-height: calc(100% - 200px);
-		.setting{
-            width: 100%;
-            .button{
-                width: 30%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                border: 3px solid black;
-                padding: 5px;
-            }
-        }
+		.button{
+			width: 30%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			border: 3px solid black;
+			padding: 5px;
+		}
 	}
+}
 </style>
