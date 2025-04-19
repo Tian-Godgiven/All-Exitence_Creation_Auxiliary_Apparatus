@@ -4,7 +4,7 @@ import { Chapter } from "@/class/Chapter";
 import { Article } from "@/class/Article";
 import { showAlert } from "../alert";
 import { nanoid } from "nanoid";
-import { deleteShowOnMain } from "../pages/mainPage/showOnMain";
+import { deleteShowOnMain, showOnMain } from "../pages/mainPage/showOnMain";
 
 //当前文章
 export const nowAllArticles = reactive<{
@@ -23,11 +23,27 @@ export function changeNowAllArticles(newAllArticles:any){
     console.log("当前所有文章",nowAllArticles)
 }
 
-//文本相关
-    //向目标章节中插入一个新的空文本
-    export function addArticle(chapter:Chapter){
+//文本相关  
+    //向目标章节中插入一个新的空文本,如果没有传入章节，则会使用当前显示的文章所在的章节
+    export function addArticle(chapter?:Chapter|{chapters:Chapter[],articles:Article[]}){
+        if(!chapter){
+            //获取当前显示的对象,要求必须是文本
+            if(showOnMain.type == "article"){
+                const from = showOnMain.target.from
+                const chapter = getParentChapter(from)
+                if(chapter){
+                    return addArticle(chapter)
+                }   
+            }
+            throw new Error("创建文章失败")
+        }
         //创建文本对象
-        const from = [...chapter.from,chapter.__key]
+        let from:string[] = []
+        //如果添加位置是文章，则添加这个文章到from
+        if("from" in chapter){
+            from = [...chapter.from,chapter.__key]
+        }
+        
         const now = Date.now()
         const newArticle:Article = new Article("","",from,nanoid(),now,now,0)
         //添加到目标章节
@@ -59,9 +75,9 @@ export function changeNowAllArticles(newAllArticles:any){
     }
 
     //聚焦到指定文章
-    export function focusOnArticle(article:Article){
+    export function focusOnArticle(article:Article,showLeft:boolean=false){
         //将其所处的chapter展开
-        //未完成
+
         //在主页面显示该文章
 
         //未完成
@@ -98,7 +114,7 @@ export function changeNowAllArticles(newAllArticles:any){
     }
 
     //打开创建章节弹窗，获得用户输入的弹窗名称
-    export function createChapter(chapter?:Chapter):Promise<Chapter>{
+    export function addChapterPopUp(chapter?:Chapter):Promise<Chapter>{
         //来源的文本，用来生成title
         const fromText = chapter?chapter.name+"中":"文章底部"
         return new Promise((resolve)=>{
@@ -122,10 +138,11 @@ export function changeNowAllArticles(newAllArticles:any){
     }
 
     //聚焦到指定章节
-    export function focusOnChapter(chapter:Chapter){
+    export function focusOnChapter(chapter:Chapter,showLeft:boolean=false){
         //将其展开
         //未完成
         //将其聚焦
+        //展开左侧页面
     }
 
     //删除指定章节

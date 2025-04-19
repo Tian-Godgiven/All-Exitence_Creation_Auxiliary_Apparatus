@@ -165,7 +165,7 @@ export async function saveProject(){
     }
     return true
 }
-//保存当前项目信息
+//保存当前项目信息，在保存项目和切换项目时触发
 export async function saveProjectInfo(){
     //记录项目当前主页面的内容:切换项目or保存项目
     if(!nowProjectInfo?.pathName){return false}//在项目初始化时，也会尝试进行一场记录，此时跳过
@@ -175,7 +175,6 @@ export async function saveProjectInfo(){
     if(showOnMainInfo){
         nowProjectInfo.lastTarget = showOnMainInfo
     }
-    
     //将项目信息写入
     await writeFileAtPath(`projects/${nowProjectInfo.pathName}`,"projectInfo.json",nowProjectInfo)
 }

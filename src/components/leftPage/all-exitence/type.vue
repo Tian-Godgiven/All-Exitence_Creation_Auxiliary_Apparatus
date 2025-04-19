@@ -44,7 +44,7 @@
 import groupVue from "./group.vue"
 import exitenceVue from "./exitence.vue"
 import { computed, provide, inject,ref, onMounted, onUnmounted, Ref } from "vue";
-import { createExitence,createGroupPopUp, deleteTypePopUp, getExitenceInGroup, getNoGroupExitence, updateTypePopUp } from "@/hooks/all-exitence/allExitence";
+import { createExitencePopUp,createGroupPopUp, deleteTypePopUp, getExitenceInGroup, getNoGroupExitence, updateTypePopUp } from "@/hooks/all-exitence/allExitence";
 import { showTargetOnMain } from "@/hooks/pages/mainPage/showOnMain";
 import { hidePage } from "@/hooks/pages/pageChange";
 import { showControlPanel } from "@/hooks/controlPanel";
@@ -83,7 +83,7 @@ import DragHandler from "@/components/global/DragHandler.vue";
 	})
 	//点击创建事物并显示
 	async function clickCreateExitence(){
-		const exitence = await createExitence(type)
+		const exitence = await createExitencePopUp(type)
 		hidePage("left")
 		showTargetOnMain({
 			type:"exitence",

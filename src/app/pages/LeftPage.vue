@@ -15,7 +15,7 @@
 			</div>
 		</div>
 		<div class="titleName manageName" @click="switchManage" v-show="manageMode">结束管理</div>
-		<div class="titleName" @click="changeModel" v-show="!manageMode">{{model?"万物":"文本"}}</div>
+		<div class="titleName" @click="changeLeftPageMode()" v-show="!manageMode">{{model?"万物":"文本"}}</div>
 	</div>
 	<div class="inner">
 		<allExitenceVue v-show="model"></allExitenceVue>
@@ -30,10 +30,11 @@ import { leftMaxWidth, leftShowWidth } from '@/hooks/pages/pageChange';
 import allExitenceVue from '@/components/leftPage/all-exitence/all-exitence.vue';
 import allArticlesVue from '@/components/leftPage/all-articles/all-articles.vue';
 import { computed, provide, ref } from "vue"
-import { createType, nowAllExitence } from '@/hooks/all-exitence/allExitence';
-import { createChapter, nowAllArticles } from '@/hooks/all-articles/allArticles';
+import { createTypePopUp, nowAllExitence } from '@/hooks/all-exitence/allExitence';
+import { addChapterPopUp, nowAllArticles } from '@/hooks/all-articles/allArticles';
 import { Type } from '@/class/Type';
 import { Chapter } from '@/class/Chapter';
+import { changeLeftPageMode, nowLeftPageMode } from '@/hooks/pages/leftPage';
 	//左侧宽度
 	const leftWidth = computed(()=>{
 		//出现变化时关闭管理模式
@@ -42,10 +43,12 @@ import { Chapter } from '@/class/Chapter';
 	})
 
 	// true = [万物] false = [文本]
-	let model = ref(true)
-	function changeModel(){
-		model.value = !model.value
-	}
+	let model = computed(()=>{
+		if(nowLeftPageMode.value == "all-exitence"){
+			return true
+		}
+		return false
+	})
 
 	//点击切换管理模式:管理万物中的分类/分组+管理章节
 	const manageMode = ref(false)
@@ -97,10 +100,10 @@ import { Chapter } from '@/class/Chapter';
 	function createNew(){
 		//万物类
 		if(model.value){
-			createType()
+			createTypePopUp()
 		}
 		else{
-			createChapter()
+			addChapterPopUp()
 		}
 	}
 	

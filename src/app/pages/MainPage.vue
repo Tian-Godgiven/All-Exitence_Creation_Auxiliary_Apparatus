@@ -20,12 +20,7 @@
 	</div>
 
 	<!-- 快捷键 -->
-	<Button class="switchButton" 
-		:style="{transform: 'rotate(' + rotateDegree + 'deg)'}"
-		name="快捷键"
-		icon="rightUp"
-		@click="switchButton">
-	</Button>
+	<QuickButton/>
 	
 	<!-- 输入辅助栏 -->
 	<inputSupportVue/>
@@ -48,7 +43,7 @@
 	import { saveAll } from '@/hooks/app/autoSave';
 	import { Icon } from '@/static/list/iconList';
 	import Suggester from '@/supportAbility/inputSuggestion/suggester/Suggester.vue';
-
+	import QuickButton from '@/components/mainPage/quickButton.vue/QuickButton.vue';
 // 功能按键
 	const buttons:{icon:Icon,name:string,click:()=>any}[] = [{
 		name:"手动保存",
@@ -79,14 +74,7 @@
 	watch(()=>showOnMain.target,()=>{
 		refreshKey.value+=1
 	})
-
-//快捷键
-	const rotateDegree = ref(0)//旋转角度
-	function switchButton(){
-		//旋转按键
-		rotateDegree.value += 180
-		//功能面板：未完成
-	}
+	
 
 </script>
 
@@ -127,23 +115,7 @@
 		overflow: hidden;
 		z-index: 0;
 	}
-	// 快捷键
-	.switchButton{
-		position: absolute;
-		right: 9vw;
-		top:75vh;
-		pointer-events: all;
-		height: 110px;
-		width: 110px;
-		border-radius: 50%;
-		background-color: $rightButtonColor;
-		box-shadow: 0px 3px 6px 1px rgb(99, 99, 99);
-		margin:15px;
-		margin-top: 20px;
-		z-index: 2;
-		flex-shrink: 0;
-		transition: transform 0.5s ease;
-	}
+	
 	
 }
 </style>

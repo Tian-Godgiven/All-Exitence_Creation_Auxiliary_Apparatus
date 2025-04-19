@@ -1,7 +1,7 @@
 <template>
 <div class="ability">
     <Button :name="ability.name" @click="ability.click"></Button>
-    <div>{{ ability.name }}</div>
+    <div class="name">{{ ability.name }}</div>
 </div>
 </template>
 
@@ -13,6 +13,11 @@
 
 <style scoped lang='scss'>
 .ability{
+	margin: 10px;
+	width: 4rem;
+	display: flex;
+	flex-direction: column;
+	place-items: center;
     .button{
 		box-sizing: border-box;
 		pointer-events: all;
@@ -25,6 +30,10 @@
 		margin-top: 20px;
 		z-index: 2;
 		flex-shrink: 0
+	}
+	.name{
+		font-size: $smallFontSize;
+		text-align: center;
 	}
 }
 </style>

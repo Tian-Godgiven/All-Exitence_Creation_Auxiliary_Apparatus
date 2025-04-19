@@ -8,8 +8,8 @@ import { nanoid } from "nanoid";
 import { addExitenceInputSuggestion, changeExitenceInputSuggestion, deleteExitenceInputSuggestion } from "../../supportAbility/inputSuggestion/suggester/inputSuggestion";
 import { showAlert } from "../alert";
 import { filterExitenceByRule } from "../expression/groupRule";
-import { isArray } from "lodash";
-import { deleteShowOnMain } from "../pages/mainPage/showOnMain";
+import { isArray, reject } from "lodash";
+import { deleteShowOnMain, showOnMain, showTargetOnMain } from "../pages/mainPage/showOnMain";
 
 //当前万物
 export const nowAllExitence = reactive<{types:Type[]}>({types:[]})
@@ -55,29 +55,28 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
 
     //向万物中添加新的分类
     export function addType(typeName:string,typeStatus:[],typeSetting:{}){
-        try{
-            const type = new Type(typeName,typeStatus,typeSetting,[],[],nanoid())
-            nowAllExitence.types.push(type)
-        }
-        catch(err){
-            console.error(err)
-        }
-        
+        const type = new Type(typeName,typeStatus,typeSetting,[],[],nanoid())
+        nowAllExitence.types.push(type)
+        return type
     }
-
     // 显示创建分类页面，创建成功时添加该分类
-    export function createType(){
-        // 显示创建分类页面
-        showPopUp({
-            name:"创建分类",
-            buttons:[],
-            vueName:"createType",
-            mask:true,
-            returnValue:(name,typeStatus,setting)=>{
-                //添加该分类
-		        addType(name,typeStatus,setting)
-            }
+    export async function createTypePopUp(){
+        return new Promise<Type>((resolve)=>{
+            // 显示创建分类页面
+            showPopUp({
+                name:"创建分类",
+                buttons:[],
+                vueName:"createType",
+                mask:true,
+                returnValue:(name,typeStatus,setting)=>{
+                    //添加该分类
+                    const type = addType(name,typeStatus,setting)
+                    //返回
+                    resolve(type)
+                }
+            })
         })
+        
     }
 
     // 显示编辑分类页面
@@ -117,6 +116,11 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
         nowAllExitence.types.splice(index,1)
     }
 
+    //聚焦指定的分类
+    export function focusOnType(type:Type,showLeft:boolean=false){
+        //未完成
+    }
+
 // 事物相关
     //向分类中添加新的事物
     export function addExitence(type:Type,exitence:Exitence){
@@ -124,12 +128,11 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
         type.exitence.push(exitence)
         //创建该事物的输入建议
         addExitenceInputSuggestion(type,exitence)
-        
         return exitence
     }
 
     // 创建一个新的事物
-    export function createNewExitence(name:string,status:any[],setting:any,type:Type){
+    export function createExitence(name:string,status:any[],setting:any,type:Type){
         if(!name || name == ""){
             name = "未命名"+type.name
         }
@@ -147,7 +150,19 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
     }
 
     // 显示创建事物页面，创建成功时添加该事物并通过resolve返回
-    export async function createExitence(type:Type):Promise<Exitence>{
+    export async function createExitencePopUp(type?:Type):Promise<Exitence>{
+        //如果未传入type则会使用当前聚焦的type
+        if(!type){
+            //获取当前显示的对象,要求必须是文本
+            if(showOnMain.type == "exitence"){
+                const typeKey = showOnMain.target.typeKey
+                const type = getTypeByKey(typeKey)
+                if(type){
+                    return await createExitencePopUp(type)
+                }   
+            }
+            throw new Error("创建事物失败")
+        }
         return new Promise((resolve,reject)=>{
             // 显示创建事物页面
             showPopUp({
@@ -230,6 +245,18 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
         type.exitence.splice(index,1)
     }
 
+    //聚焦事物对象，将其显示在主页面上
+    export function focusOnExitence(exitence:Exitence,showLeft:boolean=false){
+        //未完成
+
+        //展开分类或分组,是否显示左侧页面
+
+        //显示在主页面
+        showTargetOnMain({
+            type:"exitence",
+            target:exitence
+        })
+    }
 
 
     // 改变事物名称
@@ -253,7 +280,7 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
     }
 
     /**
-     * 
+     * 判断一个事物是否具备某个或某些属性对象
      * @param exitence 
      * @param status 允许传入一个数组，只有在事物具备其中所有属性时才会返回真 
      * @returns 返回布尔值

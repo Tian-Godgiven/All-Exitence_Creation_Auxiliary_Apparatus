@@ -16,7 +16,8 @@
 <style scoped lang='scss'>
 .abilityGroup{
     .title{
-
+        background-color: $bgColor70;
+        font-size: $littleMidFontSize;
     }
     .container{
         display: flex;

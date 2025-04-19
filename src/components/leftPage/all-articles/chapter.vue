@@ -63,7 +63,7 @@
 	import { onMounted, onUnmounted, ref, inject, computed } from "vue";
 	import articleVue from "./article.vue"
 	import chapterVue from "./chapter.vue"
-	import { addArticle, createChapter, focusOnChapter,focusOnArticle, deleteChapterPopUp ,updateChapter} from "@/hooks/all-articles/allArticles";
+	import { addArticle, addChapterPopUp, focusOnChapter,focusOnArticle, deleteChapterPopUp ,updateChapter} from "@/hooks/all-articles/allArticles";
 	import { showControlPanel } from "@/hooks/controlPanel";
 	import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine"
 	import {draggable,dropTargetForElements} from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
@@ -245,7 +245,7 @@ import DragHandler from "@/components/global/DragHandler.vue";
 	//点击插入章节
 	async function clickAddChapter(){
 		//弹出创建章节页面
-		const newChapter = await createChapter(chapter)
+		const newChapter = await addChapterPopUp(chapter)
 		chapter.expending=true
 		//聚焦到该章节
 		focusOnChapter(newChapter)
@@ -257,6 +257,7 @@ import DragHandler from "@/components/global/DragHandler.vue";
 		//聚焦到该文章
 		chapter.expending=true
 		focusOnArticle(newArticle)
+		
 	}
 
 	//长按显示控制面板

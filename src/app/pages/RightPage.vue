@@ -32,7 +32,7 @@ import AbilityGroup from '@/components/rightPage/AbilityGroup.vue';
 	z-index: 5;
 	overflow: hidden;
 	.title{
-		font-size: 1.5rem;
+		font-size: $midFontSize
 	}
 }
 </style>

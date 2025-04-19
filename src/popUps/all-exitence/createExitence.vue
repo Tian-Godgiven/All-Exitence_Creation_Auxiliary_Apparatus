@@ -31,7 +31,7 @@
     import downLineInputVue from '@/components/other/input/downLineInput.vue';
     import { closePopUp } from '@/hooks/pages/popUp';
     import settingBoxVue from '@/components/all-exitence/setting/settingBox.vue';
-    import { addExitence, createNewExitence } from '@/hooks/all-exitence/allExitence';
+    import { addExitence, createExitence } from '@/hooks/all-exitence/allExitence';
     import tagsValueVue from '@/components/all-exitence/status/statusValue/tagsValue.vue';
     import { exitenceSettingList } from '@/static/list/settingList/exitenceSettingList';
 import { showQuickInfo } from '@/api/showQuickInfo';
@@ -77,7 +77,7 @@ import FinalButtons from '@/app/stacks/popUp/FinalButtons.vue';
     })
 
     //用于进行设置的临时事物
-    const tmpExitence = reactive(createNewExitence(
+    const tmpExitence = reactive(createExitence(
         "",
         [defaultTagStatus],
         {previewStatus:tagsKey},
