@@ -2,7 +2,7 @@
 <div class="leftPage" :style="{left:leftWidth}">
 	<div class="titleBar">
 		<div class="titleButtons">
-			<div class="button" @click="switchManage">管理</div>
+			<div class="button" @click="switchManageMode">管理</div>
 			<div class="button">搜索</div>
 			<div class="button" @click="switchExpending">展开收起</div>
 			<div class="button" @click="createNew">新建</div>
@@ -14,8 +14,8 @@
 				</div>
 			</div>
 		</div>
-		<div class="titleName manageName" @click="switchManage" v-show="manageMode">结束管理</div>
-		<div class="titleName" @click="changeLeftPageMode()" v-show="!manageMode">{{model?"万物":"文本"}}</div>
+		<div class="titleName manageName" @click="switchManageMode" v-show="nowLeftManage">结束管理</div>
+		<div class="titleName" @click="changeLeftPageMode()" v-show="!nowLeftManage">{{model?"万物":"文本"}}</div>
 	</div>
 	<div class="inner">
 		<allExitenceVue v-show="model"></allExitenceVue>
@@ -29,21 +29,21 @@
 import { leftMaxWidth, leftShowWidth } from '@/hooks/pages/pageChange';
 import allExitenceVue from '@/components/leftPage/all-exitence/all-exitence.vue';
 import allArticlesVue from '@/components/leftPage/all-articles/all-articles.vue';
-import { computed, provide, ref } from "vue"
+import { computed, ref } from "vue"
 import { createTypePopUp, nowAllExitence } from '@/hooks/all-exitence/allExitence';
 import { addChapterPopUp, nowAllArticles } from '@/hooks/all-articles/allArticles';
 import { Type } from '@/class/Type';
 import { Chapter } from '@/class/Chapter';
-import { changeLeftPageMode, nowLeftPageMode } from '@/hooks/pages/leftPage';
+import { changeLeftPageMode, nowLeftManage, nowLeftPageMode } from '@/hooks/pages/leftPage';
 	//左侧宽度
 	const leftWidth = computed(()=>{
 		//出现变化时关闭管理模式
-		manageMode.value = false
+		nowLeftManage.value = false
 		return (leftShowWidth.value - leftMaxWidth)+'px'
 	})
 
 	// true = [万物] false = [文本]
-	let model = computed(()=>{
+	const model = computed(()=>{
 		if(nowLeftPageMode.value == "all-exitence"){
 			return true
 		}
@@ -51,10 +51,8 @@ import { changeLeftPageMode, nowLeftPageMode } from '@/hooks/pages/leftPage';
 	})
 
 	//点击切换管理模式:管理万物中的分类/分组+管理章节
-	const manageMode = ref(false)
-	provide("manageMode",manageMode)
-	function switchManage(){
-		manageMode.value = !manageMode.value;
+	function switchManageMode(){
+		nowLeftManage.value = !nowLeftManage.value;
 	}
 
 	//点击展开/收起当前所有内容

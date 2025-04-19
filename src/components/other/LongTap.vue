@@ -1,17 +1,27 @@
 <template>
-    <div 
-        @pointerdown="touchStart"
-        @pointerup="touchEnd" >
-        <slot></slot>
-    </div>
+<div 
+	v-wave="{
+		color:'grey',
+		initialOpacity: 0.5,
+		easing: 'ease-in',
+		duration:0.5,
+		stopPropagation:true
+	}"
+	@pointerdown.stop="touchStart"
+	@pointerup="touchEnd" >
+	<slot></slot>
+</div>
 </template>
 
 <script setup lang='ts'>
     import { LongTapAndClickTouchEnd, LongTapAndClickTouchStart } from '@/api/longTapAndClick';
-    import { ref,Ref, unref} from 'vue';
-    const emits = defineEmits(["longtap","click"])
+    import { ref, unref} from 'vue';
     //禁用模式
-	const {disabled=false} = defineProps<{disabled?:Ref<boolean>|boolean}>()
+	const {disabled=false,longTap,click} = defineProps<{
+		disabled?:boolean,
+		longTap:()=>void,
+		click:()=>void
+	}>()
     //长按和点击
 	const ifLongTap = ref(false)
 	let timeout:any 
@@ -27,11 +37,11 @@
 			ifLongTap,
 			//执行长按事件
 			longTap:()=>{
-				emits("longtap")
+				longTap()
 			},
 			//执行点击事件
 			click:()=>{
-				emits("click")
+				click()
 			}
 		})
 	}

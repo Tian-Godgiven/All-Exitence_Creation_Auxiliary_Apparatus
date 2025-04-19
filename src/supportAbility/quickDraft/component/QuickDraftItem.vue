@@ -1,6 +1,6 @@
 <template>
 <div class="quickDraftItem" ref="itemRef">  
-    <LongTapContainer :disabled="manageMode" @longtap="longTap" @click="click">
+    <LongTap :disabled="manageMode" :longTap="longTap" :click="click">
         <div class="content">
             <TextArea class="inner"
                 placeholder="无内容"
@@ -37,7 +37,7 @@
         <Indicator v-if="dragState.type === 'be-dragging-edge' 
             && dragState.edge!=null" :edge="dragState.edge"
             gap="0px" />
-    </LongTapContainer>
+    </LongTap>
 
     <Teleport v-if="dragState.type=='preview'" :to="dragState.container">
         <div class="chapterShadow"></div>
@@ -51,7 +51,7 @@
     import { deleteQuickDraftItem, QuickDraftItem, showFocusingPage } from '../quickDraft';
     import TextArea from '@/components/other/textArea/textArea.vue';
     import Time from '@/components/global/time.vue';
-    import LongTapContainer from '@/components/other/longTapContainer.vue';
+    import LongTap from '@/components/other/LongTap.vue';
     import { showControlPanel } from '@/hooks/controlPanel';
     import { DragState, getCombine } from '@/api/dragToSort';
 

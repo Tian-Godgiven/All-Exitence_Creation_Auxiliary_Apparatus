@@ -56,8 +56,8 @@ export function switchProjectPage(){
 
 
 // 隐藏页面
-const hideAnimateTime = 15
-const showAnimateTime = 10 //动画持续时间（单位帧）
+const hideAnimateTime = 30
+const showAnimateTime = 15 //动画持续时间（单位帧）
 export function hidePage(pageName:'left'|'right'|'project') {
 	switch(pageName){
 		case "left":
@@ -86,7 +86,7 @@ export function hidePage(pageName:'left'|'right'|'project') {
 				hideMask()
 			}
 			else{
-				changeTarget.value -= speed; // 控制时间在10帧内
+				changeTarget.value -= speed;
 				if(whileAnimating){whileAnimating()}
 				requestAnimationFrame(reduce); // 请求下一帧
 			}

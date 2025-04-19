@@ -1,7 +1,7 @@
 import { Ref } from "vue"
 
 //默认的长按时长(ms)
-const defaultLongTapTime = 800
+const defaultLongTapTime = 500
 //传给函数一个布尔值的ref用于记录是否是长按
 export function LongTapAndClickTouchStart(ifLongTap:Ref,time:number=defaultLongTapTime){
     const theTimeOut = setTimeout(()=>{

@@ -8,12 +8,15 @@
 			</DragHandler>		
 		</div>
 
-		<longTapContainerVue :disabled="manageMode" @longtap="longtap" @click="click">
-			<div class="name">{{name}}</div>
-			<div class="preview">
-				<div>{{ preview }}</div>
-			</div>
-		</longTapContainerVue>
+		<LongTap :disabled="manageMode" :longTap :click>
+			<ObjectLine :focusing>
+				<div class="name">{{name}}</div>
+				<div class="preview">
+					<div>{{ preview }}</div>
+				</div>
+			</ObjectLine>
+			
+		</LongTap>
 		
 		<indicatorVue v-if="dragState.type === 'be-dragging-edge' 
 			&& dragState.edge!=null" :edge="dragState.edge"
@@ -29,14 +32,16 @@
 import { hidePage } from '@/hooks/pages/pageChange';
 import { showTargetOnMain } from '@/hooks/pages/mainPage/showOnMain';
 import { computed, inject, onMounted, onUnmounted, ref } from 'vue'; 
-import longTapContainerVue from '../../other/longTapContainer.vue';
 import { showControlPanel } from '@/hooks/controlPanel';
+import LongTap from '@/components/other/LongTap.vue';
 import { deleteExitencePopUp, getExitenceStatusByKey } from '@/hooks/all-exitence/allExitence';
 import { translateToTextContent } from '@/hooks/expression/textAreaContent';
 import indicatorVue from '@/components/other/indicator.vue';
 import { DragState, getCombine } from '@/api/dragToSort';
 import { Exitence } from '@/class/Exitence';
 import DragHandler from '@/components/global/DragHandler.vue';
+import ObjectLine from '../ObjectLine.vue';
+import { getLeftPageFocusTarget } from '@/hooks/pages/leftPage';
 
 	let {exitence} = defineProps<{exitence:Exitence}>()
 	const name = computed(()=>{
@@ -61,12 +66,16 @@ import DragHandler from '@/components/global/DragHandler.vue';
 		const tmp = translateToTextContent(status.value)
 		return tmp.slice(0,100)
 	})
+	//聚焦
+	const focusing = computed(()=>{
+		return getLeftPageFocusTarget() == exitence.__key
+	})
 	const type:any = inject("type")
 
 	//管理模式
 	const manageMode = inject("manageMode",false)
 
-	function longtap(){
+	function longTap(){
 		//显示控制面板
 		showControlPanel([{
 			text:"删除",

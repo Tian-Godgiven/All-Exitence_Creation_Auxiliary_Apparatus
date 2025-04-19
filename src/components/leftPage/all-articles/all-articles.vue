@@ -1,18 +1,18 @@
 <template>
-	<div class="all-articles">
-		<chapterVue v-for="(chapter) in chapters" 
-			:key="chapter.__key"
-			:level="0"
+<div class="all-articles" id="leftPage-allArticles">
+	<chapterVue v-for="(chapter) in chapters" 
+		:key="chapter.__key"
+		:level="0"
+		:from="nowAllArticles"
+		:chapter="chapter">
+	</chapterVue>
+	<div :key="article.__key" v-for="(article,index) in articles">
+		<articleVue 
 			:from="nowAllArticles"
-			:chapter="chapter">
-		</chapterVue>
-		<div :key="article.__key" v-for="(article,index) in articles">
-			<articleVue 
-				:from="nowAllArticles"
-				:article="article"/>
-			<div class="separator" v-if="index < articles.length-1"></div>
-		</div>
+			:article="article"/>
+		<div class="separator" v-if="index < articles.length-1"></div>
 	</div>
+</div>
 </template>
 
 <script setup lang="ts" name=""> 
@@ -24,14 +24,14 @@
 	import { extractClosestEdge, type Edge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
 	import { reorderWithEdge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/util/reorder-with-edge";
 	import { extractInstruction} from '@atlaskit/pragmatic-drag-and-drop-hitbox/tree-item';
-import { Chapter } from '@/class/Chapter';
-import { Article } from '@/class/Article';
+	import { type Chapter } from '@/class/Chapter';
+	import { type Article } from '@/class/Article';
 
 	let chapters = computed(()=>{
-	return nowAllArticles.chapters
+		return nowAllArticles.chapters
 	})
 	let articles = computed(()=>{
-	return nowAllArticles.articles
+		return nowAllArticles.articles
 	})
 
 	//拖动调整顺序功能

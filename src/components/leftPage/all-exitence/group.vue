@@ -13,9 +13,10 @@
 				</DragHandler>
 			</div>
 			
-			<longTapContainerVue class="titleName" :disabled="manageMode" @longtap = "longtap" @click="swicthExpending()">
+			<LongTap class="titleName" :disabled="manageMode" 
+				:longTap = "longTap" :click="()=>swicthExpending()">
 				<div class="text">{{ group.name }}</div>
-			</longTapContainerVue>
+			</LongTap>
 		</div>
 
 		<div class="inner" v-show="expending">
@@ -42,7 +43,7 @@ import { deleteGroup, updateGroupPopUp } from '@/hooks/all-exitence/allExitence'
 import { showControlPanel } from '@/hooks/controlPanel';
 import { Group } from '@/class/Group';
 import { Exitence } from '@/class/Exitence';
-import longTapContainerVue from "../../other/longTapContainer.vue";
+import LongTap from '@/components/other/LongTap.vue';
 import indicatorVue from '@/components/other/indicator.vue';
 import { DragState, getCombine } from '@/api/dragToSort';
 import DragHandler from '@/components/global/DragHandler.vue';
@@ -58,7 +59,7 @@ import DragHandler from '@/components/global/DragHandler.vue';
 		group.expending = !expending.value
 	}
 	// 长按显示控制面板
-	function longtap(){
+	function longTap(){
 		showControlPanel([
 			{
 				text:"编辑分组",

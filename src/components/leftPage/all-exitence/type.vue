@@ -14,9 +14,10 @@
 				</DragHandler>
 			</div>
 			
-			<longTapContainerVue class="titleName" :disabled="manageMode" @longtap = "longtap" @click="switchExpending()">
+			<LongTap class="titleName" :disabled="manageMode" 
+				:longTap = "longTap" :click="()=>switchExpending()">
 				<div class="text">{{type.name }}</div>
-			</longTapContainerVue>
+			</LongTap>
 		</div>
 
 		<div class="inner" v-show="expending || manageMode">
@@ -49,7 +50,7 @@ import { showTargetOnMain } from "@/hooks/pages/mainPage/showOnMain";
 import { hidePage } from "@/hooks/pages/pageChange";
 import { showControlPanel } from "@/hooks/controlPanel";
 import { Type } from "@/class/Type";
-import longTapContainerVue from "../../other/longTapContainer.vue";
+import LongTap from '@/components/other/LongTap.vue';
 import indicatorVue from '@/components/other/indicator.vue';
 import { DragState, getCombine } from '@/api/dragToSort';
 import DragHandler from "@/components/global/DragHandler.vue";
@@ -91,7 +92,7 @@ import DragHandler from "@/components/global/DragHandler.vue";
 		})
 	}
 	//长按显示控制面板
-	function longtap(){
+	function longTap(){
 		showControlPanel([
 			{
 				text:"编辑分类",

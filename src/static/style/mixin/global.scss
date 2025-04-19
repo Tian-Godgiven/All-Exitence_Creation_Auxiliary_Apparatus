@@ -1,4 +1,4 @@
-//最多显示n行文本，超过时显示省略号
+/**最多显示n行文本，超过时显示省略号*/
 @mixin textMaxLine($n){
     word-wrap:break-word;
     text-overflow: ellipsis;

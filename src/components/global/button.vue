@@ -1,14 +1,14 @@
 <template>
-    <div class="button" @click.stop="clickButton($event)" :name="name">
-        <IconVue v-if="icon" 
-            class="buttonIcon" 
-            :icon
-            :name
-            :disabled>
-        </IconVue>
-        <span v-else>{{ name }}</span>
-        <slot></slot>
-    </div>
+<div class="button" @pointerdown.stop @click.stop="clickButton($event)" :name="name">
+    <IconVue v-if="icon" 
+        class="buttonIcon" 
+        :icon
+        :name
+        :disabled>
+    </IconVue>
+    <span v-else>{{ name }}</span>
+    <slot></slot>
+</div>
 </template>
 
 <script setup lang='ts'>
@@ -25,10 +25,10 @@
 </script>
 
 <style scoped lang='scss'>
-    .button{
-        .buttonIcon{
-            width: 100%;
-            height: 100%;
-        }
+.button{
+    .buttonIcon{
+        width: 100%;
+        height: 100%;
     }
+}
 </style>

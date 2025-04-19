@@ -1,28 +1,30 @@
 <template>
-	<div class="article" ref="articleRef" 
-		:class="[(dragState.type=='dragging' ? 'dragging':'')]"> 
+<div class="article" ref="articleRef" 
+	:class="[(dragState.type=='dragging' ? 'dragging':'')]"> 
 
-		<div class="manageButtons" v-show="manageMode">
-			<div class="button" @click="clickDeleteArticle($event)">删除</div>
-			<DragHandler>
-				<div class="button" ref="handlerRef">拖动</div>
-			</DragHandler>
-		</div>
-
-		<longTapContainerVue :disabled="manageMode" @longtap="longtap" @click="click">
-			<div class="title">{{title}}</div>
-			<div v-show="ifPreview" class="preview">{{preview}}</div>
-		</longTapContainerVue>
-
-		<indicatorVue v-if="dragState.type === 'be-dragging-edge' 
-			&& dragState.edge!=null" :edge="dragState.edge"
-			gap="0px" />
+	<div class="manageButtons" v-show="manageMode">
+		<div class="button" @click="clickDeleteArticle($event)">删除</div>
+		<DragHandler>
+			<div class="button" ref="handlerRef">拖动</div>
+		</DragHandler>
 	</div>
-	
 
-	<Teleport v-if="dragState.type=='preview'" :to="dragState.container">
-		<div class="chapterShadow">{{ article.title }}</div>
-	</Teleport>
+	<LongTap :disabled="manageMode" :longTap :click>
+		<ObjectLine :focusing>
+			<div class="title">{{title}}</div>
+			<div class="preview" v-show="ifPreview" >{{preview}}</div>
+		</ObjectLine>
+	</LongTap>
+
+	<indicatorVue v-if="dragState.type === 'be-dragging-edge' 
+		&& dragState.edge!=null" :edge="dragState.edge"
+		gap="0px" />
+</div>
+
+
+<Teleport v-if="dragState.type=='preview'" :to="dragState.container">
+	<div class="chapterShadow">{{ article.title }}</div>
+</Teleport>
 </template>
 
 <script setup lang="ts" name="article">
@@ -33,11 +35,13 @@ import { showControlPanel } from '@/hooks/controlPanel';
 import { deleteArticlePopUp } from '@/hooks/all-articles/allArticles';
 import { translateToTextContent } from '@/hooks/expression/textAreaContent';
 import { trim } from 'lodash';
-import longTapContainerVue from "../../other/longTapContainer.vue";
 import { Article } from '@/class/Article';
+import LongTap from '@/components/other/LongTap.vue';
 import indicatorVue from '@/components/other/indicator.vue';
 import { DragState, getCombine } from '@/api/dragToSort';
 import DragHandler from '@/components/global/DragHandler.vue';
+import { getLeftPageFocusTarget } from '@/hooks/pages/leftPage';
+import ObjectLine from '../ObjectLine.vue';
 
 	let {article,from} = defineProps<{article:Article,from:any}>()
 	const manageMode = inject("manageMode",false)
@@ -67,8 +71,14 @@ import DragHandler from '@/components/global/DragHandler.vue';
 			return ""
 		}
 	})
+	//聚焦到对象
+	const focusing = computed(()=>{
+		return article.__key == getLeftPageFocusTarget()
+	})
+
+
 	//长按和点击事件
-	const longtap = ()=>{
+	const longTap = ()=>{
 		//显示控制面板
 		showControlPanel([{
 			text:"删除",
@@ -106,30 +116,31 @@ import DragHandler from '@/components/global/DragHandler.vue';
 		}
 	}
 
-let cleanup = ()=>{}
-onMounted(()=>{
-	if(articleRef.value == null || handlerRef.value==null)return;
-	cleanup = getCombine({
-		element:articleRef.value,
-		dragHandle:handlerRef.value,
-		idle,
-		dragState,
-		getData:getArticleData,
-		"canDrop":(source)=>{
-			return source.data.type == "article"
-		},
+	let cleanup = ()=>{}
+	onMounted(()=>{
+		if(articleRef.value == null || handlerRef.value==null)return;
+		cleanup = getCombine({
+			element:articleRef.value,
+			dragHandle:handlerRef.value,
+			idle,
+			dragState,
+			getData:getArticleData,
+			"canDrop":(source)=>{
+				return source.data.type == "article"
+			},
+		})
 	})
-})
 
-onUnmounted(()=>{
-	cleanup()
-})
+	onUnmounted(()=>{
+		cleanup()
+	})
 	
 
 	
 </script>
 
 <style lang="scss" scoped>
+@use "/src/static/style/components/leftPage.scss" as *;
 	.article{
 		position: relative;
 		background-color: $bgColor;

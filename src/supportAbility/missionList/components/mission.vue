@@ -1,6 +1,6 @@
 <template>
     <div class="mission">
-        <LongTapContainer @longtap="longTap" @click="click" class="contentBar">
+        <LongTap :longTap="longTap" :click="click" class="contentBar">
             <div class="title">{{ mission.title }}</div>
             <div class="inner" :class="innerExpend?'expend':'unexpend'">
                 <MissionTime v-if="mission.timeLeft" :mission="mission"/>
@@ -13,7 +13,7 @@
                     <MissionTag v-for="tag in mission.tags" :tag="tag"/>
                 </div>
             </div>
-        </LongTapContainer>
+        </LongTap>
         
         <div class="controlBar">
             <div class="confirmButton" 
@@ -30,7 +30,7 @@
     import TextArea from '@/components/other/textArea/textArea.vue';
     import MissionTime from './missionTime.vue';
     import MissionTag from './missionTag.vue';
-    import LongTapContainer from '@/components/other/longTapContainer.vue';
+    import LongTap from '@/components/other/LongTap.vue';
     import { manageMode,deleteMission, finishMission, Mission, repeatMission, tryAgain, editMission} from '../missionList';
     import { computed, ref } from 'vue';
     import { showControlPanel } from '@/hooks/controlPanel';
