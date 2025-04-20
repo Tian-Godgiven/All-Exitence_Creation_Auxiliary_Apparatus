@@ -258,7 +258,6 @@ export function getMonitor({canMonitor,sourceIndex,targetIndex,list,returnNewLis
 //设置拖拽状态
 function setDragState(dragState:Ref<DragState>,state:DragState){
     if(!isEqual(dragState.value,state)){
-        console.log(state)
         dragState.value = state
     }
 }

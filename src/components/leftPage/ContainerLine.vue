@@ -2,7 +2,7 @@
 <Draggable :getData :level :handlerRef :canDrop :allowInto
 	ref="draggable" 
 	v-model:dragState="dragState">
-    <LongTap :click :longTap class="top">
+    <LongTap :click :longTap class="top" :style="{paddingLeft:level*10+'px'}">
         <Icon class="icon" :icon="expending?'expand':'unexpand'"></Icon>
         <div class="text">
             <slot name="title"></slot>
@@ -21,6 +21,9 @@
     <div class="inner" v-show="expending && dragState?.type!='dragging'">
         <slot name="inner"></slot>
     </div>
+    <template #dragShadow>
+        <slot name="dragShadow"></slot>
+    </template>
 </Draggable>
 </template>
 
@@ -73,13 +76,13 @@
 	word-break: break-all;
     display: flex;
     align-items: center;
+    box-sizing: border-box;
     .icon{
         height: 60px;
         width: 60px;
     }
     .text{
         flex-grow: 1;
-        display: flex;
         height: 100%;
 		width: 100%;
     }
@@ -90,6 +93,7 @@
 }
 .inner{
     width: 100%;
+    box-sizing: border-box;
 }
 
 

@@ -4,10 +4,10 @@ import { createDirByPath, createFileToPath, deleteAtPath, ifExists, readDirAsArr
 import { showPopUp } from "../pages/popUp";
 import { showAlert } from "../alert";
 import { hidePage } from "../pages/pageChange";
-import { getShowOnMainInfo, showTargetOnMain } from "../pages/mainPage/showOnMain";
+import { getShowOnMainInfo, showLastTargetOnMain, showTargetOnMain } from "../pages/mainPage/showOnMain";
 import { supportAbilityList } from "@/static/list/supportAbilityList";
 import { nowAllExitence } from "../all-exitence/allExitence";
-import { getArticleByKey, nowAllArticles } from "../all-articles/allArticles";
+import { nowAllArticles } from "../all-articles/allArticles";
 import { changeNowAllExitence } from "../all-exitence/allExitence"
 import { changeNowAllArticles } from "../all-articles/allArticles"
 import { Type } from "@/class/Type"
@@ -96,49 +96,6 @@ export async function syncProject(projectPath:string){
     
 }
 //读取项目信息，在主页面上显示指定内容
-function showLastTargetOnMain(){
-    let targetInfo = nowProjectInfo.lastTarget
-    //如果为空，则显示指引页面
-    if(!targetInfo){
-        onNoContent()
-        return;
-    }
-    //否则显示上一次显示的内容
-    showLastTarget(targetInfo)
-    
-    //获取上一次显示的对象
-    function showLastTarget({type,targetKey,from}:ProjectLastTarget){
-        if(type == "exitence"){
-            const theType = nowAllExitence.types.find((type)=>type.__key == from)
-            const exitence = theType?.exitence.find((exitence)=>exitence.__key == targetKey)
-            //找不到对象返回false
-            if(!theType || !exitence){
-                return false
-            }
-            showTargetOnMain({
-                type,
-                target:exitence
-             })
-        }
-        else if(type == "article"){
-            //根据文章的from,从最外层找起
-            const article = getArticleByKey(from,targetKey)
-            if(!article){
-                return false
-            }
-            showTargetOnMain({
-                type,
-                target:article
-             })
-        }
-        else if(type == "info"){
-            showTargetOnMain({
-                type,
-                target:targetKey
-             })
-        }
-    }
-}
 
 //保存当前项目
 export async function saveProject(){
@@ -211,7 +168,7 @@ export async function moveToProject(projectPath:string){
     //同步数据成功
     if(tmp){
         //在主页面上显示新项目上一次显示的内容
-        showLastTargetOnMain()
+        showLastTargetOnMain(nowProjectInfo.lastTarget)
         //记录新项目为上一次打开的项目
         changeAppSetting("lastProjectPath",projectPath)
     }

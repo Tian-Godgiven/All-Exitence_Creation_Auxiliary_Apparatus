@@ -1,49 +1,29 @@
 <template>
-	<div class="exitence" ref="exitenceRef">
-
-		<div class="manageButtons" v-show="manageMode">
-			<div class="button" @click="clickDeleteExitence($event)">删除</div>
-			<DragHandler> 
-				<div class="button" ref="handlerRef">拖动</div>
-			</DragHandler>		
-		</div>
-
-		<LongTap :disabled="manageMode" :longTap :click>
-			<ObjectLine :focusing>
-				<div class="name">{{name}}</div>
-				<div class="preview">
-					<div>{{ preview }}</div>
-				</div>
-			</ObjectLine>
-			
-		</LongTap>
-		
-		<indicatorVue v-if="dragState.type === 'be-dragging-edge' 
-			&& dragState.edge!=null" :edge="dragState.edge"
-			gap="0px" />		
+<ObjectLine :buttonList :longTap :click :focusing :getData :canDrop class="exitence">
+	<div class="inner">
+		<div class="name">{{name}}</div>
+		<div class="preview">{{ preview }}</div>
 	</div>
-
-	<Teleport v-if="dragState.type=='preview'" :to="dragState.container">
-		<div class="chapterShadow">{{ exitence.name }}</div>
-	</Teleport>
+	<template #dragShadow>
+		<div class="dragShadow">{{ exitence.name }}</div>
+	</template>
+</ObjectLine>
 </template>
 
 <script setup lang="ts" name="">
 import { hidePage } from '@/hooks/pages/pageChange';
 import { showTargetOnMain } from '@/hooks/pages/mainPage/showOnMain';
-import { computed, inject, onMounted, onUnmounted, ref } from 'vue'; 
+import { computed } from 'vue'; 
 import { showControlPanel } from '@/hooks/controlPanel';
-import LongTap from '@/components/other/LongTap.vue';
 import { deleteExitencePopUp, getExitenceStatusByKey } from '@/hooks/all-exitence/allExitence';
 import { translateToTextContent } from '@/hooks/expression/textAreaContent';
-import indicatorVue from '@/components/other/indicator.vue';
-import { DragState, getCombine } from '@/api/dragToSort';
 import { Exitence } from '@/class/Exitence';
-import DragHandler from '@/components/global/DragHandler.vue';
 import ObjectLine from '../ObjectLine.vue';
 import { getLeftPageFocusTarget } from '@/hooks/pages/leftPage';
+import { Type } from '@/class/Type';
+import { ElementDragPayload } from '@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types';
 
-	let {exitence} = defineProps<{exitence:Exitence}>()
+	let {type,exitence} = defineProps<{type:Type,exitence:Exitence}>()
 	const name = computed(()=>{
 		if(exitence.name.trim() == "" || !exitence.name){
 			return `未命名${type.name}`
@@ -70,12 +50,8 @@ import { getLeftPageFocusTarget } from '@/hooks/pages/leftPage';
 	const focusing = computed(()=>{
 		return getLeftPageFocusTarget() == exitence.__key
 	})
-	const type:any = inject("type")
 
-	//管理模式
-	const manageMode = inject("manageMode",false)
-
-	function longTap(){
+	const longTap = ()=>{
 		//显示控制面板
 		showControlPanel([{
 			text:"删除",
@@ -84,7 +60,7 @@ import { getLeftPageFocusTarget } from '@/hooks/pages/leftPage';
 			}
 		}])
 	}
-	function click(){
+	const click = ()=>{
 		//点击将事物显示在主页面
 		showTargetOnMain({
 			type:"exitence",
@@ -93,20 +69,13 @@ import { getLeftPageFocusTarget } from '@/hooks/pages/leftPage';
 		hidePage("left")
 	}
 
-	//点击删除事物
-	function clickDeleteExitence(event:Event){
-		event.stopPropagation()
-		deleteExitencePopUp(type,exitence)
-	}
-	
-//拖拽功能的实现
-	const exitenceRef = ref<HTMLElement | null>(null)
-	const handlerRef = ref<HTMLElement | null>(null)
+	//管理模式按钮
+	const buttonList = [
+		{name:"删除",click:()=>deleteExitencePopUp(type,exitence)}
+	]
 
-	const idle:DragState = {type:"idle"}//初始拖拽状态
-	const dragState = ref<DragState>(idle)//拖拽状态
 	//获取数据
-	function getExitenceData(){
+	function getData(){
 		return {
 			type:"exitence",
 			from:type,
@@ -114,59 +83,29 @@ import { getLeftPageFocusTarget } from '@/hooks/pages/leftPage';
 		}
 	}
 
-let cleanup = ()=>{}
-onMounted(()=>{
-	if(exitenceRef.value == null || handlerRef.value==null)return;
-	cleanup = getCombine({
-		element:exitenceRef.value,
-		dragHandle:handlerRef.value,
-		idle,
-		dragState,
-		getData:getExitenceData,
-		"canDrop":(source)=>{
-			//source的来源必须一致
-			if(source.data.from != type){
-				return false
-			}
-			return source.data.type == "exitence"
-		},
-	})
-})
-
-onUnmounted(()=>{
-	cleanup()
-})
-	
-	
+	const canDrop = (source:ElementDragPayload)=>{
+		//source的来源必须一致
+		if(source.data.from != type){
+			return false
+		}
+		return source.data.type == "exitence"
+	}
 </script>
 
 <style lang="scss" scoped>
 .exitence{
 	position: relative;
 	background-color: $bgColor;
-	max-height: 110px;
-	padding: 10px;
+	box-sizing: border-box;
+	padding: 10px 20px;
+	width: 100%;
 	.name{
 		position: relative;
 		font-size:$midFontSize;
 		@include textMaxLine(2);//最多显示两行
-		.manageButtons{
-			display: flex;
-			font-size: 1rem;
-			position: absolute;
-			right: 0;
-			top: 0;
-			height: 100%;
-			width: 100px;
-		}
 	}
 	.preview{
-		display: flex;
 		@include textMaxLine(3);//最多显示3行
-	}
-	.manageButtons{
-		float: right;
-		display: flex;
 	}
 }
 </style>

@@ -14,7 +14,7 @@
         '--offset-terminal': `${offsetToAlignTerminalWithLine}px`,
       }"
     ></div>
-  </template>
+</template>
 
 <script setup lang="ts">
 import type { Edge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/types";
@@ -53,6 +53,7 @@ const terminalSize = 8;
 const offsetToAlignTerminalWithLine = (strokeSize - terminalSize) / 2;
 
 onMounted(()=>{
+  console.log("构建了线条")
 })
 </script>
 

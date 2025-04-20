@@ -8,6 +8,7 @@
 	</chapterVue>
 	<div :key="article.__key" v-for="(article,index) in articles">
 		<articleVue 
+			:level="0"
 			:from="nowAllArticles"
 			:article="article"/>
 		<Separator v-if="index < articles.length-1"></Separator>

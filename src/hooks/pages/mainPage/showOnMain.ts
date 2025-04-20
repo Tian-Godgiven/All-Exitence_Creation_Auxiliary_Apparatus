@@ -1,7 +1,9 @@
 import { Article } from "@/class/Article"
 import { Exitence } from "@/class/Exitence"
-import { ProjectLastTarget } from "@/hooks/project/project"
+import { focusOnExitence, getExitenceByKey, getTypeByKey} from "@/hooks/all-exitence/allExitence"
+import { onNoContent, ProjectLastTarget } from "@/hooks/project/project"
 import { reactive } from "vue"
+import { focusOnArticle, getArticleByKey } from "@/hooks/all-articles/allArticles"
 
 export type ShowOnMainItem = 
     {scrollTop:number} & (
@@ -95,6 +97,42 @@ export function showTargetOnMain({type,target}:ShowOnMainTarget){
         }
     }
 }
+// 显示项目最近一次记录的对象在主页面
+export function showLastTargetOnMain(lastTarget:ProjectLastTarget|null){
+    //如果为空，则显示指引页面
+    if(!lastTarget){
+        onNoContent()
+        return;
+    }
+    const {type,targetKey,from} = lastTarget
+    //否则显示上一次显示的内容,并且切换左侧页面到相应的模式
+    if(type == "exitence"){
+        const theType = getTypeByKey(from)
+        if(!theType)return false;
+        const exitence = getExitenceByKey(theType,targetKey)
+        //找不到对象返回false
+        if(!theType || !exitence){
+            return false
+        }
+        //聚焦并显示该事物
+        focusOnExitence(exitence,false)
+    }
+    else if(type == "article"){
+        //根据文章的from,从最外层找起
+        const article = getArticleByKey(from,targetKey)
+        if(!article){
+            return false
+        }
+        focusOnArticle(article,false)
+    }
+    else if(type == "info"){
+        showTargetOnMain({
+            type,
+            target:targetKey
+         })
+    }
+}
+
 
 //保存当前显示对象的信息
 function saveLastTargetOnMain(){

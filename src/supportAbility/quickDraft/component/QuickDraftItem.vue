@@ -104,7 +104,7 @@ import DragHandler from '@/components/global/DragHandler.vue';
     position: relative;
     border: 3px solid black;
 .content{
-    //只显示3行内容:未完成，实际上只显示了1行
+
     .inner{
         min-height: 1.5rem;
         color: $bgColor40;
@@ -120,9 +120,6 @@ import DragHandler from '@/components/global/DragHandler.vue';
             font-size: 0.7rem;
         }
     }
-}
-.sideBar{
-
 }
     
 }

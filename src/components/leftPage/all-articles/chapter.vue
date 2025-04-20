@@ -1,7 +1,9 @@
 <template>
 <ContainerLine 
 	:click :longTap :getData :buttonList :expending :allowInto="true" :canDrop
+	:level
 	class="chapter">
+	<div class="empty"></div>
 	<template #title>
 		<div class="title">
 			{{chapter.name }}
@@ -17,6 +19,7 @@
 			</chapterVue>
 			<div class="articles" v-for="(article,index) in articles">
 				<articleVue 
+					:level="level+1"
 					:key="article.__key"
 					:from="chapter" 
 					:article = "article">
@@ -49,7 +52,6 @@
 	})
 	//点击切换展开
 	const click = ()=>{
-		console.log("触发了点击事件")
 		chapter.expending = !expending.value
 	}
 	//长按显示控制面板
@@ -82,7 +84,6 @@
 
 	//点击插入章节
 	const clickAddChapter = async()=>{
-		console.log("触发了插入章节")
 		//弹出创建章节页面
 		const newChapter = await addChapterPopUp(chapter)
 		chapter.expending=true
@@ -130,9 +131,6 @@
 		width: 100%;
 		font-size: $midFontSize;
 		@include textMaxLine(1);
-	}
-	.inner{
-		padding-left: 20px;
 	}
 }
 .chapterShadow{

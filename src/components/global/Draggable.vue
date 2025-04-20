@@ -4,9 +4,11 @@
     (dragState.type=='dragging' ? 'dragging':'unDragging')
 ]">
     <slot></slot>
-    <indicatorVue v-if="dragState.type === 'be-dragging-over' 
-            && dragState.edge!=null" :edge="dragState.edge"
-            gap="0px" />
+    <indicatorVue v-if="
+        (dragState.type === 'be-dragging-over' || 
+        dragState.type === 'be-dragging-edge')
+        && dragState.edge!=null" :edge="dragState.edge"
+        gap="0px" />
     <!-- 幻影元素 -->
     <Teleport v-if="dragState.type=='preview'" :to="dragState.container">
         <slot name="dragShadow"></slot>
@@ -16,12 +18,12 @@
 </template>
 
 <script setup lang='ts'>
-    import { onMounted, onUnmounted, ref, useTemplateRef } from "vue";
+    import { onMounted, onUnmounted, useTemplateRef, watch } from "vue";
 	import { DragState, getCombine } from '@/api/dragToSort';
     import indicatorVue from "@/components/other/indicator.vue";
     import { ElementDragPayload } from "@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types";
     let {handlerRef,getData,canDrop,allowInto=false,level=0} = defineProps<{
-        handlerRef?:HTMLElement|null,//手柄
+        handlerRef?:HTMLElement|null,//手柄元素
         getData:()=>any,
         canDrop?:(source:ElementDragPayload)=>boolean,//判断是否允许放置的函数
         allowInto?:boolean,//是否允许拖拽进内部
@@ -29,29 +31,51 @@
     }>()
     //拖拽状态
     const idle:DragState = {type:"idle"}//初始拖拽状态
-    const dragState = defineModel<DragState>("dragState",{default:ref<DragState>({type:"idle"})})
+    const dragState = defineModel<DragState>("dragState",{default:{type:"idle",edge:null}})
     //拖拽功能的实现
 	const dragRef = useTemplateRef("dragRef")
     let cleanup = ()=>{}
     onMounted(()=>{
-        let handler
-        if(dragRef.value == null)return;
-        if(!handlerRef){
-            handler = dragRef.value
+        //如果传入了一个手柄，则等待该手柄渲染完成
+        if(handlerRef!==undefined){
+            watch(()=>handlerRef,()=>{
+                if(dragRef.value == null)return;
+                if(handlerRef != null){
+                    cleanup = getCombine({
+                        element:dragRef.value,
+                        dragHandle:handlerRef,
+                        idle,
+                        dragState,
+                        getData,
+                        canDrop,
+                        allowInto,
+                        level
+                    })
+                }
+            })
         }
         else{
-            handler = handlerRef
+            if(dragRef.value == null)return;
+            let handler
+            if(!handlerRef){
+                handler = dragRef.value
+            }
+            else{
+                handler = handlerRef
+            }
+            cleanup = getCombine({
+                element:dragRef.value,
+                dragHandle:handler,
+                idle,
+                dragState,
+                getData,
+                canDrop,
+                allowInto,
+                level
+            })
         }
-        cleanup = getCombine({
-            element:dragRef.value,
-            dragHandle:handler,
-            idle,
-            dragState,
-            getData,
-            canDrop,
-            allowInto,
-            level
-        })
+        
+        
     })
 
     onUnmounted(()=>{

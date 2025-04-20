@@ -133,7 +133,7 @@ export function deleteMission(mission:Mission){
         confirm:()=>{
             const index = nowMissionList[mission.state].indexOf(mission)
             nowMissionList[mission.state].splice(index,1)
-        }
+        },
     })
 }
 
