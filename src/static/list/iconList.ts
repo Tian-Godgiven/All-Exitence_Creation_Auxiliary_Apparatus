@@ -31,6 +31,9 @@ export const iconList:Record<string,string>= {
     "manage":"manageMode",//管理模式
     "collapse":"collapse",//缩小箭头
     "shrink":"shrink",//缩小窗口
+
+    "expand":"expandDown",//向下箭头，表示展开中
+    "unexpand":"expandRight"//向→箭头，表示收起中
     
 }
 

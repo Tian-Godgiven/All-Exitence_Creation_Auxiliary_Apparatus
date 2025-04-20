@@ -22,9 +22,7 @@
 	}
 }
 
-// 左侧页面通用分割线
-.leftPageSeparator{
-	height: 0.5px;
-	background-color: $bgColor70;
-	margin: 5px 20px;
+// 左侧页面聚焦对象样式
+.focusTarget{
+	background-color: $bgColor80;
 }

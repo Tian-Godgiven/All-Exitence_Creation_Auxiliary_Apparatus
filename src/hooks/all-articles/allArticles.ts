@@ -4,7 +4,8 @@ import { Chapter } from "@/class/Chapter";
 import { Article } from "@/class/Article";
 import { showAlert } from "../alert";
 import { nanoid } from "nanoid";
-import { deleteShowOnMain, showOnMain } from "../pages/mainPage/showOnMain";
+import { deleteShowOnMain, showOnMain, showTargetOnMain } from "../pages/mainPage/showOnMain";
+import { focusOnLeftPage } from "../pages/leftPage";
 
 //当前文章
 export const nowAllArticles = reactive<{
@@ -77,10 +78,23 @@ export function changeNowAllArticles(newAllArticles:any){
     //聚焦到指定文章
     export function focusOnArticle(article:Article,showLeft:boolean=false){
         //将其所处的chapter展开
-
-        //在主页面显示该文章
-
-        //未完成
+        //遍历from寻找章节，并依次展开这些章节
+        const from = article.from
+        const chapterFrom:string[] = []
+        from.forEach(key=>{
+            const chapter = getChapterByKey(chapterFrom,key)
+            //将其展开
+            expendChapter(chapter)
+            //把他的key放进chapterFrom
+            chapterFrom.push(chapter.__key)
+        })
+        //在左侧页面聚焦这个文章
+        focusOnLeftPage(article.__key,"all-article",showLeft)
+        //在主页面显示这个文章
+        showTargetOnMain({
+            type:"article",
+            target:article
+        })
     }
 
     //通过from与key获取文章
@@ -139,14 +153,28 @@ export function changeNowAllArticles(newAllArticles:any){
 
     //聚焦到指定章节
     export function focusOnChapter(chapter:Chapter,showLeft:boolean=false){
-        //将其展开
-        //未完成
+        //遍历from寻找章节，并依次展开这些章节
+        const from = chapter.from
+        const chapterFrom:string[] = []
+        from.forEach(key=>{
+            const chapter = getChapterByKey(chapterFrom,key)
+            //将其展开
+            expendChapter(chapter)
+            //把他的key放进chapterFrom
+            chapterFrom.push(chapter.__key)
+        })
+        //展开这个章节
+        chapter.expending=true
         //将其聚焦
-        //展开左侧页面
+        focusOnLeftPage(chapter.__key,"all-article",showLeft)
+    }
+    //展开指定章节
+    export function expendChapter(chapter:Chapter){
+        chapter.expending = true
     }
 
     //删除指定章节
-    export function deleteChapterPopUp(from:any,chapter:Chapter){
+    export function deleteChapterPopUp(from:{chapters:Chapter[]},chapter:Chapter){
         //进行提示 
         showAlert({
             "info":`删除章节${chapter.name}及其中的所有内容？`,
@@ -216,9 +244,9 @@ export function changeNowAllArticles(newAllArticles:any){
     export function getChapterByKey(from:string[],key:string|null){
         //寻找父章节
         const parent = getParentChapter(from)
-        //返回该chapter
-        if(!parent){return false}
-        const tmp = parent.chapters.find((chapter)=>chapter.__key == key)
-        if(!tmp)return false;
-        return tmp
+        if(parent){
+            const tmp = parent.chapters.find((chapter)=>chapter.__key == key)
+            if(tmp)return tmp
+        }   
+        throw new Error(`"未找到章节",${from},${key}`)
     }

@@ -1,5 +1,5 @@
 <template>
-<div class="button" @pointerdown.stop @click.stop="clickButton($event)" :name="name">
+<div class="button" @pointerdown.stop @pointerup.stop @click.stop="clickButton($event)" :name="name">
     <IconVue v-if="icon" 
         class="buttonIcon" 
         :icon

@@ -1,21 +1,30 @@
 <template>
 <div class="switchExpand">
     <div class="title" @click="switchExpand">
-        <div class="icon" :class="expand?'expand':'unexpand'"></div>
+        <Icon class="icon" :icon="expand?'expand':'unexpand'"></Icon>
         <slot class="content" name="title"></slot>
     </div>
     <div class="inner" ref="inner">
         <slot name="inner"></slot>
     </div>
-    
 </div>
 </template>
 
 <script setup lang='ts'>
     import gsap from 'gsap';
-    import { onMounted, ref, useTemplateRef } from 'vue';
-    const {startExpand=true} = defineProps<{startExpand?:boolean}>()
-    const expand = ref(startExpand)
+    import { onMounted, Ref, ref, useTemplateRef } from 'vue';
+    import Icon from '../global/Icon.vue';
+    const {startExpand=true,expandRef} = defineProps<{
+        expandRef?:Ref<boolean>,
+        startExpand?:boolean
+    }>()
+    let expand:Ref<boolean>
+    if(expandRef){
+        expand = expandRef
+    }
+    else{
+        expand = ref(startExpand)
+    }
     const inner = useTemplateRef("inner")
     onMounted(()=>{
         gsap.set(inner.value,{
@@ -53,15 +62,6 @@
         .icon{
             width: 40px;
             height: 40px;
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            &.expand{
-                background-image: url("@/static/icon/expandDown.svg");
-            }
-            &.unexpand{
-                background-image: url("@/static/icon/expandRight.svg");
-            }
         } 
         >:not(.icon){
             flex-grow: 1;

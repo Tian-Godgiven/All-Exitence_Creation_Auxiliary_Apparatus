@@ -4,7 +4,7 @@ export interface AlertItem{
     title?:string,
     info:string,
     confirm:null | ((...args:any[])=>any),
-    quit?:()=>any,
+    quit?:(()=>any)|null,//取消时触发的事件，取消按钮默认存在，除非设置为Null
     buttons?:{
         name:string,
         click:()=>any

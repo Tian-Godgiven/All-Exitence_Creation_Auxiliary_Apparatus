@@ -1,10 +1,6 @@
 <template>
     <div class="alert">
         <div class="info">{{ item.info }}</div>
-        <div class="buttons" v-if="item.confirm != null">
-            <div class="button" @click="clickButton(item.confirm)">确认</div>
-            <div class="button" @click="clickQuit()">取消</div>
-        </div>
         <FinalButtons :buttons="buttons"/>
     </div>
 </template>
@@ -18,29 +14,39 @@ import FinalButtons from '@/app/stacks/popUp/FinalButtons.vue';
 
     //所有按钮
     const buttons = function(){
-        const buttonList = []
+        const buttonList:{
+            click:()=>void,
+            name:string
+        }[] = []
         //先看确认和取消
-        if(item.confirm){
+        if(item.confirm != null){
             buttonList.push({
-                click:item.confirm,
+                click:()=>clickButton(item.confirm),
                 name:"确认"
             })
         }
-        if(item.quit){
+        //取消默认存在，除非设置为null
+        if(item.quit!==null){
             buttonList.push({
-                click:item.quit,
+                click:()=>clickQuit(),
                 name:"取消"
             })
         }
         //再加其他按钮
         if(item.buttons){
-            buttonList.push(...item.buttons)
+            const list = item.buttons.map(button=>{
+                return {
+                    click:()=>clickButton(button.click),
+                    name:button.name
+                }
+            })
+            buttonList.push(...list)
         }
         return buttonList
     }()
 
-    //点击任意一个按钮
-    function clickButton(func:()=>void){
+    //点击任意一个按钮最终都会关闭弹窗
+    function clickButton(func:(()=>void)|null){
         if(func){
             func()
         }

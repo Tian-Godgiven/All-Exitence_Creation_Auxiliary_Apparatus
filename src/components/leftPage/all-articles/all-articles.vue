@@ -10,7 +10,7 @@
 		<articleVue 
 			:from="nowAllArticles"
 			:article="article"/>
-		<div class="separator" v-if="index < articles.length-1"></div>
+		<Separator v-if="index < articles.length-1"></Separator>
 	</div>
 </div>
 </template>
@@ -26,6 +26,7 @@
 	import { extractInstruction} from '@atlaskit/pragmatic-drag-and-drop-hitbox/tree-item';
 	import { type Chapter } from '@/class/Chapter';
 	import { type Article } from '@/class/Article';
+import Separator from '../Separator.vue';
 
 	let chapters = computed(()=>{
 		return nowAllArticles.chapters
@@ -146,12 +147,8 @@
 </script>
 
 <style lang="scss" scoped>
-	@use "@/static/style/components/leftPage.scss";
 	.all-articles{
 		position: relative;
 		width: 100%;
-	}
-	.separator{
-		@extend .leftPageSeparator;
 	}
 </style>

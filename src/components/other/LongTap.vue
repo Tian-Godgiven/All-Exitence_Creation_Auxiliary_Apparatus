@@ -3,6 +3,7 @@
 	v-wave="{
 		color:'grey',
 		initialOpacity: 0.5,
+		finalOpacity:0.2,
 		easing: 'ease-in',
 		duration:0.5,
 		stopPropagation:true

@@ -1,6 +1,7 @@
 import { ref } from "vue";
+import { showPage } from "./pageChange";
 
-//左侧页面当前使用的模式
+//左侧页面当前使用的模式:万物or文章
 export const nowLeftPageMode = ref<"all-exitence"|"all-article">("all-exitence")
 export function changeLeftPageMode(modeName?:"all-exitence"|"all-article"){
     //取反
@@ -15,4 +16,25 @@ export function changeLeftPageMode(modeName?:"all-exitence"|"all-article"){
     }
     //设置
     nowLeftPageMode.value = modeName
+}
+
+//左侧页面当前是否处于管理模式
+export const nowLeftManage = ref<boolean>(false)
+
+//左侧页面聚焦的对象key
+const focusTargetKey = ref<string>("")
+//聚焦到指定的左侧页面元素
+export function focusOnLeftPage(targetKey:string,mode:"all-article"|"all-exitence",showLeft:boolean){
+    //显示左侧页面
+    if(showLeft){
+        showPage("left")
+    }
+    //切换到指定模式
+    changeLeftPageMode(mode)
+    //设定聚焦元素为该对象
+    focusTargetKey.value = targetKey
+}
+//获取当前聚焦的对象Key
+export function getLeftPageFocusTarget(){
+    return focusTargetKey.value
 }

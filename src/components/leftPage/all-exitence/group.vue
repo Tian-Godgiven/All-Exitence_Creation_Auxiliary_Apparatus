@@ -1,139 +1,102 @@
 <template>
-	<div class="group">
-		<div class="titleBar" ref="groupRef" 
-			:class="[(dragState.type=='dragging' ? 'dragging':'')]">
-			<div class="titleButtons" v-show="!manageMode">
-				<div class="button" @click="updateGroupPopUp(type,group)">编辑</div>
-			</div>
-
-			<div class="titleButtons manageButtons" v-show="manageMode">
-				<div @click="deleteGroup(type,group)">删除</div>
-				<DragHandler>
-					<div ref="handlerRef">拖动</div>
-				</DragHandler>
-			</div>
-			
-			<LongTap class="titleName" :disabled="manageMode" 
-				:longTap = "longTap" :click="()=>swicthExpending()">
-				<div class="text">{{ group.name }}</div>
-			</LongTap>
+<ContainerLine :buttonList :click :longTap :expending :getData :canDrop class="group">
+	<template #title>
+		<div class="title">{{ group.name }}</div>
+	</template>
+	<template #inner>
+		<div v-show="!nowLeftManage" v-for="(exitence,index) in groupExitence">
+			<exitenceVue :type :exitence/>
+			<Separator v-if="index < groupExitence.length-1"></Separator>
 		</div>
-
-		<div class="inner" v-show="expending">
-			<div v-show="!manageMode" v-for="(exitence,index) in groupExitence">
-				<exitenceVue :exitence="exitence"/>
-				<div class="separator" v-if="index < groupExitence.length-1"></div>
-			</div>
-		</div>
-
-		<indicatorVue v-if="dragState.type === 'be-dragging-edge' 
-			&& dragState.edge!=null" :edge="dragState.edge"
-			gap="0px" />
-	</div>
-
-	<Teleport v-if="dragState.type=='preview'" :to="dragState.container">
-		<div class="shadow">{{ type.name }}</div>
-	</Teleport>
+	</template>
+	<template #dragShadow>
+		<div class="shadow">{{ group.name }}</div>
+	</template>
+</ContainerLine>
 </template>
 
 <script setup lang="ts" name=""> 
-import { inject,computed,ref, onMounted, onUnmounted } from 'vue';
+import { computed } from 'vue';
 import exitenceVue from './exitence.vue';
 import { deleteGroup, updateGroupPopUp } from '@/hooks/all-exitence/allExitence';
 import { showControlPanel } from '@/hooks/controlPanel';
 import { Group } from '@/class/Group';
 import { Exitence } from '@/class/Exitence';
-import LongTap from '@/components/other/LongTap.vue';
-import indicatorVue from '@/components/other/indicator.vue';
-import { DragState, getCombine } from '@/api/dragToSort';
-import DragHandler from '@/components/global/DragHandler.vue';
+import { Type } from '@/class/Type';
+import { nowLeftManage } from '@/hooks/pages/leftPage';
+import ContainerLine from '../ContainerLine.vue';
+import { ElementDragPayload } from '@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types';
+import Separator from '../Separator.vue';
 	
-	let {group,groupExitence} = defineProps<{group:Group,groupExitence:Exitence[]}>() 
-	const type = inject<any>("type")
-	const manageMode = inject("manageMode",false)
+	let {group,groupExitence,type} = defineProps<{group:Group,groupExitence:Exitence[],type:Type}>() 
+
 	//切换展开
 	const expending = computed(()=>{
 		return group.expending
 	})
-	function swicthExpending(){
+	const click = ()=>{
 		group.expending = !expending.value
 	}
 	// 长按显示控制面板
-	function longTap(){
-		showControlPanel([
-			{
-				text:"编辑分组",
-				click:()=>{
-					updateGroupPopUp(type,group)
-				}
-			},
-			{
-				text:"删除分组",
-				click:()=>{
-					deleteGroup(type,group)
-				}
+	const longTap = ()=>{
+		showControlPanel([{
+			text:"编辑分组",
+			click:()=>{
+				updateGroupPopUp(type,group)
 			}
-		])
+		},{
+			text:"删除分组",
+			click:()=>{
+				deleteGroup(type,group)
+			}
+		}])
 	}
 
-	//拖动功能的实现
-	const groupRef = ref<HTMLElement | null>(null)
-	const handlerRef = ref<HTMLElement | null>(null)
-
-	const idle:DragState = {type:"idle"}//初始拖拽状态
-	const dragState = ref<DragState>(idle)//拖拽状态
+	//按键列表
+	const buttonList = {
+		unmanage:[
+			{name:"编辑",click:()=>updateGroupPopUp(type,group),icon:undefined},
+		],
+		manage:[
+			{name:"删除",click:()=>deleteGroup(type,group)}
+		]
+	}
+	
 	//获取数据
-	function getGroupData(){
+	function getData(){
 		return {
 			type:"group",
 			from:type,
 			__key:group.__key
 		}
 	}
-
-//拖拽功能的实现
-let cleanup = ()=>{}
-onMounted(()=>{
-	if(groupRef.value == null || handlerRef.value==null)return;
-	cleanup = getCombine({
-		element:groupRef.value,
-		dragHandle:handlerRef.value,
-		idle,
-		dragState,
-		getData:getGroupData,
-		"canDrop":(source)=>{
-			//source的来源必须和该group一致
-			if(source.data.from != type){
-				return false
-			}
-			return source.data.type == "group"
-		},
-	})
-})
-
-onUnmounted(()=>{
-	cleanup()
-})
+	const canDrop = (source:ElementDragPayload)=>{
+		//source的来源必须和该group一致,即都是type
+		if(source.data.from != type){
+			return false
+		}
+		//并且只能在分组之间相互移动
+		return source.data.type == "group"
+	}
 
 </script>
 
 <style lang="scss" scoped>
-@use "@/static/style/components/leftPage.scss";
-	.group{
-		position: relative;
-		border: $antiBgColor 5px solid;
-		.titleBar{
-			background-color: $bgColor70;
-			height: 60px;
-			@extend .titleBar;
-			.titleName{
-				height: 55px;
-				font-style: italic;
-				font-size: $smallFontSize;
-			}
-		}
+.group{
+	position: relative;
+	border: $antiBgColor 5px solid;
+	:deep(.top){
+		background-color: $bgColor70;
+		height: 60px;
 	}
-	.separator{
-		@extend .leftPageSeparator;
+	.title{
+		line-height: 60px;
+		width: 100%;
+		height: 55px;
+		font-style: italic;
+		font-size: $smallFontSize;
+		@include textMaxLine(1);
 	}
+}
+
 </style>

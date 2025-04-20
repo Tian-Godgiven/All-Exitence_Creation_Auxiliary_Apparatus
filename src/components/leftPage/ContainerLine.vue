@@ -3,7 +3,8 @@
 	ref="draggable" 
 	v-model:dragState="dragState">
     <LongTap :click :longTap class="top">
-        <div class="title">
+        <Icon class="icon" :icon="expending?'expand':'unexpand'"></Icon>
+        <div class="text">
             <slot name="title"></slot>
         </div>
         <div class="buttons">
@@ -29,9 +30,10 @@
     import Button from '../global/Button.vue';
     import DragHandler from "@/components/global/DragHandler.vue";
     import { nowLeftManage } from '@/hooks/pages/leftPage';
-import Draggable from "../global/Draggable.vue";
-import { DragState } from "@/api/dragToSort";
-import { ElementDragPayload } from "@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types";
+    import Draggable from "../global/Draggable.vue";
+    import { DragState } from "@/api/dragToSort";
+    import { ElementDragPayload } from "@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types";
+    import Icon from "../global/Icon.vue";
 
     type buttonItem = {name:string,icon?:string,click:()=>void}
     const {click,longTap,buttonList,expending,getData,level=0,canDrop,allowInto} = defineProps<{
@@ -70,17 +72,21 @@ import { ElementDragPayload } from "@atlaskit/pragmatic-drag-and-drop/dist/types
 	width:100%;
 	word-break: break-all;
     display: flex;
+    align-items: center;
+    .icon{
+        height: 60px;
+        width: 60px;
+    }
+    .text{
+        flex-grow: 1;
+        display: flex;
+        height: 100%;
+		width: 100%;
+    }
 	.buttons{
 		height: 100%;
 		display: flex;
 	}
-    .title{
-        flex-grow: 1;
-        display: flex;
-		align-items: center;
-        height: 100%;
-		width: 100%;
-    }
 }
 .inner{
     width: 100%;
