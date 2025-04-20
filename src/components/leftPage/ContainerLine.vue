@@ -1,0 +1,90 @@
+<template>
+<Draggable :getData :level :handlerRef :canDrop :allowInto
+	ref="draggable" 
+	v-model:dragState="dragState">
+    <LongTap :click :longTap class="top">
+        <div class="title">
+            <slot name="title"></slot>
+        </div>
+        <div class="buttons">
+            <Button v-for="button in theButtonList" 
+                :icon="button.icon"
+                :name="button.name"
+                @click="button.click">
+            </Button>
+            <DragHandler v-show="manageMode">
+                <div ref="handlerRef">拖动</div>
+            </DragHandler>
+        </div>
+    </LongTap>
+    <div class="inner" v-show="expending && dragState?.type!='dragging'">
+        <slot name="inner"></slot>
+    </div>
+</Draggable>
+</template>
+
+<script setup lang='ts'>
+    import { computed, ref, useTemplateRef } from "vue";
+    import LongTap from '../other/LongTap.vue';
+    import Button from '../global/Button.vue';
+    import DragHandler from "@/components/global/DragHandler.vue";
+    import { nowLeftManage } from '@/hooks/pages/leftPage';
+import Draggable from "../global/Draggable.vue";
+import { DragState } from "@/api/dragToSort";
+import { ElementDragPayload } from "@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types";
+
+    type buttonItem = {name:string,icon?:string,click:()=>void}
+    const {click,longTap,buttonList,expending,getData,level=0,canDrop,allowInto} = defineProps<{
+        click:()=>void, //点击事件
+        longTap:()=>void, //长按事件
+        buttonList:{
+            manage:buttonItem[],//管理模式
+            unmanage:buttonItem[]//非管理模式
+        }, //按钮列表
+        expending:boolean//是否展开
+        getData:()=>any//获取数据
+        level?:number//章节需要使用，该章节的层级
+		canDrop?:(source:ElementDragPayload)=>boolean
+		allowInto?:boolean
+    }>()
+    //管理模式
+    const manageMode = nowLeftManage
+    //使用的按钮列表
+    const theButtonList = computed(()=>{
+        if(manageMode.value){
+            return buttonList.manage
+        }
+        else{
+            return buttonList.unmanage
+        }
+    })
+	//拖拽手柄
+	const handlerRef = useTemplateRef("handlerRef")
+	//拖拽状态
+	const dragState = ref<DragState>({type:"idle"})//拖拽状态
+
+</script>
+
+<style scoped lang='scss'>
+.top {
+	width:100%;
+	word-break: break-all;
+    display: flex;
+	.buttons{
+		height: 100%;
+		display: flex;
+	}
+    .title{
+        flex-grow: 1;
+        display: flex;
+		align-items: center;
+        height: 100%;
+		width: 100%;
+    }
+}
+.inner{
+    width: 100%;
+}
+
+
+</style>

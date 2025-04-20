@@ -5,6 +5,11 @@ import { attachClosestEdge, Edge, extractClosestEdge } from '@atlaskit/pragmatic
 import { Ref } from "vue";
 import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine"
 import { reorderWithEdge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/util/reorder-with-edge";
+import {
+    attachInstruction,
+    extractInstruction,
+} from '@atlaskit/pragmatic-drag-and-drop-hitbox/tree-item';
+import { isEqual } from "lodash";
 
 export type DragState = {
     type:"idle"
@@ -18,7 +23,7 @@ export type DragState = {
     enter: boolean | null;
     edge: Edge | null
 }|{
-    type: "be-dragging-edge";
+    type: "be-dragging-edge"; //其他元素正在经过该元素的边缘
     edge: Edge | null
 }
 
@@ -54,28 +59,33 @@ export function getDraggable({
                     y: "8px",
                 }),
                 render({ container }) {
-                    dragState.value = { type: "preview", container };
+                    setDragState(dragState,{ type: "preview", container })
                 },
             });
         },
         onDrag(){
-            dragState.value = {type:"dragging"}
+            if(dragState.value.type != "dragging"){
+                setDragState(dragState,{type:"dragging"})
+            }
         },
         onDrop({source}){
-            dragState.value = idle
+            setDragState(dragState,idle)
             onDrop(source.data)
         }
+        
     })
 }
 
 export function getDroppable({
-    element,canDrop,getData,idle, dragState,
+    element,canDrop,getData,idle, dragState,allowInto=false,level=0
 }:{
     element:HTMLElement,
     canDrop:(source:ElementDragPayload)=>boolean,
     getData:()=>Record<string, any>,
     idle:DragState,
     dragState:Ref<DragState>,
+    allowInto?:boolean//是否允许其他元素放入其中
+    level?:number//阶层
 }){
     return dropTargetForElements({
         element,
@@ -85,40 +95,71 @@ export function getDroppable({
             }
             return canDrop(source)
         },
-        //不允许被进入，返回最近边缘
         getData({input,element}){
             const data = getData()
-            return attachClosestEdge(
-                data,{
+            //不允许被进入，返回最近边缘
+            if(!allowInto){
+                return attachClosestEdge(data,{
                     element,
                     input,
                     allowedEdges:['bottom','top']
-                }
-            )
+                })
+            }
+            //允许被进入，要求传入level
+            else{
+                return attachInstruction(data, {
+                    input,
+                    element,
+                    currentLevel: level, //该元素的level
+                    indentPerLevel: level*20, //该元素的缩进
+                    mode: 'standard'
+                });
+            }
         },
         getIsSticky() {
             return true;
         },
-        onDragEnter({self}){
-            const edge = extractClosestEdge(self.data)
-            if(!edge)return
-            // 修改该元素的状态为:正在被拖过边缘，会显示提示线条，并设置其所处的边界（上or下
-            dragState.value = { type: "be-dragging-edge", edge };
-        },
-        onDrag({self}){
-            //如果状态已经改变了，则不变
-            const edge = extractClosestEdge(self.data)
-            if(edge && (dragState.value.type!="be-dragging-edge" || dragState.value.edge != edge)){
+        onDragEnter({self,location}){
+            //允许被进入
+            if(allowInto){
+                if(location.current.dropTargets[0] == self){
+                    changeState(self,dragState)
+                }
+                //否则默认状态
+                else{
+                    setDragState(dragState,idle)
+                }
+            }
+            else{
+                const edge = extractClosestEdge(self.data)
+                if(!edge)return
                 // 修改该元素的状态为:正在被拖过边缘，会显示提示线条，并设置其所处的边界（上or下
-                dragState.value = { type: "be-dragging-edge", edge };
+                setDragState(dragState,{ type: "be-dragging-edge", edge })
+            }
+            
+        },
+        onDrag({self,location}){
+            //允许被进入
+            if(allowInto){
+                if(location.current.dropTargets[0] == self){
+                    changeState(self,dragState)
+                    return;
+                }
+                setDragState(dragState,idle)
+            }
+            else{
+                const edge = extractClosestEdge(self.data)
+                if(!edge)return;
+                // 修改该元素的状态为:正在被拖过边缘，会显示提示线条，并设置其所处的边界（上or下
+                setDragState(dragState,{ type: "be-dragging-edge", edge })
             }
         },
         // 拖离时重置元素状态
         onDragLeave() {
-            dragState.value = idle
+            setDragState(dragState,idle)
         },
         onDrop() {
-            dragState.value = idle
+            setDragState(dragState,idle)
         },
     })
 }
@@ -127,22 +168,25 @@ export function getDroppable({
  * @param element 可被拖拽的元素.
  * @param dragHandle 拖拽手柄，可选.
  * @param getData 返回初始化元素数据.
- * @param canDrop 允许放置的条件，默认包含禁止放置在自身
+ * @param canDrop 允许放置的条件，禁止放置在自身，默认无条件
  * @param idle 默认状态
  * @param dragState 当前状态，必须是ref
  * @param preview 是否使用自定义预览元素,默认为使用
- * 
- * @returns 
+ * @param allowInto?:boolean,是否允许拖拽进内部
+ * @param level?:number,对象的层级（allowInto为true)
+ * @returns 一个清理函数，在销毁组件时调用
  */
 export function getCombine({
-    element,dragHandle,getData,canDrop,idle,dragState,preview=true}:{
+    element,dragHandle,getData,canDrop=()=>true,idle,dragState,preview=true,allowInto=false,level=0}:{
     element:HTMLElement,
     dragHandle?:HTMLElement,
     getData:()=>Record<string, any>,
     idle:DragState,
     dragState:Ref<DragState>,
-    canDrop:(source:ElementDragPayload)=>boolean,
-    preview?:boolean
+    canDrop?:(source:ElementDragPayload)=>boolean,
+    preview?:boolean,
+    allowInto?:boolean,
+    level?:number
 }){
     return combine(
         getDraggable({
@@ -158,7 +202,9 @@ export function getCombine({
 			getData,
 		    canDrop,
 			idle,
-			dragState
+			dragState,
+            allowInto,
+            level
         })
     )
 }
@@ -207,4 +253,34 @@ export function getMonitor({canMonitor,sourceIndex,targetIndex,list,returnNewLis
             returnNewList(newList)
 		}	
     })
+}
+
+//设置拖拽状态
+function setDragState(dragState:Ref<DragState>,state:DragState){
+    if(!isEqual(dragState.value,state)){
+        console.log(state)
+        dragState.value = state
+    }
+}
+//允许被进入的修改状态
+function changeState(self:any,dragState:Ref<DragState>){
+    // self为该元素的简易数据
+    const instruction = extractInstruction(self.data)
+    if(!instruction)return
+    let edge:Edge|null = null
+    let enter : boolean|null = false
+    if(instruction.type == "reorder-above"){
+        edge = "top"
+    }
+    else if(instruction.type == "reorder-below"){
+        edge = "bottom"
+    }
+    else if(instruction.type == "make-child"){
+        enter = true
+    }
+    else{
+        return null
+    }
+    // 修改该元素的状态为:正在被拖入，会显示提示线条，并设置其所处的边界（上or下
+    setDragState(dragState,{ type: "be-dragging-over", enter, edge })
 }
