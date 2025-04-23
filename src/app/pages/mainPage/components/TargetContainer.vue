@@ -1,26 +1,24 @@
 <template>
+<ElScrollbar class="scrollBar" :wrap-style="{ backgroundColor: '#ffffff' }" :view-style="{ backgroundColor: '#ffffff' }">
 <div class="container">
-    <div class="top" :class="ifInfo?'showInfo':''">
-        <div class="targetTitle" :style="{
-            'text-align':titleAlign,
-        }">
+	<div class="top">
+        <div class="title" :style="{'text-align':titleAlign}">
             <slot name="title"></slot>
         </div>
-        <div>
-            <slot  name="topBar"></slot>
-        </div>
+        <slot name="topBar"></slot>
     </div>
-    
-    <div class="targetInner" ref="inner">
+    <div class="inner" ref="inner">
         <slot name="inner"></slot>
     </div>
-    <div class="targetInfo" v-if="ifInfo"> 
+    <div class="info" v-if="ifInfo"> 
         <slot name="info"></slot>
     </div>
 </div>
+</ElScrollbar>
 </template>
 
 <script setup lang='ts'>
+import { ElScrollbar } from 'element-plus';
 import { toNumber } from 'lodash';
 import { useTemplateRef } from 'vue';
 
@@ -52,19 +50,29 @@ import { useTemplateRef } from 'vue';
 	}
 </script>
 
-<style scoped lang='scss'>
+<style scoped lang='scss'>	
+.scrollBar{
+	width: 100%;
+	height: 100%;
+	overflow-y: auto;
+	overflow-x: hidden;
+	:deep(.el-scrollbar__thumb) {
+		background-color:rgb(0, 0, 0);
+	}
+}
+	
 .container{
 	width: 100%;
 	height: 100%;
+	padding:0 25px;
+	box-sizing: border-box;
 	.top{
 		min-height: 70px;
 		width: 100%;
 		position: relative;
 		display: flex;
-        &.showInfo{
-            padding-top: 40px;
-        }
-		.targetTitle{
+		padding-top: 30px;
+		.title{
 			min-height: 70px;
             width: 100%;
             flex-grow: 1;
@@ -79,27 +87,27 @@ import { useTemplateRef } from 'vue';
 		}
 	}
 	
-	.targetInner{
+	.inner{
 		height: calc(100% - 110px);
-		overflow: auto;
 		width: 100%;
 		position: relative;
 	}
-	.targetInfo{
+	.info{
 		position: absolute;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		top:0;
-		right:0;
+		top:10px;
+		right:20px;
 		padding: 5px 12px;
 		border-top-left-radius: 50px;  /* 左上角圆角 */
 		border-top-right-radius: 50px; /* 右上角圆角 */
 		border-bottom-left-radius: 50px; /* 左下角圆角 */
 		border-bottom-right-radius: 50px; /* 右下角圆角 */
-		background-color: $textNumColor;
+		background-color: rgba($antiBgColor,0.6);
+		color: $bgColor;
 		height: 30px;
-		font-size: 25px;
+		font-size: 20px;
 		text-align: center;
 		z-index: 2;
 	}

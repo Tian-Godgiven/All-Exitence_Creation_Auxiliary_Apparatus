@@ -86,7 +86,6 @@
     align-items: center;
     box-sizing: border-box;
     position: relative;
-    
     z-index: 1;
     &.expending{
         box-shadow: $downShadow;

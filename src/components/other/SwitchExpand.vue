@@ -1,6 +1,13 @@
 <template>
 <div class="switchExpand">
-    <div class="title" @click="switchExpand">
+    <div class="title" v-wave="{
+        color:'grey',
+		initialOpacity: 0.5,
+		finalOpacity:0.2,
+		easing: 'ease-in',
+		duration:0.3,
+		stopPropagation:true
+    }" @click="switchExpand">
         <Icon class="icon" :icon="expand?'expand':'unexpand'"></Icon>
         <slot class="content" name="title"></slot>
     </div>
@@ -58,6 +65,7 @@
 <style scoped lang='scss'>
 .switchExpand{
     .title{
+        align-items: center;
         display: flex;
         .icon{
             width: 40px;
@@ -68,7 +76,6 @@
         }
     }
     .inner{
-        margin-left: 20px;
         overflow: hidden;
     }
     

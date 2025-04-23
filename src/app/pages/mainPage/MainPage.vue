@@ -102,11 +102,9 @@ import { callSupportAbility } from '@/hooks/app/app';
 	}
 	// 内容
 	.inner{
-		width: calc(100% - 50px);
 		height: calc(100% - 110px);
 		background-color: $bgColor;
 		position: relative;
-		margin: 0px 25px;
 		overflow: hidden;
 		z-index: 0;
 	}

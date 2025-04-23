@@ -156,7 +156,7 @@
 			display: flex;
 			width: 400px;
 			.button{
-				width: 100px;
+				width: 75px;
 				height: 100%;
 				box-sizing: border-box;
 			}

@@ -1,8 +1,14 @@
 <template>
 <div class="rightPage" :style="{right:rightWidth}">
 	<div class="top">
-		<div class="title">辅助功能</div>
-		<div class="buttons"></div>
+		<div class="title">工具库</div>
+		<div class="buttons">
+			<Button v-for="button in buttons"
+				:name="button.name"
+				:icon="button.icon"
+				@click="button.click">
+			</Button>
+		</div>
 	</div>
 	<AbilityGroup v-for="list,name in abilities" :list :name/>
 </div>
@@ -13,6 +19,8 @@ import { rightMaxWidth, rightShowWidth} from '@/hooks/pages/pageChange';
 import { computed } from 'vue';
 import { rightAbilityList } from '@/static/list/rightAbilityList';
 import AbilityGroup from './components/AbilityGroup.vue';
+import { callSupportAbility } from '@/hooks/app/app';
+import Button from '@/components/global/Button.vue';
 	// 由于右侧页面是从右往左的，因此实际设定的是该页面的right属性
 	let rightWidth = computed(()=>{
 		return (rightShowWidth.value - rightMaxWidth) +"px"
@@ -20,6 +28,10 @@ import AbilityGroup from './components/AbilityGroup.vue';
 	
 	//功能列表
 	let abilities = rightAbilityList
+	//标题栏按键
+	const buttons = [
+		{"name":"设置",click:()=>callSupportAbility("appSetting"),icon:"setting"}
+	]
 	
 </script>
 
@@ -49,16 +61,14 @@ import AbilityGroup from './components/AbilityGroup.vue';
 			display: flex;
 			align-items: center;
 			font-weight: 600;
-			width: 250px;
 			height: 100%;
 			font-size: $fontSize60;
 		}
 		.buttons{
 			height: 100%;
 			display: flex;
-			width: 400px;
 			.button{
-				width: 100px;
+				width: 80px;
 				height: 100%;
 				box-sizing: border-box;
 			}

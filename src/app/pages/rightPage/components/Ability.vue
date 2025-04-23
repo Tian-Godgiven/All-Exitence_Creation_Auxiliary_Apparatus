@@ -13,21 +13,18 @@
 
 <style scoped lang='scss'>
 .ability{
-	margin: 10px;
-	width: 4rem;
+	width: 100%;
 	display: flex;
 	flex-direction: column;
 	place-items: center;
     .button{
-		box-sizing: border-box;
-		pointer-events: all;
-		height: 100px;
-		width: 100px;
+		margin: 30px;
+		width: calc(100% - 60px);
+		aspect-ratio: 1;
+		margin-bottom: 10px;
 		border-radius: 50%;
 		background-color: $rightButtonColor;
-		box-shadow: 0px 3px 6px 1px rgb(99, 99, 99);
-		margin:15px;
-		margin-top: 20px;
+		box-shadow: 0px 0px 6px 1px rgb(99, 99, 99);
 		z-index: 2;
 		flex-shrink: 0
 	}

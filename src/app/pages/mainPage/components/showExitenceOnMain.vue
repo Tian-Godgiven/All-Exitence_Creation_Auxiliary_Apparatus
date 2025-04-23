@@ -1,5 +1,5 @@
 <template>
-<TargetContainer title-align="left" ref="containerRef">
+<TargetContainer title-align="left" ref="containerRef" :if-info="false">
     <template #title>
         <textAreaVue 
 			@input="changeName"
@@ -30,9 +30,6 @@
 		</draggableList>
 		<div class="scrollSpace"></div>
     </template>
-    <template #info>
-        属性数: {{statusNum}}
-    </template>
 </TargetContainer>
 </template>
 
@@ -40,9 +37,8 @@
 	import { computed, onMounted, onUnmounted, provide, ref, useTemplateRef } from 'vue';
 	import textAreaVue from '@/components/other/textArea/textArea.vue';
 	import exitenceStatusVue from '@/components/all-exitence/exitence/exitenceStatus.vue';
-	import { changeExitenceName, nowAllExitence } from '@/hooks/all-exitence/allExitence';
+	import { changeExitenceName, getTypeByKey} from '@/hooks/all-exitence/allExitence';
 	import draggableList from '@/components/other/draggableList/draggableList.vue';
-	import { Type } from '@/class/Type';
 	import Status from '@/interfaces/Status';
 	import Button from '@/components/global/Button.vue';
 	import { showPopUp } from '@/hooks/pages/popUp';
@@ -56,25 +52,16 @@ import { showOnMain } from '@/hooks/pages/mainPage/showOnMain';
 	})
 	
 	//事物所属的分类
-	const type = nowAllExitence.types.find((type:Type)=>type.__key == exitence.typeKey)
-	
-	//显示事物的属性数量
-	const statusNum = computed(()=>{
-		return exitence.status.length
-	}) 
-
+	const type = getTypeByKey(exitence.typeKey)
 	//改变名称
 	function changeName(newName:string){
 		changeExitenceName(exitence,newName)
 	}
-
 	//切换管理模式
 	const showDrag = ref(false)
 	function switchControlMode(){
 		showDrag.value = !showDrag.value
 	}
-	
-
 	//打开设置弹窗
 	function setExitence(){
 		showPopUp({
@@ -91,7 +78,6 @@ import { showOnMain } from '@/hooks/pages/mainPage/showOnMain';
 			}
 		})
 	}
-
 
 	//创建新属性
 	const ifNewStatus = ref(false)
