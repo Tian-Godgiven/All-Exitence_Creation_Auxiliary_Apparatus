@@ -4,13 +4,20 @@ $antiBgColor: rgb(0,0,0); //反色
 
 $back85:lightgrey; 
 $bgColor90:rgb(230,230,230);
+$bgColor85:rgb(220,220,220);
 $bgColor80:rgb(210,210,210);
 $bgColor70:rgb(190,190,190);
 $bgColor40:rgb(100,100,100);
 
+$focusingColor:rgb(220,220,220);
+
 $textNumColor: rgba($antiBgColor,0.35);
 $textColor: rgb(0,0,0);
+$previewText: rgb(120, 120, 120);
 
 $buttonColor:rgb(50,50,50);
 
 $rightButtonColor:rgb(230,230,230);
+
+$downShadow:rgb(185, 185, 185) 0 4px 8px;
+
