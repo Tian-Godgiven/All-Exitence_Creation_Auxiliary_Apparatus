@@ -4,15 +4,12 @@
 		:key="chapter.__key"
 		:level="0"
 		:from="nowAllArticles"
-		:chapter="chapter">
-	</chapterVue>
-	<div :key="article.__key" v-for="(article,index) in articles">
-		<articleVue 
-			:level="0"
-			:from="nowAllArticles"
-			:article="article"/>
-		<Separator v-if="index < articles.length-1"></Separator>
-	</div>
+		:chapter="chapter"/>
+	<articleVue 
+		:key="article.__key" v-for="(article) in articles"
+		:level="0"
+		:from="nowAllArticles"
+		:article="article"/>
 </div>
 </template>
 
@@ -27,7 +24,6 @@
 	import { extractInstruction} from '@atlaskit/pragmatic-drag-and-drop-hitbox/tree-item';
 	import { type Chapter } from '@/class/Chapter';
 	import { type Article } from '@/class/Article';
-import Separator from '../Separator.vue';
 
 	let chapters = computed(()=>{
 		return nowAllArticles.chapters
@@ -35,7 +31,7 @@ import Separator from '../Separator.vue';
 	let articles = computed(()=>{
 		return nowAllArticles.articles
 	})
-
+ 
 	//拖动调整顺序功能
 	let cleanup = ()=>{}
 	onMounted(()=>{

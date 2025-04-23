@@ -1,8 +1,11 @@
 <template>
 <Draggable :getData :level :handlerRef :canDrop :allowInto
 	ref="draggable" 
+    class="container"
 	v-model:dragState="dragState">
-    <LongTap :click :longTap class="top" :style="{paddingLeft:level*10+'px'}">
+    <LongTap :click :longTap class="top" 
+        :class="expending?'expending':'folding'"
+        :style="{paddingLeft:level*10+'px'}">
         <Icon class="icon" :icon="expending?'expand':'unexpand'"></Icon>
         <div class="text">
             <slot name="title"></slot>
@@ -71,15 +74,25 @@
 </script>
 
 <style scoped lang='scss'>
+.container{
+    overflow: hidden;
+}
 .top {
 	width:100%;
 	word-break: break-all;
     display: flex;
     align-items: center;
     box-sizing: border-box;
+    position: relative;
+    
+    z-index: 1;
+    &.expending{
+        box-shadow: $downShadow;
+    }
     .icon{
-        height: 60px;
-        width: 60px;
+        flex-shrink: 0;
+        height: 50px;
+        width: 50px;
     }
     .text{
         flex-grow: 1;
@@ -92,6 +105,8 @@
 	}
 }
 .inner{
+    position: relative;
+    z-index: 0;
     width: 100%;
     box-sizing: border-box;
 }

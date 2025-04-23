@@ -95,5 +95,6 @@
 .all-exitence{
 	position: relative;
 	width: 100%;
+
 }
 </style>

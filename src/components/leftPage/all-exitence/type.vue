@@ -12,10 +12,12 @@
 			:group 
 			:groupExitence="getExitenceInGroup(type.exitence,group)">
 		</groupVue>
-		<div v-for="exitence,index in showExitence">
-			<exitenceVue :key="exitence.__key" :type :exitence></exitenceVue>
-			<Separator v-if="index < showExitence.length-1"></Separator>
-		</div>
+		<exitenceVue 
+			v-for="exitence in showExitence"
+			:key="exitence.__key" 
+			:type 
+			:exitence>
+		</exitenceVue>
 	</template>
 	<template #dragShadow>
 		<div class="shadow">{{ type.name }}</div>
@@ -35,7 +37,6 @@ import { Type } from "@/class/Type";
 import ContainerLine from "../ContainerLine.vue";
 import { nowLeftManage } from "@/hooks/pages/leftPage";
 import { ElementDragPayload } from "@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types";
-import Separator from "../Separator.vue";
 
 	let {type} = defineProps<{type:Type}>()
 	//切换展开
@@ -113,14 +114,16 @@ import Separator from "../Separator.vue";
 .type{
 	position: relative;
 	:deep(>.top){
-		background-color: $bgColor80;
+		background-color: $bgColor90;
 		height: 70px;
+		border-bottom: 3px solid $bgColor70;
+		box-sizing: border-box;
 	}
 	.title{
 		line-height: 70px;
 		width: 100%;
 		height: 65px;
-		font-size: $midFontSize;
+		font-size: $fontSize20;
 		@include textMaxLine(1);
 	}
 }

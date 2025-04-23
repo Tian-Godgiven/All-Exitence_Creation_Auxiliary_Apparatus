@@ -1,11 +1,17 @@
 <template>
 <div class="leftPage" :style="{left:leftWidth}">
-	<div class="titleBar">
-		<div class="titleButtons">
-			<div class="button" @click="switchManageMode">管理</div>
-			<div class="button">搜索</div>
-			<div class="button" @click="switchExpending">展开收起</div>
-			<div class="button" @click="createNew">新建</div>
+	<div class="top">
+		<Button class="title" :class="nowLeftManage?'manageMode':''" 
+			@click="title.click" :name="title.name">
+		</Button>
+		<div class="buttons">
+			<Button name="管理" @click="switchManageMode" icon="manage"></Button>
+			<Button name="搜索" @click="" icon="search"></Button>
+			<Button :name="allExpending?'收起':'展开'" 
+				@click="switchExpending" 
+				:icon="allExpending?'allFold':'allExpend'">
+			</Button>
+			<Button name="新建" @click="createNew"></Button>
 			<div class="moreButton" @click="showMoreButton">
 				显示更多
 				<div v-show="showMore">
@@ -14,8 +20,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="titleName manageName" @click="switchManageMode" v-show="nowLeftManage">结束管理</div>
-		<div class="titleName" @click="changeLeftPageMode()" v-show="!nowLeftManage">{{model?"万物":"文本"}}</div>
+		
 	</div>
 	<div class="inner">
 		<allExitenceVue v-show="model"></allExitenceVue>
@@ -26,15 +31,16 @@
 </template>
 
 <script setup lang="ts" name="LeftPage">
-import { leftMaxWidth, leftShowWidth } from '@/hooks/pages/pageChange';
-import allExitenceVue from '@/components/leftPage/all-exitence/all-exitence.vue';
-import allArticlesVue from '@/components/leftPage/all-articles/all-articles.vue';
-import { computed, ref } from "vue"
-import { createTypePopUp, nowAllExitence } from '@/hooks/all-exitence/allExitence';
-import { addChapterPopUp, nowAllArticles } from '@/hooks/all-articles/allArticles';
-import { Type } from '@/class/Type';
-import { Chapter } from '@/class/Chapter';
-import { changeLeftPageMode, nowLeftManage, nowLeftPageMode } from '@/hooks/pages/leftPage';
+	import { leftMaxWidth, leftShowWidth } from '@/hooks/pages/pageChange';
+	import allExitenceVue from '@/components/leftPage/all-exitence/all-exitence.vue';
+	import allArticlesVue from '@/components/leftPage/all-articles/all-articles.vue';
+	import { computed, ref } from "vue"
+	import { createTypePopUp, nowAllExitence } from '@/hooks/all-exitence/allExitence';
+	import { addChapterPopUp, nowAllArticles } from '@/hooks/all-articles/allArticles';
+	import { Type } from '@/class/Type';
+	import { Chapter } from '@/class/Chapter';
+	import { changeLeftPageMode, nowLeftManage, nowLeftPageMode } from '@/hooks/pages/leftPage';
+	import Button from '@/components/global/Button.vue';	
 	//左侧宽度
 	const leftWidth = computed(()=>{
 		//出现变化时关闭管理模式
@@ -42,12 +48,26 @@ import { changeLeftPageMode, nowLeftManage, nowLeftPageMode } from '@/hooks/page
 		return (leftShowWidth.value - leftMaxWidth)+'px'
 	})
 
-	// true = [万物] false = [文本]
+	// 当前模式 true = [万物] false = [文本]
 	const model = computed(()=>{
 		if(nowLeftPageMode.value == "all-exitence"){
 			return true
 		}
 		return false
+	})
+
+	//当前显示的标题
+	const title = computed(()=>{
+		if(nowLeftManage.value){
+			return {
+				name:"结束管理",
+				click:switchManageMode
+			}
+		}
+		return {
+			name:model.value?"万物":"文章",
+			click:()=>changeLeftPageMode()
+		}
 	})
 
 	//点击切换管理模式:管理万物中的分类/分组+管理章节
@@ -94,7 +114,7 @@ import { changeLeftPageMode, nowLeftManage, nowLeftPageMode } from '@/hooks/page
 		showMore.value = !showMore.value
 	}
 	
-	//创建新对象
+	//创建新分类/章节
 	function createNew(){
 		//万物类
 		if(model.value){
@@ -109,7 +129,6 @@ import { changeLeftPageMode, nowLeftManage, nowLeftPageMode } from '@/hooks/page
 </script>
 
 <style lang="scss" scoped>
-@use "@/static/style/components/leftPage.scss";
 .leftPage{
 	top:0; 
 	height: 100%;
@@ -117,23 +136,32 @@ import { changeLeftPageMode, nowLeftManage, nowLeftPageMode } from '@/hooks/page
 	background-color: $bgColor;
 	position: absolute;
 	z-index: 5;
-	> .titleBar{
-		background-color: $bgColor90;
+	> .top{
+		width:100%;
+		word-break: break-all;
+		background-color: $bgColor;
 		height: 110px;
-		@extend .titleBar;
-		.titleName{
+		display: flex;
+		position: relative;
+		z-index: 1;
+		box-sizing: border-box;
+		border-bottom: 3px solid $bgColor70;
+		.title{
+			flex-grow: 1;
+			display: flex;
+			align-items: center;
 			font-weight: 600;
 			width: 250px;
 			height: 100%;
 			font-size: $bigFontSize;
+			&.manageMode{
+				font-size: 1.8rem;
+			}
 		}
-		.manageName{
-			font-size: 1.8rem;
-		}
-		.titleButtons{
+		.buttons{
+			height: 100%;
+			display: flex;
 			width: 400px;
-		}
-		.titleButtons{
 			.button{
 				width: 100px;
 				height: 100%;

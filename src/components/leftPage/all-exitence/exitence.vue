@@ -19,7 +19,7 @@ import { deleteExitencePopUp, getExitenceStatusByKey } from '@/hooks/all-exitenc
 import { translateToTextContent } from '@/hooks/expression/textAreaContent';
 import { Exitence } from '@/class/Exitence';
 import ObjectLine from '../ObjectLine.vue';
-import { getLeftPageFocusTarget } from '@/hooks/pages/leftPage';
+import { focusOnLeftPage, getLeftPageFocusTarget } from '@/hooks/pages/leftPage';
 import { Type } from '@/class/Type';
 import { ElementDragPayload } from '@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types';
 
@@ -60,12 +60,13 @@ import { ElementDragPayload } from '@atlaskit/pragmatic-drag-and-drop/dist/types
 			}
 		}])
 	}
+	//点击将事物显示在主页面并聚焦该对象
 	const click = ()=>{
-		//点击将事物显示在主页面
 		showTargetOnMain({
 			type:"exitence",
 			target:exitence
 		})
+		focusOnLeftPage(exitence.__key,"all-exitence",false)
 		hidePage("left")
 	}
 
@@ -95,9 +96,6 @@ import { ElementDragPayload } from '@atlaskit/pragmatic-drag-and-drop/dist/types
 <style lang="scss" scoped>
 .exitence{
 	position: relative;
-	background-color: $bgColor;
-	box-sizing: border-box;
-	padding: 10px 20px;
 	width: 100%;
 	.name{
 		position: relative;
@@ -105,6 +103,8 @@ import { ElementDragPayload } from '@atlaskit/pragmatic-drag-and-drop/dist/types
 		@include textMaxLine(2);//最多显示两行
 	}
 	.preview{
+		font-size: $smallFontSize;
+		color: $previewText;
 		@include textMaxLine(3);//最多显示3行
 	}
 }

@@ -11,13 +11,13 @@
 <script setup lang="ts" name="article">
 	import { hidePage } from '@/hooks/pages/pageChange';
 	import { showTargetOnMain } from '@/hooks/pages/mainPage/showOnMain';
-	import { computed,onMounted,ref } from 'vue';
+	import { computed,ref } from 'vue';
 	import { showControlPanel } from '@/hooks/controlPanel';
 	import { deleteArticlePopUp } from '@/hooks/all-articles/allArticles';
 	import { translateToTextContent } from '@/hooks/expression/textAreaContent';
 	import { trim } from 'lodash';
 	import { Article } from '@/class/Article';
-	import { getLeftPageFocusTarget } from '@/hooks/pages/leftPage';
+	import { focusOnLeftPage, getLeftPageFocusTarget } from '@/hooks/pages/leftPage';
 	import ObjectLine from '../ObjectLine.vue';
 	import { ElementDragPayload } from '@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types';
 
@@ -69,6 +69,8 @@
 			type:"article",
 			target:article
 		})
+		//聚焦
+		focusOnLeftPage(article.__key,"all-article",false)
 		hidePage("left")
 	}
 	//按钮
@@ -94,16 +96,14 @@
 <style lang="scss" scoped>
 .article{
 	position: relative;
-	background-color: $bgColor;
 	width: 100%;
-	box-sizing: border-box;
-	padding: 10px 20px; 
 	.title{
 		font-size: $midFontSize;
 		@include textMaxLine(2);//最多显示两行
 	}
 	.preview{
 		width: 100%;
+		color: $previewText;
 		font-size: $smallFontSize;
 		@include textMaxLine(3);//最多显示3行
 	}

@@ -3,7 +3,7 @@
     class="objectLine"
     :class="focusing?'focusing':''"
 	ref="draggable">
-    <LongTap :disabled="manageMode" :click :longTap class="container" :style="{paddingLeft:level*10+'px'}">
+    <LongTap :disabled="manageMode" :click :longTap class="container" :style="{paddingLeft:(level+1)*10+'px'}">
         <div class="inner">
             <slot></slot>
         </div>
@@ -21,6 +21,7 @@
     <template #dragShadow>
         <slot name="dragShadow"></slot>
     </template>
+    <Separator></Separator>
 </Draggable>
 </template>
 
@@ -32,6 +33,7 @@
     import { nowLeftManage } from '@/hooks/pages/leftPage';
     import Draggable from "../global/Draggable.vue";
     import { ElementDragPayload } from "@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types";
+import Separator from "./Separator.vue";
     type buttonItem = {name:string,icon?:string,click:()=>void}
     const {focusing,click,longTap,buttonList,getData,canDrop,level=0} = defineProps<{
         focusing:boolean//聚焦
@@ -50,10 +52,14 @@
 
 <style scoped lang='scss'>
 .objectLine{
+    background-color: $bgColor;
+    
     &.focusing{
-        background-color: $bgColor80;
+        background-color: $focusingColor;
     }
     .container{
+        padding: 10px 20px;
+        box-sizing: border-box;
         width:100%;
         word-break: break-all;
         display: flex;

@@ -17,15 +17,14 @@
 				:from="chapter"
 				:chapter="childChapter">
 			</chapterVue>
-			<div class="articles" v-for="(article,index) in articles">
-				<articleVue 
-					:level="level+1"
-					:key="article.__key"
-					:from="chapter" 
-					:article = "article">
-				</articleVue>
-				<Separator v-if="index < articles.length-1"></Separator>
-			</div>
+			
+			<articleVue 
+				v-for="(article) in articles"
+				:level="level+1"
+				:key="article.__key"
+				:from="chapter" 
+				:article = "article">
+			</articleVue>
 		</div>
 	</template>
 	<template #dragShadow>
@@ -43,7 +42,6 @@
 	import { Chapter } from "@/class/Chapter";
 	import ContainerLine from "../ContainerLine.vue";
 	import { ElementDragPayload } from "@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types";
-	import Separator from "../Separator.vue";
 
 	let {chapter,from,level} = defineProps<{chapter:Chapter,from:{chapters:Chapter[]},level:number}>()
 	//展开与切换展开
@@ -101,11 +99,11 @@
 	//按键列表
 	const buttonList = {
 		unmanage:[
-			{name:"插入章节",click:()=>clickAddChapter(),icon:undefined},
-			{name:"插入文章",click:()=>clickAddArticle(),icon:undefined}
+			{name:"插入章节",click:()=>clickAddChapter(),icon:"addContainer"},
+			{name:"插入文章",click:()=>clickAddArticle(),icon:"addContent"}
 		],
 		manage:[
-			{name:"删除",click:()=>deleteChapterPopUp(from,chapter)}
+			{name:"删除",click:()=>deleteChapterPopUp(from,chapter),icon:"delete"}
 		]
 	}
 	const canDrop = (source:ElementDragPayload)=>{
@@ -123,16 +121,19 @@
 .chapter{
 	position: relative;
 	:deep(>.top){
-		background-color: $bgColor80;
+		border-bottom: 3px solid $bgColor70;
+		box-sizing: border-box;
+		background-color: $bgColor90;
 		height: 70px;
 	}
 	.title{
 		line-height: 70px;
 		width: 100%;
-		font-size: $midFontSize;
+		font-size: $fontSize20;
 		@include textMaxLine(1);
 	}
 }
+
 .chapterShadow{
 	background-color: white;
 	width: 100px;

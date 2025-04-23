@@ -4,9 +4,12 @@
 		<div class="title">{{ group.name }}</div>
 	</template>
 	<template #inner>
-		<div v-show="!nowLeftManage" v-for="(exitence,index) in groupExitence">
-			<exitenceVue :type :exitence/>
-			<Separator v-if="index < groupExitence.length-1"></Separator>
+		<div v-show="!nowLeftManage">
+			<exitenceVue 
+				v-for="(exitence) in groupExitence" ]
+				:key="exitence.__key" 
+				:type 
+				:exitence/>
 		</div>
 	</template>
 	<template #dragShadow>
@@ -26,8 +29,7 @@ import { Type } from '@/class/Type';
 import { nowLeftManage } from '@/hooks/pages/leftPage';
 import ContainerLine from '../ContainerLine.vue';
 import { ElementDragPayload } from '@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types';
-import Separator from '../Separator.vue';
-	
+
 	let {group,groupExitence,type} = defineProps<{group:Group,groupExitence:Exitence[],type:Type}>() 
 
 	//切换展开
@@ -86,7 +88,7 @@ import Separator from '../Separator.vue';
 	position: relative;
 	border: $antiBgColor 5px solid;
 	:deep(.top){
-		background-color: $bgColor70;
+		background-color: $bgColor;
 		height: 60px;
 	}
 	.title{
@@ -94,7 +96,7 @@ import Separator from '../Separator.vue';
 		width: 100%;
 		height: 55px;
 		font-style: italic;
-		font-size: $smallFontSize;
+		font-size: $fontSize1;
 		@include textMaxLine(1);
 	}
 }

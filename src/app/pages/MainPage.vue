@@ -1,7 +1,7 @@
 <template>
 <div class="mainPage" >
 	<!-- 首页顶部 -->
-	<div class="titleBar">
+	<div class="top">
 		<Button class="leftPageShowButton" @click="showLeft()" name="显示左侧" icon="showLeft"></Button>
 		<div class="projectName" @click="switchProjectPage">{{ projectName }}</div>
 		<div class="buttons">
@@ -13,7 +13,7 @@
 	</div>
 	
 	<!-- 首页内容 -->
-	<div class="mainInner" :key="refreshKey">
+	<div class="inner" :key="refreshKey">
 		<showInfoOnMainVue :target="showOnMain.target" v-if="showOnMain.type=='info'"/>
 		<showArticleOnMainVue :article="showOnMain.target" v-else-if="showOnMain.type == 'article'"/>
 		<showExitenceOnMainVue :exitence="showOnMain.target" v-else-if="showOnMain.type == 'exitence'"/>
@@ -83,12 +83,12 @@
 	width: 100%;
 	height: 100%;
 	// 标题栏
-	.titleBar{
+	.top{
 		position: relative;
 		width: 100%;
 		height: 110px;
 		display: flex;
-		box-shadow: rgb(114, 114, 114) 0 4px 8px;
+		box-shadow: $downShadow;
 		z-index: 1;
 		.leftPageShowButton{
 			width: 90px;
@@ -106,7 +106,7 @@
 		}
 	}
 	// 内容
-	.mainInner{
+	.inner{
 		width: calc(100% - 50px);
 		height: calc(100% - 110px);
 		background-color: $bgColor;
