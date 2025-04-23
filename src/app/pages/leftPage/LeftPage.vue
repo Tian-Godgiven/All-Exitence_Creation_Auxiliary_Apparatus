@@ -19,11 +19,10 @@
 				</div>
 			</div>
 		</div>
-		
 	</div>
 	<div class="inner">
-		<allExitenceVue v-show="model"></allExitenceVue>
-		<allArticlesVue v-show="!model"></allArticlesVue>
+		<AllExitence v-show="model"/>
+		<AllArticles v-show="!model"/>
 		<div class="scrollBottom"></div>
 	</div>
 </div>
@@ -31,8 +30,8 @@
 
 <script setup lang="ts" name="LeftPage">
 	import { leftMaxWidth, leftShowWidth } from '@/hooks/pages/pageChange';
-	import allExitenceVue from '@/components/leftPage/all-exitence/all-exitence.vue';
-	import allArticlesVue from '@/components/leftPage/all-articles/all-articles.vue';
+	import AllExitence from './components/all-exitence/all-exitence.vue';
+	import AllArticles from './components/all-articles/all-articles.vue';
 	import { computed, ref } from "vue"
 	import { createTypePopUp, nowAllExitence } from '@/hooks/all-exitence/allExitence';
 	import { addChapterPopUp, nowAllArticles } from '@/hooks/all-articles/allArticles';

@@ -26,11 +26,11 @@
 
 <script setup lang='ts'>
     import { computed, useTemplateRef } from "vue";
-    import LongTap from '../other/LongTap.vue';
-    import Button from '../global/Button.vue';
+    import LongTap from "@/components/other/LongTap.vue";
+    import Button from "@/components/global/Button.vue";
     import DragHandler from "@/components/global/DragHandler.vue";
     import { nowLeftManage } from '@/hooks/pages/leftPage';
-    import Draggable from "../global/Draggable.vue";
+    import Draggable from "@/components/global/Draggable.vue";
     import { ElementDragPayload } from "@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types";
     import Separator from "./Separator.vue";
     type buttonItem = {name:string,icon?:string,click:()=>void}

@@ -37,7 +37,7 @@
 <script setup lang='ts'>
     import { createNewProject } from '@/hooks/project/project';
     import TargetContainer from './TargetContainer.vue';
-    import Button from '../global/Button.vue';
+    import Button from '@/components/global/Button.vue';
 
     const {target} = defineProps<{
         target:"app"|"project"

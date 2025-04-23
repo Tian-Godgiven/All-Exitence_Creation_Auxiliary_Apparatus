@@ -31,14 +31,14 @@
 
 <script setup lang='ts'>
     import { computed, ref, useTemplateRef } from "vue";
-    import LongTap from '../other/LongTap.vue';
-    import Button from '../global/Button.vue';
+    import LongTap from "@/components/other/LongTap.vue";
+    import Button from "@/components/global/Button.vue";
     import DragHandler from "@/components/global/DragHandler.vue";
     import { nowLeftManage } from '@/hooks/pages/leftPage';
-    import Draggable from "../global/Draggable.vue";
     import { DragState } from "@/api/dragToSort";
     import { ElementDragPayload } from "@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types";
-    import Icon from "../global/Icon.vue";
+    import Icon from "@/components/global/Icon.vue";
+    import Draggable from "@/components/global/Draggable.vue";
 
     type buttonItem = {name:string,icon?:string,click:()=>void}
     const {click,longTap,buttonList,expending,getData,level=0,canDrop,allowInto} = defineProps<{
@@ -79,9 +79,6 @@
 </script>
 
 <style scoped lang='scss'>
-.container{
-    overflow: hidden;
-}
 .top {
 	width:100%;
 	word-break: break-all;

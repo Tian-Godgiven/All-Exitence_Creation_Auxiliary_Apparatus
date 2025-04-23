@@ -1,7 +1,7 @@
 <template>
 <div class="projectPage" ref="projectRef">
     <div class="projectInfo">
-        <projectInfoVue v-for="project in projectList" :project="project"></projectInfoVue>
+        <ProjectInfoVue v-for="project in projectList" :project="project"></projectInfoVue>
     </div>
     <div class="bottom">
         <div class="createProject" @click="createNewProject">创建新项目</div>
@@ -12,7 +12,7 @@
 <script setup lang='ts'>
     import { changePageMask, ifShowProject} from '@/hooks/pages/pageChange';
     import { createNewProject, nowProjectList } from '@/hooks/project/project';
-    import projectInfoVue from '@/components/projectPage/projectInfo.vue';
+    import ProjectInfo from './components/ProjectInfo.vue';
     import { computed, useTemplateRef, watch } from 'vue';
     import gsap from 'gsap';
 

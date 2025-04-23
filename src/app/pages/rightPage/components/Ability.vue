@@ -7,7 +7,7 @@
 
 <script setup lang='ts'>
     import { RightAbility } from '@/static/list/rightAbilityList';
-    import Button from '../global/Button.vue';
+    import Button from '@/components/global/Button.vue';
     const {ability} = defineProps<{ability:RightAbility}>()
 </script>
 

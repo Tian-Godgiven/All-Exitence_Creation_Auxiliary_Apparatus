@@ -26,10 +26,10 @@ import { initApp } from "./hooks/app/app";
 import { initProject } from "./hooks/project/project";
 import { startAutoSave } from "./hooks/app/autoSave";
 import {touchStart,touchMove,touchEnd } from '@/hooks/app/appTouch'
-import MainPage from "@/app/pages/MainPage.vue"
-import ProjectPage from "@/app/pages/ProjectPage.vue";
-import LeftPage from "@/app/pages/LeftPage.vue";
-import RightPage from "@/app/pages/RightPage.vue";
+import MainPage from "@/app/pages/mainPage/MainPage.vue"
+import ProjectPage from "@/app/pages/projectPage/ProjectPage.vue";
+import LeftPage from "@/app/pages/leftPage/LeftPage.vue";
+import RightPage from "@/app/pages/rightPage/RightPage.vue";
 import PageMask from '@/app/pages/PageMask.vue';
 import FloatWindows from "@/app/stacks/FloatWindowsStacks.vue";
 import PopUpStacks from "@/app/stacks/popUp/PopUpStacks.vue";

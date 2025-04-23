@@ -25,8 +25,8 @@ import { provide} from 'vue';
 import exitenceStatusVue from '@/components/all-exitence/exitence/exitenceStatus.vue';
 import { showTargetOnMain } from '@/hooks/pages/mainPage/showOnMain';
 import { closePopUp, PopUp } from '@/hooks/pages/popUp';
-import TargetContainer from '@/components/mainPage/TargetContainer.vue';
 import { Type } from '@/class/Type';
+import TargetContainer from '@/app/pages/mainPage/components/TargetContainer.vue';
 import { Exitence } from '@/class/Exitence';
     const {props,popUp} = defineProps<{
         props:{

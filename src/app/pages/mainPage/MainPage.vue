@@ -32,17 +32,17 @@
 <script setup lang="ts">
 	import { showLeft, showPage, switchProjectPage} from '@/hooks/pages/pageChange';
 	import Button from '@/components/global/Button.vue';
-	import inputSupportVue from '@/components/mainPage/inputSupport.vue';
-	import showInfoOnMainVue from '@/components/mainPage/showInfoOnMain.vue';
-	import showArticleOnMainVue from '@/components/mainPage/showArticleOnMain.vue';
-	import showExitenceOnMainVue from '@/components/mainPage/showExitenceOnMain.vue';
+	import inputSupportVue from '@/app/pages/mainPage/components/inputSupport.vue';
+	import showInfoOnMainVue from '@/app/pages/mainPage/components/showInfoOnMain.vue';
+	import showArticleOnMainVue from '@/app/pages/mainPage/components/showArticleOnMain.vue';
+	import showExitenceOnMainVue from '@/app/pages/mainPage/components/showExitenceOnMain.vue';
 	import { showOnMain } from '@/hooks/pages/mainPage/showOnMain';
 	import { computed, ref, watch } from 'vue';
 	import { nowProjectInfo } from '@/hooks/project/project';
 	import { saveAll } from '@/hooks/app/autoSave';
 	import { Icon } from '@/static/list/iconList';
 	import Suggester from '@/supportAbility/inputSuggestion/suggester/Suggester.vue';
-	import QuickButton from '@/components/mainPage/quickButton.vue/QuickButton.vue';
+	import QuickButton from '@/app/pages/mainPage/components/quickButton.vue/QuickButton.vue';
 import { callSupportAbility } from '@/hooks/app/app';
 // 功能按键
 	const buttons:{icon:Icon,name:string,click:()=>any}[] = [{
