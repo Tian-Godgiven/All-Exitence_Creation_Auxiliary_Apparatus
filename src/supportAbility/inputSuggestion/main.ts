@@ -4,7 +4,7 @@ import { SupportAbilitySignUpItem } from "@/static/list/supportAbilityList"
 
 //注册该插件
 export const inputSuggestionSighUpItem:SupportAbilitySignUpItem = {
-    name:"missionList",
+    name:"inputSuggestion",
     init:()=>initInputSuggestion(),
     save:(projectName:string|null)=>saveInputSuggestion(projectName),
     syncProject:(projectName:string)=>syncInputSuggestion(projectName),

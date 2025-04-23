@@ -26,9 +26,9 @@ export type MissionState = "doing" | "completed" | "failed"
 //注册该插件
 export const missionListItem:SupportAbilitySignUpItem = {
     name:"missionList",
-    init:()=>initMissionList(),
-    save:()=>saveMissionList(),
-    call:()=>showMissionListPopUp()
+    init:()=>{initMissionList()},
+    save:()=>{saveMissionList()},
+    call:()=>{showMissionListPopUp()}
 }
 
 //初始化任务列表系统

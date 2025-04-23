@@ -38,8 +38,9 @@ export const iconList:Record<string,string>= {
     "allFold":"",//折叠全部
     "allExpend":"",//展开全部
 
-    "addContainer":"",//添加分组or章节
-    "addContent":"",//添加事物or文章
+    "addContainer":"addContainer",//添加分组or章节
+    "addContent":"addContent",//添加事物or文章
+    "dragHandler":"dragHandler",//拖动手柄
     
 }
 

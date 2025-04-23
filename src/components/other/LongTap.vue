@@ -8,6 +8,7 @@
 		duration:0.5,
 		stopPropagation:true
 	}"
+	ref="selfRef"
 	@pointerdown.stop="touchStart"
 	@pointerup="touchEnd" >
 	<slot></slot>
@@ -15,8 +16,7 @@
 </template>
 
 <script setup lang='ts'>
-    import { LongTapAndClickTouchEnd, LongTapAndClickTouchStart } from '@/api/longTapAndClick';
-    import { ref, unref} from 'vue';
+        import { unref, useTemplateRef} from 'vue';
     //禁用模式
 	const {disabled=false,longTap,click} = defineProps<{
 		disabled?:boolean,
@@ -24,28 +24,36 @@
 		click:()=>void
 	}>()
     //长按和点击
-	const ifLongTap = ref(false)
-	let timeout:any 
+	let timeout:number|false
+	const selfRef = useTemplateRef("selfRef")
 	//处理点击和长按事件
 	function touchStart(){
 		if(unref(disabled)){return;}
-		timeout = LongTapAndClickTouchStart(ifLongTap)
+		timeout = Date.now()
+		//监听弹起事件
+		document.addEventListener("pointerup",touchEnd)
 	}
-	function touchEnd(){
-		if(unref(disabled)){return;}
-		LongTapAndClickTouchEnd({
-			theTimeOut:timeout,
-			ifLongTap,
-			//执行长按事件
-			longTap:()=>{
-				longTap()
-			},
-			//执行点击事件
-			click:()=>{
-				click()
+	function touchEnd(e:PointerEvent){
+		if(unref(disabled))return;
+		if(!selfRef.value)return;
+		if(!timeout)return;
+		if(e.target instanceof Node){
+			if(selfRef.value.contains(e.target)){
+				//判断时间是否足够
+				const timeDis = Date.now() - timeout
+				if(timeDis > 500){
+					longTap()
+				}
+				else{
+					click()
+				}
 			}
-		})
+		}
+		//删除监听器
+		timeout = false
+		document.removeEventListener("pointerup",touchEnd)
 	}
+
 </script>
 
 <style scoped lang='scss'>

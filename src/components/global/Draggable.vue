@@ -22,8 +22,8 @@
 	import { DragState, getCombine } from '@/api/dragToSort';
     import indicatorVue from "@/components/other/indicator.vue";
     import { ElementDragPayload } from "@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types";
-    let {handlerRef,getData,canDrop,allowInto=false,level=0} = defineProps<{
-        handlerRef?:HTMLElement|null,//手柄元素
+    let {handler: handler,getData,canDrop,allowInto=false,level=0} = defineProps<{
+        handler?:HTMLElement|null,//手柄元素
         getData:()=>any,
         canDrop?:(source:ElementDragPayload)=>boolean,//判断是否允许放置的函数
         allowInto?:boolean,//是否允许拖拽进内部
@@ -37,13 +37,13 @@
     let cleanup = ()=>{}
     onMounted(()=>{
         //如果传入了一个手柄，则等待该手柄渲染完成
-        if(handlerRef!==undefined){
-            watch(()=>handlerRef,()=>{
+        if(handler!==undefined){
+            watch(()=>handler,()=>{
                 if(dragRef.value == null)return;
-                if(handlerRef != null){
+                if(handler != null){
                     cleanup = getCombine({
                         element:dragRef.value,
-                        dragHandle:handlerRef,
+                        dragHandle:handler,
                         idle,
                         dragState,
                         getData,
@@ -57,11 +57,11 @@
         else{
             if(dragRef.value == null)return;
             let handler
-            if(!handlerRef){
+            if(!handler){
                 handler = dragRef.value
             }
             else{
-                handler = handlerRef
+                handler = handler
             }
             cleanup = getCombine({
                 element:dragRef.value,

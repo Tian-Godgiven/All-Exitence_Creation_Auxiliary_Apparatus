@@ -30,7 +30,6 @@
 </template>
 
 <script setup lang="ts">
-	import { showPopUp } from '@/hooks/pages/popUp'
 	import { showLeft, showPage, switchProjectPage} from '@/hooks/pages/pageChange';
 	import Button from '@/components/global/Button.vue';
 	import inputSupportVue from '@/components/mainPage/inputSupport.vue';
@@ -44,6 +43,7 @@
 	import { Icon } from '@/static/list/iconList';
 	import Suggester from '@/supportAbility/inputSuggestion/suggester/Suggester.vue';
 	import QuickButton from '@/components/mainPage/quickButton.vue/QuickButton.vue';
+import { callSupportAbility } from '@/hooks/app/app';
 // 功能按键
 	const buttons:{icon:Icon,name:string,click:()=>any}[] = [{
 		name:"手动保存",
@@ -52,12 +52,7 @@
 	},{
 		name:"任务列表",
 		icon:"missionList",
-		click:()=>{showPopUp({
-			name:"任务列表",
-			buttons:[],
-			vueName:"missionList",
-			mask:true,
-		})}
+		click:()=>{callSupportAbility("missionList")}
 	},{
 		name:"辅助功能",
 		icon:"showRight",

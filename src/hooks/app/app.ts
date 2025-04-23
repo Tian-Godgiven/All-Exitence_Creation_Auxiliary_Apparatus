@@ -60,6 +60,7 @@ export async function saveApp(){
 //响应辅助功能
 export function callSupportAbility(name:string){
     const tmp = supportAbilityList.find(ability=>ability.name == name)
+    console.log(tmp,tmp?.call)
     if(tmp?.call){
         tmp.call()
     }
