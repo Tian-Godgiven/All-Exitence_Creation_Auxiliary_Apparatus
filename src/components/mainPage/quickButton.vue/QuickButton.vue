@@ -70,7 +70,7 @@ import { quickPanelList } from '@/hooks/pages/mainPage/quickButton';
     position: absolute;
     right: 9vw;
     top:75vh;
-    z-index: 2;
+    z-index: 1;
     .quickButtonPanel{
         position: absolute;
         display: flex;

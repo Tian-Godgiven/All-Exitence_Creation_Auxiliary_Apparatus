@@ -4,6 +4,7 @@ export const iconList:Record<string,string>= {
     "close":"",//叉号
     "check":"check",//勾号
     "add":"plus",//加号
+    "addNew":"addCube",//方块包围的加号
     "sub":"sub",//减号
     "delete":"delete-bin",//删除，垃圾桶
     //上下左右箭头
@@ -31,12 +32,13 @@ export const iconList:Record<string,string>= {
     "manage":"manageMode",//管理模式
     "collapse":"collapse",//缩小箭头
     "shrink":"shrink",//缩小窗口
-    "search":"",//搜索，未完成
+    "search":"search",//搜索，未完成
 
     "expand":"expandDown",//向下箭头，表示展开中
     "unexpand":"expandRight",//向→箭头，表示收起中
-    "allFold":"",//折叠全部
-    "allExpend":"",//展开全部
+    "allFold":"allFold",//折叠全部
+
+    "edit":"edit",//编辑
 
     "addContainer":"addContainer",//添加分组or章节
     "addContent":"addContent",//添加事物or文章

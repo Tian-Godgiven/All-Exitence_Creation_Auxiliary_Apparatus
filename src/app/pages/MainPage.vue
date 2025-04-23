@@ -3,7 +3,7 @@
 	<!-- 首页顶部 -->
 	<div class="top">
 		<Button class="leftPageShowButton" @click="showLeft()" name="显示左侧" icon="showLeft"></Button>
-		<div class="projectName" @click="switchProjectPage">{{ projectName }}</div>
+		<Button class="projectName" @click="switchProjectPage" :name="projectName"/>
 		<div class="buttons">
 			<Button v-for="(button) in buttons" 
 				@click="button.click"

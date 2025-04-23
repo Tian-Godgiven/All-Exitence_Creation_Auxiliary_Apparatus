@@ -15,7 +15,7 @@ app.use<Vue3TouchEventsOptions>(Vue3TouchEvents, {
     disableClick: false
     // any other global options...
 })
-app.mount('#app')
 app.use(VueScrollPicker); // export default is plugin
 app.use(VWave,{})
+app.mount('#app')
 app.directive("click-outside",vueClickOutSide)

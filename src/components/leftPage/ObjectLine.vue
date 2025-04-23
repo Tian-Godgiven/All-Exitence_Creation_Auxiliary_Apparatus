@@ -1,5 +1,5 @@
 <template> 
-<Draggable :getData :handlerRef :canDrop 
+<Draggable :getData :handler :canDrop 
     class="objectLine"
     :class="focusing?'focusing':''"
 	ref="draggable">
@@ -13,8 +13,7 @@
                 :name="button.name"
                 @click="button.click">
             </Button>
-            <DragHandler>
-                <div ref="handlerRef" v-show="manageMode">拖动</div>
+            <DragHandler ref="handlerRef" v-show="manageMode">
             </DragHandler>
         </div>
     </LongTap>
@@ -26,14 +25,14 @@
 </template>
 
 <script setup lang='ts'>
-    import { useTemplateRef } from "vue";
+    import { computed, useTemplateRef } from "vue";
     import LongTap from '../other/LongTap.vue';
     import Button from '../global/Button.vue';
     import DragHandler from "@/components/global/DragHandler.vue";
     import { nowLeftManage } from '@/hooks/pages/leftPage';
     import Draggable from "../global/Draggable.vue";
     import { ElementDragPayload } from "@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types";
-import Separator from "./Separator.vue";
+    import Separator from "./Separator.vue";
     type buttonItem = {name:string,icon?:string,click:()=>void}
     const {focusing,click,longTap,buttonList,getData,canDrop,level=0} = defineProps<{
         focusing:boolean//聚焦
@@ -47,13 +46,18 @@ import Separator from "./Separator.vue";
     //管理模式
     const manageMode = nowLeftManage
 	//拖拽手柄
-	const handlerRef = useTemplateRef("handlerRef")
+    const handlerRef = useTemplateRef("handlerRef")
+	const handler = computed(()=>{
+        if(handlerRef.value){
+            return handlerRef.value.$el
+        }
+        return null
+    })
 </script>
 
 <style scoped lang='scss'>
 .objectLine{
     background-color: $bgColor;
-    
     &.focusing{
         background-color: $focusingColor;
     }
@@ -68,10 +72,18 @@ import Separator from "./Separator.vue";
             flex-grow: 1;
             height: 100%;
             width: 100%;
-        }
+        } 
         .buttons{
-            height: 100%;
-		    display: flex;
+            height: 3em;
+            position: relative;
+            left:20px;
+            display: flex;
+            align-items: center;
+            >div{
+                width: 50px;
+                height: 100%;
+                padding: 0 10px;
+            }
         }
     }
 }

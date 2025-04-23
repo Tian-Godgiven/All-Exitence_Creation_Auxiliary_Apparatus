@@ -57,10 +57,10 @@ import { ElementDragPayload } from '@atlaskit/pragmatic-drag-and-drop/dist/types
 	//按键列表
 	const buttonList = {
 		unmanage:[
-			{name:"编辑",click:()=>updateGroupPopUp(type,group),icon:undefined},
+			{name:"编辑",click:()=>updateGroupPopUp(type,group),icon:"edit"},
 		],
 		manage:[
-			{name:"删除",click:()=>deleteGroup(type,group)}
+			{name:"删除",click:()=>deleteGroup(type,group),icon:"delete"}
 		]
 	}
 	

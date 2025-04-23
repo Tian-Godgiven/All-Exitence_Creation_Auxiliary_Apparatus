@@ -75,7 +75,7 @@
 	}
 	//按钮
 	const buttonList = [
-		{name:"删除",click:()=>deleteArticlePopUp(from,article)}
+		{name:"删除",click:()=>deleteArticlePopUp(from,article),icon:"delete"}
 	]
 
 	//拖拽数据和控制

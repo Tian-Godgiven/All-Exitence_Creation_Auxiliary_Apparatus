@@ -1,17 +1,16 @@
 <template>
 <div class="leftPage" :style="{left:leftWidth}">
 	<div class="top">
-		<Button class="title" :class="nowLeftManage?'manageMode':''" 
-			@click="title.click" :name="title.name">
-		</Button>
+		<div class="title" :class="nowLeftManage?'manageMode':''" 
+			@click="title.click">
+			{{ title.name }}
+		</div>
 		<div class="buttons">
 			<Button name="管理" @click="switchManageMode" icon="manage"></Button>
 			<Button name="搜索" @click="" icon="search"></Button>
-			<Button :name="allExpending?'收起':'展开'" 
-				@click="switchExpending" 
-				:icon="allExpending?'allFold':'allExpend'">
+			<Button name="全部收起" @click="foldAll" icon="allFold">
 			</Button>
-			<Button name="新建" @click="createNew"></Button>
+			<Button name="新建" @click="createNew" icon="addNew"></Button>
 			<div class="moreButton" @click="showMoreButton">
 				显示更多
 				<div v-show="showMore">
@@ -75,37 +74,32 @@
 		nowLeftManage.value = !nowLeftManage.value;
 	}
 
-	//点击展开/收起当前所有内容
-	const allExpending = ref(true) //展开全部状态
-	function switchExpending(){
-		//展开or收起万物
+	//点击收起当前所有内容
+	function foldAll(){
+		//万物
 		if(model.value){
 			nowAllExitence.types.forEach((type:Type) => {
-				//将其展开or收起
-				type.expending = allExpending.value;
-				//将其中的分组展开or收起
+				//将其收起
+				type.expending = false
+				//分组
 				type.groups.forEach((group)=>{
-					group.expending = allExpending.value;
+					group.expending = false
 				})
 			});
 		}
-		//展开or收起文章
+		//文章
 		else{
 			nowAllArticles.chapters.forEach((chapter)=>{
-				//递归展开or收起所有章节
+				//递归折叠所有章节
 				expandingChapter(chapter)
 			})
 			function expandingChapter(chapter:Chapter){
-				//将其展开or收起
-				chapter.expending = allExpending.value;
-				//将其中的章节展开or收起
+				chapter.expending = false
 				chapter.chapters.forEach((chapter)=>{
 					expandingChapter(chapter)
 				})
 			}
 		}
-		//切换状态
-		allExpending.value = !allExpending.value;
 	}
 
 	//点击显示更多

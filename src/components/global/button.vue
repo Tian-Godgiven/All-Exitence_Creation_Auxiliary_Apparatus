@@ -1,5 +1,17 @@
 <template>
-<div class="button" @pointerdown.stop @pointerup.stop @click.stop="clickButton($event)" :name="name">
+<div class="button" 
+    v-wave="{
+        color:'grey',
+		initialOpacity: 0.5,
+		finalOpacity:0.2,
+		easing: 'ease-in',
+		duration:0.3,
+		stopPropagation:true
+    }"
+    @pointerdown.stop 
+    @click.stop="clickButton($event)" 
+    :name="name"
+    >
     <IconVue v-if="icon" 
         class="buttonIcon" 
         :icon

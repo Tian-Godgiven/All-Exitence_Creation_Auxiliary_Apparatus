@@ -72,7 +72,7 @@ import { ElementDragPayload } from '@atlaskit/pragmatic-drag-and-drop/dist/types
 
 	//管理模式按钮
 	const buttonList = [
-		{name:"删除",click:()=>deleteExitencePopUp(type,exitence)}
+		{name:"删除",click:()=>deleteExitencePopUp(type,exitence),icon:"delete"}
 	]
 
 	//获取数据

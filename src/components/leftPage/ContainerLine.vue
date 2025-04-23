@@ -1,11 +1,11 @@
 <template>
-<Draggable :getData :level :handlerRef :canDrop :allowInto
+<Draggable :getData :level :handler :canDrop :allowInto
 	ref="draggable" 
     class="container"
 	v-model:dragState="dragState">
-    <LongTap :click :longTap class="top" 
-        :class="expending?'expending':'folding'"
-        :style="{paddingLeft:level*10+'px'}">
+    <LongTap class="top" :class="expending?'expending':'folding'"
+        :style="{paddingLeft:level*10+'px'}"
+        :click :longTap >
         <Icon class="icon" :icon="expending?'expand':'unexpand'"></Icon>
         <div class="text">
             <slot name="title"></slot>
@@ -16,8 +16,7 @@
                 :name="button.name"
                 @click="button.click">
             </Button>
-            <DragHandler v-show="manageMode">
-                <div ref="handlerRef">拖动</div>
+            <DragHandler v-show="manageMode" ref="handlerRef">
             </DragHandler>
         </div>
     </LongTap>
@@ -67,7 +66,13 @@
         }
     })
 	//拖拽手柄
-	const handlerRef = useTemplateRef("handlerRef")
+    const handlerRef = useTemplateRef("handlerRef")
+	const handler = computed(()=>{
+        if(handlerRef.value){
+            return handlerRef.value.$el
+        }
+        return null
+    })
 	//拖拽状态
 	const dragState = ref<DragState>({type:"idle"})//拖拽状态
 
@@ -102,6 +107,12 @@
 	.buttons{
 		height: 100%;
 		display: flex;
+        align-items: center;
+        >div{
+            width: 50px;
+            height: 100%;
+            padding: 0 10px;
+        }
 	}
 }
 .inner{

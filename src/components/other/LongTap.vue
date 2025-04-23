@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang='ts'>
-        import { unref, useTemplateRef} from 'vue';
+    import { unref, useTemplateRef} from 'vue';
     //禁用模式
 	const {disabled=false,longTap,click} = defineProps<{
 		disabled?:boolean,
