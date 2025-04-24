@@ -15,19 +15,21 @@ import Button from '@/components/global/Button.vue';
 <style scoped lang='scss'>
 .ability{
 	width: 100%;
+	height: 100%;
 	display: flex;
-	margin: 20px;
+	padding: 20px;
 	flex-direction: column;
 	place-items: center;
+	box-sizing: border-box;
     .icon{
-		margin: 10px;
-		width: calc(100% - 60px);
-		aspect-ratio: 1;
-		margin-bottom: 10px;
+		padding:0 25px;
+		box-sizing: border-box;
+		width: 100%;
+		height: 100px;
 		flex-shrink: 0
 	}
 	.name{
-		font-size: $smallFontSize;
+		font-size: 0.9rem;
 		text-align: center;
 	}
 }

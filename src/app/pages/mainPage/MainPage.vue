@@ -95,9 +95,18 @@ import { callSupportAbility } from '@/hooks/app/app';
 			flex-grow: 1;
 		}
 		.buttons{
+			margin-right: 20px;
 			height: 100%;
-			width: 300px;
+			width: 250px;
 			display: flex;
+			align-items: center;
+			.button{
+				box-sizing: border-box;
+				height: 100%;
+				padding: 15px;
+				display: flex;
+				align-items: center;
+			}
 		}
 	}
 	// 内容

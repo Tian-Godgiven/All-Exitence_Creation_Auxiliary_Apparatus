@@ -84,7 +84,7 @@ import { quickPanelList } from '@/hooks/pages/mainPage/quickButton';
         height: 110px;
         width: 110px;
         border-radius: 50%;
-        background-color: $rightButtonColor;
+        background-color: $bgColor;
         box-shadow: 0px 3px 6px 1px rgb(99, 99, 99);
         margin:15px;
         margin-top: 20px;
