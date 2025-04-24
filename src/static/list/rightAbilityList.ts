@@ -2,6 +2,7 @@ import { showPopUp } from "@/hooks/pages/popUp";
 import { Icon } from "./iconList";
 import { Ref, ref } from "vue";
 
+//默认的分类名
 export type RightAbilityGroupName = 
     "创作计划"|
     "灵感迸发"|
@@ -14,11 +15,11 @@ export type RightAbilityGroup = Record<RightAbilityGroupName,RightAbility[]>
 export type RightAbility = {
     name:string,
     click:()=>void,
-    iconName:Icon
+    icon:Icon
 }|{
     name:string,
     click:()=>void,
-    iconSrc:string,
+    iconPath:string,
 }
 
 export const rightAbilityList:Ref<RightAbilityGroup> = ref({
@@ -32,7 +33,7 @@ export const rightAbilityList:Ref<RightAbilityGroup> = ref({
                     buttons:[]
                 })
             },
-            iconName:"canlendar"
+            icon:"canlendar"
         },
     ],
     "灵感迸发":[],

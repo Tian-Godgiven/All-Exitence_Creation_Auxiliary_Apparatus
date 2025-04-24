@@ -18,7 +18,7 @@
         :name
         :disabled>
     </IconVue>
-    <span v-else>{{ name }}</span>
+    <span v-else-if="name">{{ name }}</span>
     <slot></slot>
 </div>
 </template>
@@ -27,7 +27,7 @@
     import { Icon} from '@/static/list/iconList';
     import IconVue from './Icon.vue';
 
-    const {icon=null,name,disabled=false} = defineProps<{icon?:Icon|null,name:string,disabled?:boolean}>()
+    const {icon=null,name,disabled=false} = defineProps<{icon?:Icon|null,name?:string,disabled?:boolean}>()
     const emits = defineEmits(["click"])
     
     //触发点击事件

@@ -85,7 +85,7 @@ function initTimeLine(){
     addToRightPage({
         "name":"时间轴",
         "click":()=>showTimeLinePopUp(),
-        "iconName":"timeLine"
+        "icon":"timeLine"
     },"可视化")
 }
 //保存

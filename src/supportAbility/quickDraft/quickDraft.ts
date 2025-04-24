@@ -52,7 +52,7 @@ export const nowQuickDraftSetting = reactive<QuickDraft['setting']>(idleQuickDra
 function initQuickDraft(){
     //添加右侧功能按键
     addToRightPage({
-        "iconName":"quickDraft",
+        "iconPath":"quickDraft/icon/quickDraft.svg",
         "click":()=>showQuickDraftPopUp(),
         "name":"暂记版"
     },"灵感迸发")

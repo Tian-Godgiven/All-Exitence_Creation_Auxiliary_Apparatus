@@ -73,7 +73,7 @@ export async function initMissionList(){
     addToRightPage({
         name:"任务列表",
         click:()=>showMissionListPopUp(),
-        iconName:"missionList"
+        icon:"missionList"
     },"创作计划")
 }
 

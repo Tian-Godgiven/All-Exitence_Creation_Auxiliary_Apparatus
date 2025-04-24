@@ -50,7 +50,7 @@ async function initCustomTime(){
     addToRightPage({
         "name":"自定义时间",
         "click":()=>showCustomTimeManager(),
-        "iconName":"customTime"
+        "icon":"customTime"
     },"客制化")
 }
 

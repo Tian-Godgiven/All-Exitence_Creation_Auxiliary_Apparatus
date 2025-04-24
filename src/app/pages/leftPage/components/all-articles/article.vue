@@ -17,7 +17,7 @@
 	import { translateToTextContent } from '@/hooks/expression/textAreaContent';
 	import { trim } from 'lodash';
 	import { Article } from '@/class/Article';
-	import { focusOnLeftPage, getLeftPageFocusTarget, scrollToLeftTarget } from '@/hooks/pages/leftPage';
+	import { focusOnLeftPage, getLeftPageFocusTarget} from '@/hooks/pages/leftPage';
 	import ObjectLine from '../ObjectLine.vue';
 	import { ElementDragPayload } from '@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types';
 
