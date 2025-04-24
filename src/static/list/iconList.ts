@@ -1,7 +1,7 @@
 export type Icon = keyof typeof iconList;
 
 export const iconList:Record<string,string>= {
-    "close":"",//叉号
+    "close":"close",//叉号
     "check":"check",//勾号
     "add":"plus",//加号
     "addNew":"addCube",//方块包围的加号
@@ -12,19 +12,15 @@ export const iconList:Record<string,string>= {
     "rightArrow":"arrowRight",
     "upArrow":"arrowUp",
     "downArrow":"arrowDown",
-
-    "missionList":"missionList",//任务列表
-    "canlendar":"calendar",//日历
     "handSave":"saveFile",//保存文件
     "showLeft":"showLeft",//显示左侧页面
     "showRight":"showRight",//显示右侧页面
     "rightUp":"rightUp",//右侧页面抬升
-    "quickDraft":"quickDraft",//暂记版
-    "timeLine":"",//时间线←
     "backMain":"backMain",//返回主页面
 
-    "time":"time",
-    "repeat":"repeat",
+    "time":"time",//时钟
+    "timer":"timer",//计时器
+    "repeat":"repeat",//无限重复
     "eyeShow":"eyeShow",//眼睛显示
     "eyeHide":"eyeHide",//眼睛隐藏
     "showFloat":"showFloat",//显示悬浮窗
@@ -43,6 +39,12 @@ export const iconList:Record<string,string>= {
     "addContainer":"addContainer",//添加分组or章节
     "addContent":"addContent",//添加事物or文章
     "dragHandler":"dragHandler",//拖动手柄
+
+    "missionList":"missionList",//任务列表
+    "calendar":"calendar",//日历
+    "quickDraft":"quickDraft",//暂记版
+    "timeLine":"timeLine",//时间线
+    "customTime":"customTime",//自定义时间
     
 }
 

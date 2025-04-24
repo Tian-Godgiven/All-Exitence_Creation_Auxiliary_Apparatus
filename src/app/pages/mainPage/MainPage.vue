@@ -40,12 +40,11 @@
 	import { computed, ref, watch } from 'vue';
 	import { nowProjectInfo } from '@/hooks/project/project';
 	import { saveAll } from '@/hooks/app/autoSave';
-	import { Icon } from '@/static/list/iconList';
 	import Suggester from '@/supportAbility/inputSuggestion/suggester/Suggester.vue';
 	import QuickButton from '@/app/pages/mainPage/components/quickButton.vue/QuickButton.vue';
 import { callSupportAbility } from '@/hooks/app/app';
 // 功能按键
-	const buttons:{icon:Icon,name:string,click:()=>any}[] = [{
+	const buttons = [{
 		name:"手动保存",
 		icon:"handSave",
 		click:()=>saveAll()
@@ -93,9 +92,10 @@ import { callSupportAbility } from '@/hooks/app/app';
 			display: flex;
 			text-align: center;
 			align-items: center;
-			width: 360px;
+			flex-grow: 1;
 		}
 		.buttons{
+			height: 100%;
 			width: 300px;
 			display: flex;
 		}

@@ -16,10 +16,6 @@ export type RightAbility = {
     name:string,
     click:()=>void,
     icon:Icon
-}|{
-    name:string,
-    click:()=>void,
-    iconPath:string,
 }
 
 export const rightAbilityList:Ref<RightAbilityGroup> = ref({
@@ -33,7 +29,7 @@ export const rightAbilityList:Ref<RightAbilityGroup> = ref({
                     buttons:[]
                 })
             },
-            icon:"canlendar"
+            icon:"calendar"
         },
     ],
     "灵感迸发":[],

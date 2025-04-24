@@ -1,6 +1,6 @@
 <template>
 <Button class="ability" @click="ability.click">
-	<Icon class="icon" :icon-path="icon"></Icon>
+	<Icon class="icon" :icon="ability.icon"></Icon>
     <div class="name">{{ ability.name }}</div>
 </Button>
 </template>
@@ -8,18 +8,8 @@
 <script setup lang='ts'>
     import { RightAbility } from '@/static/list/rightAbilityList';
 import Icon from '@/components/global/Icon.vue';
-import { computed } from 'vue';
 import Button from '@/components/global/Button.vue';
     const {ability} = defineProps<{ability:RightAbility}>()
-	//图标
-	const icon = computed(()=>{
-		if("icon" in ability){
-			return ability.icon
-		}
-		else{ 
-			return `supportAbility/${ability.iconPath}`
-		}
-	})
 </script>
 
 <style scoped lang='scss'>
