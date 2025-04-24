@@ -1,5 +1,6 @@
 <template>
 <ContainerLine 
+	:id="`chapter_${chapter.__key}`"
 	:click :longTap :getData :buttonList :expending :allowInto="true" :canDrop
 	:level
 	class="chapter">

@@ -20,7 +20,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="inner">
+	<div class="inner" ref="leftInnerRef">
 		<AllExitence v-show="model"/>
 		<AllArticles v-show="!model"/>
 		<div class="scrollBottom"></div>
@@ -32,12 +32,12 @@
 	import { leftMaxWidth, leftShowWidth } from '@/hooks/pages/pageChange';
 	import AllExitence from './components/all-exitence/all-exitence.vue';
 	import AllArticles from './components/all-articles/all-articles.vue';
-	import { computed, ref } from "vue"
+	import { computed, nextTick, onMounted, ref, useTemplateRef, watch } from "vue"
 	import { createTypePopUp, nowAllExitence } from '@/hooks/all-exitence/allExitence';
 	import { addChapterPopUp, nowAllArticles } from '@/hooks/all-articles/allArticles';
 	import { Type } from '@/class/Type';
 	import { Chapter } from '@/class/Chapter';
-	import { changeLeftPageMode, nowLeftManage, nowLeftPageMode } from '@/hooks/pages/leftPage';
+	import { changeLeftPageMode, nowLeftManage, nowLeftPageMode, scrollTargetId } from '@/hooks/pages/leftPage';
 	import Button from '@/components/global/Button.vue';	
 	//左侧宽度
 	const leftWidth = computed(()=>{
@@ -118,6 +118,28 @@
 		}
 	}
 	
+	//滚动到指定的div
+	const leftInnerRef = useTemplateRef("leftInnerRef")
+	onMounted(()=>{
+		watch(scrollTargetId,()=>{
+			if(leftInnerRef.value && scrollTargetId.value){
+				const targetElement = leftInnerRef.value.querySelector("#"+scrollTargetId.value)
+				if(targetElement){
+					//等待元素加载
+					nextTick(()=>{
+						targetElement.scrollIntoView({
+							behavior: 'smooth',  // 滚动动画
+							block: 'center',       // 滚动到目标元素的顶部
+							inline: 'nearest'
+						})
+					})
+				}
+			}
+		},{
+			immediate:true
+		})
+	})
+	
 	
 </script>
 
@@ -129,6 +151,7 @@
 	background-color: $bgColor;
 	position: absolute;
 	z-index: 5;
+	overflow: hidden;
 	> .top{
 		width:100%;
 		word-break: break-all;
@@ -165,14 +188,13 @@
 	> .inner{
 		overflow: auto;
 		scrollbar-width: none;
-		height: calc(100% - 110px);
-		scroll-p{
-			height: 100%;
-			.scrollBottom{
-				height: 30%;
-			}
+		height: calc(100vh - 110px);
+		.scrollBottom{
+			width: 100%;
+			height: 100px;
 		}
 	}
+	
 }
 
 </style>

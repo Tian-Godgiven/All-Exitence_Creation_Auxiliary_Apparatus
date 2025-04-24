@@ -1,7 +1,7 @@
 <template>
 <div class="projectPage" ref="projectRef">
     <div class="projectInfo">
-        <ProjectInfoVue v-for="project in projectList" :project="project"></projectInfoVue>
+        <ProjectInfo v-for="project in projectList" :project="project"></ProjectInfo>
     </div>
     <div class="bottom">
         <div class="createProject" @click="createNewProject">创建新项目</div>
@@ -54,7 +54,7 @@
 
 <style scoped lang='scss'>
     .projectPage{
-        position: absolute;
+        position: fixed;
         bottom: 0;
         height: 80%;
         width: 100%;

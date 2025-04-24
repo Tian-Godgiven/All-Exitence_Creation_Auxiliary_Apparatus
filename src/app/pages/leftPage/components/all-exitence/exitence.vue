@@ -1,5 +1,5 @@
 <template>
-<ObjectLine :buttonList :longTap :click :focusing :getData :canDrop class="exitence">
+<ObjectLine :id="`exitence_${exitence.__key}`" :buttonList :longTap :click :focusing :getData :canDrop class="exitence">
 	<div class="inner">
 		<div class="name">{{name}}</div>
 		<div class="preview">{{ preview }}</div>

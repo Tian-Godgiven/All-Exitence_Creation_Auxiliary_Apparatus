@@ -38,3 +38,18 @@ export function focusOnLeftPage(targetKey:string,mode:"all-article"|"all-exitenc
 export function getLeftPageFocusTarget(){
     return focusTargetKey.value
 }
+
+//左侧页面滚动目标的div的id
+export const scrollTargetId = ref<string>("")
+type type = "type"|"group"|"exitence"|"article"|"chapter"
+export function scrollToLeftTarget(type:type,key:string){
+    //先切换到指定的模式
+    if(["type","group","exitence"].includes(type)){
+        changeLeftPageMode("all-exitence")
+    }
+    else{
+        changeLeftPageMode("all-article")
+    }
+    //修改滚动目标的id
+    scrollTargetId.value = type+"_"+key
+}

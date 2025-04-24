@@ -1,5 +1,5 @@
 <template>
-<ObjectLine :level :buttonList :longTap :click :focusing :getData :canDrop class="article">
+<ObjectLine :id="`article_${article.__key}`" :level :buttonList :longTap :click :focusing :getData :canDrop class="article">
 	<div class="title">{{title}}</div>
 	<div class="preview" v-show="ifPreview" >{{preview}}</div>
 	<template #dragShadow>
@@ -17,7 +17,7 @@
 	import { translateToTextContent } from '@/hooks/expression/textAreaContent';
 	import { trim } from 'lodash';
 	import { Article } from '@/class/Article';
-	import { focusOnLeftPage, getLeftPageFocusTarget } from '@/hooks/pages/leftPage';
+	import { focusOnLeftPage, getLeftPageFocusTarget, scrollToLeftTarget } from '@/hooks/pages/leftPage';
 	import ObjectLine from '../ObjectLine.vue';
 	import { ElementDragPayload } from '@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types';
 

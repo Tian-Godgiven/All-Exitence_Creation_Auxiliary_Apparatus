@@ -8,8 +8,9 @@ import { nanoid } from "nanoid";
 import { addExitenceInputSuggestion, changeExitenceInputSuggestion, deleteExitenceInputSuggestion } from "../../supportAbility/inputSuggestion/suggester/inputSuggestion";
 import { showAlert } from "../alert";
 import { filterExitenceByRule } from "../expression/groupRule";
-import { isArray, reject } from "lodash";
+import { isArray} from "lodash";
 import { deleteShowOnMain, showOnMain, showTargetOnMain } from "../pages/mainPage/showOnMain";
+import { focusOnLeftPage, scrollToLeftTarget } from "../pages/leftPage";
 
 //当前万物
 export const nowAllExitence = reactive<{types:Type[]}>({types:[]})
@@ -118,7 +119,12 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
 
     //聚焦指定的分类
     export function focusOnType(type:Type,showLeft:boolean=false){
-        //未完成
+        //展开分类
+        type.expending = true;
+        //在左侧页面聚焦
+        focusOnLeftPage(type.__key,"all-exitence",showLeft)
+        //滚动到指定位置
+        scrollToLeftTarget("type",type.__key)
     }
 
 // 事物相关
@@ -247,10 +253,21 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
 
     //聚焦事物对象，将其显示在主页面上
     export function focusOnExitence(exitence:Exitence,showLeft:boolean=false){
-        //未完成
-
-        //展开分类或分组,是否显示左侧页面
-
+        //展开分类或分组
+        const type = getTypeByKey(exitence.typeKey)
+        if(!type)throw new Error(`没有找到type${exitence}`)
+        type.expending = true
+        //判断事物是否处于某个分组中
+        type.groups.forEach(group=>{
+            if(ifExitenceInGroup(exitence,group)){
+                //展开这个分组
+                group.expending = true
+            }
+        })
+        //滚动到指定位置
+        scrollToLeftTarget("exitence",exitence.__key)
+        //左侧界面聚焦
+        focusOnLeftPage(exitence.__key,"all-exitence",showLeft)
         //显示在主页面
         showTargetOnMain({
             type:"exitence",
@@ -315,6 +332,10 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
             }
         })
     }
+    //判断指定事物是否满足指定分组的规则
+    export function ifExitenceInGroup(exitence:Exitence,group:Group){
+        return filterExitenceByRule(exitence,group.rules)
+    }
 
 
 // 分组相关
@@ -367,7 +388,7 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
     }
     //使用分类，向其中添加新的分组
     export function addGroup(type:Type,{name,rules,setting}:any){
-        const newGroup= new Group(name,rules,setting)
+        const newGroup= new Group(name,rules,setting,nanoid(),type.__key)
         type.groups.push(newGroup)
         return newGroup
     }
@@ -407,4 +428,17 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
 			return true
 		})
 		return tmp
+    }
+    //聚焦指定分组
+    export function focusOnGroup(group:Group,showLeft:boolean=true){
+        //展开分类
+        const type = getTypeByKey(group.typeKey)
+        if(!type)throw new Error(`没有找到type${group}`)
+        type.expending = true;
+        //展开分组
+        group.expending = true;
+        //左侧页面聚焦
+        focusOnLeftPage(group.__key,"all-exitence",showLeft)
+        //滚动
+        scrollToLeftTarget("group",group.__key)
     }

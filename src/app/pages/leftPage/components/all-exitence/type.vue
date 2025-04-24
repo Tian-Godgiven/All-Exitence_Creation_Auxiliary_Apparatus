@@ -1,5 +1,6 @@
 <template>
 <ContainerLine 
+	:id="`type_${type.__key}`"
 	:buttonList :click :longTap :expending :getData :canDrop
 	class="type">
 	<template #title>

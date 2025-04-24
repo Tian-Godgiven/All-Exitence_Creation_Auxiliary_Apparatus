@@ -5,7 +5,7 @@ import { Article } from "@/class/Article";
 import { showAlert } from "../alert";
 import { nanoid } from "nanoid";
 import { deleteShowOnMain, showOnMain, showTargetOnMain } from "../pages/mainPage/showOnMain";
-import { focusOnLeftPage } from "../pages/leftPage";
+import { focusOnLeftPage, scrollToLeftTarget } from "../pages/leftPage";
 
 //当前文章
 export const nowAllArticles = reactive<{
@@ -88,6 +88,8 @@ export function changeNowAllArticles(newAllArticles:any){
             //把他的key放进chapterFrom
             chapterFrom.push(chapter.__key)
         })
+        //滚动到指定位置
+        scrollToLeftTarget("article",article.__key)
         //在左侧页面聚焦这个文章
         focusOnLeftPage(article.__key,"all-article",showLeft)
         //在主页面显示这个文章
@@ -165,6 +167,8 @@ export function changeNowAllArticles(newAllArticles:any){
         })
         //展开这个章节
         chapter.expending=true
+        //移动到指定位置
+        scrollToLeftTarget("chapter",chapter.__key)
         //将其聚焦
         focusOnLeftPage(chapter.__key,"all-article",showLeft)
     }

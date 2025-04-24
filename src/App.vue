@@ -54,7 +54,7 @@ startAutoSave()
     }
   }
   .app{
-    position: relative;
+    position: fixed;
     overflow: hidden;
     width: 100vw;
     height: 100vh;

@@ -1,5 +1,5 @@
 <template>
-<ContainerLine :buttonList :click :longTap :expending :getData :canDrop class="group">
+<ContainerLine :id="`group_${group.__key}`" :buttonList :click :longTap :expending :getData :canDrop class="group">
 	<template #title>
 		<div class="title">{{ group.name }}</div>
 	</template>
