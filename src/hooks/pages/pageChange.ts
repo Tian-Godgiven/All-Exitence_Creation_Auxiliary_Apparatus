@@ -158,7 +158,10 @@ export const maskAlphaMax = 0.6
 
 let clickEvent:()=>void
 
-export function showMask(func:()=>void){
+export function showMask(func:()=>void,startAlpha?:number){
+	if(startAlpha!=null){
+		maskAlpha.value = startAlpha
+	}
 	ifMask.value = true
 	clickEvent = func
 }

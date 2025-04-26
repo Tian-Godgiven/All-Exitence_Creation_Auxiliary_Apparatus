@@ -1,20 +1,25 @@
 <template>
 <div class="projectPage" ref="projectRef">
-    <div class="projectInfo">
+    <div class="inner">
         <ProjectInfo v-for="project in projectList" :project="project"></ProjectInfo>
     </div>
+    
     <div class="bottom">
-        <div class="createProject" @click="createNewProject">创建新项目</div>
+        <BottomPanel></BottomPanel>
+        <Button @click="createNewProject" icon="add" color="white"></Button>
     </div>
+    
 </div>
 </template>
 
 <script setup lang='ts'>
-    import { changePageMask, ifShowProject} from '@/hooks/pages/pageChange';
+    import { changeMaskAlpha, changePageMask, hideMask, ifShowProject, showMask} from '@/hooks/pages/pageChange';
     import { createNewProject, nowProjectList } from '@/hooks/project/project';
     import ProjectInfo from './components/ProjectInfo.vue';
     import { computed, useTemplateRef, watch } from 'vue';
     import gsap from 'gsap';
+    import Button from '@/components/global/Button.vue';
+import BottomPanel from './components/BottomPanel.vue';
 
     const projectRef = useTemplateRef("projectRef")
     //显示与隐藏该页面的动画
@@ -25,12 +30,11 @@
                 y:"0%",
                 duration:0.5,
                 ease:"power2.inOut",
-                onUpdate:()=>{
-                    const yPercent = gsap.getProperty(projectRef.value, "y") as number
-                    changePageMask((1-yPercent/100),()=>{
+                onStart:()=>{
+                    showMask(()=>{
                         ifShowProject.value = false
-                    })
-                },
+                    },0)
+                }
             })
         }
         else{
@@ -38,9 +42,8 @@
                 y:"100%",
                 duration:0.5,
                 ease:"power2.inOut",
-                onUpdate:()=>{
-                    const yPercent = gsap.getProperty(projectRef.value, "y") as number
-                    changePageMask((1-yPercent/100))
+                onComplete:()=>{
+                    hideMask()
                 },
             })
         }
@@ -53,21 +56,43 @@
 </script>
 
 <style scoped lang='scss'>
-    .projectPage{
+.projectPage{
+    position: fixed;
+    bottom: 0;
+    height: 80%;
+    width: 100%;
+    z-index: 2;
+    overflow: hidden;
+    background-color: rgb(243, 243, 243);
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+    transform: translate(0,100%);
+    box-shadow: $groundShadow;
+    .inner{
+        width: 100%;
+        padding: 30px 20px 0 20px;
+        box-sizing: border-box;
+    }
+
+    .bottom{
         position: fixed;
         bottom: 0;
-        height: 80%;
+        height: 200px;
         width: 100%;
-        background-color: black;
-        z-index: 2;
-        overflow: hidden;
-        transform: translate(0,100%);
-        .bottom{
+        .button{
             position: absolute;
-            bottom: 0;
-            height: 200px;
-            width: 100px;
-            color: white;
+            top:0;
+            left: calc(80% - 70px);
+            transform: translateY(-50%);
+            box-sizing: border-box;
+            padding: 30px;
+            border-radius: 50%;
+            background-color: $antiBgColor;
+            height: 140px;
+            width: 140px;
+            box-shadow: $downShadow;
         }
     }
+    
+}
 </style>

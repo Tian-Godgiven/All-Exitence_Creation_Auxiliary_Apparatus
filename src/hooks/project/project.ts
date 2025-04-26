@@ -18,7 +18,7 @@ export type ProjectLastTarget =
     {from:string[],targetKey:string,type:"article"}|//或是文章
     {from:null,targetKey:"app"|"project",type:"info"}
 //项目信息
-type ProjectInfo = {
+export type ProjectInfo = {
     name:string,
     pathName:string,
     time:Date | number,
@@ -27,7 +27,7 @@ type ProjectInfo = {
 }
 
 //app中所有项目列表
-export const nowProjectList = ref<any>([])
+export const nowProjectList = ref<ProjectInfo[]>([])
 //当前显示的项目的文件夹路径，注意其只包含其文件夹的名称
 export const nowProjectPath = ref<string|null>(null)
 //当前显示的项目信息
@@ -48,16 +48,12 @@ export async function initProject(){
     else{
         moveToProject(lastProjectPath)
     }
-
-    //读取所有的项目列表
-    const projectList = await readDirAsArray("data","projects")
+    //读取app中存储的项目路径列表
+    const projectPathList:string[] = await readDirAsArray("data","projects")
     //依次获取项目信息
-    nowProjectList.value = await projectList.reduce(async (arrPromise: Promise<any[]>, projectPath: string) => {
-        const arr = await arrPromise; // 等待上一个循环的 Promise 完成，获取当前的数组
-        const projectInfo = await readFileFromPath(`projects/${projectPath}`, "projectInfo.json");
-        arr.push(projectInfo); // 将新的 `projectInfo` 添加到数组中
-        return arr; // 返回更新后的数组
-    }, Promise.resolve([])); // 初始值为一个 resolved 的空数组
+    nowProjectList.value = await Promise.all(projectPathList.map(async (projectPath: string) => {
+        return await readFileFromPath(`projects/${projectPath}`, "projectInfo.json") as ProjectInfo
+    }))
 }
 //同步当前项目的数据
 export async function syncProject(projectPath:string){
