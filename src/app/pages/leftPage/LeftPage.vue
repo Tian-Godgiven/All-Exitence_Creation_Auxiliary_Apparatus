@@ -8,16 +8,18 @@
 		<div class="buttons">
 			<Button name="管理" @click="switchManageMode" icon="manage"></Button>
 			<Button name="搜索" @click="" icon="search"></Button>
-			<Button name="全部收起" @click="foldAll" icon="allFold">
-			</Button>
+			<Button name="全部收起" @click="foldAll" icon="allFold"/>
 			<Button name="新建" @click="createNew" icon="addNew"></Button>
-			<div class="moreButton" @click="showMoreButton">
-				显示更多
-				<div v-show="showMore">
-					<div>导入导出</div>
-					<div>切换项目</div>
-				</div>
-			</div>
+			<Menu vertical="right" horizen="bottom">
+				<template #default={switchMenu}>
+					<Button name="显示更多" 
+						@click="switchMenu" icon="more">
+					</Button>
+				</template>
+				<template #menu>
+					<ListMenu title="更多" :list></ListMenu>
+				</template>
+			</Menu>
 		</div>
 	</div>
 	<div class="inner" ref="leftInnerRef">
@@ -32,13 +34,15 @@
 	import { leftMaxWidth, leftShowWidth } from '@/hooks/pages/pageChange';
 	import AllExitence from './components/all-exitence/all-exitence.vue';
 	import AllArticles from './components/all-articles/all-articles.vue';
-	import { computed, nextTick, onMounted, ref, useTemplateRef, watch } from "vue"
+	import { computed, nextTick, onMounted, useTemplateRef, watch } from "vue"
 	import { createTypePopUp, nowAllExitence } from '@/hooks/all-exitence/allExitence';
 	import { addChapterPopUp, nowAllArticles } from '@/hooks/all-articles/allArticles';
 	import { Type } from '@/class/Type';
 	import { Chapter } from '@/class/Chapter';
 	import { changeLeftPageMode, nowLeftManage, nowLeftPageMode, scrollTargetId } from '@/hooks/pages/leftPage';
 	import Button from '@/components/global/Button.vue';	
+	import Menu from '@/components/global/Menu.vue';
+import ListMenu from '@/components/global/ListMenu.vue';
 	//左侧宽度
 	const leftWidth = computed(()=>{
 		//出现变化时关闭管理模式
@@ -100,12 +104,6 @@
 			}
 		}
 	}
-
-	//点击显示更多
-	const showMore = ref(false)
-	function showMoreButton(){
-		showMore.value = !showMore.value
-	}
 	
 	//创建新分类/章节
 	function createNew(){
@@ -139,6 +137,12 @@
 			immediate:true
 		})
 	})
+
+	//更多菜单选项 未完成
+	const list = [
+		{label:"导入导出",click:()=>{}},
+		{label:"设置",click:()=>{}}
+	]
 	
 	
 </script>
@@ -177,7 +181,6 @@
 		.buttons{
 			height: 100%;
 			display: flex;
-			width: 400px;
 			.button{
 				width: 75px;
 				height: 100%;
@@ -186,9 +189,11 @@
 		}
 	}
 	> .inner{
+		position: relative;
 		overflow: auto;
 		scrollbar-width: none;
 		height: calc(100vh - 110px);
+		z-index: 0;
 		.scrollBottom{
 			width: 100%;
 			height: 100px;
@@ -196,5 +201,4 @@
 	}
 	
 }
-
 </style>

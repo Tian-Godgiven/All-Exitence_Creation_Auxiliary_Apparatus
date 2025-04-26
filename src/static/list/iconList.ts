@@ -45,6 +45,8 @@ export const iconList:Record<string,string>= {
     "quickDraft":"quickDraft",//暂记版
     "timeLine":"timeLine",//时间线
     "customTime":"customTime",//自定义时间
+
+    "more":"more",//显示更多，未完成
     
 }
 
