@@ -10,8 +10,7 @@
 		<groupVue v-for="group in type.groups" 
 			:type
 			:key="group.__key" 
-			:group 
-			:groupExitence="getExitenceInGroup(type.exitence,group)">
+			:group>
 		</groupVue>
 		<exitenceVue 
 			v-for="exitence in showExitence"
@@ -30,7 +29,7 @@
 import groupVue from "./group.vue"
 import exitenceVue from "./exitence.vue"
 import { computed } from "vue";
-import { createExitencePopUp, createGroupPopUp, deleteTypePopUp, getExitenceInGroup, getNoGroupExitence, updateTypePopUp } from "@/hooks/all-exitence/allExitence";
+import { createExitencePopUp, createGroupPopUp, deleteTypePopUp, getNoGroupExitence, updateTypePopUp } from "@/hooks/all-exitence/allExitence";
 import { showTargetOnMain } from "@/hooks/pages/mainPage/showOnMain";
 import { hidePage } from "@/hooks/pages/pageChange";
 import { showControlPanel } from "@/hooks/controlPanel";

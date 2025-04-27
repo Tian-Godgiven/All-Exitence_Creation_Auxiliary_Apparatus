@@ -6,7 +6,7 @@
 	<template #inner>
 		<div v-show="!nowLeftManage">
 			<exitenceVue 
-				v-for="(exitence) in groupExitence" ]
+				v-for="exitence in groupExitence" 
 				:key="exitence.__key" 
 				:type 
 				:exitence/>
@@ -21,17 +21,19 @@
 <script setup lang="ts" name=""> 
 import { computed } from 'vue';
 import exitenceVue from './exitence.vue';
-import { deleteGroup, updateGroupPopUp } from '@/hooks/all-exitence/allExitence';
+import { deleteGroup, getExitenceInGroup, updateGroupPopUp } from '@/hooks/all-exitence/allExitence';
 import { showControlPanel } from '@/hooks/controlPanel';
 import { Group } from '@/class/Group';
-import { Exitence } from '@/class/Exitence';
 import { Type } from '@/class/Type';
 import { nowLeftManage } from '@/hooks/pages/leftPage';
 import ContainerLine from '../ContainerLine.vue';
 import { ElementDragPayload } from '@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types';
 
-	let {group,groupExitence,type} = defineProps<{group:Group,groupExitence:Exitence[],type:Type}>() 
+	let {group,type} = defineProps<{group:Group,type:Type}>() 
 
+	const groupExitence = computed(()=>{
+		return getExitenceInGroup(type.exitence,group)
+	})
 	//切换展开
 	const expending = computed(()=>{
 		return group.expending
