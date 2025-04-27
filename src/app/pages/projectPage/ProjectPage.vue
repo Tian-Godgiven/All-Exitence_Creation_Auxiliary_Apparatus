@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang='ts'>
-    import { changeMaskAlpha, changePageMask, hideMask, ifShowProject, showMask} from '@/hooks/pages/pageChange';
+    import { disableChangePage, enableChangePage, hideMask, ifShowProject, showMask} from '@/hooks/pages/pageChange';
     import { createNewProject, nowProjectList } from '@/hooks/project/project';
     import ProjectInfo from './components/ProjectInfo.vue';
     import { computed, useTemplateRef, watch } from 'vue';
@@ -31,6 +31,7 @@ import BottomPanel from './components/BottomPanel.vue';
                 duration:0.5,
                 ease:"power2.inOut",
                 onStart:()=>{
+                    disableChangePage()
                     showMask(()=>{
                         ifShowProject.value = false
                     },0)
@@ -44,6 +45,7 @@ import BottomPanel from './components/BottomPanel.vue';
                 ease:"power2.inOut",
                 onComplete:()=>{
                     hideMask()
+                    enableChangePage()
                 },
             })
         }
@@ -59,7 +61,7 @@ import BottomPanel from './components/BottomPanel.vue';
 .projectPage{
     position: fixed;
     bottom: 0;
-    height: 80%;
+    height: 65%;
     width: 100%;
     z-index: 2;
     overflow: hidden;
@@ -70,14 +72,14 @@ import BottomPanel from './components/BottomPanel.vue';
     box-shadow: $groundShadow;
     .inner{
         width: 100%;
-        padding: 30px 20px 0 20px;
+        padding-top: 30px;
         box-sizing: border-box;
     }
 
     .bottom{
         position: fixed;
         bottom: 0;
-        height: 200px;
+        height: 150px;
         width: 100%;
         .button{
             position: absolute;
@@ -90,7 +92,7 @@ import BottomPanel from './components/BottomPanel.vue';
             background-color: $antiBgColor;
             height: 140px;
             width: 140px;
-            box-shadow: $downShadow;
+            box-shadow: $groundShadow;
         }
     }
     

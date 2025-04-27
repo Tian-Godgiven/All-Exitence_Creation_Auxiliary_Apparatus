@@ -38,7 +38,7 @@ export const iconList:Record<string,string>= {
 
     "addContainer":"addContainer",//添加分组or章节
     "addContent":"addContent",//添加事物or文章
-    "dragHandler":"dragHandler",//拖动手柄
+    "dragHandle":"dragHandle",//拖动手柄
 
     "missionList":"missionList",//任务列表
     "calendar":"calendar",//日历

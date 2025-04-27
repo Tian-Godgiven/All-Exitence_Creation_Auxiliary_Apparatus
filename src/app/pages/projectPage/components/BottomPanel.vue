@@ -1,4 +1,5 @@
 <template>
+<div>
 <svg class="bottomPanel" fill="inherit" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
     <mask id="the_mask">
         <!-- 白色像素下的所有内容都将可见 -->
@@ -21,6 +22,11 @@
     <!-- 绘制矩形 -->
     <rect x="0" :y="y" width="100%" height="100%" :fill="color" mask="url(#the_mask)"/>
 </svg>
+<div class="title">
+    项目列表
+</div>
+</div>
+
 </template>
 
 <script setup lang='ts'>
@@ -37,6 +43,13 @@
 
 <style scoped lang='scss'>
 .bottomPanel{
-    filter: drop-shadow(rgb(56, 56, 56) 0px 0px 25px)
+    filter: drop-shadow(rgb(56, 56, 56) 0px 0px 15px)
+}
+.title{
+    position: absolute;
+    top: 50%;
+    left: 30px;
+    font-size: $fontSize20;
+    transform: translateY(-50%);
 }
 </style>
