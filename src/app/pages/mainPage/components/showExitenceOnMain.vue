@@ -17,7 +17,7 @@
 		</div>
 	</template>
     <template #inner>
-        <draggableList
+        <!-- <DraggableList
 			ref="inner"
 			:dragHandle="true"
 			:showHandle="showDrag"
@@ -27,7 +27,7 @@
 				:key="status.__key"
 				:status="status">
 			</exitenceStatusVue>
-		</draggableList>
+		</DraggableList> -->
 		<div class="scrollSpace"></div>
     </template>
 </TargetContainer>
@@ -38,7 +38,7 @@
 	import textAreaVue from '@/components/other/textArea/textArea.vue';
 	import exitenceStatusVue from '@/components/all-exitence/exitence/exitenceStatus.vue';
 	import { changeExitenceName, getTypeByKey} from '@/hooks/all-exitence/allExitence';
-	import draggableList from '@/components/other/draggableList/draggableList.vue';
+	import DraggableList from '@/components/other/DraggableList.vue';
 	import Status from '@/interfaces/Status';
 	import Button from '@/components/global/Button.vue';
 	import { showPopUp } from '@/hooks/pages/popUp';

@@ -44,7 +44,7 @@
 <script setup lang="ts" name="">
 import { provide, reactive, ref, toRaw } from 'vue'; 
 import downLineInputVue from '@/components/other/input/downLineInput.vue';
-import draggableListVue from '@/components/other/draggableList/draggableList.vue';
+import draggableListVue from '@/components/other/DraggableList.vue';
 import NewTypeStatus from './NewTypeStatus.vue';
 import TypeStatus from './TypeStatus.vue';
 import { closePopUp } from '@/hooks/pages/popUp';

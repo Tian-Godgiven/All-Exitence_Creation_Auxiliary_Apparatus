@@ -164,7 +164,7 @@ export function getDroppable({
     })
 }
 /**
- * 
+ * 获取一个可以被拖拽也可以被其他元素放置从而调整顺序的元素
  * @param element 可被拖拽的元素.
  * @param dragHandle 拖拽手柄，可选.
  * @param getData 返回初始化元素数据.
@@ -210,7 +210,7 @@ export function getCombine({
 }
 
 /**
- * 
+ * 快速创建监听器，用于监听拖拽事件
  * @param canMonitor 允许监听的目标，注意参数为source，需要手动提取data
  * @param sourceIndex 获取放置源的index
  * @param targetIndex 获取放置点的index

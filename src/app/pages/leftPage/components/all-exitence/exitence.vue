@@ -83,7 +83,6 @@ import { ElementDragPayload } from '@atlaskit/pragmatic-drag-and-drop/dist/types
 			__key:exitence.__key
 		}
 	}
-
 	const canDrop = (source:ElementDragPayload)=>{
 		//source的来源必须一致
 		if(source.data.from != type){

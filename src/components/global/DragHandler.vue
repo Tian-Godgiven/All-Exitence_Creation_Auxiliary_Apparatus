@@ -12,7 +12,7 @@ import Button from './Button.vue';
 
 <style scoped lang='scss'>
 .dragHandler{
-    width: 100%;
+    width: 40px;
     height: 100%;
     display: flex;
     align-items: center;

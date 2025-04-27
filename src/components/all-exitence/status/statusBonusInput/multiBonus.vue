@@ -40,7 +40,7 @@
 
 <script setup lang="ts" name="">
 import { inject, ref, shallowRef, toRaw } from 'vue'; 
-import draggableListVue from '@/components/other/draggableList/draggableList.vue';
+import draggableListVue from '@/components/other/DraggableList.vue';
 import { showPopUp } from '@/hooks/pages/popUp';
 import textInputVue from "@/components/other/textInput.vue";
 import { showQuickInfo } from '@/api/showQuickInfo';

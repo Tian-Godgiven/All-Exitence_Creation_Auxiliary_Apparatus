@@ -1,6 +1,6 @@
 <template>
 <div class="updateGroup">
-    <editGroupVue v-model="tmpGroup"></editGroupVue>
+    <editGroupVue :group="tmpGroup"></editGroupVue>
     <FinalButtons :buttons="[
         {click:confirm,name:'确认'},
         {click:()=>closePopUp(popUp),name:'取消'}]"/>
@@ -14,14 +14,14 @@
     import { showQuickInfo } from '@/api/showQuickInfo';
     import { cloneDeep } from 'lodash';
     import FinalButtons from '@/app/stacks/popUp/FinalButtons.vue';
-
+    import { Group } from '@/class/Group';
     const {props,popUp,returnValue} = defineProps(["props","popUp","returnValue"])
     //分组所在的分类,已经分组本身
     const {type,group=null} = props
     provide("type",type)
 
     //创建一个group的深拷贝
-    const tmpGroup = group ? reactive(cloneDeep(group)) : reactive({
+    const tmpGroup:Group = group ? reactive(cloneDeep(group)) : reactive({
         name:"",
         rules:[],
         setting:{}

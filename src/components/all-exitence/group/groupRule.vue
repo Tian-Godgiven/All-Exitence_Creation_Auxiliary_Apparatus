@@ -3,8 +3,6 @@
         <div class="target">{{ ruleTarget }}</div>
         <div class="simbol">{{ ruleSimbol }}</div>
         <div class="value">{{ ruleValue}}</div>
-        <div class="delete" @click="deleteRule">删除</div>
-        <div class="dragHandle">拖</div>
     </div>
 </template>
 
@@ -13,7 +11,7 @@
 import { getTypeStatusByKey } from '@/hooks/all-exitence/allExitence';
 import { separateRule } from '@/hooks/expression/groupRule';
 import { inject } from 'vue';
-    const {rule} = defineProps(["rule"])
+    const {rule} = defineProps<{rule:string}>()
     const type = inject<any>("type")
     const emits = defineEmits(["deleteRule"])
     //将rule中的部分拆开
@@ -72,21 +70,16 @@ import { inject } from 'vue';
                 }
         }
     }
-    //删除该规则
-    function deleteRule(){
-        emits("deleteRule")
-    }
 </script>
 
 <style scoped lang='scss'>
-    .groupRule{
-        display: flex;
-        margin: 5px 0;
-        border: 3px solid black;
-        border-radius: 5px;
-        >div{
-            margin: 5px;
-            
-        }
+.groupRule{
+    display: flex;
+    margin: 5px 0;
+    border-radius: 5px;
+    >div{
+        margin: 5px;
+        
     }
+}
 </style>

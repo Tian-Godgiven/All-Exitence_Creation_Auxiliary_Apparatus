@@ -18,7 +18,6 @@
 
 <script setup lang="ts">
 import type { Edge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/types";
-import { onMounted } from "vue";
 
 const { edge, gap } = defineProps<{
   edge:Edge;
@@ -48,21 +47,18 @@ const edgeStyles: Record<Edge, string> = {
   left: "left-[--line-offset] before:left-[--offset-terminal]",
 };
 
-const strokeSize = 2;
+const strokeSize = 2; 
 const terminalSize = 8;
 const offsetToAlignTerminalWithLine = (strokeSize - terminalSize) / 2;
 
-onMounted(()=>{
-  console.log("构建了线条")
-})
 </script>
 
 <style scoped lang="scss">
 .indicator{
     --line-thickness: 2px;
-    --line-offset: calc(-0.5 * (8px + 2px));
+    --line-offset: 0;
     --terminal-size: 8px;
-    --terminal-radius: 4px;
+    --terminal-radius: 0;
     --negative-terminal-size: -8px;
     --offset-terminal: -3px;
 }

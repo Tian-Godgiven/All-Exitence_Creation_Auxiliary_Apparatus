@@ -1,8 +1,7 @@
 <template> 
 <Draggable :getData :handler :canDrop 
     class="objectLine"
-    :class="focusing?'focusing':''"
-	ref="draggable">
+    :class="focusing?'focusing':''">
     <LongTap :disabled="manageMode" :click :longTap class="container" :style="{paddingLeft:(level+1)*10+'px'}">
         <div class="inner">
             <slot></slot>

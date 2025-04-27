@@ -1,6 +1,5 @@
 <template>
 <Draggable :getData :level :handler :canDrop :allowInto
-	ref="draggable" 
     class="container"
 	v-model:dragState="dragState">
     <LongTap class="top" :class="expending?'expending':'folding'"
@@ -16,8 +15,7 @@
                 :name="button.name"
                 @click="button.click">
             </Button>
-            <DragHandler v-show="manageMode" ref="handlerRef">
-            </DragHandler>
+            <DragHandler v-show="manageMode" ref="handlerRef"/>
         </div>
     </LongTap>
     <div class="inner" v-show="expending && dragState?.type!='dragging'">
