@@ -38,14 +38,15 @@
     const {mission} = defineProps<{mission:Mission}>()
     //长按显示控制面板
     function longTap(){
-        showControlPanel([
-        {
-            "text":"编辑/详情",
-            click:()=>{editMission(mission)},
-        },{
-            text:"删除",
-            click:()=>{deleteMission(mission)}
-        }])
+        showControlPanel({
+            option:[{
+                "text":"编辑/详情",
+                click:()=>{editMission(mission)},
+            },{
+                text:"删除",
+                click:()=>{deleteMission(mission)}
+            }]
+        })
     }
 
     //点击展开任务内容

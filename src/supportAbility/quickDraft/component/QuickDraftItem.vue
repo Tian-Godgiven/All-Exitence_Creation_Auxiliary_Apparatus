@@ -60,10 +60,12 @@ import DragHandler from '@/components/global/DragHandler.vue';
     const {quickDraftItem,manageMode} = defineProps<{quickDraftItem:QuickDraftItem,manageMode:boolean}>()
     //长按显示控制面板
     function longTap(){
-        showControlPanel([{
-            "text":"删除",
-            "click":()=>deleteQuickDraftItem(quickDraftItem)
-        }])
+        showControlPanel({
+            option:[{
+                text:"删除",
+                click:()=>deleteQuickDraftItem(quickDraftItem)
+            }]
+        })
     }
     //点击聚焦到该暂记对象
     function click(){

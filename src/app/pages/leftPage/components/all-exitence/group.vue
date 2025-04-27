@@ -43,17 +43,16 @@ import { ElementDragPayload } from '@atlaskit/pragmatic-drag-and-drop/dist/types
 	}
 	// 长按显示控制面板
 	const longTap = ()=>{
-		showControlPanel([{
-			text:"编辑分组",
-			click:()=>{
-				updateGroupPopUp(type,group)
-			}
-		},{
-			text:"删除分组",
-			click:()=>{
-				deleteGroup(type,group)
-			}
-		}])
+		showControlPanel({
+			title:`分组：${group.name}`,
+			option:[{
+				text:"编辑",
+				click:()=>updateGroupPopUp(type,group)
+			},{
+				text:"删除",
+				click:()=>deleteGroup(type,group)
+			}]
+		})
 	}
 
 	//按键列表

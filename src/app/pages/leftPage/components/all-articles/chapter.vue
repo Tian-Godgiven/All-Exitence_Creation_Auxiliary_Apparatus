@@ -55,13 +55,16 @@
 	}
 	//长按显示控制面板
 	const longTap = ()=>{
-		showControlPanel([{
-			text:"删除",
-			click:()=>{deleteChapterPopUp(from,chapter)}
-		},{
-			text:"重命名",
-			click:()=>{updateChapter(chapter)}
-		}])
+		showControlPanel({
+			title:`章节：${chapter.name}`,
+			option:[{
+				text:"删除",
+				click:()=>{deleteChapterPopUp(from,chapter)}
+			},{
+				text:"重命名",
+				click:()=>{updateChapter(chapter)}
+			}]
+		})
 	}
 	//拖拽数据
 	function getData(){

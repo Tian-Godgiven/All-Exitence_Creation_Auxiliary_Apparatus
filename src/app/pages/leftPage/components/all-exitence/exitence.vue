@@ -53,12 +53,13 @@ import { ElementDragPayload } from '@atlaskit/pragmatic-drag-and-drop/dist/types
 
 	const longTap = ()=>{
 		//显示控制面板
-		showControlPanel([{
-			text:"删除",
-			click:()=>{
-				deleteExitencePopUp(type,exitence)
-			}
-		}])
+		showControlPanel({
+			title:`事物：${exitence.name}`,
+			option:[{
+				text:"删除",
+				click:()=>{deleteExitencePopUp(type,exitence)}
+			}]
+		})
 	}
 	//点击将事物显示在主页面并聚焦该对象
 	const click = ()=>{

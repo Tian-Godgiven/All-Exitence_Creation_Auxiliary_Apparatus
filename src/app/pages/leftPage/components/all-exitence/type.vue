@@ -48,14 +48,16 @@ import { ElementDragPayload } from "@atlaskit/pragmatic-drag-and-drop/dist/types
 	}
 	//长按显示控制面板
 	function longTap(){
-		showControlPanel([{
-			text:"编辑分类",
-			click:()=>{
-				updateTypePopUp(type)}
-		},{
-			text:"删除分类",
-			click:()=>{deleteTypePopUp(type)}
-		}])
+		showControlPanel({
+			title:`分类：${type.name}`,
+			option:[{
+				text:"编辑分类",
+				click:()=>{updateTypePopUp(type)}
+			},{
+				text:"删除分类",
+				click:()=>{deleteTypePopUp(type)}
+			}]
+		})
 	}
 
 	// 没有分组的事物

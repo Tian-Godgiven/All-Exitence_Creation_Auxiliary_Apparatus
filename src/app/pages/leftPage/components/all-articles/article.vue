@@ -56,12 +56,13 @@
 	//长按和点击事件
 	const longTap = ()=>{
 		//显示控制面板
-		showControlPanel([{
-			text:"删除",
-			click:()=>{
-				deleteArticlePopUp(from,article)
-			}
-		}])
+		showControlPanel({
+			title:`文本：${article.title}`,
+			option:[{
+				text:"删除",
+				click:()=>{deleteArticlePopUp(from,article)}
+			}]
+		})
 	}
 	const click = ()=>{
 		//点击将文章显示在主页面
