@@ -9,12 +9,11 @@
         </div>
 	</template>
     <template #inner ref="inner">
-        <exitenceStatusVue 
+        <ExitenceStatus
             :disabled="true"
             v-for="(status,index) in exitence.status" 
             :key="status.__key"
-            v-model:status="exitence.status[index]">
-        </exitenceStatusVue>
+            v-model:status="exitence.status[index]"/>
         <div class="scrollSpace"></div>
     </template>
 </TargetContainer>
@@ -22,7 +21,7 @@
 
 <script setup lang='ts'>
 import { provide} from 'vue';
-import exitenceStatusVue from '@/components/all-exitence/exitence/exitenceStatus.vue';
+import ExitenceStatus from '@/components/all-exitence/exitence/ExitenceStatus.vue';
 import { showTargetOnMain } from '@/hooks/pages/mainPage/showOnMain';
 import { closePopUp, PopUp } from '@/hooks/pages/popUp';
 import { Type } from '@/class/Type';

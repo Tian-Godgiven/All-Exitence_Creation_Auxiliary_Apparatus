@@ -8,7 +8,7 @@
 			</div>
 			<draggableListVue 
 				@dragEnd="changeStatusValue" 
-				v-slot="{element:part,index}" 
+				v-slot="{item:part,index}" 
 				:dragHandle="true"
 				:list = "multiValue">
 				<div class="part">

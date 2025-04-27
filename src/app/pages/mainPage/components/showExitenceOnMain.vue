@@ -17,26 +17,24 @@
 		</div>
 	</template>
     <template #inner>
-        <!-- <DraggableList
-			ref="inner"
+        <DraggableList
 			:dragHandle="true"
 			:showHandle="showDrag"
-			v-slot="{element:status}"
-			:list="exitenceStatus">
-			<exitenceStatusVue 
+			v-slot="{item:status}"
+			:list="exitence.status">
+			<ExitenceStatus
 				:key="status.__key"
-				:status="status">
-			</exitenceStatusVue>
-		</DraggableList> -->
+				:status="status"/>
+		</DraggableList>
 		<div class="scrollSpace"></div>
     </template>
 </TargetContainer>
 </template>
 
 <script setup lang="ts" name="">
-	import { computed, onMounted, onUnmounted, provide, ref, useTemplateRef } from 'vue';
+	import { onMounted, onUnmounted, provide, ref, useTemplateRef } from 'vue';
 	import textAreaVue from '@/components/other/textArea/textArea.vue';
-	import exitenceStatusVue from '@/components/all-exitence/exitence/exitenceStatus.vue';
+	import ExitenceStatus from '@/components/all-exitence/exitence/ExitenceStatus.vue';
 	import { changeExitenceName, getTypeByKey} from '@/hooks/all-exitence/allExitence';
 	import DraggableList from '@/components/other/DraggableList.vue';
 	import Status from '@/interfaces/Status';
@@ -44,12 +42,9 @@
 	import { showPopUp } from '@/hooks/pages/popUp';
 	import TargetContainer from './TargetContainer.vue';
 import { showOnMain } from '@/hooks/pages/mainPage/showOnMain';
+import { Exitence } from '@/class/Exitence';
 
-	let {exitence} = defineProps(["exitence"])
-
-	const exitenceStatus = computed(()=>{
-		return exitence.status
-	})
+	let {exitence} = defineProps<{exitence:Exitence}>()
 	
 	//事物所属的分类
 	const type = getTypeByKey(exitence.typeKey)
@@ -62,7 +57,7 @@ import { showOnMain } from '@/hooks/pages/mainPage/showOnMain';
 	function switchControlMode(){
 		showDrag.value = !showDrag.value
 	}
-	//打开设置弹窗
+	//点击打开设置弹窗
 	function setExitence(){
 		showPopUp({
 			name:"事物设置",
@@ -80,7 +75,6 @@ import { showOnMain } from '@/hooks/pages/mainPage/showOnMain';
 	}
 
 	//创建新属性
-	const ifNewStatus = ref(false)
 	const containerRef = useTemplateRef("containerRef")
 	function addNewStatus(){
 		showPopUp({
@@ -102,7 +96,6 @@ import { showOnMain } from '@/hooks/pages/mainPage/showOnMain';
 	function addStatus(newStatus:Status){
 		//将该属性添加到事物中
 		exitence.status.push(newStatus)
-		ifNewStatus.value = false
 		//滑动到最后
 		containerRef.value?.setScrollTop("last")
 	}

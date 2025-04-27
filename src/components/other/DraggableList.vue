@@ -1,10 +1,10 @@
 <template>
 <div class="draggableList">
-	<DragNode v-for="item in list" 
+	<DragNode v-for="item,index in list" 
 		:key="Symbol()"
 		:showHandle :dragHandle
 		:item :getData="()=>getData(item)" :canDrop>
-		<slot :item></slot>
+		<slot :item :index></slot>
 	</DragNode>
 </div>
 </template>

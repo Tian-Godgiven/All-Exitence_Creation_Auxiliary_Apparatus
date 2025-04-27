@@ -15,9 +15,9 @@
 				<draggableListVue 
 					:drag-handle="true"
 					:list="typeStatus" 
-					v-slot="{element:status,index}">
+					v-slot="{item:status}">
 					<TypeStatus 
-						@deleteStatus="deleteStatus(index)" 
+						@deleteStatus="deleteStatus(status)" 
 						:key="status.__key"
 						:status="status">
 					</TypeStatus>
@@ -87,7 +87,8 @@ import SwitchExpand from '@/components/other/SwitchExpand.vue';
 		typeStatus.push(newStatus)
 	}
 	//删除对应的属性
-	function deleteStatus(index:number){
+	function deleteStatus(status:Status){
+		const index = typeStatus.indexOf(status)
 		typeStatus.splice(index,1)
 	}
 
