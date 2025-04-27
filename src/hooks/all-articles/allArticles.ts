@@ -6,6 +6,9 @@ import { showAlert } from "../alert";
 import { nanoid } from "nanoid";
 import { deleteShowOnMain, showOnMain, showTargetOnMain } from "../pages/mainPage/showOnMain";
 import { focusOnLeftPage, scrollToLeftTarget } from "../pages/leftPage";
+import { cloneDeep } from "lodash";
+
+export type From = {chapters:Chapter[],articles:Article[]}|Chapter
 
 //当前文章
 export const nowAllArticles = reactive<{
@@ -25,8 +28,20 @@ export function changeNowAllArticles(newAllArticles:any){
 }
 
 //文本相关  
+    // 创建一个新的文本
+    export function createArticle(chapter:From){
+        //创建文本对象
+        let from:string[] = []
+        //如果添加位置是文章，则添加这个文章到from
+        if("from" in chapter){
+            from = [...chapter.from,chapter.__key]
+        }
+        const now = Date.now()
+        const newArticle:Article = new Article("","",from,nanoid(),now,now,0)
+        return newArticle
+    }
     //向目标章节中插入一个新的空文本,如果没有传入章节，则会使用当前显示的文章所在的章节
-    export function addArticle(chapter?:Chapter|{chapters:Chapter[],articles:Article[]}){
+    export function addArticle(chapter?:From){
         if(!chapter){
             //获取当前显示的对象,要求必须是文本
             if(showOnMain.type == "article"){
@@ -38,22 +53,14 @@ export function changeNowAllArticles(newAllArticles:any){
             }
             throw new Error("创建文章失败")
         }
-        //创建文本对象
-        let from:string[] = []
-        //如果添加位置是文章，则添加这个文章到from
-        if("from" in chapter){
-            from = [...chapter.from,chapter.__key]
-        }
-        
-        const now = Date.now()
-        const newArticle:Article = new Article("","",from,nanoid(),now,now,0)
+        const newArticle = createArticle(chapter)
         //添加到目标章节
         chapter.articles.push(newArticle)
         return newArticle
     }
 
     //弹窗：从目标位置删除指定的文本
-    export function deleteArticlePopUp(from:{articles:Article[]},article:Article){
+    export function deleteArticlePopUp(from:From,article:Article){
         let position = ""
         if("name" in from){
             position = from.name+"中的"
@@ -68,7 +75,7 @@ export function changeNowAllArticles(newAllArticles:any){
         
     }
     //删除文本
-    export function deleteArticle(from:{articles:Article[]},article:Article){
+    export function deleteArticle(from:From,article:Article){
         //如果删除的对象正在显示
         deleteShowOnMain(article)
         const index = from.articles.indexOf(article)
@@ -100,8 +107,8 @@ export function changeNowAllArticles(newAllArticles:any){
     }
 
     //通过from与key获取文章
-    export function getArticleByKey(from:string[],key:string){
-        const chapter = getParentChapter(from)
+    export function getArticleByKey(fromKey:string[],key:string){
+        const chapter = getParentChapter(fromKey)
         if(chapter){
             return chapter.articles.find(article=>article.__key==key)
         }
@@ -112,27 +119,36 @@ export function changeNowAllArticles(newAllArticles:any){
         //未完成
     }
 
-    
-
-//章节相关
-    //向当前文章的底部插入一个新章节,如果指定一个章节，则向这个章节中嵌套插入文章
-    export function addChapter(chapterName:string,chapter?:Chapter){
-        //如果指定一个章节，则其继承章节的from，否则为from为空
-        const from = chapter? [...chapter.from,chapter.__key] : []
-        const newChapter = new Chapter(chapterName,[],[],from,nanoid())
-        if(chapter){
-            chapter.chapters.push(newChapter)
-        }
-        else{
-            nowAllArticles.chapters.push(newChapter)
-        }
-        return newChapter
+    //创建副本
+    export function copyArticle(article:Article){
+        const clone = cloneDeep(article)
+        //修改key和编辑时间等
+        clone.__key = nanoid();
+        clone.createTime = Date.now()
+        clone.updateTime = Date.now()
+        return clone
     }
 
-    //打开创建章节弹窗，获得用户输入的弹窗名称
-    export function addChapterPopUp(chapter?:Chapter):Promise<Chapter>{
+//章节相关
+    //创建一个章节
+    export function createChapter(name:string,chapter?:From){
+        let from:string[]
+        if(chapter && "name" in chapter){
+            from = [...chapter.from,chapter.__key]
+        }
+        else{
+            from = []
+        }
+        
+        const newChapter = new Chapter(name,[],[],from,nanoid())
+        return newChapter
+    }
+    export function createChapterPopUp(from?:From):Promise<Chapter>{
         //来源的文本，用来生成title
-        const fromText = chapter?chapter.name+"中":"文章底部"
+        let fromText = "文章底部"
+        if(from && "name" in from){
+            fromText = from.name+"中"
+        }
         return new Promise((resolve)=>{
             showPopUp({
                 name:"插入章节",
@@ -145,12 +161,32 @@ export function changeNowAllArticles(newAllArticles:any){
                 size:{
                     height:"auto"
                 },
-                returnValue:(chapterName:string)=>{
-                    const newChapter = addChapter(chapterName,chapter)
+                returnValue:(name:string)=>{
+                    const newChapter = createChapter(name,from)
                     resolve(newChapter)
                 }
             })
         })
+    }
+
+    //向当前文章的底部插入一个章节,如果指定一个章节，则向这个章节中嵌套插入文章
+    export function addChapter(chapter:Chapter,toChapter?:Chapter){
+        //插入到章节
+        if(toChapter){
+            toChapter.chapters.push(chapter)
+        }
+        //插入到底部
+        else{
+            nowAllArticles.chapters.push(chapter)
+        }
+        return chapter
+    }
+
+    //打开创建章节弹窗，将返回的弹窗添加到指定位置
+    export async function addChapterPopUp(chapter?:Chapter){
+        const newChapter = await createChapterPopUp(chapter)
+        addChapter(newChapter,chapter)
+        return newChapter
     }
 
     //聚焦到指定章节

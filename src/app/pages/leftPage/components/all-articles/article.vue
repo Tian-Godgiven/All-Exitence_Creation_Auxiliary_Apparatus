@@ -13,15 +13,16 @@
 	import { showTargetOnMain } from '@/hooks/pages/mainPage/showOnMain';
 	import { computed,ref } from 'vue';
 	import { showControlPanel } from '@/hooks/controlPanel';
-	import { deleteArticlePopUp } from '@/hooks/all-articles/allArticles';
+	import { copyArticle, createArticle, createChapterPopUp, deleteArticlePopUp } from '@/hooks/all-articles/allArticles';
 	import { translateToTextContent } from '@/hooks/expression/textAreaContent';
 	import { trim } from 'lodash';
 	import { Article } from '@/class/Article';
 	import { focusOnLeftPage, getLeftPageFocusTarget} from '@/hooks/pages/leftPage';
 	import ObjectLine from '../ObjectLine.vue';
 	import { ElementDragPayload } from '@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types';
+import { Chapter } from '@/class/Chapter';
 
-	let {article,from,level} = defineProps<{article:Article,from:any,level:number}>()
+	let {article,from,level} = defineProps<{article:Article,from:{articles:Article[],chapters:Chapter[]},level:number}>()
 	//显示的标题
 	const title = computed(()=>{
 		const tmp = trim(article.title)
@@ -59,8 +60,31 @@
 		showControlPanel({
 			title:`文本：${article.title}`,
 			option:[{
+				text:"创建副本",
+				click:()=>{
+					const copy = copyArticle(article)
+					//插入到当前文本下方
+					insertTo(copy,1)
+				}
+			},{
 				text:"删除",
 				click:()=>{deleteArticlePopUp(from,article)}
+			},{
+				text:"插入新文本到上方",
+				click:()=>{
+					//创建文本
+					const article = createArticle(from)
+					//插入到上方
+					insertTo(article,0)
+				}
+			},{
+				text:"插入新文本到下方",
+				click:()=>{
+					//创建文本
+					const article = createArticle(from)
+					//插入到上方
+					insertTo(article,1)
+				}
 			}]
 		})
 	}
@@ -78,6 +102,18 @@
 	const buttonList = [
 		{name:"删除",click:()=>deleteArticlePopUp(from,article),icon:"delete"}
 	]
+
+	//插入某个对象到某个地方
+	function insertTo(target:any,indexAdd:number,ifChapter:boolean=false){
+		//插入到当前文本下方
+		const index = from.articles.indexOf(article)
+		if(ifChapter){
+			from.chapters.splice(index+indexAdd,0,target)
+		}
+		else{
+			from.articles.splice(index+indexAdd,0,target)
+		}
+	}
 
 	//拖拽数据和控制
 	function getData(){
