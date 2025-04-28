@@ -1,29 +1,29 @@
 <template>
-    <div class="mission">
-        <LongTap :longTap="longTap" :click="click" class="contentBar">
-            <div class="title">{{ mission.title }}</div>
-            <div class="inner" :class="innerExpend?'expend':'unexpend'">
-                <MissionTime v-if="mission.timeLeft" :mission="mission"/>
-                <TextArea 
-                    v-if="mission.inner" 
-                    class="missionInner" 
-                    v-model="mission.inner" 
-                    mode="disabled"/>
-                <div class="tags">
-                    <MissionTag v-for="tag in mission.tags" :tag="tag"/>
-                </div>
+<LongTap :longTap :click class="mission">
+    <div class="contentBar">    
+        <div class="title">{{ mission.title }}</div>
+        <div class="inner" :class="innerExpend?'expend':'unexpend'">
+            <MissionTime v-if="mission.timeLeft" :mission="mission"/>
+            <TextArea 
+                v-if="mission.inner" 
+                class="missionInner" 
+                v-model="mission.inner" 
+                mode="disabled"/>
+            <div class="tags">
+                <MissionTag v-for="tag in mission.tags" :tag="tag"/>
             </div>
-        </LongTap>
-        
-        <div class="controlBar">
-            <div class="confirmButton" 
-                v-show="!manageMode"
-                :style="{backgroundColor:confirmItem.color}" 
-                @click="confirmItem.click">{{ confirmItem.text }}</div>
-
-            <div class="dragHandler"></div>
         </div>
     </div>
+    <div class="controlBar">
+        <Button v-show="!manageMode"
+            class="confirmButton" 
+            :style="{backgroundColor:confirmItem.color}"
+             @click="confirmItem.click">
+             {{ confirmItem.text }}
+        </Button>
+    </div>
+</LongTap>
+
 </template>
 
 <script setup lang='ts'>
@@ -34,6 +34,7 @@
     import { manageMode,deleteMission, finishMission, Mission, repeatMission, tryAgain, editMission} from '../missionList';
     import { computed, ref } from 'vue';
     import { showControlPanel } from '@/hooks/controlPanel';
+    import Button from '@/components/global/Button.vue';
 
     const {mission} = defineProps<{mission:Mission}>()
     //长按显示控制面板

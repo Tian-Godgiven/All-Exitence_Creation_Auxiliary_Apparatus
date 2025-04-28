@@ -200,7 +200,7 @@
     let oldPosition:any
     function clickEvent(){
         const selection = window.getSelection();
-        if(!selection){return false}
+        if(!selection || !selection.focusNode){return false}
         // 获取当前光标的范围并记录
         const range = selection.getRangeAt(0);  
         selectionRange = range

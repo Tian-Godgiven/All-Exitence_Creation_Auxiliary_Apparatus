@@ -1,11 +1,11 @@
 <template>
-    <div class="tags">
-        <MissionTag v-for="tag in tags" :tag="tag"/>
-        <div class="addNewTag" :class="focusing?'focusing':''">
-            <DownLineInput class="input" @blur="onBlur" @focus="onFocusing" v-model="newTag" placeholder="输入标签"/>
-            <div class="button" @click="addTag">+</div>
-        </div>
+<div class="tags">
+    <MissionTag v-for="tag in tags" :tag="tag"/>
+    <div class="addNewTag" :class="focusing?'focusing':''">
+        <DownLineInput class="input" @blur="onBlur" @focus="onFocusing" v-model="newTag" placeholder="输入标签"/>
+        <div class="button" @click="addTag">+</div>
     </div>
+</div>
 </template>
 
 <script setup lang='ts'>

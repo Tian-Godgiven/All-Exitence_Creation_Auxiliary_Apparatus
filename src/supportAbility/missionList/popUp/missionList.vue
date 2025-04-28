@@ -54,7 +54,7 @@
 	import MissionTag from '../components/missionTag.vue';
 	import Button from '@/components/global/Button.vue';
 	import { createNewMission, ifShowEditMission, Mission, MissionState, nowMissionList, manageMode } from '../missionList';
-import SlidePage from '@/components/other/SlidePage.vue';
+	import SlidePage from '@/components/other/SlidePage.vue';
 	const missionList = nowMissionList
 	//用于筛选的标签库
 	const selectTags:Ref<{tag:string,num:number,chosen:boolean}[]> = computed(()=>{
@@ -157,11 +157,9 @@ import SlidePage from '@/components/other/SlidePage.vue';
 	.missionList{
 		height: 100%;
 		position: relative;
-		display: flex;
-		flex-direction: column;
 		z-index: 1;
 		.switchBar{
-			height: 100px;
+			height: 90px;
 			width: 100%;
 			display: flex;
 			>div{
