@@ -199,8 +199,10 @@
     //移动光标到其他位置时清空有效输入,同时记录当前光标位置
     let oldPosition:any
     function clickEvent(){
+        //禁用状态忽略
+        if(mode=="disabled")return;
         const selection = window.getSelection();
-        if(!selection || !selection.focusNode){return false}
+        if(!selection){return false}
         // 获取当前光标的范围并记录
         const range = selection.getRangeAt(0);  
         selectionRange = range
