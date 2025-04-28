@@ -91,18 +91,15 @@ export function showMissionListPopUp(){
     })
 }
 
-//显示编辑任务面板
+//编辑任务页面
 export const ifShowEditMission = ref(false)
 export const editTarget = ref<Mission|null>(null)
-export let editMissionReturn:(newMission:Mission|false)=>void = ()=>{}
-export function showEditMission(mission:Mission|null,returnValue:(newMission:Mission|false)=>void){
-    showMissionListPopUp()
-    //显示编辑任务页面
-    ifShowEditMission.value = true 
+export function showEditMission(mission:Mission|null){
+    showMissionListPopUp() //显示弹窗
+    ifShowEditMission.value = true //显示页面
     //传入mission
     editTarget.value = mission
-    //传入回调函数
-    editMissionReturn = returnValue
+    console.log(editTarget.value)
 }
 
 //切换管理模式
@@ -116,14 +113,9 @@ export function switchManageMode(bool?:boolean){
     }
 }
 
-//编辑并创建新任务
+//打开编辑任务页面，创建新任务
 export function createNewMission(){
-    showEditMission(null,(newMission)=>{
-        if(newMission){
-            //改变状态为doing
-            changeMissionState(newMission,"doing")
-        }
-    })
+    showEditMission(null)
 }
 
 //删除任务
@@ -137,8 +129,8 @@ export function deleteMission(mission:Mission){
     })
 }
 
-//修改任务状态
-function changeMissionState(mission:Mission,newState:MissionState){
+//修改任务状态，将其从某个状态数组转移到令一状态数组
+export function changeMissionState(mission:Mission,newState:MissionState){
     //从原本的数组中移除
     const oldArr = nowMissionList[mission.state]
     const index = oldArr.indexOf(mission)
@@ -172,14 +164,15 @@ function changeMissionState(mission:Mission,newState:MissionState){
     }
 }
 
-//修改任务内容，成功修改时，修改任务的state
+//打开编辑任务面板，传入指定任务，确认时修改该任务
 export function editMission(mission:Mission){
-    showEditMission(mission,(newMission)=>{
-        if(newMission){
-            Object.assign(mission,newMission)
-        }
-    })
-
+    showEditMission(mission)
+}
+//将旧的任务替换为新的任务
+export function changeMission(oldMission:Mission,newMission:Mission){
+    const list = nowMissionList[oldMission.state]
+    const index = list.indexOf(oldMission)
+    Object.assign(list[index], newMission);
 }
 
 //结算任务
@@ -328,7 +321,6 @@ function updateMissionTime(mission:Mission){
         }
     }
 }
-
 //显示指定任务信息的弹窗
 function showMissionAlert(mission:Mission,info?:string){
     showPopUp({

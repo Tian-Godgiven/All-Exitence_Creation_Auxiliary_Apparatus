@@ -41,34 +41,40 @@
     import DownLineInput from '@/components/other/input/downLineInput.vue';
     import TextArea from '@/components/other/textArea/textArea.vue';
     import Button from '@/components/global/Button.vue';
-    import { reactive, shallowRef, } from 'vue';
+    import { computed, reactive, shallowRef, } from 'vue';
     import { showPopUp } from '@/hooks/pages/popUp';
     import { nanoid } from 'nanoid';
     import { cloneDeep } from 'lodash';
     import EditMissionTime from '../popUp/editMissionTime.vue';
     import MissionTime from '../components/missionTime.vue';
     import MissionTagBar from '../components/missionTagBar.vue';
-    import { editMissionReturn, editTarget, ifShowEditMission, Mission } from '../missionList';
+    import { changeMission, changeMissionState, editTarget, ifShowEditMission, Mission } from '../missionList';
     import FinalButtons from '@/app/stacks/popUp/FinalButtons.vue';
-    //获取编辑对象，若为null则为创建任务
-    let mission = editTarget
-    if(!mission.value){
-        mission.value = {
-            title:"",
-            inner:"",
-            startTime:0,
-            endTime:0,
-            planTime:null,
-            timeLeft:null, //限时时间，若为null则表示不限时
-	        repeatable:false, //是否可重复
-	        repeatTime:0, //已重复次数
-	        tags: [], //标签
-            state:"doing",
-            __key: nanoid() //key值
-        }
+    //默认状态，即空任务对象
+    const idle:Mission = {
+        title:"",
+        inner:"",
+        startTime:0,
+        endTime:0,
+        planTime:null,
+        timeLeft:null, //限时时间，若为null则表示不限时
+        repeatable:false, //是否可重复
+        repeatTime:0, //已重复次数
+        tags: [], //标签
+        state:"doing",
+        __key: nanoid() //key值
     }
-    //创建临时任务对象
-    const tmpMission = reactive<Mission>(cloneDeep(mission.value))
+    //临时编辑对象是源对象的拷贝
+    const tmpMission = computed(()=>{
+        let tmp:Mission|null = editTarget.value
+        //若为空则创建新规则
+        if(!tmp){
+            tmp = idle
+        }
+        //拷贝编辑对象
+        let newTimeLine:Mission = reactive<Mission>(cloneDeep(tmp))
+        return newTimeLine
+    })
     //修改任务计时
     function editTime(){
         showPopUp({
@@ -76,14 +82,14 @@
             mask:false,
             buttons:[],
             props:{
-                planTime:tmpMission.planTime,
-                leftTime:tmpMission.timeLeft,
+                planTime:tmpMission.value.planTime,
+                leftTime:tmpMission.value.timeLeft,
             },
             returnValue:(planTime,distantTime)=>{
                 //预计结束时间
-                tmpMission.planTime = planTime
+                tmpMission.value.planTime = planTime
                 //限时时间
-                tmpMission.timeLeft = distantTime
+                tmpMission.value.timeLeft = distantTime
             },
             size:{
                 height:"auto"
@@ -92,17 +98,22 @@
     }
     //切换可重复性
     function switchRepeat(){
-        tmpMission.repeatable = !tmpMission.repeatable
+        tmpMission.value.repeatable = !tmpMission.value.repeatable
     }
     //确认
     function confirm(){
-        //返回临时对象
-        editMissionReturn(tmpMission)
+        //编辑
+        if(editTarget.value){
+            changeMission(editTarget.value,tmpMission.value)
+        }
+        //创建:添加到doing数组
+        else{
+            changeMissionState(tmpMission.value,"doing")
+        }
         ifShowEditMission.value = false
     }
     //取消
     function cancel(){
-        editMissionReturn(false)
         ifShowEditMission.value = false
     }
 </script>

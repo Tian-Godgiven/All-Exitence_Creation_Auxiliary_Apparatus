@@ -13,7 +13,7 @@
 	import { showTargetOnMain } from '@/hooks/pages/mainPage/showOnMain';
 	import { computed,ref } from 'vue';
 	import { showControlPanel } from '@/hooks/controlPanel';
-	import { copyArticle, createArticle, createChapterPopUp, deleteArticlePopUp } from '@/hooks/all-articles/allArticles';
+	import { copyArticle, createArticle, deleteArticlePopUp } from '@/hooks/all-articles/allArticles';
 	import { translateToTextContent } from '@/hooks/expression/textAreaContent';
 	import { trim } from 'lodash';
 	import { Article } from '@/class/Article';
