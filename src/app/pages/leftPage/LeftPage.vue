@@ -7,7 +7,7 @@
 		</div>
 		<div class="buttons">
 			<Button name="管理" @click="switchManageMode" icon="manage"></Button>
-			<Button name="搜索" @click="" icon="search"></Button>
+			<Button name="搜索" @click="search" icon="search"></Button>
 			<Button name="全部收起" @click="foldAll" icon="allFold"/>
 			<Button name="新建" @click="createNew" icon="addNew"></Button>
 			<Menu vertical="right" horizen="bottom">
@@ -43,6 +43,7 @@
 	import Button from '@/components/global/Button.vue';	
 	import Menu from '@/components/global/Menu.vue';
 import ListMenu from '@/components/global/ListMenu.vue';
+import { callSupportAbility } from '@/hooks/app/app';
 	//左侧宽度
 	const leftWidth = computed(()=>{
 		//出现变化时关闭管理模式
@@ -114,6 +115,11 @@ import ListMenu from '@/components/global/ListMenu.vue';
 		else{
 			addChapterPopUp()
 		}
+	}
+	
+	//搜索
+	function search(){
+		callSupportAbility("search")
 	}
 	
 	//滚动到指定的div

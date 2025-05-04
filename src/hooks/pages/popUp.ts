@@ -62,7 +62,7 @@ export function showPopUp(popUp:PopUp){
 			click:()=>{
 				closePopUp()
 			},
-			icon:"close"
+			icon:"closePopUp"
 		})
 	}
 	

@@ -7,6 +7,7 @@ import { nanoid } from "nanoid";
 import { deleteShowOnMain, showOnMain, showTargetOnMain } from "../pages/mainPage/showOnMain";
 import { focusOnLeftPage, scrollToLeftTarget } from "../pages/leftPage";
 import { cloneDeep } from "lodash";
+import { translateToTextContent } from "../expression/textAreaContent";
 
 export type From = {chapters:Chapter[],articles:Article[]}|Chapter
 
@@ -127,6 +128,45 @@ export function changeNowAllArticles(newAllArticles:any){
         clone.createTime = Date.now()
         clone.updateTime = Date.now()
         return clone
+    }
+
+    /**
+     * 递归遍历来源下的所有文本，执行回调函数并返回相应内容
+     * @param from 某个文本的来源
+     * @param callback 递归遍历文本并执行这个函数，记录返回值在一个列表中，并在结束时返回
+     * @param filter? 接受callback函数的返回值。并返回布尔以此若为true则将该返回值加入结果列表
+     * @param end? 接受callback函数的返回值，并返回布尔以此若为true则结束递归和遍历
+     */
+    export function mapArticle(from:From,
+        callback:(article:Article,from:From)=>any,
+        filter?:(any:any)=>boolean,
+        end?:(any:any)=>boolean){
+        const list:any[] = []
+        for(let article of from.articles){
+            const result = callback(article,from)
+            //筛选
+            if(!filter || filter(result)){
+                list.push(result)
+            }
+            //提前结束
+            if(end && end(result)){
+                return list
+            }
+        }
+        //递归
+        from.chapters.forEach(chapter=>{
+            list.push(...mapArticle(chapter,callback,filter,end))
+        })
+        return list
+    }
+
+    //获取文本的预览内容
+    export function getArticlePreview(article:Article,num:number=100){
+        //先翻译为文本内容
+        const inner = translateToTextContent(article.inner)
+        //截取一部分
+        const slice = inner.slice(0,num)
+        return slice
     }
 
 //章节相关
@@ -252,20 +292,25 @@ export function changeNowAllArticles(newAllArticles:any){
         })
     }
 
-    //给出某个章节或文章的from，找到其父章节
-    function getParentChapter(from:string[]):{chapters:Chapter[],articles:Article[]}{
+    
+    /**
+     * 给出某个章节或文章的from属性值，找到其亲章节
+     * @param from 该对象的from属性值
+     * @param startParent? 可选，从该对象开始按from值搜索，若无则为当前文章
+     * @returns 
+     */
+    function getParentChapter(from:string[],startParent:From=nowAllArticles):{chapters:Chapter[],articles:Article[]}{
         //在最外层
         if(from.length == 0){
-            //返回项目总文本
-            return nowAllArticles
+            return startParent
         }
-        //遍历from获取其父章节
-        let tmp_parent = nowAllArticles
+        //遍历from获取其亲章节
+        let tmp_parent = startParent
         from.forEach((key)=>{
             const tmp = tmp_parent.chapters.find((chapter)=>
                 chapter.__key == key
             )
-            //替换当前父章节
+            //替换当前亲章节
             if(tmp){
                 tmp_parent = tmp
             }
@@ -280,10 +325,15 @@ export function changeNowAllArticles(newAllArticles:any){
         return tmp_parent
     }
 
-    //通过from和key找到某个chapter
-    export function getChapterByKey(from:string[],key:string|null){
+    /**
+     * 通过key获取一个章节对象
+     * @param from 该章节的from属性值
+     * @param key 该章节的__key属性值
+     * @returns 
+     */
+    export function getChapterByKey(from:string[],key:string|null,startParent?:From){
         //寻找父章节
-        const parent = getParentChapter(from)
+        const parent = getParentChapter(from,startParent)
         if(parent){
             const tmp = parent.chapters.find((chapter)=>chapter.__key == key)
             if(tmp)return tmp

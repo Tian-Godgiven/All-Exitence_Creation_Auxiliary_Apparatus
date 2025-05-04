@@ -11,6 +11,7 @@ import { filterExitenceByRule } from "../expression/groupRule";
 import { isArray} from "lodash";
 import { deleteShowOnMain, showOnMain, showTargetOnMain } from "../pages/mainPage/showOnMain";
 import { focusOnLeftPage, scrollToLeftTarget } from "../pages/leftPage";
+import { translateToTextContent } from "../expression/textAreaContent";
 
 //当前万物
 export const nowAllExitence = reactive<{types:Type[]}>({types:[]})
@@ -335,6 +336,23 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
     //判断指定事物是否满足指定分组的规则
     export function ifExitenceInGroup(exitence:Exitence,group:Group){
         return filterExitenceByRule(exitence,group.rules)
+    }
+
+    //获取事物的预览内容
+    export function getExitencePreview(exitence:Exitence,type:Type){
+        const key = exitence.setting?.previewStatus
+		if(!key){return ""}
+		const status = getExitenceStatusByKey(key,exitence.status,type.typeStatus)
+		if(!status){return ""}
+		if(status.valueType == "tags"){
+			let tmp = ""
+			for(let tag of status.value){
+				tmp += `[${translateToTextContent(tag)}] `
+			}
+			return tmp
+		}
+		const tmp = translateToTextContent(status.value)
+		return tmp.slice(0,100)
     }
 
 

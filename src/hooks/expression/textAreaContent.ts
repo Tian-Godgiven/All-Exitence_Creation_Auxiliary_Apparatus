@@ -1,6 +1,7 @@
 import { divWeakMap } from "@/api/cursorAbility";
 import { isJumpDiv, JumpData, jumpDivHtml } from "../../supportAbility/inputSuggestion/suggester/jumpDiv";
 import { showQuickInfo } from "@/api/showQuickInfo";
+import { toString } from "lodash";
 
 //输入区域的内容对象为纯文本或跳转对象
 export type TextAreaContent = string | JumpData
@@ -99,11 +100,11 @@ export function translateToFrontEndContent(fileContent:any[]|string){
     return frontEndContent
 }
 
-//将文件内容翻译为文本内容(txt)
+//将文件内容翻译为文本内容(txt),如果指定为短文本则会用空格替代换行
 export function translateToTextContent(fileContent:any[],short:boolean=false){
     let textContent = ""
-    if(typeof fileContent == "string"){
-        return fileContent
+    if(typeof fileContent == "string" || typeof fileContent == "number"){
+        return toString(fileContent)
     }
     try{
         //遍历文件内容
@@ -126,6 +127,7 @@ export function translateToTextContent(fileContent:any[],short:boolean=false){
         })
     }
     catch(err){
+        console.log(fileContent)
         console.error(err)
     }
 

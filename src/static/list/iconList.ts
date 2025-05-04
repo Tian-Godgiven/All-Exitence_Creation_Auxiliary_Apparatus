@@ -17,6 +17,7 @@ export const iconList:Record<string,string>= {
     "showRight":"showRight",//显示右侧页面
     "rightUp":"rightUp",//右侧页面抬升
     "backMain":"backMain",//返回主页面
+    "closePopUp":"closePopUp",//关闭弹窗
 
     "time":"time",//时钟
     "timer":"timer",//计时器
@@ -45,6 +46,9 @@ export const iconList:Record<string,string>= {
     "quickDraft":"quickDraft",//暂记版
     "timeLine":"timeLine",//时间线
     "customTime":"customTime",//自定义时间
+
+    "article":"article",//文章
+    "exitence":"exitence",//事物
 
     "more":"more",//显示更多，未完成
     

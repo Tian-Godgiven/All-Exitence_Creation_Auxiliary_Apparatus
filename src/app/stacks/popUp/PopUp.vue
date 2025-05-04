@@ -6,11 +6,13 @@
 		left:popUp.position?.x,
 		top:popUp.position?.y
 	}">
-		<div class="title">
-			<div class="titleName" v-if="name">{{ name }}</div>
-			<div class="titleSpace" v-else-if="buttons!=null"></div>
-			<div class="titleButtons" v-if="buttons!=null">
-				<Button :icon="button.icon" :name="button.name" @click="button.click" v-for="(button) in buttons"></Button>
+		<div class="top">
+			<div class="title" v-if="name">{{ name }}</div>
+			<div class="space" v-else-if="buttons!=null"></div>
+			<div class="buttons" v-if="buttons!=null">
+				<Button v-for="(button) in buttons" 
+					:icon="button.icon" :name="button.name" 
+					@click="button.click" ></Button>
 			</div>
 		</div>
 		
@@ -42,60 +44,65 @@ import Button from '@/components/global/Button.vue';
 </script>
 
 <style lang="scss" scoped>
-	.popUp{
-		background-color: $bgColor;
-		width: 650px;
-		height: 80%;
-		max-width: 100%;
-		max-height: 80%;
-		box-shadow: black 0px 0px 50px;
-		position: absolute;
-		box-sizing: border-box;
-		border-radius: 10px;
-		pointer-events: auto;
-		overflow-x: visible;
-		overflow-y:auto;
+.popUp{
+	background-color: $bgColor;
+	width: 650px;
+	height: 80%;
+	max-width: 100%;
+	max-height: 80vh;
+	box-shadow: black 0px 0px 50px;
+	position: absolute;
+	box-sizing: border-box;
+	border-radius: 10px;
+	pointer-events: auto;
+	overflow:hidden;
+	.top{
+		padding:0 20px;
+		padding-top: 20px;
+		position: relative;
 		.title{
-			padding:0 20px;
-			padding-top: 20px;
-			.titleName{
-				position: relative;
-				height: 70px;
-				top: 0px;
-				width: 300px;
-				font-size: 60px;
-				display: flex;
-				align-items: center;
+			position: relative;
+			height: 70px;
+			top: 0px;
+			width: 300px;
+			font-size: 1.5rem;
+			display: flex;
+			align-items: center;
+		}
+		.space{
+			height: 30px;
+		}
+		.buttons{
+			height: 50px;
+			position: absolute;
+			right:10px;
+			top:10px;
+			width: 350px;
+			display: flex;
+			flex-direction: row-reverse;
+			.button{
+				aspect-ratio: 1;
+				height: 100%;
 			}
-			.titleSpace{
-				height: 30px;
-			}
-			.titleButtons{
-				height: 50px;
-				position: absolute;
-				right:0;
-				top:0;
-				width: 350px;
-				display: flex;
-				flex-direction: row-reverse;
-			}
+		}
+	
+	}
 		
-		}
-			
-		.inner{
-			height: calc(100% - 90px);
-			width: 100%;
-			>div{
-				box-sizing: border-box;
-				padding: 20px;
-				padding-top: 0;
-			}
+	.inner{
+		max-height: calc(80vh - 90px);
+		width: 100%;
+		display:flex;
+		>div{
+			box-sizing: border-box;
+			padding: 20px;
+			padding-top: 0;
 		}
 	}
-	//居中显示
-	.popUp.center{
-		left:50%;
-		top:50%;
-		transform: translate(-50%, -50%);
-	}
+}
+//居中显示
+.popUp.center{
+	left:50%;
+	top:50%;
+	transform: translate(-50%, -50%);
+}
 </style>

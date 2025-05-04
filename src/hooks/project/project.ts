@@ -11,6 +11,8 @@ import { nowAllArticles } from "../all-articles/allArticles";
 import { changeNowAllExitence } from "../all-exitence/allExitence"
 import { changeNowAllArticles } from "../all-articles/allArticles"
 import { Type } from "@/class/Type"
+import { Article } from "@/class/Article";
+import { Chapter } from "@/class/Chapter";
 
 //项目上一次访问的目标
 export type ProjectLastTarget = 
@@ -50,7 +52,7 @@ export async function initProject(){
     }
     //读取app中存储的项目路径列表
     const projectPathList:string[] = await readDirAsArray("data","projects")
-    //依次获取项目信息
+    //依次获取各个项目的信息，形成列表
     nowProjectList.value = await Promise.all(projectPathList.map(async (projectPath: string) => {
         return await readFileFromPath(`projects/${projectPath}`, "projectInfo.json") as ProjectInfo
     }))
@@ -60,7 +62,7 @@ export async function syncProject(projectPath:string){
     try{
         //修改当前项目路径
         nowProjectPath.value = projectPath
-        //项目路径
+        //补全项目路径
         projectPath = `projects/${projectPath}`
 
         //同步项目设置
@@ -70,9 +72,9 @@ export async function syncProject(projectPath:string){
         Object.assign(nowProjectInfo,tmp)
 
         //修改当前的万物和文章
-        let nowAllExitence = await readFileFromPath(projectPath,"all-exitence.json") as {types:Type[]}
+        let nowAllExitence = await readProjectData(projectPath,"exitence") as {types:Type[]}
         changeNowAllExitence(nowAllExitence)
-        const nowAllArticles = await readFileFromPath(projectPath,"all-articles.json")
+        const nowAllArticles = await readProjectData(projectPath,"article")
         changeNowAllArticles(nowAllArticles)
 
         //同步辅助功能
@@ -91,7 +93,21 @@ export async function syncProject(projectPath:string){
     }
     
 }
-//读取项目信息，在主页面上显示指定内容
+//读取项目内容，返回事物，文章，辅助功能文件或项目设置
+export async function readProjectData(projectPath:string,target:"exitence"|"article"){
+    //如果路径没有补全，则将其补全
+    if(!projectPath.startsWith("projects/")){
+        projectPath = "projects/"+projectPath
+    }
+    if(target === "exitence"){
+        const tmp = await readFileFromPath(projectPath,"all-exitence.json") as {types:Type[]}
+        return tmp
+    }
+    else if(target === "article"){
+        const tmp = await readFileFromPath(projectPath,"all-articles.json") as {articles:Article[],chapters:Chapter[]}
+        return tmp
+    }
+}
 
 //保存当前项目
 export async function saveProject(){

@@ -56,9 +56,9 @@ export function switchProjectPage(){
 
 
 // 隐藏页面
-const hideAnimateTime = 30
+const hideAnimateTime = 25
 const showAnimateTime = 15 //动画持续时间（单位帧）
-export function hidePage(pageName:'left'|'right'|'project') {
+export function hidePage(pageName:'left'|'right'|'project',animateTime?:number) {
 	switch(pageName){
 		case "left":
 			leftShowing = false
@@ -76,8 +76,15 @@ export function hidePage(pageName:'left'|'right'|'project') {
 			hideProjectPage()
 			return;
 	}
-	// 动画运行速度
-	const speed = Math.abs(maxValue) / hideAnimateTime
+	// 动画运行速度,不接受为0吧，太生硬了
+	let speed
+	if(animateTime){
+		speed = Math.abs(maxValue) / animateTime
+	}
+	else{
+		speed = Math.abs(maxValue) / hideAnimateTime
+	}
+	
 	const reduce = () => {
 		// 动画执行条件
 		if (changeTarget.value > 0) {

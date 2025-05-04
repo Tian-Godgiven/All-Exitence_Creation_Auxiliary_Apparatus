@@ -13,8 +13,7 @@
 	import { showTargetOnMain } from '@/hooks/pages/mainPage/showOnMain';
 	import { computed,ref } from 'vue';
 	import { showControlPanel } from '@/hooks/controlPanel';
-	import { copyArticle, createArticle, deleteArticlePopUp } from '@/hooks/all-articles/allArticles';
-	import { translateToTextContent } from '@/hooks/expression/textAreaContent';
+	import { copyArticle, createArticle, deleteArticlePopUp, getArticlePreview } from '@/hooks/all-articles/allArticles';
 	import { trim } from 'lodash';
 	import { Article } from '@/class/Article';
 	import { focusOnLeftPage, getLeftPageFocusTarget} from '@/hooks/pages/leftPage';
@@ -34,15 +33,12 @@ import { Chapter } from '@/class/Chapter';
 		}
 	})
 	//显示的文章预览
-	let ifPreview = ref(false)
+	let ifPreview = ref(true)
 	const preview = computed(()=>{
-		//先翻译为文本内容
-		const inner = translateToTextContent(article.inner)
-		//截取一部分
-		const slice = inner.slice(0,100)
-		if(slice.length > 0){
+		const tmp = getArticlePreview(article,100)
+		if(tmp.length > 0){
 			ifPreview.value = true
-			return slice
+			return tmp
 		}
 		else{
 			ifPreview.value = false

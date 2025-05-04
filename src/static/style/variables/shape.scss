@@ -1,1 +1,6 @@
-$borderRadio:10px
+@use "./color.scss" as *;
+$borderRadio:10px;
+
+//圆角按钮
+$buttonRadio:10px;
+$buttonBorder:5px solid $bgColor40;

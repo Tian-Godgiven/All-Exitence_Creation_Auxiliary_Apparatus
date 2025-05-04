@@ -1,5 +1,5 @@
 <template>
-<ElScrollbar class="scrollBar" :wrap-style="{ backgroundColor: '#ffffff' }" :view-style="{ backgroundColor: '#ffffff' }">
+<ScrollBar>
 <div class="container">
 	<div class="top">
         <div class="title" :style="{'text-align':titleAlign}">
@@ -14,13 +14,14 @@
         <slot name="info"></slot>
     </div>
 </div>
-</ElScrollbar>
+</ScrollBar>
 </template>
 
 <script setup lang='ts'>
-import { ElScrollbar } from 'element-plus';
+
 import { toNumber } from 'lodash';
 import { useTemplateRef } from 'vue';
+import ScrollBar from '@/components/global/ScrollBar.vue';
 
     const {titleAlign="center",ifInfo=true} = defineProps<{
         titleAlign?:"center"|"right"|"left",//标题的对齐方向
@@ -51,15 +52,7 @@ import { useTemplateRef } from 'vue';
 </script>
 
 <style scoped lang='scss'>	
-.scrollBar{
-	width: 100%;
-	height: 100%;
-	overflow-y: auto;
-	overflow-x: hidden;
-	:deep(.el-scrollbar__thumb) {
-		background-color:rgb(0, 0, 0);
-	}
-}
+
 	
 .container{
 	width: 100%;

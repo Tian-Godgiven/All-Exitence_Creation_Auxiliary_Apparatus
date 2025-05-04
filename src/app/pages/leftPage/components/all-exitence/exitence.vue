@@ -15,8 +15,7 @@ import { hidePage } from '@/hooks/pages/pageChange';
 import { showTargetOnMain } from '@/hooks/pages/mainPage/showOnMain';
 import { computed } from 'vue'; 
 import { showControlPanel } from '@/hooks/controlPanel';
-import { deleteExitencePopUp, getExitenceStatusByKey } from '@/hooks/all-exitence/allExitence';
-import { translateToTextContent } from '@/hooks/expression/textAreaContent';
+import { deleteExitencePopUp, getExitencePreview} from '@/hooks/all-exitence/allExitence';
 import { Exitence } from '@/class/Exitence';
 import ObjectLine from '../ObjectLine.vue';
 import { focusOnLeftPage, getLeftPageFocusTarget } from '@/hooks/pages/leftPage';
@@ -32,19 +31,7 @@ import { ElementDragPayload } from '@atlaskit/pragmatic-drag-and-drop/dist/types
 	})
 	//显示事物的预览内容：其对应的预览属性的值
 	let preview = computed(()=>{
-		const key = exitence.setting?.previewStatus
-		if(!key){return ""}
-		const status = getExitenceStatusByKey(key,exitence.status,type.typeStatus)
-		if(!status){return ""}
-		if(status.valueType == "tags"){
-			let tmp = ""
-			for(let tag of status.value){
-				tmp += `[${translateToTextContent(tag)}] `
-			}
-			return tmp
-		}
-		const tmp = translateToTextContent(status.value)
-		return tmp.slice(0,100)
+		return getExitencePreview(exitence,type)
 	})
 	//聚焦
 	const focusing = computed(()=>{
