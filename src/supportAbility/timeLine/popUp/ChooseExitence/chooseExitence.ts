@@ -1,41 +1,12 @@
-import { Exitence, ExitenceStatus } from "@/class/Exitence"
+import { ExitenceStatus } from "@/class/Exitence"
 import Status from "@/interfaces/Status"
-import { getExitenceInGroup, getNoGroupExitence, nowAllExitence } from '@/hooks/all-exitence/allExitence';
-import { Group } from '@/class/Group';
-import { Type } from '@/class/Type';
-import { reactive } from "vue";
+import { nowAllExitence } from '@/hooks/all-exitence/allExitence';
 import { customTimeLib } from "@/supportAbility/customTime/customTime"; 
+import { ExitenceDataInTree, getChooseExitenceListInTreeList, TypeDataInTree } from "@/components/other/chooseExitenceInTree/chooseExitenceInTree";
 
-export type ChooseExitenceList = TItem[]
-export type TItem = {
-    name:string,
-    state:boolean|"mid",
-    child:(EItem|GItem)[],
-    key:string, //对象的key
-    targetStatus:{
-        name:string,
-        key:string,
-        time:number
-    },//选中的属性的名称,键和值
-    timeStatus:(Status|ExitenceStatus)[],
-}
-type GItem = {
-    name:string,
-    state:boolean|"mid",
-    child:EItem[],
-    key:string
-}
-export type EItem = {
-    name:string,
-    state:boolean|"mid",
-    key:string, //对象的key
-    targetStatus:{
-        name:string,
-        key:string,
-        time:number
-    },//选中的目标时间属性的名称和键和值
-    timeStatus:(Status|ExitenceStatus)[],
-}
+//树列表中的结构
+export type TItem = TypeDataInTree<ExitenceData,{},TypeData>
+export type EItem = ExitenceDataInTree<ExitenceData>
 
 //获取当前项目可用的所有时间规则组成的选项
 export function getTimeRuleList(){
@@ -52,135 +23,83 @@ export function getTimeRuleList(){
     })
     return allTimeRule
 }
- 
-//获取可供选择的完整列表
-export function getList(timeRuleKey:string):TItem[]{
-    //分类列表
-    const typeList = nowAllExitence.types
-    //遍历分类
-    let list:TItem[] = typeList.flatMap((type)=>{
-        //获取分类数据
-        const typeData = getTypeData(type,timeRuleKey)
-        if(!typeData)return[];
-        //其中的事物
-        const eDataList = typeData.eDataList
-        const exitenceList = eDataList.map((value)=>value.target)
-        //分组的数据列表
-        const groupList = type.groups.flatMap((group)=>{
-            const groupData = getGroupData(eDataList,exitenceList,group)
-            if(groupData){
-                return groupData
-            }
-            return []
-        })
-        //没有在分组内的事物数据列表
-        const noGroupExitence = getNoGroupExitence(exitenceList,type.groups)
-        const noGroupList = getExitenceDataArr(eDataList,noGroupExitence)
-        return {
-            name: type.name,
-            key:type.__key,
-            targetStatus:{
-                key:typeData.timeStatus[0]?.__key,
-                name:typeData.timeStatus[0]?.name,
-                time:typeData.timeStatus[0]?.value
-            }, //默认选中第一个属性
-            timeStatus:typeData.timeStatus,
-            state:false,
-            child:[...groupList,...noGroupList]
-        }
-    })
-    return reactive(list)
-}
 
-type EData = {
-    target:Exitence,
+export type TypeData = {
+    targetStatus:{
+        name:string,
+        key:string,
+        time:number
+    },//选中的属性的名称,键和值
     timeStatus:(Status|ExitenceStatus)[],
 }
-//获取分类数据：判断一个分类中是否含有具备指定时间规则的事物，若为是则返回分类和对应的事物数组
-function getTypeData(type:Type,timeRuleKey:string):{
-    timeStatus:Status[],
-    eDataList:EData[]
-}|false{
-    //分类拥有的指定时间规则的时间属性
-    let typeTimeStatusList = type.typeStatus.flatMap((status)=>{
-        if(status.valueType == "date" && 
-            status.setting["timeRule"] == timeRuleKey)
-            return status
-        return []
-    })
-    //拥有指定规则的时间属性的事物，及其分别拥有的时间属性
-    const exitenceList = type.exitence.flatMap((exitence)=>{
-        //遍历事物的属性，获取其中满足条件的时间属性
-        const timeStatusList = exitence.status.flatMap((exitenceStatus)=>{
-            //如果该属性为分类中的某个满足条件的时间属性
-            const tmp = typeTimeStatusList.find(status=>
-                status.__key == exitenceStatus.__key
-            )
-            if(tmp){
-                return tmp
-            }
-            //亦或者这是一个额外属性，且满足条件
-            if(exitenceStatus.valueType == "date" &&
-                exitenceStatus?.setting?.timeRule == timeRuleKey)
-            {
-                return exitenceStatus;
-            }
-            return []
-        })
-        //若该列表长度大于0，则认为该事物具备时间属性
-        if(timeStatusList.length>0){
+export type ExitenceData = {
+    targetStatus:{
+        name:string,
+        key:string,
+        time:number
+    },//选中的目标时间属性的名称和键和值
+    timeStatus:(Status|ExitenceStatus)[],
+}
+//获取选择事物列表树中使用的表格
+export function getList(timeRuleKey:string){
+    return getChooseExitenceListInTreeList<TypeData,ExitenceData,{}>({
+        typeList:nowAllExitence.types,
+        ifGroup:true,
+        getTypeData:(type)=>{
+            //分类拥有的指定时间规则的时间属性
+            const typeTimeStatus = type.typeStatus.flatMap((status)=>{
+                if(status.valueType == "date" && 
+                    status.setting["timeRule"] == timeRuleKey)
+                    return status
+                return []
+            })
+            if(!typeTimeStatus)return false;
             return {
-                target:exitence,
-                timeStatus:timeStatusList,
+                targetStatus:{
+                    key:typeTimeStatus[0]?.__key,
+                    name:typeTimeStatus[0]?.name,
+                    time:typeTimeStatus[0]?.value
+                }, //默认选中第一个属性
+                timeStatus:typeTimeStatus,
             }
+        },
+        getGroupData:()=>{
+            return {}
+        },
+        //要求事物具备满足条件的时间属性
+        getExitenceData:(_type,typeData,exitence)=>{
+            //遍历事物的属性，获取其中满足条件的时间属性
+            const timeStatusList = exitence.status.flatMap((exitenceStatus)=>{
+                //如果该属性为分类中的某个满足条件的时间属性
+                const tmp = typeData.timeStatus.find(status=>
+                    status.__key == exitenceStatus.__key
+                )
+                if(tmp){
+                    return tmp
+                }
+                //亦或者这是一个额外属性，且满足条件
+                if(exitenceStatus.valueType == "date" &&
+                    exitenceStatus?.setting?.timeRule == timeRuleKey)
+                {
+                    return exitenceStatus;
+                }
+                return []
+            })
+            //若该列表长度大于0，则认为该事物具备时间属性，允许被选择
+            if(timeStatusList.length>0){
+                return {
+                    timeStatus:timeStatusList,
+                    targetStatus:{
+                        name:"",
+                        key:"",
+                        time:0
+                    },
+                }
+            }
+            return false
         }
-        return []
-    })
-
-    //若拥有时间属性的事物数量大于0，则返回该分类，否则返回false
-    if(exitenceList.length>0){
-        return {
-            timeStatus:typeTimeStatusList,
-            eDataList:exitenceList
-        }
-    }
-    return false
-}
-//获取分组数据
-function getGroupData(eDataList:EData[],exitenceList:Exitence[],group:Group):GItem|false{
-    //获取分组中的事物
-    const eInGroup = getExitenceInGroup(exitenceList,group)
-    //没有事物时不返回分组
-    if(eInGroup.length<=0)return false
-    //获取这些事物在tmp中对应的数据
-    const childList = getExitenceDataArr(eDataList,eInGroup)
-    //返回分组数据
-    return {
-        name:group.name,
-        state:false,
-        child:childList,
-        key:group.__key
-    }
-}
-//获取事物数据数组
-function getExitenceDataArr(eDataList:EData[],exitenceList:Exitence[]):EItem[]{
-    return exitenceList.flatMap((exitence)=>{
-        const eData = eDataList.find((value)=>value.target == exitence)
-        if(eData) return {
-            name:eData.target.name,
-            key:eData.target.__key,
-            timeStatus:eData.timeStatus,
-            targetStatus:{
-                name:"",
-                key:"",
-                time:0
-            },
-            state:false,
-        }
-        return []
     })
 }
-
 
 //最终返回的目标列表，包含对象名称和key，各个事物对象还包含对应的时间值
 export type TargetList = TypeItem[]

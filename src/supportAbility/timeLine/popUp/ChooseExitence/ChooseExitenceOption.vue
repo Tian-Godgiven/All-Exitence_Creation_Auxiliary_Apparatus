@@ -14,7 +14,10 @@
     import { TItem,EItem } from './chooseExitence';
     import Selector from '@/components/global/Selector.vue';
 
-    const {item,parent} = defineProps<{item:EItem|TItem,parent?:TItem}>()
+    const {item,parent} = defineProps<{
+        item:EItem|TItem,
+        parent?:TItem
+    }>()
     type Option = {
         label:string,
         value:string //为该属性的key

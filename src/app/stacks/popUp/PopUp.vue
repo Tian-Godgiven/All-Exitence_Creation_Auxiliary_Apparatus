@@ -37,15 +37,8 @@ import { PopUp } from '@/hooks/pages/popUp';
 import { popUpVueList } from '@/static/list/popUpVueList';
 import Button from '@/components/global/Button.vue';
 	const {popUp} = defineProps<{popUp:PopUp}>()
-	let {name,buttons,vueName,index} = popUp
-
-	let innerVue = shallowRef()
-	if(popUp.vue){
-		innerVue = popUp.vue
-	}
-	else if(vueName){
-		innerVue = popUpVueList[vueName]
-	}
+	const {name,buttons,vueName,index} = popUp
+	const innerVue = shallowRef(popUp.vue || (vueName && popUpVueList[vueName]));
 </script>
 
 <style lang="scss" scoped>
@@ -94,7 +87,7 @@ import Button from '@/components/global/Button.vue';
 	}
 		
 	.inner{
-		max-height: calc(80vh - 90px);
+		height: calc(100% - 90px);
 		width: 100%;
 		display:flex;
 		>div{

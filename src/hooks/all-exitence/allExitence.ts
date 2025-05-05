@@ -338,6 +338,18 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
     export function ifExitenceInGroup(exitence:Exitence,group:Group){
         return filterExitenceByRule(exitence,group.rules)
     }
+    //判断指定事物是否满足任意一个分组的规则
+    export function ifExitenceInAnyGroup(exitence:Exitence,groupList:Group[]){
+        // 遍历每个分组
+        for (const group of groupList) {
+            // 如果指定事物符合某个分组的规则，则返回 true
+            if (filterExitenceByRule(exitence, group.rules)) {
+                return true;
+            }
+        }
+        // 如果没有一个分组符合规则，返回 false
+        return false;
+    }
 
     //获取事物的预览内容
     export function getExitencePreview(exitence:Exitence,type:Type){

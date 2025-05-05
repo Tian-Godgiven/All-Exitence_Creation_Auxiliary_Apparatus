@@ -1,6 +1,7 @@
 import { ExitenceStatus } from "@/class/Exitence";
 import Status from "@/interfaces/Status";
 import _, { cloneDeep } from "lodash";
+import { getExitenceByKey, getTypeByKey } from "./allExitence";
 
 //初始的空属性对象
 export const defaultStatus:Status = {
@@ -44,4 +45,32 @@ export function deleteStatusSetting(status:Status|ExitenceStatus,setName:string)
     if(status.setting){
         delete status.setting[setName]
     }
+}
+
+//根据【选择事物】属性值，获取事物列表
+export function getChooseExitenceStatusList(status:Status){
+    const list = []
+    for(let typeKey in status.value){
+        //找到这个type
+        const type = getTypeByKey(typeKey)
+        if(!type)continue;
+        //然后找到对应的exitence列表
+        const exitenceList:{name:string,key:string}[] = status.value[typeKey].exitenceKey.flatMap((exitenceKey:string)=>{
+            const exitence = getExitenceByKey(type,exitenceKey)
+            if(exitence){
+                return {
+                    name:exitence.name,
+                    key:exitence.__key
+                }
+            }
+            return []
+        })
+        //添加到列表中
+        list.push({
+            title:status.value[typeKey].title as string,
+            typeKey:type.__key,
+            exitences:exitenceList
+        })
+    }
+    return list
 }

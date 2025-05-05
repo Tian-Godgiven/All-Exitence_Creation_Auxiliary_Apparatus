@@ -40,6 +40,7 @@
 </template>
 
 <script setup lang='ts'>
+    import Button from '@/components/global/Button.vue';
     import { computed, reactive, watch} from 'vue';
     import FinalButtons from '@/app/stacks/popUp/FinalButtons.vue';
     import { createTimeLine,editTimeLine,TimeLine} from '../../timeLine';
