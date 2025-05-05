@@ -9,9 +9,15 @@ import {computed, provide, watch } from 'vue';
 import { statusValueVueList } from '@/static/list/statusValueList';
 import { changeExitenceName, changeExitenceNickName, nowAllExitence } from '@/hooks/all-exitence/allExitence';
 import { translateToTextContent } from '@/hooks/expression/textAreaContent';
+import Status from '@/interfaces/Status';
+import { ExitenceStatus } from '@/class/Exitence';
 
 	//是否禁用属性修改 , 需要显示的属性对象，事物在分类中对应的属性
-	const {disabled,status,typeStatus} = defineProps(["disabled","status","typeStatus"])
+	const {disabled=false,status,typeStatus} = defineProps<{
+		disabled?:boolean;
+		status:Status|ExitenceStatus,
+		typeStatus?:Status
+	}>()
 	//禁用功能需要透传
 	if(disabled){
 		provide("disabled",true)
@@ -28,7 +34,7 @@ import { translateToTextContent } from '@/hooks/expression/textAreaContent';
 	}
 	//优先使用status中的valueType
 	let valueType = computed(()=>{
-		return status["valueType"] || typeStatus["valueType"]
+		return status["valueType"] || typeStatus?.valueType || "input"
 	})
 	//优先使用两者覆盖后的setting
 	const statusSetting = computed(()=>{
@@ -75,6 +81,7 @@ import { translateToTextContent } from '@/hooks/expression/textAreaContent';
 
 <style lang="scss" scoped>
 	.value{
+		flex-grow: 1;
 		width: 100%;
 	}
 	.value.disabled{

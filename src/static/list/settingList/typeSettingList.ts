@@ -18,7 +18,7 @@ export let typeSettingList:SettingOption<Type>[] = [
             //返回输入类属性组成的对象列表
             const allStatus = type.typeStatus
             const tmpList = allStatus.flatMap((status:Status)=>{
-                if(["downLine","inputBox"].includes(status.valueType)){
+                if(["input","inputBox"].includes(status.valueType)){
                     return {value:status.__key,label:status.name}
                 }
                 return []

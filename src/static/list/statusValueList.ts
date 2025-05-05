@@ -1,7 +1,7 @@
 
 import chooseValueVue from "@/components/all-exitence/status/statusValue/chooseValue.vue"
 import DateValue from "@/components/all-exitence/status/statusValue/dateValue.vue"
-import downLineValueVue from "@/components/all-exitence/status/statusValue/downLineValue.vue"
+import inputValueVue from "@/components/all-exitence/status/statusValue/inputValue.vue"
 import inputBoxValueVue from "@/components/all-exitence/status/statusValue/inputBoxValue.vue"
 import multiValueVue from "@/components/all-exitence/status/statusValue/multiValue.vue"
 import radioValueVue from "@/components/all-exitence/status/statusValue/radioValue.vue"
@@ -10,14 +10,16 @@ import relationValueVue from "@/components/all-exitence/status/statusValue/relat
 import selectValueVue from "@/components/all-exitence/status/statusValue/selectValue.vue"
 import switchValueVue from "@/components/all-exitence/status/statusValue/switchValue.vue"
 import tagsValueVue from "@/components/all-exitence/status/statusValue/tagsValue.vue"
+import ChooseExitenceValue from "@/components/all-exitence/status/statusValue/chooseExitenceValue/chooseExitenceValue.vue"
 
 // 属性值类型表
 export let statusValueTypeList = [
-	{value : "downLine",label : "输入线"},
+	{value : "input",label : "输入"},
 	{value : "inputBox",label : "输入框"},
 	{value : "range",label : "范围选择"},
-	{value : "choose",label : "选项选择"},
+	{value : "choose",label : "选择选项"},
 	{value : "select",label : "选项框"},
+	{value : "chooseExitence", label : "选择事物"},
 	{value : "switch",label : "滑动开关"},
 	{value : "radio",label : "灯开关"},
 	{value : "tags",label: "标签"},
@@ -29,7 +31,7 @@ export let statusValueTypeList = [
 
 // 属性值类型对应组件表
 export let statusValueVueList:{[key:string]:any} = {
-	"downLine":downLineValueVue,
+	"input":inputValueVue,
 	"inputBox":inputBoxValueVue,
 	"range":rangeValueVue,
 	"choose":chooseValueVue,
@@ -39,5 +41,6 @@ export let statusValueVueList:{[key:string]:any} = {
 	"multi":multiValueVue,
 	"tags":tagsValueVue,
 	"relation":relationValueVue,
-	"date":DateValue
+	"date":DateValue,
+	"chooseExitence":ChooseExitenceValue,
 }

@@ -3,16 +3,15 @@
         <!-- 换行 -->
     </br>
 
-    <statusValueVue :status="status" :typeStatus="typeStatus" class="statusValue"
-        v-else-if="valueType == 'statusValue'">
-        <!-- 属性值 -->
-    </statusValueVue>
+    <StatusValue :status="status" :typeStatus="typeStatus" class="statusValue"
+        v-else-if="valueType == 'statusValue'"/>
     
     <div class="quoteStatus" 
         v-else-if="valueType == 'quoteStatus'"
         @click="showInfo">
         <!-- 引用属性值 -->
-        <statusValueVue :status="status" :typeStatus="typeStatus" :disabled="true" class="statusValue"></statusValueVue>
+        <StatusValue :status="status" :typeStatus="typeStatus" 
+            :disabled="true" class="statusValue"/>
     </div>
     
     <div class="quotePart" v-else-if="part && valueType == 'quotePart'"
@@ -43,7 +42,7 @@
 
 <script setup lang='ts'>
     import { computed, inject,provide, reactive } from 'vue';
-    import statusValueVue from './statusValue.vue';
+    import StatusValue from '../StatusValue.vue';
     import { countExpression, getExpressionText, getQuotePart, getQuoteStatus } from '@/hooks/expression/multiStatusValue';
     import { showQuickInfo } from '@/api/showQuickInfo';
     import { getTypeStatusByKey } from '@/hooks/all-exitence/allExitence';

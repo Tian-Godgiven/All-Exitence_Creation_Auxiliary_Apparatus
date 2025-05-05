@@ -1,16 +1,14 @@
 <template>
-    <div>
-        <statusValueVue class="unitStatus" v-for="(value,key) in source" 
-            :key="unitStatus.__key"
-            :status="unitStatus[key]" :typeStatus="value">
-        </statusValueVue>
-    </div>
-    
+<div>
+    <StatusValue class="unitStatus" v-for="(value,key) in source" 
+        :key="unitStatus.__key"
+        :status="unitStatus[key]" :typeStatus="value"/>
+</div>
 </template>
 
 <script setup lang='ts'>
     import { computed,reactive, watchEffect} from 'vue';
-    import statusValueVue from './statusValue.vue';
+    import StatusValue from '../StatusValue.vue';
     const {source,unit} = defineProps(["source","unit"])
     //单元的属性列表
     const unitStatus = computed(()=>{
@@ -31,7 +29,7 @@
 </script>
 
 <style scoped lang='scss'>
-    .unitStatus{
-        flex: 1 1 30%;
-    }
+.unitStatus{
+    flex: 1 1 30%;
+}
 </style>

@@ -1,14 +1,14 @@
 <template>
-	<div class="downLineValue">
-		<textAreaVue
-			class="textArea"
-			:class="ifUnit?'withUnit':''"
-			v-model="status.value"
-			:input-support="true"
-			:input-suggestion-list="inputSuggestionList"
-			:placeholder="placeholder"/>
-		<div class="unit" v-if="ifUnit">{{ unit }}</div>
-	</div>
+<div class="inputValue">
+	<textAreaVue
+		class="textArea"
+		:class="ifUnit?'withUnit':''"
+		v-model="status.value"
+		:input-support="true"
+		:input-suggestion-list="inputSuggestionList"
+		:placeholder="placeholder"/>
+	<div class="unit" v-if="ifUnit">{{ unit }}</div>
+</div>
 </template>
 
 <script setup lang="ts" name="">
@@ -50,20 +50,16 @@ import textAreaVue from '@/components/other/textArea/textArea.vue';
 </script>
 
 <style lang="scss" scoped>
-	.downLineValue{
-		width: 100%;
-		display: flex;
-		.textArea{
-			text-decoration: underline;
-			text-decoration-color: inherit;
-		}
-		.textArea.withUnit{
-			max-width: calc(100% - 3rem);
-		}
-		.unit{
-			width: 3rem;
-			flex-shrink: 0;
-			white-space: normal;
-		}
+.inputValue{
+	width: 100%;
+	display: flex;
+	.textArea.withUnit{
+		max-width: calc(100% - 3rem);
 	}
+	.unit{
+		width: 3rem;
+		flex-shrink: 0;
+		white-space: normal;
+	}
+}
 </style>

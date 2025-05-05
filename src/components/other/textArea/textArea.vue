@@ -23,6 +23,7 @@
     import { addInputLast, addInputLastDiv, deleteInputLast } from '@/api/cursorAbility';
     import { findTargetDivs } from '@/hooks/findTargetDiv';
     import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expression/textAreaContent';
+import { toString } from 'lodash';
 
     const textArea = useTemplateRef('textArea');
     let showPlaceholder = ref(true) //当前是否显示placeholder
@@ -54,7 +55,7 @@
     function loadPlaceholder(){
         if(placeholder && placeholder.trim() != ""){
             const dom = document.createElement('text')
-            dom.innerHTML = placeholder??""
+            dom.innerHTML = placeholder
             loadDom([dom])
         }
         //如果占位符为空，则显示空内容
@@ -217,7 +218,7 @@
     //取消聚焦
     function onBlur(){
         //内容为空时显示placeholder
-        if(content.value == "" || !content.value){
+        if(!content.value || toString(content.value).trim()==""){
             loadPlaceholder()
             return false
         }

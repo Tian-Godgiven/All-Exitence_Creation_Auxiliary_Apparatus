@@ -1,5 +1,10 @@
 <template>
-	<div class="popUp" :class="!popUp.position?'center':''" :style="{
+	<div class="popUp" 
+	:class="[
+		!popUp.position?.x?'centerX':'',
+		!popUp.position?.y?'centerY':''
+	]" 
+	:style="{
 		zIndex:index,
 		height:popUp.size?.height,
 		width:popUp.size?.width,
@@ -98,11 +103,18 @@ import Button from '@/components/global/Button.vue';
 			padding-top: 0;
 		}
 	}
-}
-//居中显示
-.popUp.center{
-	left:50%;
-	top:50%;
-	transform: translate(-50%, -50%);
+	&.centerX{
+		left:50%;
+		transform: translateX(-50%);
+	}
+	&.centerY{
+		top:50%;
+		transform: translateY(-50%);
+	}
+	&.centerX.centerY{
+		left:50%;
+		top:50%;
+		transform: translate(-50%,-50%);
+	}
 }
 </style>

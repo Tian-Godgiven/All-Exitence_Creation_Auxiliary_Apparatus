@@ -128,6 +128,7 @@ import SwitchExpand from '@/components/other/SwitchExpand.vue';
 @use "@/static/style/components/inputs.scss";
 .editType{
 	height: 100%;
+	width: 100%;
 }
 .top{
 	display: flex;

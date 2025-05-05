@@ -11,7 +11,7 @@
     <Button @click="clearInput" class="clearButton" 
         icon="close" 
         color="white"
-        v-if="clear" v-show="value.length>0">
+        v-if="clear" v-show="toString(value).length>0">
     </Button>
     <div class="downLine" :class="ifFocusing? 'focusing':null" ></div>
 </div>
@@ -20,8 +20,9 @@
 <script setup lang='ts'>
     import { ref } from 'vue';
     import Button from '@/components/global/Button.vue';
+import { toString } from 'lodash';
 
-    const value = defineModel<string>({
+    const value = defineModel<string|number>({
         default:""
     })
     const {placeholder="",type,clear} = defineProps<{

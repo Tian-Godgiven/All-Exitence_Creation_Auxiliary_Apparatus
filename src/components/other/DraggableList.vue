@@ -3,7 +3,9 @@
 	<DragNode v-for="item,index in list" 
 		:key="Symbol()"
 		:showHandle :dragHandle
-		:item :getData="()=>getData(item)" :canDrop>
+		:item 
+		:getData="()=>getData(item)" 
+		:canDrop>
 		<slot :item :index></slot>
 	</DragNode>
 </div>

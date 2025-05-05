@@ -1,21 +1,25 @@
 <template>
 <!-- 显示属性 -->
 <div :key="key" class="exitenceStatus" v-touch:longtap="showUpdateStatus">
-    <statusNameVue v-if="!ifNoName" :status="status" :typeStatus="typeStatus" :disabled="true"></statusNameVue>
+    <StatusName v-if="!ifNoName" :status="status" :typeStatus="typeStatus" :disabled="true"></StatusName>
     <!-- 属性值 -->
-    <statusValueVue :status="status" :typeStatus="typeStatus" :disabled="disabled" class="value"></statusValueVue>
+    <StatusValue :status="status" :typeStatus="typeStatus" :disabled="disabled" class="value"/>
 </div>
 </template>
 
 <script setup lang='ts'>
     import { computed, inject, ref} from 'vue';
-    import statusNameVue from '../status/statusName.vue';
-    import statusValueVue from '../status/statusValue/statusValue.vue';
+    import StatusName from '../status/StatusName.vue';
+    import StatusValue from '../status/StatusValue.vue';
     import { getTypeStatusByKey } from '@/hooks/all-exitence/allExitence';
     import Status from '@/interfaces/Status';
     import { showPopUp } from '@/hooks/pages/popUp';
+import { ExitenceStatus } from '@/class/Exitence';
 
-    let {disabled,status} = defineProps(["disabled","status"])
+    let {disabled,status} = defineProps<{
+        disabled?:boolean;
+        status:ExitenceStatus
+    }>()
     const key = ref(0)
 
     const type = inject<any>("type")
@@ -66,15 +70,5 @@
 <style scoped lang='scss'>
     .exitenceStatus{
 		display: flex;
-		.name{
-			width:calc(150px - 1rem);
-			box-sizing: border-box;
-		}
-		.separator{
-			min-width: 1rem;
-		}
-		.value{
-			width: calc(100% - 150px);
-		}
 	}
 </style>

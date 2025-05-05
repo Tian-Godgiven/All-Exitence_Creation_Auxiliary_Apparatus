@@ -76,7 +76,7 @@ import FinalButtons from '@/app/stacks/popUp/FinalButtons.vue';
         __key:tagsKey
     })
 
-    //用于进行设置的临时事物
+    //创建一个用于进行设置的临时事物
     const tmpExitence = reactive(createExitence(
         "",
         [defaultTagStatus],

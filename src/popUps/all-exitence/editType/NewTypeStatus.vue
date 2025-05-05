@@ -13,6 +13,7 @@
 	import Status from '@/interfaces/Status';
 	import editStatus from '@/components/all-exitence/status/editStatus.vue';
 	import { cloneDeep } from 'lodash';
+import { defaultStatus } from '@/hooks/all-exitence/status';
 	// 不需要的类型
 	const {banValueType,createStatus} = defineProps<{
 		banValueType?:string[],
@@ -20,13 +21,7 @@
 	}>()
 
 	// 新增属性
-	let newStatus = reactive<Status>({
-		name:"",
-		value:null,
-		valueType:"downLine",
-		setting:{},
-		__key:""
-	})
+	let newStatus = reactive<Status>(cloneDeep(defaultStatus))
 
 	// 确认新增属性
 	function createTypeStatus(newStatus:Status){

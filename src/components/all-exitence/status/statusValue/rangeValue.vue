@@ -1,11 +1,12 @@
 <template>
-	<div class="rangeValue">
-		<ElSlider v-model="status.value" 
-			:max="max" :min="min" :step="step"
-			placement="bottom"
-			:format-tooltip="tipInfo">
-		</ElSlider>
-	</div>
+<div class="rangeValue">
+	<ElSlider v-model="status.value" 
+		@pointerdown.stop
+		:max="max" :min="min" :step="step"
+		placement="bottom"
+		:format-tooltip="tipInfo">
+	</ElSlider>
+</div>
 </template>
 
 <script setup lang="ts" name="">
@@ -41,18 +42,18 @@ import { ElSlider } from 'element-plus';
 </script>
 
 <style lang="scss" scoped>
-	.rangeValue{
-		min-width: 200px;
-		:deep(.el-slider__button){
-			// 拖动的滑块的样式
-			width: 16px;
-			height: 22px;
-			border: 10px solid var(--el-color-primary);
-			border-radius: 1px;
-			position: relative;
-			left: 4px;
-		}
+.rangeValue{
+	min-width: 200px;
+	:deep(.el-slider__button){
+		// 拖动的滑块的样式
+		width: 16px;
+		height: 22px;
+		border: 10px solid var(--el-color-primary);
+		border-radius: 1px;
+		position: relative;
+		left: 4px;
 	}
+}
 	
 
 </style>

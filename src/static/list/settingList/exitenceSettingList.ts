@@ -13,7 +13,7 @@ export let exitenceSettingList:SettingOption<Exitence>[] = [{
         const allStatus = exitence.status
         const tmpList = allStatus.flatMap((status:ExitenceStatus)=>{
             const fullStatus = getExitenceStatusByKey(status.__key,allStatus,type.typeStatus)
-            if(fullStatus && ["downLine","inputBox"].includes(fullStatus.valueType)){
+            if(fullStatus && ["input","inputBox"].includes(fullStatus.valueType)){
                 return {value:status.__key,label:fullStatus.name}
             }
             return []
@@ -44,7 +44,7 @@ export let exitenceSettingList:SettingOption<Exitence>[] = [{
         const allStatus = exitence.status
         const tmpList = allStatus.flatMap((status:ExitenceStatus)=>{
             const theStatus = getExitenceStatusByKey(status.__key,allStatus,type.typeStatus)
-            if(theStatus && ["tags","inputBox","downLine"].includes(theStatus.valueType)){
+            if(theStatus && ["tags","inputBox","input"].includes(theStatus.valueType)){
                 return {value:status.__key,label:theStatus.name}
             }
             return []

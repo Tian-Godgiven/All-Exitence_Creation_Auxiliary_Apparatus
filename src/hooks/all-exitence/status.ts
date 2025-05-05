@@ -6,7 +6,7 @@ import _, { cloneDeep } from "lodash";
 export const defaultStatus:Status = {
     name:"",
     value:null,
-    valueType:"downLine",
+    valueType:"input",
     setting:{},
     __key:""
 }

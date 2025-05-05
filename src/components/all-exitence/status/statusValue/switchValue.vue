@@ -1,12 +1,12 @@
 <template>
-	<div>
-		<ElSwitch 
-			v-model="status.value"
-			style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949"
-			:active-text="rightText"
-			:inactive-text="leftText">
-		</ElSwitch>
-	</div>
+<div>
+	<ElSwitch 
+		class="switch"
+		v-model="status.value"
+		:active-text="rightText"
+		:inactive-text="leftText">
+	</ElSwitch>
+</div>
 </template>
 
 <script setup lang="ts" name=""> 
@@ -29,5 +29,15 @@ import { computed } from 'vue';
 </script>
 
 <style lang="scss" scoped>
-
+.switch{
+	color: $bgColor70;
+	--el-switch-on-color: black; 
+	--el-switch-off-color: rgb(180,180,180);
+	:deep(.el-switch__label){
+		color:$bgColor70;
+	};
+	:deep(.el-switch__label.is-active){
+		color:$antiBgColor;
+	}
+}
 </style>

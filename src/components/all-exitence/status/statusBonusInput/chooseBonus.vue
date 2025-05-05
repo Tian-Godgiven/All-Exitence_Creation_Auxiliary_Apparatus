@@ -3,14 +3,12 @@
 	<div class="choose">
 		<div class="chooseNum">
 			<div class="halfInput">最少选择:
-				<inputVue 
-					type="number"
+				<DownLineInput type="number"
 					@blur="setChooseNum"
 					v-model.number="chooseMin"/>
 			</div>
 			<div class="halfInput">最多选择:
-				<inputVue 
-					type="number"
+				<DownLineInput type="number"
 					@blur="setChooseNum"
 					v-model.number="chooseMax"/>
 			</div>
@@ -39,7 +37,7 @@
 <script setup lang="ts" name="">
 import { inject, reactive, ref, toRaw, watch } from 'vue'; 
 import { showQuickInfo } from '@/api/showQuickInfo';
-import inputVue from '@/components/other/input/downLineInput.vue';
+import DownLineInput from '@/components/other/input/downLineInput.vue';
 	const status = inject<any>('status',{});
 	// 选择数量输入栏
 	let chooseMin = ref(0)

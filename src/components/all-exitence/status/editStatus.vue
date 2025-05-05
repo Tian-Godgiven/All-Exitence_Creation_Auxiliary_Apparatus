@@ -1,8 +1,8 @@
 <template>
 <div class="editStatus">
 	<div class="statusInfo">
-		<statusNameVue :status="status" :typeStatus="typeStatus"/>
-		<statusValueVue :status="status" :typeStatus="typeStatus"/>
+		<StatusName :status="status" :typeStatus="typeStatus"/>
+		<StatusValue :status="status" :typeStatus="typeStatus"/>
 	</div>
 	
 	<!-- 属性类型与设置 -->
@@ -31,10 +31,10 @@
 	import { inject, ref, computed, provide } from 'vue'; 
 	import { statusValueTypeList } from '@/static/list/statusValueList';
 	import settingBoxVue from '../setting/settingBox.vue';
-	import { statusSettingList } from "@/static/list/settingList/statusSettingList";
-	import statusValueVue from '../status/statusValue/statusValue.vue';
+	import { getStatusSetting } from "@/static/list/settingList/statusSettingList";
+	import StatusValue from './StatusValue.vue';
 	import { statusBonusInputList } from '@/static/list/statusBonusInputList';
-	import statusNameVue from './statusName.vue';
+	import StatusName from './StatusName.vue';
 	import { showQuickInfo } from '@/api/showQuickInfo';
 	import { cloneDeep } from 'lodash';
 	import Button from '@/components/global/Button.vue';
@@ -48,7 +48,7 @@ import { defaultStatus } from '@/hooks/all-exitence/status';
 	}>()
 	
 	// 需要编辑的属性初值
-    let status = inject<Status>("status",defaultStatus)
+    let status = inject<Status>("status",cloneDeep(defaultStatus))
     let typeStatus = inject<any>("typeStatus")
     if(!status.name){
         status.name = cloneDeep(typeStatus.name);
@@ -82,7 +82,7 @@ import { defaultStatus } from '@/hooks/all-exitence/status';
 			return {...typeStatus,...status}
 		}),
 		settingValue:{...typeStatus.setting,...status.setting},
-		optionList:statusSettingList
+		optionList:getStatusSetting(status)
 	}
 	provide("settingProps",settingProps)
 	// 控制显示
@@ -111,37 +111,40 @@ import { defaultStatus } from '@/hooks/all-exitence/status';
 
 <style lang="scss" scoped>
 @use "@/static/style/components/inputs.scss";
-	.editStatus{
-		border:2px dashed black;
-		box-sizing: border-box;
+.editStatus{
+	border:2px dashed black;
+	box-sizing: border-box;
+	width: 100%;
+	height: 100%;
+	padding: 10px 20px;
+	.statusInfo{
+		display: flex;
+		min-height: 40px;
 		width: 100%;
-		height: 100%;
-		padding: 10px 20px;
-		.statusInfo{
-			display: flex;
-			min-height: 40px;
-			width: 100%;
-			.statusValue{
-				width: calc(100% - 150px);
-			}
+		.statusValue{
+			width: calc(100% - 150px);
 		}
-		.statusSet{
-			display: flex;
-			align-items: center;
-			height: 80px;
-			.selectValueType{
-				width: calc(100% - 200px);
-			}
-			.button{
-				box-sizing: border-box;
-				margin-left: 10px;
-				width: 20%;
-				height: 60px;
-				border:3px solid black;
-			}
+		:deep(.statusName){
+			width: 150px;
 		}
-		
 	}
+	.statusSet{
+		display: flex;
+		align-items: center;
+		height: 80px;
+		.selectValueType{
+			width: calc(100% - 200px);
+		}
+		.button{
+			box-sizing: border-box;
+			margin-left: 10px;
+			width: 20%;
+			height: 60px;
+			border:3px solid black;
+		}
+	}
+	
+}
 	
 	
 </style>

@@ -139,19 +139,20 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
     }
 
     // 创建一个新的事物
-    export function createExitence(name:string,status:any[],setting:any,type:Type){
+    export function createExitence(name:string,status:ExitenceStatus[],setting:any,type:Type){
         if(!name || name == ""){
             name = "未命名"+type.name
         }
         //创建该事物，并为其分配key
         const newExitence = new Exitence(name,status,type.__key,setting,nanoid(),0)
         //添加分类中的属性
-        const tmp:any[] = []
-        type.typeStatus.forEach((status:Status)=>{
-            tmp.push({
+        const tmp = type.typeStatus.map(status=>{
+            return {
+                value:status.value,
                 __key:status.__key
-            })
+            }
         })
+        console.log(tmp,type)
         newExitence.status.unshift(...tmp) //这里要求让分类中的属性优先放置在顶部
         return newExitence
     }

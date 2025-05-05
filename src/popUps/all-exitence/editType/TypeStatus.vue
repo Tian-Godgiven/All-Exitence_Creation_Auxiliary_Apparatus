@@ -1,7 +1,7 @@
 <template>
 <div class="status">
-	<statusName :status="status"></statusName>
-	<statusValue :status="status" :typeStatus="status"  class="value"></statusValue>
+	<StatusName :status="status"/>
+	<StatusValue :status="status" :typeStatus="status"/>
 	
 	<div class="buttons">
 		<Button @click="showUpdateStatus" name="编辑"></Button>
@@ -12,8 +12,8 @@
 
 <script setup lang="ts" name="typeStatus">
 import { inject } from 'vue';
-import statusName from '@/components/all-exitence/status/statusName.vue';
-import statusValue from '@/components/all-exitence/status/statusValue/statusValue.vue';
+import StatusName from '@/components/all-exitence/status/StatusName.vue';
+import StatusValue from '@/components/all-exitence/status/StatusValue.vue';
 import { showPopUp } from '@/hooks/pages/popUp';
 import Status from '@/interfaces/Status';
 import Button from '@/components/global/Button.vue';
@@ -47,7 +47,10 @@ import Button from '@/components/global/Button.vue';
 <style lang="scss" scoped>
 	.status{
 		display: flex;
-		.value{
+		:deep(.statusName){
+			width: 200px;
+		}
+		.statusValue{
 			width: calc(100% - 200px);
 		}
 		.buttons{

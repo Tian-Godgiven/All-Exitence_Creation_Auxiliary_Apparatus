@@ -13,6 +13,7 @@
 	import { closePopUp } from '@/hooks/pages/popUp';
     import { cloneDeep } from 'lodash';
 	import { nanoid } from 'nanoid';
+import { defaultStatus } from '@/hooks/all-exitence/status';
 
 	// 编辑对象与编辑对象的属性等数据
 	const {props={},popUp,returnValue} = defineProps(["props","popUp","returnValue"])
@@ -26,13 +27,8 @@
 	} = props
 
     //status存在则创建深拷贝，否则创建新status
-	const tmpStatus = status? reactive(cloneDeep(status)) : reactive<Status>({
-		name:"",
-		value:null,
-		valueType:"downLine",
-		setting:{},
-		__key:""
-	})
+	const tmpStatus = status? reactive(cloneDeep(status)) : 
+							reactive<Status>(cloneDeep(defaultStatus))
     //如果typeStatus不存在，则其为tmpStatus
     if(!typeStatus){
         typeStatus = tmpStatus

@@ -1,19 +1,19 @@
 <template>
-	<div class="inputBox" :class="ifHoverBox? 'hoverBox':''"> 
-		<textAreaVue 
-			class="textArea"
-			:class="ifUnit?'withUnit':''"
-			v-model="status.value"
-			:input-support="true"
-			:input-suggestion-list="inputSuggestionList"
-			:placeholder="placeholder"/>
-		<div class="unit" v-if="ifUnit">{{ unit }}</div>
-	</div>
+<div class="inputBox" :class="ifHoverBox? 'hoverBox':''"> 
+	<TextArea
+		class="textArea"
+		:class="ifUnit?'withUnit':''"
+		v-model="status.value"
+		:input-support="true"
+		:input-suggestion-list="inputSuggestionList"
+		:placeholder="placeholder"/>
+	<div class="unit" v-if="ifUnit">{{ unit }}</div>
+</div>
 </template>
 
 <script setup lang="ts" name="">
 import { computed, ref } from 'vue'; 
-import textAreaVue from '@/components/other/textArea/textArea.vue';
+import TextArea from '@/components/other/textArea/textArea.vue';
 	const {status,statusSetting} = defineProps(["status","statusSetting"])
 
 	// 属性设置：聚焦不显示高亮输入框
@@ -26,7 +26,7 @@ import textAreaVue from '@/components/other/textArea/textArea.vue';
 	// 属性设置：单位 
 	const unit = ref('')
 	const ifUnit = computed(()=>{
-		if(statusSetting.unit != ""){
+		if(statusSetting.unit && statusSetting.unit.trim() != ""){
 			unit.value = statusSetting.unit
 			return true
 		}
@@ -56,23 +56,26 @@ import textAreaVue from '@/components/other/textArea/textArea.vue';
 </script>
 
 <style lang="scss" scoped>
-	.inputBox{
-		display: flex;
-		width: 100%;
-		border:3px solid black;
-		box-sizing: border-box;
-		.textArea.withUnit{
-			max-width: calc(100% - 3rem);
-		}
-		.unit{
-			width: 3rem;
-			flex-shrink: 0;
-			white-space: normal;
-		}
+.inputBox{
+	display: flex;
+	width: 100%;
+	border:4px solid $bgColor70;
+	border-radius: 10px;
+	box-sizing: border-box;
+	padding:5px 10px;
+	:deep(.textArea){
+		min-height: 2.5em;
 	}
-	.hoverBox:focus-within{
-		outline: 3px solid blue;
-	};
-
-	
+	.textArea.withUnit{
+		max-width: calc(100% - 3rem);
+	}
+	.unit{
+		width: 3rem;
+		flex-shrink: 0;
+		white-space: normal;
+	}
+}
+.hoverBox:focus-within{
+	border-color: blue;
+};
 </style>
