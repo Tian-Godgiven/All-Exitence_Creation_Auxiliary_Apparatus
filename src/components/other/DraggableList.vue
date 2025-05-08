@@ -48,11 +48,9 @@
 				return list.indexOf(sourceData.item)
 			},
 			targetIndex:(targetData)=>{
-				console.log(list,targetData)
 				return list.indexOf(targetData.item)
 			},
 			returnNewList:(newList)=>{
-				console.log(newList)
                 Object.assign(list,newList)
             }
 		})

@@ -1,3 +1,4 @@
+import { showAlert } from "../alert";
 import { saveProject } from "../project/project";
 import { saveApp } from "./app";
 
@@ -24,4 +25,14 @@ export async function startQuitSave(){
     
 }
 
+// 只会在tauri刷新时调用
+// window.onbeforeunload = function() {
+//     showAlert({
+//         info:"关闭吗",
+//         "confirm":()=>{
+//             console.log("确认关闭")
+//         }
+//     })
+//     return false;
+// }; 
 

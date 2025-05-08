@@ -31,7 +31,7 @@
 	import { inject, ref, computed, provide } from 'vue'; 
 	import { statusValueTypeList } from '@/static/list/statusValueList';
 	import settingBoxVue from '../setting/settingBox.vue';
-	import { getStatusSetting } from "@/static/list/settingList/statusSettingList";
+	import { getStatusSetting } from "@/static/list/settingList/status/statusSettingList";
 	import StatusValue from './StatusValue.vue';
 	import { statusBonusInputList } from '@/static/list/statusBonusInputList';
 	import StatusName from './StatusName.vue';

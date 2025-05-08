@@ -111,7 +111,6 @@ export async function searchAt(keyWord:string,target:("exitence"|"article")[],ra
             type.exitence.forEach(exitence=>{
                 const tmp = searchExitence(exitence,keyWord)
                 if(tmp){
-                    console.log(tmp)
                     //添加项目信息
                     if(projectInfo){
                         tmp.projectPath = projectInfo.pathName;
@@ -155,7 +154,6 @@ function searchExitence(exitence:Exitence,keyWord:string):SearchResult|false{
             //组合title
             const title = group?`${type.name}/${group.name}/${exitence.name}`:
                                 `${type.name}/${exitence.name}`
-            console.log(title)
             return {
                 title,
                 type:"exitence",

@@ -113,8 +113,11 @@ import { callSupportAbility } from '@/hooks/app/app';
 	.inner{
 		height: calc(100% - 110px);
 		background-color: $bgColor;
+		box-sizing: border-box;
 		position: relative;
 		overflow: hidden;
+		padding: 0 25px;
+		padding-top: 30px;
 		z-index: 0;
 	}
 	

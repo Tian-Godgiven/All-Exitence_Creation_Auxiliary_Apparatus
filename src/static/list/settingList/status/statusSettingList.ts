@@ -1,6 +1,9 @@
 import Status from "@/interfaces/Status"
 
 import { SettingOption } from "@/components/all-exitence/setting/setting"
+import { chooseExitenceSettingList } from "./chooseExitenceStatus"
+
+export type StatusSetting = SettingOption<Status>
 
 const hoverBox:SettingOption<Status> = {
 	name:"hoverBox",
@@ -97,12 +100,17 @@ const statusSettingList:Record<string,SettingOption<Status>[]> = {
 	range:[unit],
 	choose:[chooseByRadio,chooseDirection],
 	relation:[relationTitle,relationAdd],
-	tags:[tagsAdd]
+	tags:[tagsAdd],
+	chooseExitence:chooseExitenceSettingList
 }
 
 //根据属性类型获取某个设置内容项
 export function getStatusSetting(status:Status){
 	const type = status.valueType
 	//注意通用的设置项放在末尾
-	return [...statusSettingList[type],...statusSettingList.all]
+	if(statusSettingList[type]){
+		return [...statusSettingList?.[type],...statusSettingList.all]
+	}
+	return [...statusSettingList.all]
+	
 }

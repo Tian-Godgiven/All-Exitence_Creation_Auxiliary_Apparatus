@@ -2,7 +2,7 @@ import { ExitenceStatus } from "@/class/Exitence"
 import Status from "@/interfaces/Status"
 import { nowAllExitence } from '@/hooks/all-exitence/allExitence';
 import { customTimeLib } from "@/supportAbility/customTime/customTime"; 
-import { ExitenceDataInTree, getChooseExitenceListInTreeList, TypeDataInTree } from "@/components/other/chooseExitenceInTree/chooseExitenceInTree";
+import { ExitenceDataInTree, getChooseExitenceInTreeList, TypeDataInTree } from "@/components/other/chooseExitenceInTree/chooseExitenceInTree";
 
 //树列表中的结构
 export type TItem = TypeDataInTree<ExitenceData,{},TypeData>
@@ -42,7 +42,7 @@ export type ExitenceData = {
 }
 //获取选择事物列表树中使用的表格
 export function getList(timeRuleKey:string){
-    return getChooseExitenceListInTreeList<TypeData,ExitenceData,{}>({
+    return getChooseExitenceInTreeList<TypeData,ExitenceData,{}>({
         typeList:nowAllExitence.types,
         ifGroup:true,
         getTypeData:(type)=>{
@@ -120,7 +120,7 @@ type ExitenceItem = {
         key:string
     },
 }
-//获取选择的列表与最小时间值
+//获取选择的列表与最小时间值,这个函数是特制的，就不用组件提供的函数了
 export function getSelectionExitence(list: TItem[]) {
     const targetList:TargetList = []
     //最小时间值

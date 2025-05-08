@@ -41,8 +41,8 @@
 	import Button from '@/components/global/Button.vue';
 	import { showPopUp } from '@/hooks/pages/popUp';
 	import TargetContainer from './TargetContainer.vue';
-import { showOnMain } from '@/hooks/pages/mainPage/showOnMain';
-import { Exitence } from '@/class/Exitence';
+	import { showOnMain } from '@/hooks/pages/mainPage/showOnMain';
+	import { Exitence } from '@/class/Exitence';
 
 	let {exitence} = defineProps<{exitence:Exitence}>()
 	
@@ -130,12 +130,11 @@ import { Exitence } from '@/class/Exitence';
 </script>
 
 <style lang="scss" scoped>
-	.scrollSpace{
-		width: 100%;
-		height: 30%;
-	}
-
-	.exitenceAbility{
-		display: flex;
-	}
+.scrollSpace{
+	width: 100%;
+	height: 30%;
+}
+.exitenceAbility{
+	display: flex;
+}
 </style>

@@ -53,18 +53,15 @@ import ScrollBar from '@/components/global/ScrollBar.vue';
 
 <style scoped lang='scss'>	
 
-	
 .container{
 	width: 100%;
 	height: 100%;
-	padding:0 25px;
 	box-sizing: border-box;
 	.top{
 		min-height: 70px;
 		width: 100%;
 		position: relative;
 		display: flex;
-		padding-top: 30px;
 		.title{
 			min-height: 70px;
             width: 100%;

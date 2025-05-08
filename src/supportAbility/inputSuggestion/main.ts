@@ -1,6 +1,7 @@
 import { shallowReactive, toRaw } from "vue"
 import { createFileToPath, readFileFromPath, tryReadFileAtPath, writeFileAtPath } from "../../hooks/fileSysytem"
 import { SupportAbilitySignUpItem } from "@/static/list/supportAbilityList"
+import { cloneDeep } from "lodash"
 
 //注册该插件
 export const inputSuggestionSighUpItem:SupportAbilitySignUpItem = {
@@ -17,9 +18,9 @@ const defaultList = {
     exitence:{}
 }
 //当前的全局输入提示表
-export const globalInputSuggestionList = shallowReactive(defaultList)
+export const globalInputSuggestionList = shallowReactive(cloneDeep(defaultList))
 //当前的项目中的输入提示表
-export const projectInputSuggestionList = shallowReactive(defaultList)
+export const projectInputSuggestionList = shallowReactive(cloneDeep(defaultList))
 
 //初始化输入建议文件
 async function initInputSuggestion(){

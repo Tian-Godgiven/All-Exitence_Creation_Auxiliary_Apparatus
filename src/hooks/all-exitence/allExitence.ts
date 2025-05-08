@@ -49,7 +49,7 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
     }
 
     // 获取key对应的分类对象
-    export function getTypeByKey(typeKey:string){
+    export function getTypeByKey(typeKey:string):Type|undefined{
         return nowAllExitence.types.find((type)=>
             type.__key == typeKey
         )
@@ -152,7 +152,6 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
                 __key:status.__key
             }
         })
-        console.log(tmp,type)
         newExitence.status.unshift(...tmp) //这里要求让分类中的属性优先放置在顶部
         return newExitence
     }

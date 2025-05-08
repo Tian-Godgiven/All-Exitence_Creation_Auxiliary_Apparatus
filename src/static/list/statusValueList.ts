@@ -10,7 +10,7 @@ import relationValueVue from "@/components/all-exitence/status/statusValue/relat
 import selectValueVue from "@/components/all-exitence/status/statusValue/selectValue.vue"
 import switchValueVue from "@/components/all-exitence/status/statusValue/switchValue.vue"
 import tagsValueVue from "@/components/all-exitence/status/statusValue/tagsValue.vue"
-import ChooseExitenceValue from "@/components/all-exitence/status/statusValue/chooseExitenceValue/chooseExitenceValue.vue"
+import ChooseExitenceValue from "@/components/all-exitence/status/statusValue/chooseExitenceValue/ChooseExitenceValue.vue"
 
 // 属性值类型表
 export let statusValueTypeList = [

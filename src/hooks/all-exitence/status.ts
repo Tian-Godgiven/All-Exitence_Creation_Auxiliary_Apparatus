@@ -1,7 +1,6 @@
 import { ExitenceStatus } from "@/class/Exitence";
 import Status from "@/interfaces/Status";
-import _, { cloneDeep } from "lodash";
-import { getExitenceByKey, getTypeByKey } from "./allExitence";
+import _, { cloneDeep, isNumber, toNumber, toString } from "lodash";
 
 //初始的空属性对象
 export const defaultStatus:Status = {
@@ -27,7 +26,7 @@ export function getFullStatus(status1:Status|ExitenceStatus,status2?:Status):Sta
     return fullStatus as Status
 }
 
-//为一个属性设置设置项
+//为一个属性设置设置项的值
 export function setStatus(status:Status|ExitenceStatus,setName:string,setValue:any){
     //检查是否有设置属性
     if(status.setting){
@@ -40,37 +39,53 @@ export function setStatus(status:Status|ExitenceStatus,setName:string,setValue:a
     }
     return status
 }
-//清楚一个属性的指定设置项
+//清除一个属性的指定设置项
 export function deleteStatusSetting(status:Status|ExitenceStatus,setName:string){
     if(status.setting){
         delete status.setting[setName]
     }
 }
-
-//根据【选择事物】属性值，获取事物列表
-export function getChooseExitenceStatusList(status:Status){
-    const list = []
-    for(let typeKey in status.value){
-        //找到这个type
-        const type = getTypeByKey(typeKey)
-        if(!type)continue;
-        //然后找到对应的exitence列表
-        const exitenceList:{name:string,key:string}[] = status.value[typeKey].exitenceKey.flatMap((exitenceKey:string)=>{
-            const exitence = getExitenceByKey(type,exitenceKey)
-            if(exitence){
-                return {
-                    name:exitence.name,
-                    key:exitence.__key
-                }
-            }
-            return []
-        })
-        //添加到列表中
-        list.push({
-            title:status.value[typeKey].title as string,
-            typeKey:type.__key,
-            exitences:exitenceList
-        })
+/**
+ * 获取属性的指定设置项当前的设置值，还会进行类型转换
+ * @param statuSetting 属性对象的设置，或者任意的属性设置
+ * @param setName 设置项名
+ * @param valueType 需要的返回值类型 
+ *      string:去除空格后的字符串，空字符串时会返回null
+ *      number:仅在值完全是纯数字(不包括带数字的字符串和bool)时返回数字，否则均返回null
+ *      bool:仅在值完全是布尔值时返回布尔值，否则会返回null
+ */
+export function getSettingValue(setting:Record<string,any>,setName:string,valueType:"string"|"number"|"bool"){
+    let value = setting[setName]
+    if(!value){
+        value = null
     }
-    return list
+    //类型转换
+    switch(valueType){
+        case "string":{
+            //去除空格
+            value = toString(value).trim()
+            //空字符串视为null
+            if(value == "")return null
+            return value
+        }
+        case "number":{
+            //排除是空字符串
+            if(toString(value).trim()==""){
+                return null
+            }
+            //转化为数字,NaN也是数字哦
+            value = toNumber(value)
+            if(isNumber(value)&&!Number.isNaN(value))return value
+            return null
+        }
+        case "bool":{
+            console.log(setting,value,typeof value)
+            if(typeof value == "boolean"){
+                return value
+            }
+            return null
+        }
+    }
+    
 }
+

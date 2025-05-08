@@ -11,7 +11,7 @@
 		left:popUp.position?.x,
 		top:popUp.position?.y
 	}">
-		<div class="top">
+		<div class="top" v-if="ifTop">
 			<div class="title" v-if="name">{{ name }}</div>
 			<div class="space" v-else-if="buttons!=null"></div>
 			<div class="buttons" v-if="buttons!=null">
@@ -21,7 +21,7 @@
 			</div>
 		</div>
 		
-		<div class="inner">
+		<div class="inner" :class="ifTop?'':'noTop'">
 			<component :is="innerVue" 
 				:popUp="popUp" 
 				:returnValue="popUp?.returnValue"
@@ -39,6 +39,7 @@ import Button from '@/components/global/Button.vue';
 	const {popUp} = defineProps<{popUp:PopUp}>()
 	const {name,buttons,vueName,index} = popUp
 	const innerVue = shallowRef(popUp.vue || (vueName && popUpVueList[vueName]));
+	const ifTop = name||buttons
 </script>
 
 <style lang="scss" scoped>
@@ -90,10 +91,11 @@ import Button from '@/components/global/Button.vue';
 		height: calc(100% - 90px);
 		width: 100%;
 		display:flex;
-		>div{
-			box-sizing: border-box;
-			padding: 20px;
-			padding-top: 0;
+		box-sizing: border-box;
+		padding: 0 20px;
+		&.noTop{
+			height: 100%;
+			padding: 10px 20px;
 		}
 	}
 	&.centerX{

@@ -99,7 +99,6 @@ export function showEditMission(mission:Mission|null){
     ifShowEditMission.value = true //显示页面
     //传入mission
     editTarget.value = mission
-    console.log(editTarget.value)
 }
 
 //切换管理模式

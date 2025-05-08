@@ -76,7 +76,6 @@ export async function syncProject(projectPath:string){
         changeNowAllExitence(nowAllExitence)
         const nowAllArticles = await readProjectData(projectPath,"article")
         changeNowAllArticles(nowAllArticles)
-
         //同步辅助功能
         supportAbilityList.forEach(ability=>{
             if(ability.syncProject){
@@ -167,7 +166,7 @@ export function onNoProject(){
 export function onNoContent(){
     showTargetOnMain({
         type:"info",
-        target:"app"
+        target:"project"
     })
 }
 
@@ -175,6 +174,8 @@ export function onNoContent(){
 export async function moveToProject(projectPath:string){
     //记录旧项目此时的信息
     await saveProjectInfo()
+    //如果目标项目就是当前项目，则不继续了
+    if(projectPath == nowProjectPath.value)return;
     //同步新项目的数据
     const tmp = await syncProject(projectPath)
     //同步数据成功

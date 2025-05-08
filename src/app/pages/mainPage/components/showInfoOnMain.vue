@@ -5,13 +5,13 @@
     </template>
     <template #inner>
         <div v-if="target=='project'">
-            <p>向→滑动展开操作页面<br>
-                点击操作页面左上方的按钮，可以在[万物]与[文章]模式中进行切换
+            <p>向→滑动，或点击左上角图标展开操作页面<br>
+                点击操作页面左上方的文字，可以在[万物]与[文章]模式中进行切换
             </p>
             <p>如果你需要删除操作页面中的某一项，请长按以唤醒操作面板</p>
             <p>点击上方的项目名称，可以管理与切换不同的项目</p>
-            <p>向←滑动，或点击右下角按钮显示各类辅助功能</p>
-            <p>你可以随时通过[右上角的三个点点]→[操作教程]查看本页面</p>
+            <p>向←滑动，或点击右上角图标显示各类辅助功能</p>
+            <p>你可以随时通过[辅助功能]→[操作教程]查看本页面</p>
             <p>更多更详细的操作指南请参见<a href="https://github.com/Tian-Godgiven/All-Exitence_Creation_Auxiliary_Apparatus">github页面</a>
                 中的[操作指南]
             </p>
@@ -25,7 +25,7 @@
             <p>它可以在一定程度上帮助你构建世界观，管理不同事物的设定，同时在文本创作的过程中使用这些事物。</p>
             <p>如果你对这个软件的内容或功能存在任何意见、建议，亦或者在使用过程中遭遇任何问题，请通过上方链接中的联系方式告知我！</p>
             <br>
-            <Button class="createNewProject" @click="createNewProject" name="创建新项目" :icon="null">
+            <Button class="createNewProject" @click="createNewProject" :icon="null">
                 点击创建你的新项目
             </Button>
         </div>

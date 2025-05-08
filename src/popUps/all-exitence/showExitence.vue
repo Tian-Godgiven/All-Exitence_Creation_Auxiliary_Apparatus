@@ -6,14 +6,14 @@
 	<template #topBar>
 		<div class="buttons">
             <div class="button" @click="clickJumpToExitence">跳转至事物</div>
-        </div>
+         </div>
 	</template>
     <template #inner ref="inner">
         <ExitenceStatus
+            v-for="status in exitence.status" 
             :disabled="true"
-            v-for="(status,index) in exitence.status" 
-            :key="status.__key"
-            v-model:status="exitence.status[index]"/>
+            :status
+            :key="status.__key"/>
         <div class="scrollSpace"></div>
     </template>
 </TargetContainer>
@@ -47,18 +47,11 @@ import { Exitence } from '@/class/Exitence';
 </script>
 
 <style scoped lang='scss'>
-	// @use "@/static/style/mainPage.scss";
-    // .container{
-    //     position: relative;
-    //     .top{
-    //         padding-top: 0;
-    //     }
-            
-    .title{
-        width: 100%;
-    }
-    .scrollSpace{
-				width: 100%;
-				height: 30%;
-			}
+.title{
+    width: 100%;
+}
+.scrollSpace{
+    width: 100%;
+    height: 30%;
+}
 </style>

@@ -17,8 +17,8 @@
     import Button from '@/components/global/Button.vue';
     const {project} = defineProps<{project:ProjectInfo}>()
     //点击切换到项目
-    function clickMoveProject(){
-        moveToProject(project.pathName)
+    async function clickMoveProject(){
+        await moveToProject(project.pathName)
         //把项目页面藏起来
         hidePage('project')
     }
