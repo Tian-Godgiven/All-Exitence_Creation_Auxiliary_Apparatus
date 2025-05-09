@@ -8,7 +8,7 @@
 
 <script setup lang='ts'>
     import { computed,reactive, watchEffect} from 'vue';
-    import StatusValue from '../StatusValue.vue';
+    import StatusValue from '../../StatusValue.vue';
     const {source,unit} = defineProps(["source","unit"])
     //单元的属性列表
     const unitStatus = computed(()=>{

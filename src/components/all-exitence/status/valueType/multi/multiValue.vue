@@ -1,13 +1,13 @@
 <template>
 	<div class="multiValue">
 		<!-- 根据part的类型显示内容 -->
-		<MultiPartValueVue class="part" v-for="(part,index) in parts" :index="index" :part="part"></MultiPartValueVue>
+		<MultiPartValue class="part" v-for="(part,index) in parts" :index="index" :part="part"/>
 	</div>
 </template>
 
 <script setup lang="ts" name="">
 import { watch, ref, provide } from 'vue'; 
-import MultiPartValueVue from './multiPartValue.vue';
+import MultiPartValue from './MultiPartValue.vue';
 	const {status} = defineProps(["status"])
 	const parts = ref(status.value)
 	watch(()=>status,()=>{

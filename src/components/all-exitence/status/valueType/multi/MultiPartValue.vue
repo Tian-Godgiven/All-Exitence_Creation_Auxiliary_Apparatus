@@ -42,7 +42,7 @@
 
 <script setup lang='ts'>
     import { computed, inject,provide, reactive } from 'vue';
-    import StatusValue from '../StatusValue.vue';
+    import StatusValue from '../../StatusValue.vue';
     import { countExpression, getExpressionText, getQuotePart, getQuoteStatus } from '@/hooks/expression/multiStatusValue';
     import { showQuickInfo } from '@/api/showQuickInfo';
     import { getTypeStatusByKey } from '@/hooks/all-exitence/allExitence';

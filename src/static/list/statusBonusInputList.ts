@@ -1,13 +1,13 @@
-import rangeBonusVue from "@/components/all-exitence/status/statusBonusInput/rangeBonus.vue";
-import multiBonusVue from "@/components/all-exitence/status/statusBonusInput/multiBonus.vue";
-import switchBonusVue from "@/components/all-exitence/status/statusBonusInput/switchBonus.vue";
-import radioBonusVue from "@/components/all-exitence/status/statusBonusInput/radioBonus.vue";
-import childStatusBonusVue from "@/components/all-exitence/status/statusBonusInput/childStatusBonus.vue";
-import selectBonusVue from "@/components/all-exitence/status/statusBonusInput/selectBonus.vue";
-import chooseBonusVue from "@/components/all-exitence/status/statusBonusInput/chooseBonus.vue";
-import relationBonusVue from "@/components/all-exitence/status/statusBonusInput/relationBonus.vue";
-import tagsBonusVue from "@/components/all-exitence/status/statusBonusInput/tagsBonus.vue";
-import DateBonusVue from "@/components/all-exitence/status/statusBonusInput/dateBonus.vue";
+import rangeBonusVue from "@/components/all-exitence/status/valueType/range/rangeBonus.vue";
+import multiBonusVue from "@/components/all-exitence/status/valueType/multi/multiBonus.vue";
+import switchBonusVue from "@/components/all-exitence/status/valueType/switch/switchBonus.vue";
+import radioBonusVue from "@/components/all-exitence/status/valueType/radio/radioBonus.vue";
+import selectBonusVue from "@/components/all-exitence/status/valueType/select/selectBonus.vue";
+import chooseBonusVue from "@/components/all-exitence/status/valueType/choose/chooseBonus.vue";
+import relationBonusVue from "@/components/all-exitence/status/valueType/relation/relationBonus.vue";
+import tagsBonusVue from "@/components/all-exitence/status/valueType/tags/tagsBonus.vue";
+import DateBonusVue from "@/components/all-exitence/status/valueType/date/dateBonus.vue";
+
 export let statusBonusInputList:{[key:string]:any} = {
 	"range":rangeBonusVue,
 	"select":selectBonusVue,
@@ -16,7 +16,6 @@ export let statusBonusInputList:{[key:string]:any} = {
 	"switch":switchBonusVue,
 	"radio":radioBonusVue,
 	"relation":relationBonusVue,
-	"status":childStatusBonusVue,
 	"tags":tagsBonusVue,
 	"date":DateBonusVue,
 }

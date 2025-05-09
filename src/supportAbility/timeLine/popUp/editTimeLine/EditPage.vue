@@ -49,8 +49,8 @@
     import Selector from '@/components/global/Selector.vue';
     import ShowTarget from './ShowTarget/ShowTarget.vue';
     import { chooseTarget, editTarget, getKeyList, getTargetList, hideEditTimeLine, minTimeValue, targetList, timeStatusKey, targetType,timeRuleKey } from './editTimeLine';
-    import DateUnitValue from '@/components/all-exitence/status/statusValue/dateUnitValue.vue';
     import DownLineInput from '@/components/other/input/downLineInput.vue';
+    import DateUnitValue from '@/components/all-exitence/status/valueType/date/dateUnitValue.vue';
     
     //选择的目标类型
     const typeList = [

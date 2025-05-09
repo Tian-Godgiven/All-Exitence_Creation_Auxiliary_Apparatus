@@ -1,16 +1,16 @@
 
-import chooseValueVue from "@/components/all-exitence/status/statusValue/chooseValue.vue"
-import DateValue from "@/components/all-exitence/status/statusValue/dateValue.vue"
-import inputValueVue from "@/components/all-exitence/status/statusValue/inputValue.vue"
-import inputBoxValueVue from "@/components/all-exitence/status/statusValue/inputBoxValue.vue"
-import multiValueVue from "@/components/all-exitence/status/statusValue/multiValue.vue"
-import radioValueVue from "@/components/all-exitence/status/statusValue/radioValue.vue"
-import rangeValueVue from "@/components/all-exitence/status/statusValue/rangeValue.vue"
-import relationValueVue from "@/components/all-exitence/status/statusValue/relationValue.vue"
-import selectValueVue from "@/components/all-exitence/status/statusValue/selectValue.vue"
-import switchValueVue from "@/components/all-exitence/status/statusValue/switchValue.vue"
-import tagsValueVue from "@/components/all-exitence/status/statusValue/tagsValue.vue"
-import ChooseExitenceValue from "@/components/all-exitence/status/statusValue/chooseExitenceValue/ChooseExitenceValue.vue"
+import chooseValueVue from "@/components/all-exitence/status/valueType/choose/chooseValue.vue"
+import DateValue from "@/components/all-exitence/status/valueType/date/dateValue.vue"
+import inputValueVue from "@/components/all-exitence/status/valueType/input/inputValue.vue"
+import inputBoxValueVue from "@/components/all-exitence/status/valueType/inputBox/inputBoxValue.vue"
+import multiValueVue from "@/components/all-exitence/status/valueType/multi/multiValue.vue"
+import radioValueVue from "@/components/all-exitence/status/valueType/radio/radioValue.vue"
+import rangeValueVue from "@/components/all-exitence/status/valueType/range/rangeValue.vue"
+import relationValueVue from "@/components/all-exitence/status/valueType/relation/relationValue.vue"
+import selectValueVue from "@/components/all-exitence/status/valueType/select/selectValue.vue"
+import switchValueVue from "@/components/all-exitence/status/valueType/switch/switchValue.vue"
+import tagsValueVue from "@/components/all-exitence/status/valueType/tags/tagsValue.vue"
+import ChooseExitenceValue from "@/components/all-exitence/status/valueType/chooseExitence/ChooseExitenceValue.vue"
 
 // 属性值类型表
 export let statusValueTypeList = [
