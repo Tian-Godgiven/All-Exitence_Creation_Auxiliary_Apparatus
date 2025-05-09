@@ -9,11 +9,12 @@ export let maskIndex = ref(0)
 export interface PopUp{
 	name?:string, //弹窗的标题名称,默认为无
 	id?:string,//弹窗的唯一性id
-	buttons:Button[]|null, //弹窗中，需要在右上角显示的按钮
+	buttons:Button[]|null, //弹窗右上角显示的按钮
 	props?:{}, //弹窗的组件中需要使用的数据
 	vueName?:string, //弹窗对应的vue对象名称
 	vue?:ShallowRef<any>, //弹窗中显示的vue组件
 	mask:boolean, //是否显示遮罩层
+	repeatable?:boolean,//是否允许重复同样的弹窗，默认为否
 	returnValue?:(...args: any[])=> void, //用于在弹窗中使用的返回回调事件
 	onClose?:(...args: any[])=> void, //用于在关闭弹窗中使用的回调事件，通常为reject
 	index?:number, //弹窗的位置，一般来说不需要设置,
@@ -34,8 +35,9 @@ interface Button{
 
 // 显示弹窗
 export function showPopUp(popUp:PopUp){
-	//如果该弹窗已经显示，则不变,alert除外
-	if(popUp.vueName != "showAlert"){
+	//默认不会显示重复的弹窗，除非popUp中明确要求可重复
+	console.log(popUp.repeatable)
+	if(popUp.repeatable !== true && popUp.vueName != "showAlert"){
 		const ifShowing = popUpList.some(thePopUp=>{
 			//vue对象相同的情况下
 			if((popUp.vue && popUp.vue.value == thePopUp.vue) || 

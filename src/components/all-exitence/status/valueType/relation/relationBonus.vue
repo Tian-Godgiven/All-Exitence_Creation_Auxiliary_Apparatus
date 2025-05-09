@@ -49,6 +49,7 @@
 				allStatus,
 				allTypeStatus
             },
+            repeatable:true,//可以重复创建属性弹窗
             returnValue:(status:Status)=>{
                 //这个属性的名称是否已存在
                 if(relationSource[status.name] != null){
