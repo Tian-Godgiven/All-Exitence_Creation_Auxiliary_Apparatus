@@ -13,6 +13,7 @@
 .quickButtonPanelLine{
     border-radius: $borderRadio;
     background-color: $bgColor80;
+    box-shadow: $groundShadow;
     width: 200px;
     padding: 15px;
     overflow: hidden;

@@ -68,11 +68,13 @@
         align-items: center;
         display: flex;
         .icon{
+            flex-shrink: 0;
             width: 40px;
             height: 40px;
         } 
         >:not(.icon){
-            flex-grow: 1;
+            min-height: 40px;
+            width: calc(100% - 40px);
         }
     }
     .inner{

@@ -83,11 +83,11 @@ export async function writeFileAtPath(path:string,fileName:string,content:Object
 }
 
 //尝试读取指定文件，失败时创建指定内容文件
-export async function tryReadFileAtPath(path:string,fileName:string,ifJSON:boolean=true,content:Object|string|(()=>Object|string)){
+export async function tryReadFileAtPath(path:string,fileName:string,ifParse:boolean=true,content:Object|string|(()=>Object|string)){
     try{
         const content = await readTextFile(getPath(path,fileName), appData);
         //读取文件
-        if(ifJSON && content){
+        if(ifParse && content){
             return JSON.parse(content)
         }
         return content

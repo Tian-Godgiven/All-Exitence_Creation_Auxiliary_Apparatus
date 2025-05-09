@@ -10,11 +10,14 @@
 		</textAreaVue>
     </template>
 	<template #topBar>
-		<div class="exitenceAbility">
-			<Button @click="switchControlMode" name="属性管理"></Button>
-			<Button @click="setExitence" name="事物设置"></Button>
-			<Button @click="addNewStatus" name="新增属性"></Button>
-		</div>
+		<Menu class="exitenceAbility" vertical="right" horizen="bottom">
+			<template #default="{switchMenu}">
+				<Button @click="switchMenu" icon="setting" ></Button>
+			</template>
+			<template #menu>
+				<ListMenu :list="abilityList"/>
+			</template>
+		</Menu>
 	</template>
     <template #inner>
         <DraggableList
@@ -38,13 +41,15 @@
 	import { changeExitenceName, getTypeByKey} from '@/hooks/all-exitence/allExitence';
 	import DraggableList from '@/components/other/DraggableList.vue';
 	import Status from '@/interfaces/Status';
-	import Button from '@/components/global/Button.vue';
 	import { showPopUp } from '@/hooks/pages/popUp';
 	import TargetContainer from './TargetContainer.vue';
 	import { showOnMain } from '@/hooks/pages/mainPage/showOnMain';
 	import { Exitence } from '@/class/Exitence';
+	import Menu from '@/components/global/Menu.vue';
+	import ListMenu from '@/components/global/ListMenu.vue';
+import Button from '@/components/global/Button.vue';
 
-	let {exitence} = defineProps<{exitence:Exitence}>()
+	const {exitence} = defineProps<{exitence:Exitence}>()
 	
 	//事物所属的分类
 	const type = getTypeByKey(exitence.typeKey)
@@ -52,9 +57,23 @@
 	function changeName(newName:string){
 		changeExitenceName(exitence,newName)
 	}
+
+	//功能菜单
+	const abilityList = [{
+		label:"属性管理",
+		click:()=>switchControlMode()
+	},{
+		label:"属性设置",
+		click:()=>setExitence(),
+	},{
+		label:"新增属性",
+		click:()=>addNewStatus()
+	}]
+
 	//切换管理模式
 	const showDrag = ref(false)
 	function switchControlMode(){
+		console.log("123")
 		showDrag.value = !showDrag.value
 	}
 	//点击打开设置弹窗
@@ -73,7 +92,6 @@
 			}
 		})
 	}
-
 	//创建新属性
 	const containerRef = useTemplateRef("containerRef")
 	function addNewStatus(){
@@ -135,6 +153,14 @@
 	height: 30%;
 }
 .exitenceAbility{
-	display: flex;
+	width: 60px;
+	height: 60px;
+	.button{
+		border-radius: 10px;
+		box-sizing: border-box;
+		padding: 6px;
+		width: 60px;
+		height: 60px;
+	}
 }
 </style>

@@ -1,7 +1,8 @@
 <template>
 <div class="listMenu">
     <div class="title" v-if="title">{{ title }}</div>
-    <Button class="menuOption" v-for="option in list" @click="option.click">
+    <Button class="menuOption" v-for="option in list" 
+        @click="option.click">
         <IconVue v-if="option.icon" :icon="option.icon"></IconVue>
         <div>{{ option.label }}</div>
     </Button>

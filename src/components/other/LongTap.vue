@@ -21,7 +21,7 @@
 	const {disabled=false,longTap,click} = defineProps<{
 		disabled?:boolean,
 		longTap:()=>void,
-		click:()=>void
+		click?:()=>void
 	}>()
     //长按和点击
 	let timeout:number|false
@@ -45,7 +45,9 @@
 					longTap()
 				}
 				else{
-					click()
+					if(click){
+						click()
+					}
 				}
 			}
 		}

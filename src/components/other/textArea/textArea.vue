@@ -23,7 +23,7 @@
     import { addInputLast, addInputLastDiv, deleteInputLast } from '@/api/cursorAbility';
     import { findTargetDivs } from '@/hooks/findTargetDiv';
     import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expression/textAreaContent';
-import { toString } from 'lodash';
+    import { toString } from 'lodash';
 
     const textArea = useTemplateRef('textArea');
     let showPlaceholder = ref(true) //当前是否显示placeholder

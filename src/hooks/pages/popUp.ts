@@ -36,7 +36,6 @@ interface Button{
 // 显示弹窗
 export function showPopUp(popUp:PopUp){
 	//默认不会显示重复的弹窗，除非popUp中明确要求可重复
-	console.log(popUp.repeatable)
 	if(popUp.repeatable !== true && popUp.vueName != "showAlert"){
 		const ifShowing = popUpList.some(thePopUp=>{
 			//vue对象相同的情况下
