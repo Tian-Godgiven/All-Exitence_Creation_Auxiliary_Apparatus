@@ -1,10 +1,11 @@
 <template>
-<div class="boxInput" 
-    ref="boxRef">
-    <span @click="clickBox" class="text" :class="ifPlaceholder?'placeholder':''" v-show="!ifInputMode">
+<div class="boxInput"  >
+    <div ref="boxRef" @pointerdown.stop @click.stop="clickBox" class="text" 
+        :class="ifPlaceholder?'placeholder':''" 
+        v-show="!ifInputMode">
         {{ text }}
-    </span>
-    <div class="inputContainer" v-if="ifInputMode">
+    </div>
+    <div class="inputContainer" v-if="ifInputMode" @click.stop>
         <MultiLineInput 
             class="input"
             v-model="value"
@@ -31,8 +32,9 @@
     const value = defineModel<string|number>({
         default:""
     })
-    const {placeholder="",switchInput=true,handInputMode=null,type,clear} = defineProps<{
+    const {placeholder="",preventClick=false,switchInput=true,handInputMode=null,type,clear} = defineProps<{
         placeholder?:string,
+        preventClick?:boolean,//若为true则阻止点击事件传播
         switchInput?:boolean,//若为true则允许在输入和纯文本间切换
         handInputMode?:boolean,//手动切换输入模式,优先级更高
         type?:"number"|"string",
@@ -49,16 +51,13 @@
             document.removeEventListener("click", listener);
         }
     }
-    function clickBox(){
+    function clickBox(event:MouseEvent){
         if(!switchInput)return;
+        if(preventClick){
+            event.stopPropagation()
+        }
         //切换到输入模式
         inputMode.value = true
-        //聚焦input
-        nextTick(()=>{
-            if(inputRef.value){
-                inputRef.value.focusInput()
-            }
-        })
         document.addEventListener("click",listener)
     }
 
@@ -66,11 +65,19 @@
     const inputMode = ref(switchInput===true?false:true)
     //当前是否为输入模式
     const ifInputMode = computed(()=>{
-        //更高优先级
+        let control:boolean
+        //手动控制的输入模式
         if(handInputMode !== null){
-            return handInputMode
+            control = handInputMode
         }
-        return inputMode.value
+        control = inputMode.value
+        //为true时聚焦到输入框
+        nextTick(()=>{
+            if(inputRef.value){
+                inputRef.value.focusInput()
+            }
+        })
+        return control
     })
 
     //当前是否显示placeholder
@@ -112,7 +119,7 @@
         position: relative;
         height: 100%;
         width: 100%;
-        min-width: 100px;
+        min-width: 1rem;
     }
     .text{
         display: inline;
@@ -128,18 +135,15 @@
         display: inline-flex;
         max-width: 100%;
         .input{
-            background-color: inherit;
-            field-sizing: content;
             box-sizing: border-box;
-            text-align: inherit;
             height: 100%;
             width: 100%;
-            padding: 5px 10px;
+            padding: 5px 15px;
+            border-radius: 10px;
             border: none;
             outline: none;
-            font-size: inherit;
             &:focus{
-                outline: 3px solid rgb(33, 200, 255);
+                box-shadow: 0px 2px 10px rgb(0, 81, 255);
             }
         }
         .clearButton{

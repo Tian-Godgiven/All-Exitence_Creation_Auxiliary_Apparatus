@@ -3,6 +3,7 @@ import { inputSuggestionSighUpItem } from "@/supportAbility/inputSuggestion/main
 import { missionListItem } from "@/supportAbility/missionList/missionList";
 import { quickDraftItem } from "@/supportAbility/quickDraft/quickDraft";
 import { searchSighUpItem } from "@/supportAbility/search/search";
+import { tagLibrarySignUpItem } from "@/supportAbility/tagLibrary/tagLibrary";
 import { timeLineSignUpItem } from "@/supportAbility/timeLine/timeLine";
 
 export type SupportAbilitySignUpItem = {
@@ -20,5 +21,6 @@ export const supportAbilityList:SupportAbilitySignUpItem[] = [
     quickDraftItem,
     customTimeItem,
     timeLineSignUpItem,
-    searchSighUpItem
+    searchSighUpItem,
+    tagLibrarySignUpItem
 ]

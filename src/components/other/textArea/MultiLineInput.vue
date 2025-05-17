@@ -6,6 +6,7 @@
     :placeholder="placeholder"
     inputmode="text"
     tabindex="0"
+    @pointerdown.stop
     @input="onInput"
     @blur="onBlur"
     @focus="onFocus">
@@ -15,7 +16,7 @@
 <script setup lang='ts'>
     import { onMounted, ref, useTemplateRef } from 'vue';
     import { toString } from 'lodash';
-import { focusOnEnd } from '@/api/focusOnEnd';
+    import { focusOnEnd } from '@/api/focusOnEnd';
 
     //占位符
     const {placeholder=""} = defineProps<{placeholder?:string}>()
@@ -93,9 +94,13 @@ import { focusOnEnd } from '@/api/focusOnEnd';
 
 <style scoped lang='scss'>
 .multiLineInput{
+    font-size: inherit;
+    background-color: inherit;
+    text-align: inherit;
     position: relative;
     min-height: inherit;
     font-size: inherit;
+    field-sizing: content;
     height: 100%;
     width: 100%;
     outline: none;
@@ -104,9 +109,6 @@ import { focusOnEnd } from '@/api/focusOnEnd';
     overflow: inherit;
     text-overflow: inherit;
     white-space: inherit;
-    :focus{
-        border: none;
-    }
     &.showPlaceholder{
         font-size: 1em;
         text-decoration-color: rgb(125, 125, 125)!important;

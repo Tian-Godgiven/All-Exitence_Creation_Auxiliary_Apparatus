@@ -44,7 +44,9 @@
 
 <style scoped lang='scss'>
 .button{
+    display: block;
     .buttonIcon{
+        display: block;
         width: 100%;
         height: 100%;
     }

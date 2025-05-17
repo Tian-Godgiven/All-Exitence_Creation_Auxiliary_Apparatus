@@ -57,7 +57,7 @@ export function showPopUp(popUp:PopUp){
 		popUp["name"] = ""
 	}
 	// 默认具备关闭按键
-	if(popUp.buttons && popUp.buttons.length == 0){
+	if(popUp.buttons){
 		popUp.buttons.push({
 			name:"关闭",
 			click:()=>{

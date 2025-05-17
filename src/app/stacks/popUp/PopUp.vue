@@ -11,7 +11,7 @@
 		left:popUp.position?.x,
 		top:popUp.position?.y
 	}">
-		<div class="top" v-if="ifTop">
+		<div class="top" :class="name?'':'noTitle'" v-if="ifTop">
 			<div class="title" v-if="name">{{ name }}</div>
 			<div class="space" v-else-if="buttons!=null"></div>
 			<div class="buttons" v-if="buttons!=null">
@@ -59,7 +59,13 @@ import Button from '@/components/global/Button.vue';
 		padding:0 20px;
 		padding-top: 20px;
 		position: relative;
+		display: flex;
+		justify-content: space-between;
+		&.noTitle{
+			height: 0;
+		}
 		.title{
+			flex-grow: 1;
 			position: relative;
 			height: 70px;
 			top: 0px;
@@ -68,17 +74,10 @@ import Button from '@/components/global/Button.vue';
 			display: flex;
 			align-items: center;
 		}
-		.space{
-			height: 30px;
-		}
 		.buttons{
 			height: 50px;
-			position: absolute;
-			right:10px;
-			top:10px;
-			width: 350px;
 			display: flex;
-			flex-direction: row-reverse;
+			gap: 5px;
 			.button{
 				aspect-ratio: 1;
 				height: 100%;

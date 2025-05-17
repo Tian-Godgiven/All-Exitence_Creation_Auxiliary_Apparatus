@@ -2,6 +2,7 @@ export type Icon = keyof typeof iconList;
 
 export const iconList:Record<string,string>= {
     "close":"close",//叉号
+    "deleteX":"deleteX",//圆中的空心叉号
     "check":"check",//勾号
     "add":"plus",//加号
     "addNew":"addCube",//方块包围的加号
@@ -17,7 +18,7 @@ export const iconList:Record<string,string>= {
     "showRight":"showRight",//显示右侧页面
     "rightUp":"rightUp",//右侧页面抬升
     "backMain":"backMain",//返回主页面
-    "closePopUp":"closePopUp",//关闭弹窗
+    "closePopUp":"closePopUp",//关闭弹窗,圆包围的x号
 
     "time":"time",//时钟
     "timer":"timer",//计时器
