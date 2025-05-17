@@ -1,5 +1,4 @@
 <template>
-<ScrollBar>
 <div class="container">
 	<div class="top">
         <div class="title" :style="{'text-align':titleAlign}">
@@ -14,14 +13,11 @@
         <slot name="info"></slot>
     </div>
 </div>
-</ScrollBar>
 </template>
 
 <script setup lang='ts'>
-
 import { toNumber } from 'lodash';
 import { useTemplateRef } from 'vue';
-import ScrollBar from '@/components/global/ScrollBar.vue';
 
     const {titleAlign="center",ifInfo=true} = defineProps<{
         titleAlign?:"center"|"right"|"left",//标题的对齐方向

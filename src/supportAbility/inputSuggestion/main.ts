@@ -1,5 +1,5 @@
 import { shallowReactive, toRaw } from "vue"
-import { createFileToPath, readFileFromPath, tryReadFileAtPath, writeFileAtPath } from "../../hooks/fileSysytem"
+import { tryReadFileAtPath, writeFileAtPath } from "../../hooks/fileSysytem"
 import { SupportAbilitySignUpItem } from "@/static/list/supportAbilityList"
 import { cloneDeep } from "lodash"
 
@@ -25,31 +25,25 @@ export const projectInputSuggestionList = shallowReactive(cloneDeep(defaultList)
 //初始化输入建议文件
 async function initInputSuggestion(){
     //初始化全局输入建议文件
-    const tmp = await readFileFromPath("appData","globalInputSuggestionList.json")
-    if(tmp){
-        Object.assign(globalInputSuggestionList,tmp)
-    }
-    else{
-        //失败时创建该文件
-        const list = defaultList
-        await createFileToPath("appData","globalInputSuggestionList.json",JSON.stringify(list))
-        Object.assign(globalInputSuggestionList,list)
-    }
+    const dataPath = "appData"
+    const list = defaultList
+    const inputSuggestionList = await tryReadFileAtPath(dataPath,"globalInputSuggestionList.json",true,list)
+    Object.assign(globalInputSuggestionList,inputSuggestionList)
 }
 
 //同步项目：尝试读取项目输入建议文件，若无则创建
 async function syncInputSuggestion(projectPath:string){
     const dataPath = projectPath+"/data"
     const list = defaultList
-    const inputSuggestionList = await tryReadFileAtPath(dataPath,"inputSuggestionList.json",true,JSON.stringify(list))
+    const inputSuggestionList = await tryReadFileAtPath(dataPath,"inputSuggestionList.json",true,list)
     Object.assign(projectInputSuggestionList,inputSuggestionList)
 }
 
 //保存输入建议文件
 async function saveInputSuggestion(projectPath:string|null){
     //将当前全局输入建议保存到文件中
-    const content = toRaw(globalInputSuggestionList)
-    await writeFileAtPath("appData","globalInputSuggestionList.json",content)
+    const list = toRaw(globalInputSuggestionList)
+    await writeFileAtPath("appData","globalInputSuggestionList.json",list)
     //保存当前项目的输入建议
     if(projectPath){
         const dataPath = projectPath+"/data"

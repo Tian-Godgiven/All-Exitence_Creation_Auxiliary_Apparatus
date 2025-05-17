@@ -47,6 +47,7 @@ import Button from '@/components/global/Button.vue';
 	overflow: hidden;
 	background-color: $bgColor;
 	.top{
+		padding-left: 20px;
 		width:100%;
 		word-break: break-all;
 		background-color: $bgColor;
@@ -70,6 +71,7 @@ import Button from '@/components/global/Button.vue';
 			.button{
 				width: 80px;
 				height: 100%;
+				padding: 12px;
 				box-sizing: border-box;
 			}
 		}

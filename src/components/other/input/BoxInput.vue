@@ -1,9 +1,10 @@
 <template>
 <div class="boxInput" 
-    ref="boxRef"
-    @click="clickBox">
-    <div class="text" :class="ifPlaceholder?'placeholder':''" v-show="!ifInputMode">{{ text }}</div>
-    <div class="inputContainer" v-show="ifInputMode">
+    ref="boxRef">
+    <span @click="clickBox" class="text" :class="ifPlaceholder?'placeholder':''" v-show="!ifInputMode">
+        {{ text }}
+    </span>
+    <div class="inputContainer" v-if="ifInputMode">
         <MultiLineInput 
             class="input"
             v-model="value"
@@ -19,7 +20,6 @@
             v-if="clear && ifInputMode" v-show="toString(value).length>0">
         </Button>
     </div>
-    
 </div>
 </template>
 
@@ -50,19 +50,16 @@
         }
     }
     function clickBox(){
-        if(switchInput){
-            //切换到输入模式
-            inputMode.value = true
-            //聚焦input
-            nextTick(()=>{
-                if(inputRef.value){
-                    inputRef.value.focusInput()
-                }
-                
-            })
-            document.addEventListener("click",listener)
-        }
-        
+        if(!switchInput)return;
+        //切换到输入模式
+        inputMode.value = true
+        //聚焦input
+        nextTick(()=>{
+            if(inputRef.value){
+                inputRef.value.focusInput()
+            }
+        })
+        document.addEventListener("click",listener)
     }
 
     //输入模式
@@ -118,7 +115,9 @@
         min-width: 100px;
     }
     .text{
+        display: inline;
         word-break: break-all;
+        width: fit-content;
         @include textMaxLine(1);
         &.placeholder{
             text-decoration-color: rgb(125, 125, 125)!important;

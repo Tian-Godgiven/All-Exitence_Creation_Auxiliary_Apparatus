@@ -13,11 +13,14 @@
 	</div>
 	
 	<!-- 首页内容 -->
-	<div class="inner" :key="refreshKey">
+	<ScrollBar class="inner">
+	<div class="content" :key="refreshKey">
 		<showInfoOnMainVue :target="showOnMain.target" v-if="showOnMain.type=='info'"/>
 		<showArticleOnMainVue :article="showOnMain.target" v-else-if="showOnMain.type == 'article'"/>
 		<showExitenceOnMainVue :exitence="showOnMain.target" v-else-if="showOnMain.type == 'exitence'"/>
 	</div>
+	</ScrollBar>
+	
 
 	<!-- 快捷键 -->
 	<QuickButton/>
@@ -43,6 +46,7 @@
 	import Suggester from '@/supportAbility/inputSuggestion/suggester/Suggester.vue';
 	import QuickButton from '@/app/pages/mainPage/components/quickButton.vue/QuickButton.vue';
 import { callSupportAbility } from '@/hooks/app/app';
+import ScrollBar from '@/components/global/ScrollBar.vue';
 // 功能按键
 	const buttons = [{
 		name:"手动保存",
@@ -117,8 +121,10 @@ import { callSupportAbility } from '@/hooks/app/app';
 		position: relative;
 		overflow: hidden;
 		padding: 0 25px;
-		padding-top: 30px;
 		z-index: 0;
+		.content{
+			padding-top: 21px;
+		}
 	}
 	
 	
