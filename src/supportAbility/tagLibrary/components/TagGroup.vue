@@ -10,13 +10,16 @@
                 :switch-input="true" 
                 v-model="tagGroup.label">
             </BoxInput>
-            <Button class="addTag" icon="add" @click="addTag"></Button>
+            <Button class="addTag" icon="add" @click="switchAddTag"></Button>
         </div>
     </template>
     <template #inner>
         <div class="tagContainer" v-if="(tagGroup.tags.length != 0)||addNewTag">
-            <TagDiv v-for="tag in tagGroup.tags" :tag :tag-group></TagDiv>
-            <NewTag v-if="addNewTag" :tagGroup v-model="addNewTag"></NewTag>
+            <TagDiv v-for="tag in tagGroup.tags" :tag = tag.label 
+                :deleteTag 
+                :updateTag="(newTag)=>{updateTag(newTag,tag)}">
+            </TagDiv>
+            <NewTag v-if="addNewTag" :addTag v-model="addNewTag"></NewTag>
         </div>
         <Nocontent v-if="(tagGroup.tags.length == 0) && !addNewTag"></Nocontent>
     </template>
@@ -25,7 +28,7 @@
 </template>
 
 <script setup lang='ts'>
-import { createTagGroup, deleteTagGroup, TagGroup } from '../tagLibrary';
+import { addTagToGroup, createTagGroup, deleteTagFromGroup, deleteTagGroup, TagGroup, TagItem } from '../tagLibrary';
 import TagDiv from './TagDiv.vue';
 import LongTap from '@/components/other/LongTap.vue';
 import { showControlPanel } from '@/hooks/controlPanel';
@@ -59,8 +62,20 @@ import Nocontent from '@/components/global/NoContent.vue';
     }
     //显示新增标签
     const addNewTag = ref(false)
-    function addTag(){
+    function switchAddTag(){
         addNewTag.value = !addNewTag.value
+    }
+    //新增标签
+    function addTag(newTag:string){
+        addTagToGroup(tagGroup,newTag)
+    }
+    //删除标签
+    function deleteTag(tag:string){
+        deleteTagFromGroup(tagGroup,tag)
+    }
+    //更新标签
+    function updateTag(newTag:string,oldTag:TagItem){
+        oldTag.label = newTag
     }
 </script>
 

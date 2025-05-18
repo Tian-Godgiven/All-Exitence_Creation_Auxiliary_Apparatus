@@ -4,7 +4,6 @@ import { SupportAbilitySignUpItem } from "@/static/list/supportAbilityList";
 import { reactive, shallowRef } from "vue";
 import ManagePage from "./ManagePage.vue";
 import { supportAbilitySaveProject, supportAbilitySyncProject } from "@/hooks/app/supportAbility";
-import { cloneDeep } from "lodash";
 import { nanoid } from "nanoid";
 import { showQuickInfo } from "@/api/showQuickInfo";
 
@@ -21,7 +20,6 @@ export const tagLibrarySignUpItem:SupportAbilitySignUpItem = {
 //默认内容
 const defaultTagLibrary:TagGroup[] = [
     {label:"",__key:"noGroup",tags:[]},
-    {label:"测试",__key:nanoid(),tags:[{label:"测试标签"}]}
 ]
 
 export type TagItem = {
@@ -33,7 +31,7 @@ export type TagGroup = {
     tags:TagItem[]
 }
 //当前标签库内容
-const nowTagLibrary = reactive<TagGroup[]>(cloneDeep(defaultTagLibrary))
+const nowTagLibrary = reactive<TagGroup[]>([])
 
 //初始化：右侧页面按键
 function initTagLibrary(){
@@ -46,11 +44,12 @@ function initTagLibrary(){
 
 //同步项目读取相应数据，无文件时也会创建对应项目的标签库文件
 async function syncTagLibrary(projectPath:string){
-    const file = supportAbilitySyncProject(spName,projectPath,defaultTagLibrary)
+    const file = await supportAbilitySyncProject(spName,projectPath,defaultTagLibrary)
     Object.assign(nowTagLibrary,file)
 }
 //保存当前数据到项目文件中
 async function saveTagLibrary(projectPath:string|null){
+    console.log("保存时的tagLib",nowTagLibrary)
     await supportAbilitySaveProject(spName,projectPath,nowTagLibrary)
 }
 
@@ -70,6 +69,7 @@ function showManagePopUp(){
 
 //获取当前标签库的内容
 export function getTagLibrary(){
+    console.log(nowTagLibrary)
     return nowTagLibrary
 }
 
@@ -102,8 +102,8 @@ export function getTagLibrary(){
         tagGroup.tags.push({label:tagText})
     }
     //删除
-    export function deleteTagFromGroup(tagGroup:TagGroup,tag:TagItem){
-        const index = tagGroup.tags.findIndex(value=>value==tag)
+    export function deleteTagFromGroup(tagGroup:TagGroup,tag:string){
+        const index = tagGroup.tags.findIndex(value=>value.label==tag)
         if(index>=0){
             tagGroup.tags.splice(index,1)
         }

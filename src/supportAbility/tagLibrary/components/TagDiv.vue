@@ -3,29 +3,33 @@
     class="tag" 
     @pointerdown.stop @click.stop  
     @click="clickTag">
-    <div class="text" v-if="!editMode">{{ tag.label }}</div>
+    <div class="text" v-if="!editMode">{{ tag }}</div>
     <div class="inputContainer" v-else>
         <MultiLineInput 
             @pointerdown.stop
             class="input"
-            v-model="tag.label"
+            v-bind:model-value="tag" 
+            v-on:update:model-value="updateTag"
             ref="inputRef" 
             placeholder="空标签"/>
         <Button class="delete"
             v-if="editMode" 
             icon="delete" 
-            @click="deleteTag"></Button>
+            @click="deleteTag(tag)"></Button>
     </div>
 </div>
 </template>
 
 <script setup lang='ts'>
     import { ref, useTemplateRef } from 'vue';
-    import { deleteTagFromGroup, TagGroup, TagItem } from '../tagLibrary';
     import Button from '@/components/global/Button.vue';
     import MultiLineInput from '@/components/other/textArea/MultiLineInput.vue';
     import { nextTick } from 'vue';
-    const {tag,tagGroup} = defineProps<{tag:TagItem,tagGroup:TagGroup}>()
+    let {tag,deleteTag,updateTag} = defineProps<{
+        tag:string,
+        deleteTag:(tag:string)=>void,
+        updateTag:(newTag:string)=>void
+    }>()
     const editMode = ref(false)
     //点击tag允许编辑文本+显示删除按钮，点击到外界结束
     const tagRef = useTemplateRef("tagRef")
@@ -46,9 +50,6 @@
             }
         })
         document.addEventListener("click",listener)
-    }
-    function deleteTag(){
-        deleteTagFromGroup(tagGroup,tag)
     }
 </script>
 

@@ -1,16 +1,15 @@
 <template>
 <div class="newTag" ref="divRef" @pointerdown.stop>
     <DownLineInput placeholder="新标签" v-model="newTag"/>
-    <div @click="addTag">+</div>
+    <div @click="addNewTag">+</div>
 </div>
 </template>
 
 <script setup lang='ts'>
     import { onMounted, ref, useTemplateRef } from 'vue';
-import { addTagToGroup, TagGroup } from '../tagLibrary';
 import DownLineInput from '@/components/other/input/downLineInput.vue';
-    const {tagGroup} = defineProps<{
-        tagGroup:TagGroup,
+    const {addTag} = defineProps<{
+        addTag:(tag:string)=>void
     }>()
     const mode = defineModel<boolean>({default:false})
     //新tag的输入内容
@@ -30,8 +29,8 @@ import DownLineInput from '@/components/other/input/downLineInput.vue';
         document.addEventListener("click",listener)
     })
     //添加tag
-    function addTag(){
-        addTagToGroup(tagGroup,newTag.value)
+    function addNewTag(){
+        addTag(newTag.value)
         newTag.value = ""
     }
 </script>
