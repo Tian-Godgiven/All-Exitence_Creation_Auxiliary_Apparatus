@@ -1,6 +1,6 @@
 <template>
 <div class="quickButton">
-    <div class="quickButtonPanel" ref="panelRef">
+    <div class="quickButtonPanel" v-show="showing" ref="panelRef">
         <PanelLine :item v-for="item in quickPanelList"/>
     </div>
     <Button class="button" 
@@ -23,20 +23,21 @@ import { quickPanelList } from '@/hooks/pages/mainPage/quickButton';
 
     //动画
     const rotateDegree = ref(0)//旋转角度
-    let showing = false
+    let showing = ref(false)
 	function switchQuickButton(){
 		//旋转按键
 		rotateDegree.value += 180
 		//切换显示功能面板
-        if(showing){
+        if(showing.value){
             hidePanel()
         }
         else{
             showPanel()
         }
-        showing = !showing
+        
 	}
     function showPanel(){
+        showing.value = true
         gsap.to(".quickButtonPanelLine",{
             duration: 0.3,
             scaleY: 1,
@@ -59,6 +60,9 @@ import { quickPanelList } from '@/hooks/pages/mainPage/quickButton';
                 from: "end",
                 axis: "y",
                 amount: 0.15,
+            },
+            onComplete:()=>{
+                showing.value = false
             }
         })
     }
@@ -67,6 +71,7 @@ import { quickPanelList } from '@/hooks/pages/mainPage/quickButton';
 
 <style scoped lang='scss'>
 .quickButton{
+    pointer-events: visible;
     position: absolute;
     right: 9vw;
     top:75vh;

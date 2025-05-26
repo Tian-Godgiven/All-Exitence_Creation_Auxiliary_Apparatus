@@ -43,9 +43,9 @@
     import { computed, ref } from 'vue';
     import EditPart from './EditPart.vue';
     import { getChooseExitenceStatusList, removeExitenceFromChooseExitenceStatus, type ChooseExitenceStatus } from '@/hooks/all-exitence/status/chooseExitence';
-import { getExitenceByKey, getTypeByKey, showExitenceOnPopUp } from '@/hooks/all-exitence/allExitence';
-import Button from '@/components/global/Button.vue';
-import { getSettingValue } from '@/hooks/all-exitence/status';
+    import { getExitenceByKey, getTypeByKey, showExitenceOnPopUp } from '@/hooks/all-exitence/allExitence';
+    import Button from '@/components/global/Button.vue';
+    import { getSettingValue } from '@/hooks/all-exitence/status';
     const {status,statusSetting} = defineProps<{
         status:ChooseExitenceStatus,
         statusSetting:Record<string,any>
@@ -122,6 +122,7 @@ import { getSettingValue } from '@/hooks/all-exitence/status';
     overflow: hidden;
 }
 .editMode{
+    width: 70vw;
     box-sizing: border-box;
     box-shadow: $groundShadow;
     margin: 6px;

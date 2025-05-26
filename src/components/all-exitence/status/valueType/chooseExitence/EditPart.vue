@@ -123,11 +123,11 @@ import { getSettingValue } from '@/hooks/all-exitence/status';
     gap: 5px 10px;
 }
 .exitence{
-    color: white;
     flex-shrink: 0;
     height: 50px;
     padding: 5px 20px;
     border-radius: 30px;
     background-color: $bgColor40;
+    color: white;
 }
 </style>

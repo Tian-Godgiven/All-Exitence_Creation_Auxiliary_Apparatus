@@ -14,7 +14,8 @@ export const tagLibrarySignUpItem:SupportAbilitySignUpItem = {
     "name":spName,
     "init":initTagLibrary,
     "syncProject":(projectPath)=>syncTagLibrary(projectPath),
-    "save":saveTagLibrary
+    "save":saveTagLibrary,
+    "call":()=>showManagePopUp()
 }
 
 //默认内容

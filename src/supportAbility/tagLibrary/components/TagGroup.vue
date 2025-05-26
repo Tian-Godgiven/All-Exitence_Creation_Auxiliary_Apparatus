@@ -15,7 +15,9 @@
     </template>
     <template #inner>
         <div class="tagContainer" v-if="(tagGroup.tags.length != 0)||addNewTag">
-            <TagDiv v-for="tag in tagGroup.tags" :tag = tag.label 
+            <TagDiv v-for="tag in tagGroup.tags"
+                :key="Symbol()" 
+                :tag = tag.label 
                 :deleteTag 
                 :updateTag="(newTag)=>{updateTag(newTag,tag)}">
             </TagDiv>

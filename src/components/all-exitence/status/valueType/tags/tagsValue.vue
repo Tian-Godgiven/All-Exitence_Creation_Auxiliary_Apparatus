@@ -1,33 +1,45 @@
 <template>
-    <div class="tagsValue">
-        <div @dblclick="clickDeleteTag(tag,index)" class="tag" v-for="tag,index in tags">
-            {{ tag }}
-        </div>
-        <div class="addTag tag" v-if="ifAddTag">
-            <downLineInputVue placeholder="新标签" v-model="newTag"/>
-            <div @click="addTag">+</div>
-        </div>
+<div class="tagsValue" :class="editMode?'editMode':''">
+    <div class="tagContainer">
+        <TagDiv :tag :deleteTag 
+            :updateTag="(newTag)=>{updateTag(newTag,tag)}" 
+            v-for="tag in tags">
+        </TagDiv>
+        <Button v-if="ifAddTag" @click="switchEditMode" icon="edit"></Button>
     </div>
+    <ChooseTag class="editing" v-if="editMode && ifAddTag" :addTag :chosenTags="tags" ></ChooseTag>
+</div>
 </template>
 
 <script setup lang='ts'>
-import downLineInputVue from '@/components/other/input/downLineInput.vue';
 import { showAlert } from '@/hooks/alert';
+import Status from '@/interfaces/Status';
+import TagDiv from '@/supportAbility/tagLibrary/components/TagDiv.vue';
 import { isArray } from 'lodash';
 import { computed, ref } from 'vue';
+import ChooseTag from './ChooseTag.vue';
+import Button from '@/components/global/Button.vue';
 
-    const {status,statusSetting} = defineProps(["status","statusSetting"])
-    let tags = status.value
-    //添加新标签
+    const {status,statusSetting} = defineProps<{
+        status:Status,
+        statusSetting:any
+    }>()
+    let tags:string[] = status.value
+    //是否允许添加新标签
     const ifAddTag = computed(()=>{
         if(!statusSetting || statusSetting.tagsAdd == null){
             return true
         }
         return statusSetting.tagsAdd
     })
-    const newTag = ref("")
-    function addTag(){
-        if(newTag.value == ""){
+
+    //切换编辑标签模式
+    const editMode = ref(false)
+    function switchEditMode(){
+        editMode.value = !editMode.value
+    }
+    function addTag(newTag:string){
+        if(newTag == ""){
             return false
         }
         else{
@@ -36,24 +48,37 @@ import { computed, ref } from 'vue';
                 status.value = []
                 tags = status.value
             }
-            status.value.push(newTag.value)
+            status.value.push(newTag)
         }
-        
-        newTag.value = ""
     }
-    //双击删除
-    function clickDeleteTag(tag:string,index:number){
+    //删除
+    function deleteTag(tag:string){
         showAlert({
             "info":`删除标签${tag}？`,
             "confirm":()=>{
+                const index = status.value.findIndex((item:string)=>item==tag)
                 status.value.splice(index,1)
             }
         })
     }
+    //更新
+    function updateTag(newTag:string,oldTag:string){
+        const index = status.value.findIndex((item:string)=>item==oldTag)
+        status.value[index] = newTag
+    }
 </script>
 
 <style scoped lang='scss'>
-    .tagsValue{
+.tagsValue{
+    &.editMode{
+        width: 70vw;
+        box-sizing: border-box;
+        box-shadow: $groundShadow;
+        margin: 6px;
+        border-radius: 20px;
+        padding: 10px;
+    }
+    .tagContainer{
         display: flex;
         flex-wrap: wrap;
         .tag{
@@ -62,9 +87,12 @@ import { computed, ref } from 'vue';
             padding: 5px 10px;
             margin: 5px 5px;
         }
-        .addTag{
-            max-width: 200px;
-            display: flex;
+        .button{
+            flex-shrink: 0;
+            width: 50px;
+            height: 50px;
         }
     }
+    
+}
 </style>

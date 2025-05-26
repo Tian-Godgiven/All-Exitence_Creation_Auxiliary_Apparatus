@@ -1,6 +1,9 @@
 <template>
 <div class="noContent">
-    <span>{{ placeholder }}</span>
+    <div class="placeholder">
+        <span>{{ placeholder }}</span>
+        <slot></slot>
+    </div>
 </div>
 </template>
 
@@ -12,7 +15,7 @@
 
 <style scoped lang='scss'>
 .noContent{
-    height: 2rem;
+    padding: 20px 0;
     width: 100%;
     display: flex;
     place-items: center;
@@ -20,8 +23,13 @@
     font-size: 0.8rem;
     font-style: italic;
     text-align: center;
-    span{
+    .placeholder{
+        height: 100%;
         width: 100%;
+        span{
+            width: 100%;
+        }
     }
+    
 }
 </style>

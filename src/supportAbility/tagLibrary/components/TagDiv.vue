@@ -1,8 +1,8 @@
 <template>
 <div ref="tagRef" 
     class="tag" 
-    @pointerdown.stop @click.stop  
-    @click="clickTag">
+    @pointerdown.stop
+    @click.stop="clickTag">
     <div class="text" v-if="!editMode">{{ tag }}</div>
     <div class="inputContainer" v-else>
         <MultiLineInput 
@@ -31,7 +31,7 @@
         updateTag:(newTag:string)=>void
     }>()
     const editMode = ref(false)
-    //点击tag允许编辑文本+显示删除按钮，点击到外界结束
+    //点击tag切换到编辑模式
     const tagRef = useTemplateRef("tagRef")
     const listener = (event:MouseEvent)=>{
         if(tagRef.value && !tagRef.value.contains(event.target as Node)){
