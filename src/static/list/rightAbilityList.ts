@@ -1,4 +1,3 @@
-import { showPopUp } from "@/hooks/pages/popUp";
 import { Icon } from "./iconList";
 import { Ref, ref } from "vue";
 
@@ -19,19 +18,7 @@ export type RightAbility = {
 }
 
 export const rightAbilityList:Ref<RightAbilityGroup> = ref({
-    "创作计划":[
-        {
-            name:"创作日历",
-            click(){
-                showPopUp({
-                    vueName:"canlendar",
-                    mask:true,
-                    buttons:[]
-                })
-            },
-            icon:"calendar"
-        },
-    ],
+    "创作计划":[],
     "灵感迸发":[],
     "客制化":[],
     "可视化":[],

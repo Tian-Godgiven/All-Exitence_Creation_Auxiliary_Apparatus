@@ -26,7 +26,7 @@
 	<QuickButton/>
 	
 	<!-- 输入辅助栏 -->
-	<inputSupportVue/>
+	<!-- <inputSupportVue/> -->
 	<!-- 输入提示组件 -->
 	<Suggester/>
 </div>
@@ -35,7 +35,8 @@
 <script setup lang="ts">
 	import { showLeft, showPage, switchProjectPage} from '@/hooks/pages/pageChange';
 	import Button from '@/components/global/Button.vue';
-	import inputSupportVue from '@/app/pages/mainPage/components/inputSupport.vue';
+	// import inputSupportVue from '@/app/pages/mainPage/components/inputSupport.vue';
+	// 未完成
 	import showInfoOnMainVue from '@/app/pages/mainPage/components/showInfoOnMain.vue';
 	import showArticleOnMainVue from '@/app/pages/mainPage/components/showArticleOnMain.vue';
 	import showExitenceOnMainVue from '@/app/pages/mainPage/components/showExitenceOnMain.vue';

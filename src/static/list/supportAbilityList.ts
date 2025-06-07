@@ -1,10 +1,10 @@
 import { customTimeItem } from "@/supportAbility/customTime/customTime";
 import { inputSuggestionSighUpItem } from "@/supportAbility/inputSuggestion/main";
-import { missionListItem } from "@/supportAbility/missionList/missionList";
+// import { missionListItem } from "@/supportAbility/missionList/missionList";
 import { quickDraftItem } from "@/supportAbility/quickDraft/quickDraft";
 import { searchSighUpItem } from "@/supportAbility/search/search";
 import { tagLibrarySignUpItem } from "@/supportAbility/tagLibrary/tagLibrary";
-import { timeLineSignUpItem } from "@/supportAbility/timeLine/timeLine";
+// import { timeLineSignUpItem } from "@/supportAbility/timeLine/timeLine";
 
 export type SupportAbilitySignUpItem = {
     name:string,
@@ -17,10 +17,10 @@ export type SupportAbilitySignUpItem = {
 
 export const supportAbilityList:SupportAbilitySignUpItem[] = [
     inputSuggestionSighUpItem,
-    missionListItem,
+    // missionListItem,待完成
     quickDraftItem,
     customTimeItem,
-    timeLineSignUpItem,
+    // timeLineSignUpItem,待完成
     searchSighUpItem,
     tagLibrarySignUpItem
 ]

@@ -73,6 +73,7 @@
 .switchExpand{
     .title{
         >div{
+            height: 100%;
             align-items: center;
             display: flex;
             .icon{
