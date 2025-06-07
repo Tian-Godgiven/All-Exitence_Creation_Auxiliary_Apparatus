@@ -5,8 +5,9 @@
     </template>
 	<template #topBar>
 		<div class="buttons">
-            <div class="button" @click="clickJumpToExitence">跳转至事物</div>
-         </div>
+            <Button name="跳转至事物" @click="clickJumpToExitence" icon="showOnMain"></Button>
+            <Button @click="closePopUp(popUp)" icon="closePopUp"></Button>
+        </div>
 	</template>
     <template #inner ref="inner">
         <ExitenceStatus
@@ -27,6 +28,7 @@ import { closePopUp, PopUp } from '@/hooks/pages/popUp';
 import { Type } from '@/class/Type';
 import TargetContainer from '@/app/pages/mainPage/components/TargetContainer.vue';
 import { Exitence } from '@/class/Exitence';
+import Button from '@/components/global/Button.vue';
     const {props,popUp} = defineProps<{
         props:{
             type:Type,
@@ -49,6 +51,15 @@ import { Exitence } from '@/class/Exitence';
 <style scoped lang='scss'>
 .title{
     width: 100%;
+}
+.buttons{
+    height: 50px;
+    display: flex;
+    gap: 5px;
+    .button{
+        aspect-ratio: 1;
+        height: 100%;
+    }
 }
 .scrollSpace{
     width: 100%;

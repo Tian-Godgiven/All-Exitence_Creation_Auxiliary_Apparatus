@@ -38,6 +38,7 @@ export const iconList:Record<string,string>= {
 
     "edit":"edit",//编辑
     "setting":"setting",//设置
+    "showOnMain":"showOnMain",//在主页面显示
 
     "addContainer":"addContainer",//添加分组or章节
     "addContent":"addContent",//添加事物or文章
