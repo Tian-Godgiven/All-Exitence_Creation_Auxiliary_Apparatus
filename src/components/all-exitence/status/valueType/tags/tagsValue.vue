@@ -1,11 +1,15 @@
 <template>
 <div class="tagsValue" :class="editMode?'editMode':''">
-    <div class="tagContainer">
-        <TagDiv :tag :deleteTag 
-            :updateTag="(newTag)=>{updateTag(newTag,tag)}" 
-            v-for="tag in tags">
-        </TagDiv>
-        <Button v-if="ifAddTag" @click="switchEditMode" icon="edit"></Button>
+    <div class="top">
+        <div class="tagContainer">
+            <TagDiv :tag :deleteTag 
+                :key="Symbol()"
+                :updateTag="(newTag)=>{updateTag(newTag,tag)}" 
+                v-for="tag in tags">
+            </TagDiv>
+            <Button class="edit" v-show="!editMode" v-if="ifAddTag" @click="switchEditMode" icon="edit"></Button>
+        </div>
+        <Button class="close" v-show="editMode" v-if="ifAddTag" @click="switchEditMode" icon="close"></Button>
     </div>
     <ChooseTag class="editing" v-if="editMode && ifAddTag" :addTag :chosenTags="tags" ></ChooseTag>
 </div>
@@ -78,21 +82,25 @@ import Button from '@/components/global/Button.vue';
         border-radius: 20px;
         padding: 10px;
     }
-    .tagContainer{
+    .top{
         display: flex;
-        flex-wrap: wrap;
-        .tag{
-            min-width: 50px;
-            border:3px solid black;
-            padding: 5px 10px;
-            margin: 5px 5px;
-        }
-        .button{
-            flex-shrink: 0;
-            width: 50px;
-            height: 50px;
+        .tagContainer{
+            display: flex;
+            flex-grow: 1;
+            flex-wrap: wrap;
+            .tag{
+                min-width: 50px;
+                border:3px solid black;
+                padding: 5px 10px;
+                margin: 5px 5px;
+            }
         }
     }
     
+    .edit,.close{
+        flex-shrink: 0;
+        width: 50px;
+        height: 50px;
+    }
 }
 </style>
