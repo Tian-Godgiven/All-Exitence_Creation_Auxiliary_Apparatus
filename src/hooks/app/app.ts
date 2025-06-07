@@ -3,7 +3,24 @@ import { initAppSetting } from "./appSetting"
 import { appData, createDirByPath, createFileToPath, ifExists } from "../fileSysytem"
 import { supportAbilityList } from "@/static/list/supportAbilityList"
 import { nowProjectPath } from "../project/project"
+import { ref } from "vue"
 
+export const testInfo1 = ref<string>("")
+export function testInfo(info:string|Object[],clear:boolean=true){
+    let string = ""
+    for(let i of info){
+        if(typeof i == "string"){
+            string+=i
+        }
+        else{
+            string+= JSON.stringify(i)
+        }
+    }
+    if(clear){
+        testInfo1.value = ""
+    }
+    testInfo1.value += string
+}
 //初始化应用程序
 export async function initApp(){
     //检查是否已经存在需求的data文件夹

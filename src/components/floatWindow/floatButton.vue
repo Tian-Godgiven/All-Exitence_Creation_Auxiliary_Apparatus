@@ -1,9 +1,12 @@
 <template>
 <div class="floatBtn"
     :class="[{moveBtn: allowMove}, `${btnType}Btn`]"
-    @pointerdown.stop="touchStart"
+    @touchstart.stop
+    @touchmove.stop
+    @touchend.stop
+    @pointerdown="touchStart"
     @pointermove="touchMove"
-    @pointerup.stop="touchEnd">
+    @pointerup="touchEnd">
     <slot></slot>
 </div>
 </template>
@@ -146,8 +149,6 @@ import { ref } from 'vue'
         longTap = false
         moving = false
     }
-    
-
 
 </script>
 

@@ -22,18 +22,28 @@ const rpxHide = managePx(200) // 滑动隐藏阈值
 const rpxSpeed = managePx(2) // 滑动速度阈值
 
 // 滑动开始
-export const touchStart = (e:PointerEvent)=>{
+export const mouseStart = (e:MouseEvent)=>{
 	if(!changePage.value){
 		return false
 	}
 	startMove = true
-	startX = e.clientX
-	startY = e.clientY
+	startX = Math.floor(e.clientX)
+	startY = Math.floor(e.clientY)
 	moveStartX = startX
 	touchStartTime = Date.now()
 }
-// 滑动行动中
-export function touchMove(e:PointerEvent){
+export const touchStart = (e:TouchEvent)=>{
+	if(!changePage.value){
+		return false
+	}
+	startMove = true
+	startX = Math.floor(e.touches[0].pageX)
+	startY = Math.floor(e.touches[0].pageY)
+	moveStartX = startX
+	touchStartTime = Date.now()
+}
+// 滑动过程
+function beforeMove(e:Event){
 	if(!changePage.value)return false
 	if(!startMove)return false
 	// 若为竖直滑动，则不会显示页面
@@ -44,13 +54,27 @@ export function touchMove(e:PointerEvent){
 
 	//开始滑动时，隐藏输入辅助栏
 	hideInputSupport()
-	
-	// 移动距离
-	let movingX = Math.abs(moveStartX - e.clientX)
-	let direction:"right"|"left" = (moveStartX - e.clientX)>0?"right":"left"
+	return true
+}
+export function mouseMove(e:MouseEvent){
+	if(!beforeMove(e))return;
+	const x = Math.floor(e.clientX)
+	const y = Math.floor(e.clientY)
+	movePage(x,y)
+}
+export function touchMove(e:TouchEvent){
+	if(!beforeMove(e))return;
+	const x = Math.floor(e.touches[0].pageX)
+	const y = Math.floor(e.touches[0].pageY)
+	movePage(x,y)
+}
+function movePage(x:number,y:number){
+	let movingX = Math.abs(moveStartX - x)
+	let direction:"right"|"left" = (moveStartX - x)>0?"right":"left"
 
-	moveStartX = e.clientX
-	moveStartY = e.clientY
+	moveStartX = x
+	moveStartY = y
+
 	distantX = startX - moveStartX
 
 	//计算滑动角度
@@ -96,19 +120,22 @@ export function touchMove(e:PointerEvent){
 }
 // 滑动结束时
 export function touchEnd(){
+	
 	if(!changePage.value)return false
+
 	let touchEndTime = Date.now()
 	let direction = distantX>0?"right":"left" //判读方向
 	const x = Math.abs(distantX)
 	let moveTime = touchEndTime - touchStartTime
-	
+	//滑动速度
+	let slideSpeed = x / moveTime
 	// 数据初始化
 	startX = 0
 	distantX = 0
 	ifVertical = false
 	ifHorizontal = false
 	movingDirection = null
-	let slideSpeed = x / moveTime
+	
 	// [向左滑] aka [右滑]
 	if(direction=="right"){
 		//如果左侧界面显示
