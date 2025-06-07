@@ -22,13 +22,15 @@
     const {title,list,controlShow} = defineProps<{
         title?:string,
         list:Option[],
-        controlShow:(show:boolean)=>void
+        controlShow?:(show:boolean)=>void
     }>()
     function clickOption(option:Option){
         option.click()
         //隐藏菜单项
         if(option.clickClose!==false){
-            controlShow(false)
+            if(controlShow){
+                controlShow(false)
+            }
         }
     }
 </script>
