@@ -61,6 +61,7 @@ import Button from '@/components/global/Button.vue';
 		position: relative;
 		display: flex;
 		justify-content: space-between;
+		z-index: 1;
 		&.noTitle{
 			height: 0;
 		}
@@ -87,6 +88,8 @@ import Button from '@/components/global/Button.vue';
 	}
 		
 	.inner{
+		position: relative;
+		z-index: 0;
 		height: calc(100% - 90px);
 		width: 100%;
 		display:flex;

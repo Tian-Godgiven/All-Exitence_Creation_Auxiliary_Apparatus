@@ -1,10 +1,10 @@
 <template>
 <!-- 显示属性 -->
-<div :key="key" class="exitenceStatus" v-touch:longtap="showUpdateStatus">
+<LongTap :duration="700" :wait-after="500" :long-tap="longTap" :key="key" class="exitenceStatus">
     <StatusName v-if="!ifNoName" :status="status" :typeStatus="typeStatus" :disabled="true"></StatusName>
     <!-- 属性值 -->
     <StatusValue :status="status" :typeStatus="typeStatus" :disabled="disabled" class="value"/>
-</div>
+</LongTap>
 </template>
 
 <script setup lang='ts'>
@@ -15,6 +15,7 @@
     import Status from '@/interfaces/Status';
     import { showPopUp } from '@/hooks/pages/popUp';
 import { ExitenceStatus } from '@/class/Exitence';
+import LongTap from '@/components/other/LongTap.vue';
 
     let {disabled,status} = defineProps<{
         disabled?:boolean;
@@ -37,10 +38,11 @@ import { ExitenceStatus } from '@/class/Exitence';
     })
 
 
-    //长按弹出更新属性
+    
     const allStatus = inject("allStatus")
     const allTypeStatus = inject("allTypeStatus")
-    function showUpdateStatus(){
+    //长按更新属性
+    function longTap(){
         //禁用状态下无效
         if(disabled){
             return false
