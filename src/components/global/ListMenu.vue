@@ -2,7 +2,7 @@
 <div class="listMenu">
     <div class="title" v-if="title">{{ title }}</div>
     <Button class="menuOption" v-for="option in list" 
-        @click="option.click">
+        @click="clickOption(option)">
         <IconVue v-if="option.icon" :icon="option.icon"></IconVue>
         <div>{{ option.label }}</div>
     </Button>
@@ -11,12 +11,26 @@
 
 <script setup lang='ts'>
     import { type Icon } from '@/static/list/iconList';
-import IconVue from './Icon.vue';
-import Button from './Button.vue';
-    const {title,list} = defineProps<{
+    import IconVue from './Icon.vue';
+    import Button from './Button.vue';
+    type Option = {
+        label:string,
+        icon?:Icon,
+        click:()=>void,
+        clickClose?:boolean
+    }
+    const {title,list,controlShow} = defineProps<{
         title?:string,
-        list:{label:string,icon?:Icon,click:()=>void}[]
+        list:Option[],
+        controlShow:(show:boolean)=>void
     }>()
+    function clickOption(option:Option){
+        option.click()
+        //隐藏菜单项
+        if(option.clickClose!==false){
+            controlShow(false)
+        }
+    }
 </script>
 
 <style scoped lang='scss'>

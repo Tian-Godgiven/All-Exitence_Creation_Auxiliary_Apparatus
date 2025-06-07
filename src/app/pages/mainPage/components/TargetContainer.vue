@@ -58,6 +58,7 @@ import { useTemplateRef } from 'vue';
 		width: 100%;
 		position: relative;
 		display: flex;
+		z-index: 2;
 		.title{
 			min-height: 70px;
             width: 100%;
@@ -77,6 +78,7 @@ import { useTemplateRef } from 'vue';
 		height: calc(100% - 110px);
 		width: 100%;
 		position: relative;
+		z-index: 1;
 	}
 	.info{
 		position: absolute;

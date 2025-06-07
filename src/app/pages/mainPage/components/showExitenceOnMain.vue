@@ -14,8 +14,8 @@
 			<template #default="{switchMenu}">
 				<Button @click="switchMenu" icon="setting" ></Button>
 			</template>
-			<template #menu>
-				<ListMenu :list="abilityList"/>
+			<template #menu="{controlShow}">
+				<ListMenu :controlShow :list="abilityList"/>
 			</template>
 		</Menu>
 	</template>
@@ -47,7 +47,7 @@
 	import { Exitence } from '@/class/Exitence';
 	import Menu from '@/components/global/Menu.vue';
 	import ListMenu from '@/components/global/ListMenu.vue';
-import Button from '@/components/global/Button.vue';
+	import Button from '@/components/global/Button.vue';
 
 	const {exitence} = defineProps<{exitence:Exitence}>()
 	
@@ -63,7 +63,7 @@ import Button from '@/components/global/Button.vue';
 		label:"属性管理",
 		click:()=>switchControlMode()
 	},{
-		label:"属性设置",
+		label:"事物设置",
 		click:()=>setExitence(),
 	},{
 		label:"新增属性",
@@ -73,7 +73,6 @@ import Button from '@/components/global/Button.vue';
 	//切换管理模式
 	const showDrag = ref(false)
 	function switchControlMode(){
-		console.log("123")
 		showDrag.value = !showDrag.value
 	}
 	//点击打开设置弹窗

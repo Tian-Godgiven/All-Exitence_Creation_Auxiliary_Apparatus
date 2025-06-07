@@ -1,8 +1,9 @@
 <template>
 <div class="menu">
     <slot :switchMenu></slot>
-    <div v-show="showMenu" ref="menuContent" class="menuContent" :style="style">
-        <slot name="menu"></slot>
+    <div v-show="showMenu" ref="menuContent" 
+        class="menuContent" :style="style">
+        <slot name="menu" :controlShow="switchMenu"></slot>
     </div>
 </div>
 </template>
