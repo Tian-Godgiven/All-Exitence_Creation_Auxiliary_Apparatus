@@ -40,7 +40,7 @@ import BottomPanel from './components/BottomPanel.vue';
         }
         else{
             gsap.to(projectRef.value,{
-                y:"100%",
+                y:"105%",
                 duration:0.5,
                 ease:"power2.inOut",
                 onComplete:()=>{
@@ -68,7 +68,7 @@ import BottomPanel from './components/BottomPanel.vue';
     background-color: rgb(243, 243, 243);
     border-top-left-radius: 30px;
     border-top-right-radius: 30px;
-    transform: translate(0,100%);
+    transform: translate(0,105%);
     box-shadow: $groundShadow;
     .inner{
         width: 100%;

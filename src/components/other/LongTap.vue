@@ -17,9 +17,9 @@
 
 <script setup lang='ts'>
     import gsap from 'gsap';
-import { unref, useTemplateRef} from 'vue';
+	import { unref, useTemplateRef} from 'vue';
     //禁用模式
-	const {disabled=false,longTap,click,waitAfter=0,duration=0.5} = defineProps<{
+	const {disabled=false,longTap,click,waitAfter=0,duration=500} = defineProps<{
 		waitAfter?:number,//长按时间超过该数值后，才开始计算长按时间
 		duration?:number,
 		disabled?:boolean,
@@ -82,7 +82,7 @@ import { unref, useTemplateRef} from 'vue';
 					longTap()
 				}
 				//长按时间不足，阻止进一步的动画
-				else if(waitAfter && timeDis>waitAfter){
+				else if(waitAfter!==0 && timeDis>waitAfter){
 					stopWave = true
 					e.stopImmediatePropagation()
 					//移除蒙版元素,其在上方被定义为section标签
@@ -95,13 +95,9 @@ import { unref, useTemplateRef} from 'vue';
 							selfRef.value.removeChild(wave);
 						}
 					})
-					
 				}
-				else{
-					//阻止即时触发波动
-					if(click){
-						click()
-					}
+				else if(click){
+					click()
 				}
 			}
 		}

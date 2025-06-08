@@ -1,13 +1,11 @@
 <template>
 <div class="app" 
-    @mousedown="mouseStart"
-    @mousemove="mouseMove"
-    @mouseup="touchEnd"
-    @touchstart="touchStart"
 	  @touchmove="touchMove"
-	  @touchend="touchEnd">
+    @pointermove="mouseMove"
+    @pointerdown="mouseStart"
+    @pointerup="touchEnd">
     <!-- 未完成 -->
-    <div class="touchTest">测试:{{ testInfo1 }}</div>
+    <!-- <div class="touchTest">测试:{{ testInfo1 }}</div> -->
     <!-- 主页面 -->
     <MainPage/>
     <!-- 项目管理页面 -->

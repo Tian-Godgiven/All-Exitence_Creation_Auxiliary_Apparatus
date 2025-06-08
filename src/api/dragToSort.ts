@@ -43,6 +43,8 @@ export function getDraggable({
     preview?:boolean,
     onDrop?:(source:any)=>void
 }){
+    //如果已经注册了拖拽
+    if(element.draggable == true)return;
     return draggable({
         element,
 		dragHandle:dragHandle??element,
@@ -87,6 +89,8 @@ export function getDroppable({
     allowInto?:boolean//是否允许其他元素放入其中
     level?:number//阶层
 }){
+    const dropable = element.getAttribute("data-drop-target-for-element")
+    if(dropable)return; 
     return dropTargetForElements({
         element,
         canDrop({source}){
@@ -188,25 +192,25 @@ export function getCombine({
     allowInto?:boolean,
     level?:number
 }){
-    return combine(
-        getDraggable({
-            element,
-			dragHandle,
-			data:getData(),
-			idle,
-			dragState,
-            preview
-        }),
-        getDroppable({
-            element,
-			getData,
-		    canDrop,
-			idle,
-			dragState,
-            allowInto,
-            level
-        })
-    )
+    const draggable = getDraggable({
+        element,
+        dragHandle,
+        data:getData(),
+        idle,
+        dragState,
+        preview
+    })
+    const droppable = getDroppable({
+        element,
+        getData,
+        canDrop,
+        idle,
+        dragState,
+        allowInto,
+        level
+    })
+    if(!draggable || !droppable)return;
+    return combine(draggable,droppable)
 }
 
 /**
