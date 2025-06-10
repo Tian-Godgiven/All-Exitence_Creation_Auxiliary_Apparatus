@@ -103,8 +103,9 @@ import { createNewEmptyStatus, getFullStatus } from '@/hooks/all-exitence/status
 	//确认编辑内容
     const emit = defineEmits(["confirm"])
     function clickConfirm(){
+		console.log(fullStatus.value.name.trim())
         // 要求name不能为空
-		if(fullStatus.value.name.trim() !== ""){
+		if(fullStatus.value.name.trim() == ""){
 			showQuickInfo("属性名不能为空")
 			return false
 		}

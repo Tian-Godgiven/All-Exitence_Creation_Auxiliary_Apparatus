@@ -32,7 +32,6 @@
     import { closePopUp } from '@/hooks/pages/popUp';
     import settingBoxVue from '@/components/all-exitence/setting/settingBox.vue';
     import { addExitence, createExitence } from '@/hooks/all-exitence/allExitence';
-    import tagsValueVue from '@/components/all-exitence/status/valueType/tags/tagsValue.vue';
     import { exitenceSettingList } from '@/static/list/settingList/exitenceSettingList';
 import { showQuickInfo } from '@/api/showQuickInfo';
 import Status from '@/interfaces/Status';
