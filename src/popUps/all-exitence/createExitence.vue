@@ -11,7 +11,7 @@
         <div class="tags">
             <input type="checkbox" v-model="ifDefaultTags" @change="changeIfDefaultTags">
             <div class="text">标签<span v-show="ifDefaultTags">：</span></div>
-            <tagsValueVue v-show="ifDefaultTags" :status="defaultTagStatus"/>
+            <StatusValue v-show="ifDefaultTags" :status="defaultTagStatus" :full-status="defaultTagStatus"/>
         </div>
 
         <div class="setting">
@@ -38,6 +38,7 @@ import { showQuickInfo } from '@/api/showQuickInfo';
 import Status from '@/interfaces/Status';
 import { nanoid } from 'nanoid';
 import FinalButtons from '@/app/stacks/popUp/FinalButtons.vue';
+import StatusValue from '@/components/all-exitence/status/StatusValue.vue';
     const {props, popUp, returnValue} = defineProps(["props","popUp","returnValue"])
     const name = ref("")
     const type = props.type
@@ -138,7 +139,7 @@ import FinalButtons from '@/app/stacks/popUp/FinalButtons.vue';
     }
     .inner{
         width: 100%;
-        height: calc(100% - 200px);
+        max-height: calc(100% - 200px);
         overflow: auto;
         .tags{
             display: flex;
