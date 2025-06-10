@@ -2,20 +2,35 @@
 	<div class="radio">
 		<div class="textInput">文本：
 			<downLineInputVue
-				@input="setStatus" v-model="text"/>
+				@input="inputValue" v-model="text"/>
 		</div>
 	</div>
 </template>
 
 <script setup lang="ts" name=""> 
-import { inject, ref } from 'vue'; 
+import { onMounted, ref } from 'vue'; 
 import downLineInputVue from '@/components/other/input/downLineInput.vue';
-	const status = inject<any>("status")
+import Status from '@/interfaces/Status';
+import { ExitenceStatus } from '@/class/Exitence';
+import { getStatusSettingValue, setStatus } from '@/hooks/all-exitence/status';
+	const {status,fullStatus} = defineProps<{
+        status:Status|ExitenceStatus,
+        fullStatus:Status
+    }>()
 	const text = ref("")
-	function setStatus(){
-		status["setting"]["radio"] = text.value
+	onMounted(()=>{
+		const radioValue = getStatusSettingValue(fullStatus.setting,"radio","string")
+		if(!radioValue){
+			inputValue()
+		}
+		else{
+			text.value = radioValue
+		}
+	})
+	
+	function inputValue(){
+		setStatus(status,"radio",text.value)
 	}
-	setStatus()
 </script>
 
 <style lang="scss" scoped>

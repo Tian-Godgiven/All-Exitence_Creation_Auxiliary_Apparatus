@@ -1,18 +1,19 @@
 <template>
-    <div class="groupRule">
-        <div class="target">{{ ruleTarget }}</div>
-        <div class="simbol">{{ ruleSimbol }}</div>
-        <div class="value">{{ ruleValue}}</div>
-    </div>
+<div class="groupRule">
+    <div class="target">{{ ruleTarget }}</div>
+    <div class="simbol">{{ ruleSimbol }}</div>
+    <div class="value">{{ ruleValue}}</div>
+</div>
 </template>
 
 <script setup lang='ts'>
     import { showQuickInfo } from '@/api/showQuickInfo';
+import { Type } from '@/class/Type';
 import { getTypeStatusByKey } from '@/hooks/all-exitence/allExitence';
 import { separateRule } from '@/hooks/expression/groupRule';
 import { inject } from 'vue';
     const {rule} = defineProps<{rule:string}>()
-    const type = inject<any>("type")
+    const type = inject<Type>("type") as Type
     const emits = defineEmits(["deleteRule"])
     //将rule中的部分拆开
     const ruleObject = separateRule(rule)

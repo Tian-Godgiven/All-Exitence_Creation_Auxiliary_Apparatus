@@ -35,10 +35,16 @@
 </template>
 
 <script setup lang="ts" name="">
-import { inject, reactive, ref, toRaw, watch } from 'vue'; 
+import { reactive, ref, toRaw, watch } from 'vue'; 
 import { showQuickInfo } from '@/api/showQuickInfo';
 import DownLineInput from '@/components/other/input/downLineInput.vue';
-	const status = inject<any>('status',{});
+import { ExitenceStatus } from '@/class/Exitence';
+import Status from '@/interfaces/Status';
+import { setStatus } from '@/hooks/all-exitence/status';
+	const {status,fullStatus} = defineProps<{
+		status:Status|ExitenceStatus,
+		fullStatus:Status
+	}>()	
 	// 选择数量输入栏
 	let chooseMin = ref(0)
 	let chooseMax = ref(0)
@@ -49,7 +55,7 @@ import DownLineInput from '@/components/other/input/downLineInput.vue';
 		}
 	})
 	const setChooseNum = ()=>{
-		status['setting']['chooseNum'] = [chooseMin.value,chooseMax.value]
+		setStatus(status,"chooseNum",[chooseMin.value,chooseMax.value])
 	}
 	setChooseNum()
 	// 选项
@@ -70,7 +76,7 @@ import DownLineInput from '@/components/other/input/downLineInput.vue';
 		}
 		const choice = tmp
 		choices.push(choice)
-		status["setting"]["choices"] = toRaw(choices)
+		setStatus(status,"choices",toRaw(choices))
 		// 初始化最大选择数量
 		if(chooseMax.value == 0){
 			chooseMax.value = 1
@@ -92,7 +98,7 @@ import DownLineInput from '@/components/other/input/downLineInput.vue';
 			status["value"] = tmp
 		}
 		choices.splice(index,1)
-		status["setting"]["choices"] = toRaw(choices)
+		setStatus(status,"choices",toRaw(choices))
 	}
 
 </script>

@@ -29,21 +29,28 @@
 </template>
 
 <script setup lang="ts" name="">
-import { inject, reactive, ref, toRaw } from 'vue'; 
+import { reactive, ref, toRaw } from 'vue'; 
 import { showQuickInfo } from '@/api/showQuickInfo';
 import downLineInputVue from '@/components/other/input/downLineInput.vue';
+import { ExitenceStatus } from '@/class/Exitence';
+import Status from '@/interfaces/Status';
+import { getStatusSettingValue, setStatus } from '@/hooks/all-exitence/status';
 
-	const status = inject<any>('status',{});
-// 选择数量输入栏,不可以设定最小选择数量
-	let chooseMax = ref(0)
+	const {status,fullStatus} = defineProps<{
+        status:Status|ExitenceStatus,
+        fullStatus:Status
+    }>()
+	// 选择数量输入栏,不可以设定最小选择数量
+	const chooseNumValue = getStatusSettingValue<number>(fullStatus.setting,"chooseNum","arr")??[0,1]
+	const chooseMax = ref(chooseNumValue[1])
 	const setChooseNum = ()=>{
-		status['setting']['chooseNum'] = [0,chooseMax.value]
+		setStatus(status,"chooseNum",[0,chooseMax.value])
 	}
-	setChooseNum()
 	// 选项
-	let choices = reactive<any[]>([])
-	let newChoice = ref()
+	const choicesValue = getStatusSettingValue<any>(fullStatus.setting,"choices","arr")??[]
+	const choices = reactive<any[]>(choicesValue)
 	// 添加选项
+	const newChoice = ref()
 	function addChoice(){
 		//选项内容不能重复
 		if(choices.includes(newChoice.value)){
@@ -58,7 +65,7 @@ import downLineInputVue from '@/components/other/input/downLineInput.vue';
 		}
 		const choice = tmp
 		choices.push(choice)
-		status["setting"]["choices"] = toRaw(choices)
+		setStatus(status,"choices",toRaw(choices))
 		// 初始化最大选择数量
 		if(chooseMax.value == 0){
 			chooseMax.value = 1
@@ -80,7 +87,7 @@ import downLineInputVue from '@/components/other/input/downLineInput.vue';
 			status["value"] = tmp
 		}
 		choices.splice(index,1)
-		status["setting"]["choices"] = toRaw(choices)
+		setStatus(status,"choices",toRaw(choices))
 	}
 
 </script>

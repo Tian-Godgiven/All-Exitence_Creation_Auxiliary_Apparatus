@@ -26,20 +26,22 @@
 import { Type } from '@/class/Type';
     import SwitchExpand from '@/components/other/SwitchExpand.vue';
     import { getTypeByKey, nowAllExitence } from '@/hooks/all-exitence/allExitence';
-import { getSettingValue } from '@/hooks/all-exitence/status';
+import { getStatusSettingValue } from '@/hooks/all-exitence/status';
     import { addExitenceToChooseExitenceStatus, ChooseExitenceStatus } from '@/hooks/all-exitence/status/chooseExitence';
+import Status from '@/interfaces/Status';
     import { computed } from 'vue';
-    const {status,setting,disabled} = defineProps<{
+    
+    const {status,fullStatus,disabled} = defineProps<{
         status:ChooseExitenceStatus,
-        setting:Record<string,any>,
+        fullStatus:Status,
         disabled:boolean
     }>()
 
     //获取选项范围:属性设置：在指定分类中选择
     function getRange(){
-        const setValue = getSettingValue(setting,"chooseFromType","string")
+        const setValue = getStatusSettingValue(fullStatus.setting,"chooseFromType","string")
         if(setValue !== null && setValue != "all"){
-            const typeKey = setting.chooseFromType as string;
+            const typeKey = setValue
             const type = getTypeByKey(typeKey)
             if(type){
                 return [type]
@@ -52,7 +54,7 @@ import { getSettingValue } from '@/hooks/all-exitence/status';
     //获取所有选项树的列表，不包含分组
     const list = computed(()=>{
         //属性设置：每分类可选数量
-        const chooseExitenceNumPerType = getSettingValue(setting,"chooseExitenceNumPerType","number")
+        const chooseExitenceNumPerType = getStatusSettingValue(fullStatus.setting,"chooseExitenceNumPerType","number")
         const chosenList = getChosenExitenceKeyList()
         const list = range.flatMap(type=>{
             //遍历分类，获取其中尚未被选择的事物的key和name

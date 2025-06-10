@@ -33,32 +33,34 @@
 		</div>
 		<div class="buttons">
 			<div @click="showStatusValueInput()" class="button">添加属性值</div>
-			<div @click="showMultiValuePopUp('expression')" class="button">添加表达式</div>
+			<div @click="showExpressionPopUp('expression')" class="button">添加表达式</div>
 		</div>
 	</div>
 </template>
 
 <script setup lang="ts" name="">
-import { inject, ref, shallowRef, toRaw } from 'vue'; 
+import { ref, shallowRef, toRaw } from 'vue'; 
 import draggableListVue from '@/components/other/DraggableList.vue';
 import { showPopUp } from '@/hooks/pages/popUp';
 import textInputVue from "@/components/other/textInput.vue";
 import { showQuickInfo } from '@/api/showQuickInfo';
 import multiStatusExpressionVue from '@/popUps/expression/multiStatusExpression.vue';
-import chooseFromListVue from '@/components/other/chooseFromList.vue';
 import inputVue from '@/components/other/input/downLineInput.vue'
 import { statusValueTypeList } from '@/static/list/statusValueList';
-import { multiStatusPart } from '@/hooks/expression/multiStatusValue';
-	//不同按键对应的各个弹窗对象
-	const multiBonusPopUpList:{[key:string]:any} = {
-		"quoteStatus":shallowRef(chooseFromListVue),
-		"expression":shallowRef(multiStatusExpressionVue)
-	}
-	const status = inject<any>("status")
-	const allStatus = inject<any>("allStatus")
-	const allTypeStatus = inject<any>("allTypeStatus")
+import { MultiStatusPart } from '@/hooks/expression/multiStatusValue';
+import { showCreateStatusPopUp } from '@/hooks/all-exitence/status';
+import Status from '@/interfaces/Status';
+import { showChooseFromListPopUp } from '@/api/chooseFromList';
+import { ExitenceStatus } from '@/class/Exitence';
+	// 未完成：不再依赖传入的allStatus，而是使用target来获取对象，从而得到属性
+	const {status,fullStatus} = defineProps<{
+		status:Status|ExitenceStatus,
+		fullStatus:Status
+	}>()
+	const allStatus:Status[] = []
+
 	// 当前复合属性的值，数组内依次保存各个复合属性对象
-	const multiValue = ref(status.value ?? [])
+	const multiValue = ref<MultiStatusPart[]>(fullStatus.value ?? [])
 	// 将值同步回属性上
 	function changeStatusValue(){
 		status.value = toRaw(multiValue.value)
@@ -73,7 +75,7 @@ import { multiStatusPart } from '@/hooks/expression/multiStatusValue';
 			key = value.name
 		}
 		// 新的part
-		const newPart:multiStatusPart = {
+		const newPart:MultiStatusPart = {
 			value : value,
 			valueType : type,
 			__key : key
@@ -86,7 +88,7 @@ import { multiStatusPart } from '@/hooks/expression/multiStatusValue';
 	// 检查part的关键字是否重复
 	function checkPartKey(part:any){
 		const key = part.__key
-		multiValue.value.forEach((thePart:multiStatusPart) => {
+		multiValue.value.forEach((thePart:MultiStatusPart) => {
 			if(key!="" && key == thePart.__key && toRaw(part) != toRaw(thePart)){
 				showQuickInfo("部分的关键字不得重复.")
 				part.__key = ""
@@ -94,7 +96,7 @@ import { multiStatusPart } from '@/hooks/expression/multiStatusValue';
 		})
 	}
 	// 引用相应part
-	function quotePart(part:multiStatusPart){
+	function quotePart(part:MultiStatusPart){
 		if(!part.__key){
 			showQuickInfo("需要为相应的部分设置关键字")
 			return false
@@ -102,7 +104,7 @@ import { multiStatusPart } from '@/hooks/expression/multiStatusValue';
 		createNewPart(part.__key,"quotePart")
 	}
 	//在页面上显示part的值
-	function showPartValue(part:multiStatusPart,index:number){
+	function showPartValue(part:MultiStatusPart,index:number){
 		//属性
 		if(part.valueType == "statusValue"){
 			//显示这个属性的类型名称（中文）
@@ -125,7 +127,7 @@ import { multiStatusPart } from '@/hooks/expression/multiStatusValue';
 			}
 		}
 		else if(part.valueType == "quotePart"){
-			const targetPart = multiValue.value.find((parts:multiStatusPart)=>parts.__key == part.value)
+			const targetPart = multiValue.value.find((parts:MultiStatusPart)=>parts.__key == part.value)
 			if(targetPart){
 				part.value = targetPart.__key
 				return "引用部分:" + part.value
@@ -148,10 +150,10 @@ import { multiStatusPart } from '@/hooks/expression/multiStatusValue';
 		multiValue.value.splice(index,1)
 		changeStatusValue()
 	}
-	// 显示对应的弹窗
-	function showMultiValuePopUp(type:string){	
+	// 显示编辑表达式弹窗
+	function showExpressionPopUp(type:string){	
 		showPopUp({
-			vue:multiBonusPopUpList[type],
+			vue:shallowRef(multiStatusExpressionVue),
 			props:{
 				mode:"string",
 				parts:multiValue,
@@ -186,59 +188,49 @@ import { multiStatusPart } from '@/hooks/expression/multiStatusValue';
 			}
 		})
 	}
-	// 显示选择列表弹窗，选择已有属性
+	// 显示选择属性弹窗，选择当前属性对应的对象中的已有属性
 	function showQuoteStatusPopUp(){
-		showPopUp({
-			vue:multiBonusPopUpList["quoteStatus"],
-			props:{
-				list:allStatus,
-				info:"点击选择引用属性",
-				empty:"当前无可选属性",
-				//允许选择非复合属性和非嵌套的属性
-				selectRule:(status:any)=>{
-					if(status.valueType != "multi" && status.valueType != 'status'){
-						return true
-					}
-					return false
-				},
-				showValue:(status:any)=>{
-					return status.name
-				},
-				chooseValue:(status:any)=>{
-					return status.__key
+		showChooseFromListPopUp<Status>({
+			list:allStatus,
+			info:"点击选择引用属性",
+			emptyInfo:"当前无可选属性",
+			//允许选择非复合属性和非嵌套的属性
+			selectRule:(status)=>{
+				if(status.valueType != "multi" && status.valueType != 'status'){
+					return true
 				}
+				return false
 			},
-			buttons : [],
-			mask : true,
+			showValue:(status)=>{
+				return status.name
+			},
 			returnValue : (array)=>{
-				array.forEach((value:any)=>{
+				array.forEach((status)=>{
+					//只要其中的__key
+					const value = status.__key
 					createNewPart(value,"quoteStatus")
 				})
 			},
+		},{
+			buttons : [],
+			mask : true,
 			size:{
-				width:"600px",
 				height:"50%"
 			}
 		})
 	}
 	// 显示创建属性弹窗，这个弹窗的尺寸和参数不一样
 	function showStatusValueInput(){
-		showPopUp({
-			name:"新增属性",
-			vueName:"createStatus",
-			props:{
-				banValueType:["multi","status"],
-				allStatus,
-				allTypeStatus
-			},
-			buttons : [],
-			mask : true,
-			returnValue : (value)=>{
-				createNewPart(value,"statusValue")
-			},
-			size:{
-				width:"600px",
-				height:"50%"
+		showCreateStatusPopUp({
+			popUpSet:{
+				mask:true,
+				size:{
+					height:"50%"
+				}
+			}, 
+			banValueType:["multi","status"],
+			returnValue:(status)=>{
+				createNewPart(status,"statusValue")
 			}
 		})
 	}

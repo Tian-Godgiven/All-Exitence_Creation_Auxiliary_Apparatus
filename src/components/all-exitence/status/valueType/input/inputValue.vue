@@ -14,28 +14,32 @@
 <script setup lang="ts" name="">
 import { computed, ref } from 'vue'; 
 import textAreaVue from '@/components/other/textArea/textArea.vue';
-	const {status,statusSetting} = defineProps(["status","statusSetting"])
+import { ExitenceStatus } from '@/class/Exitence';
+import Status from '@/interfaces/Status';
+import { getStatusSettingValue } from '@/hooks/all-exitence/status';
+	const {status,fullStatus} = defineProps<{
+        status:Status|ExitenceStatus,
+        fullStatus:Status
+    }>()
 	// 属性设置：单位
-	const unit = ref()
+	const unit = ref("")
 	const ifUnit = computed(()=>{
-		if(statusSetting.unit && statusSetting.unit != ""){
-			unit.value = statusSetting.unit
+		const unitValue = getStatusSettingValue(fullStatus.setting,"unit","string")
+		if(unitValue){
+			unit.value = unitValue
 			return true
 		}
 		return false
 	})
 	//属性设置：占位符
 	const placeholder = computed(()=>{
-		if(statusSetting.inputPlaceholder){
-			return statusSetting.inputPlaceholder
-		}
-		//默认值
-		return "输入属性值"
+		return getStatusSettingValue(fullStatus.setting,"inputPlaceholder","string") 
+			?? "输入属性值"
 	})
 	//属性设置：启用全局输入建议 和 启用项目输入建议
 	const inputSuggestionList = computed(()=>{
-		const ifG = statusSetting.ifGlobalInputSuggestion
-		const ifP = statusSetting.ifProjectInputSuggestion
+		const ifG = getStatusSettingValue(fullStatus.setting,"ifGlobalInputSuggestion","bool")
+		const ifP = getStatusSettingValue(fullStatus.setting,"ifProjectInputSuggestion","bool")
 		//都不要
 		if(ifG == false && ifP == false){return null}
 		//仅项目

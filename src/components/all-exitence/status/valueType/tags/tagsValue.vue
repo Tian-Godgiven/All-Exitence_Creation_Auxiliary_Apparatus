@@ -23,18 +23,19 @@ import { isArray } from 'lodash';
 import { computed, ref } from 'vue';
 import ChooseTag from './ChooseTag.vue';
 import Button from '@/components/global/Button.vue';
+import { ExitenceStatus } from '@/class/Exitence';
+import { getStatusSettingValue } from '@/hooks/all-exitence/status';
 
-    const {status,statusSetting} = defineProps<{
-        status:Status,
-        statusSetting:any
+    const {status,fullStatus} = defineProps<{
+        status:Status|ExitenceStatus,
+        fullStatus:Status
     }>()
     let tags:string[] = status.value
     //是否允许添加新标签
     const ifAddTag = computed(()=>{
-        if(!statusSetting || statusSetting.tagsAdd == null){
-            return true
-        }
-        return statusSetting.tagsAdd
+        const addTag = getStatusSettingValue(fullStatus.setting,"tagsAdd","bool")
+            ??true
+        return addTag
     })
 
     //切换编辑标签模式

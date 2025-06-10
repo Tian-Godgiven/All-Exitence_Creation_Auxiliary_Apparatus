@@ -1,7 +1,7 @@
 import { getTypeStatusByKey } from "../all-exitence/allExitence";
 
 // 该表达式为multi类型的属性的属性值中computed类型属性中使用到的特殊表达式
-export interface multiStatusPart{
+export type MultiStatusPart = {
     value:any,
     valueType:string,
     __key:string
@@ -147,9 +147,6 @@ export function countExpression(allStatus:any,allTypeStatus:any[],parts:any,expr
         })
         return value
     }
-    
-    
-    
 }
 // 计算表达式中的每个部分
 export function countExpressionPart(lastValue:any,simbol:string,nextValue:any){
@@ -325,7 +322,7 @@ export function getQuoteStatus(allStatus:any[],statusKey:string){
 //递归获取引用part的值
 export function getQuotePart(parts:any,partKey:string){
     //寻找目标
-    const targetPart = parts.value.find((tmpPart:multiStatusPart)=>
+    const targetPart = parts.value.find((tmpPart:MultiStatusPart)=>
         tmpPart.__key == partKey
     )
     //递归寻找非引用part

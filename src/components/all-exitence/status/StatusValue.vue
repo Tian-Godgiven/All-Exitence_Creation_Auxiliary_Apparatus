@@ -1,7 +1,7 @@
 <template>
-	<div class="value" :class="disabled?'disabled':''">
-		<component :status :typeStatus :statusSetting="statusSetting" :is="statusValueVueList[valueType]"></component>
-	</div>
+<div class="value" :class="disabled?'disabled':''">
+	<component :status :fullStatus :is="statusValueVueList[valueType]"></component>
+</div>
 </template>
 
 <script setup lang="ts" name="">
@@ -11,47 +11,24 @@ import { changeExitenceName, changeExitenceNickName, nowAllExitence } from '@/ho
 import { translateToTextContent } from '@/hooks/expression/textAreaContent';
 import Status from '@/interfaces/Status';
 import { ExitenceStatus } from '@/class/Exitence';
-
-	//是否禁用属性修改 , 需要显示的属性对象，事物在分类中对应的属性
-	const {disabled=false,status,typeStatus} = defineProps<{
-		disabled?:boolean;
-		status:Status|ExitenceStatus,
-		typeStatus?:Status
+import { getStatusSettingValue } from '@/hooks/all-exitence/status';
+	const {disabled=false,status,fullStatus} = defineProps<{
+		disabled?:boolean;//是否禁用属性修改
+		status:Status|ExitenceStatus,//实际操作和修改的属性对象
+		fullStatus:Status,//用于读取的只读的完整属性
 	}>()
 	//禁用功能需要透传
-	if(disabled){
-		provide("disabled",true)
-	}
+	if(disabled){provide("disabled",true)}
 	
-	//如果status中的值为空，则使用typeStatus中的默认值
-	if(!status.value || status.value == undefined){
-		if(typeStatus){
-			status["value"] = typeStatus.value
-		}
-		else{
-			status.value = null
-		}
-	}
 	//优先使用status中的valueType
 	let valueType = computed(()=>{
-		return status["valueType"] || typeStatus?.valueType || "input"
-	})
-	//优先使用两者覆盖后的setting
-	const statusSetting = computed(()=>{
-		//如果两者不同，则使用覆盖后的setting
-		if(typeStatus && typeStatus != status){
-			return {...typeStatus.setting,...status?.setting}
-		}
-		//否则使用status中的setting
-		else{
-			return status.setting || {}
-		}
+		return fullStatus.valueType
 	})
 
 	//监听属性值的改变
 	watch(()=>status.value,(value:any)=>{
 		//事物设置：指定属性值与事物名称同步
-		const syncWithName = statusSetting.value["exitenceSetting-syncWithName"]
+		const syncWithName = getStatusSettingValue<string>(fullStatus,"exitenceSetting-syncWithName","arr")
 		if(syncWithName){
 			const [typeKey,exitenceKey] = syncWithName
 			const type = nowAllExitence.types.find((type)=>type.__key == typeKey)
@@ -62,7 +39,7 @@ import { ExitenceStatus } from '@/class/Exitence';
 			}
 		}
 		//事物设置：指定属性值为事物的别名
-		const nickName = statusSetting.value["exitenceSetting-nickName"]
+		const nickName = getStatusSettingValue<string>(fullStatus,"exitenceSetting-nickName","arr")
 		if(nickName){
 			const [typeKey,exitenceKey] = nickName
 			const type = nowAllExitence.types.find((type)=>type.__key == typeKey)
@@ -74,9 +51,6 @@ import { ExitenceStatus } from '@/class/Exitence';
 	},{
 		deep:true,
 	})
-
-	
-
 </script>
 
 <style lang="scss" scoped>

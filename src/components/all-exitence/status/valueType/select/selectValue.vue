@@ -5,7 +5,7 @@
 		    :multiple="ifMultiple"
 			:clearable="true"
 		    placeholder="请选择"
-			:multiple-limit="chooseNum">
+			:multiple-limit.number="chooseNum">
 		    <ElOption
 		        v-for="item in choiceList"
 		        :key="item"
@@ -15,9 +15,16 @@
 </template>
 
 <script setup lang="ts" name=""> 
+import { ExitenceStatus } from '@/class/Exitence';
+import { getStatusSettingValue } from '@/hooks/all-exitence/status';
+import Status from '@/interfaces/Status';
 import { ElSelect,ElOption } from 'element-plus';
+import { toNumber } from 'lodash';
 import { computed, ref } from 'vue';
-	const {status,statusSetting} = defineProps(["status","statusSetting"])
+	const {status,fullStatus} = defineProps<{
+        status:Status|ExitenceStatus,
+        fullStatus:Status
+    }>()
 	if(!Array.isArray(status.value)){
 		status.value = []
 	}
@@ -25,18 +32,20 @@ import { computed, ref } from 'vue';
 	const ifMultiple = ref(false)
 	// 选项数组
 	const choiceList = computed(()=>{
-		return statusSetting['choices']
+		const listValue = getStatusSettingValue<any>(fullStatus.setting,"choices","arr")??[]
+		return listValue
 	})
 	// 选择数量，仅支持最大选择数量
 	const chooseNum = computed(()=>{
-		const tmp = statusSetting['chooseNum'][1]
+		const maxNum = getStatusSettingValue<number>(fullStatus.setting,"choices","arr")??[0,1]
+		const tmp = maxNum[1]
 		if(tmp > 1){
 			ifMultiple.value = true
 		}
 		else{
 			ifMultiple.value = false
 		}
-		return tmp
+		return toNumber(tmp)
 	})
 
 </script>

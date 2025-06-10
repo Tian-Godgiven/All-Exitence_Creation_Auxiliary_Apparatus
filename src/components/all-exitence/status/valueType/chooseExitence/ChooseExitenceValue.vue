@@ -35,7 +35,7 @@
         <!-- 无内容 -->
         <div class="noValue" @click="switchEditPart" v-if="list.length==0">选择事物</div>
     </div>
-    <EditPart :disabled :status :setting="statusSetting" v-if="ifEditMode"></EditPart>
+    <EditPart :disabled :status :fullStatus v-if="ifEditMode"></EditPart>
 </div>
 </template>
 
@@ -45,11 +45,12 @@
     import { getChooseExitenceStatusList, removeExitenceFromChooseExitenceStatus, type ChooseExitenceStatus } from '@/hooks/all-exitence/status/chooseExitence';
     import { getExitenceByKey, getTypeByKey, showExitenceOnPopUp } from '@/hooks/all-exitence/allExitence';
     import Button from '@/components/global/Button.vue';
-    import { getSettingValue } from '@/hooks/all-exitence/status';
-    const {status,statusSetting} = defineProps<{
-        status:ChooseExitenceStatus,
-        statusSetting:Record<string,any>
-    }>()
+    import { getStatusSettingValue } from '@/hooks/all-exitence/status';
+import Status from '@/interfaces/Status';
+    const {status,fullStatus} = defineProps<{
+		status:ChooseExitenceStatus,
+		fullStatus:Status
+	}>()	
     //已选择的列表
     const list = computed(()=>{
         return getChooseExitenceStatusList(status)
@@ -57,7 +58,7 @@
 
     //属性设置：总可选数量
     const disabled = computed(()=>{
-        const chooseExitenceNum = getSettingValue(statusSetting,"chooseExitenceNum","number")
+        const chooseExitenceNum = getStatusSettingValue(fullStatus.setting,"chooseExitenceNum","number")
         if(chooseExitenceNum !== null){
             //当前总数超过总可选数量
             let allNumber = 0
@@ -98,7 +99,7 @@
 
     //属性设置：不显示行标题
     const noTitle = computed(()=>{
-        const noTitle = getSettingValue(statusSetting,"noLineTitle","bool")
+        const noTitle = getStatusSettingValue(fullStatus.setting,"noLineTitle","bool")
         if(noTitle === true){
             return true
         }
@@ -109,7 +110,7 @@
     //属性设置：所有事物在同一行中
     const inOneLine = computed(()=>{
         //属性设置：所有事物在同一行中，此时不显示行标题
-        const value = getSettingValue(statusSetting,"allExitenceInOneLine","bool")
+        const value = getStatusSettingValue(fullStatus.setting,"allExitenceInOneLine","bool")
         if(value === true){
             return true
         }

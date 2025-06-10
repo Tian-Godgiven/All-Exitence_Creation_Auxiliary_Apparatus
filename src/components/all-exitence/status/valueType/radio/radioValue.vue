@@ -8,9 +8,15 @@
 <script setup lang="ts">
 import { computed } from 'vue'; 
 import radioVue from '@/components/other/radio.vue';
-	const {status,statusSetting} = defineProps(["status","statusSetting"])
+import { ExitenceStatus } from '@/class/Exitence';
+import Status from '@/interfaces/Status';
+import { getStatusSettingValue } from '@/hooks/all-exitence/status';
+	const {status,fullStatus} = defineProps<{
+        status:Status|ExitenceStatus,
+        fullStatus:Status
+    }>()
 	const text = computed(()=>{
-		return statusSetting["radio"]
+		return getStatusSettingValue(fullStatus.setting,"radio","string")??""
 	})
 </script>
 

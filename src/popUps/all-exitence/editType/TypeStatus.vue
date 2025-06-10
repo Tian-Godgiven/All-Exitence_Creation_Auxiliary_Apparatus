@@ -1,8 +1,7 @@
 <template>
 <div class="status">
-	<StatusName :status="status"/>
-	<StatusValue :status="status" :typeStatus="status"/>
-	
+	<StatusName :status :fullStatus="status"/>
+	<StatusValue :status :fullStatus="status"/>
 	<div class="buttons">
 		<Button @click="showUpdateStatus" name="编辑"></Button>
 		<Button @click="deleteStatus" name="删除"></Button>
@@ -11,36 +10,27 @@
 </template>
 
 <script setup lang="ts" name="typeStatus">
-import { inject } from 'vue';
 import StatusName from '@/components/all-exitence/status/StatusName.vue';
 import StatusValue from '@/components/all-exitence/status/StatusValue.vue';
-import { showPopUp } from '@/hooks/pages/popUp';
 import Status from '@/interfaces/Status';
 import Button from '@/components/global/Button.vue';
-	let {status} = defineProps(["status"])
+import { showEditStatusPopUp } from '@/hooks/all-exitence/status';
+	let {status} = defineProps<{status:Status}>()
 	const emits = defineEmits(["deleteStatus"])
 	//删除属性
 	function deleteStatus(){
 		emits('deleteStatus')
 	}
 	//点击弹出更新属性
-    const allStatus = inject("allStatus")
-    const allTypeStatus = inject("allTypeStatus")
 	function showUpdateStatus(){
-		showPopUp({
-            mask:false,
-            vueName:"updateStatus",
-            buttons:[],
-            props:{
-                status,
-                typeStatus:status,
-                allStatus,
-                allTypeStatus
-            },
-            returnValue:(newStatus:Status)=>{
+		showEditStatusPopUp({
+			status,
+			fullStatus:status,
+			returnValue:(newStatus)=>{
 				Object.assign(status,newStatus)
 			}
-        })
+		})
+		
 	}
 </script>
 

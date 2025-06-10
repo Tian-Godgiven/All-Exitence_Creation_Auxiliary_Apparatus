@@ -47,7 +47,7 @@
 	import { SuggestionItem } from '@/supportAbility/inputSuggestion/suggester/inputSuggestion';
 import Status from '@/interfaces/Status';
 import { deleteInputLast } from '@/api/cursorAbility';
-import { explainExpression, multiStatusPart } from '@/hooks/expression/multiStatusValue';
+import { explainExpression, MultiStatusPart } from '@/hooks/expression/multiStatusValue';
 import FinalButtons from '@/app/stacks/popUp/FinalButtons.vue';
 
 const {props,popUp,returnValue} = defineProps(["props","popUp","returnValue"])
@@ -73,7 +73,7 @@ const {props,popUp,returnValue} = defineProps(["props","popUp","returnValue"])
 				addItem({name:text,__key:key},type)
 			}
 		});
-		const suggestionParts = parts.map((part: multiStatusPart) => 
+		const suggestionParts = parts.map((part: MultiStatusPart) => 
 			createSuggestionItem("quotePart",part.__key,part.__key, "部分"));
 		const suggestionStatus = typeStatus.map((status: Status) =>
 			createSuggestionItem("quoteStatus",status.__key,status.name, "属性"));

@@ -1,7 +1,7 @@
 
 import createExitenceVue from '@/popUps/all-exitence/createExitence.vue';
-import editStatusVue from '@/popUps/all-exitence/editStatus.vue';
-import showExitenceVue from '@/popUps/all-exitence/showExitence.vue';
+import editStatusVue from '@/popUps/all-exitence/EditStatusPopUp.vue';
+import showExitenceVue from '@/popUps/all-exitence/ShowExitencePopUp.vue';
 import alertVue from '@/popUps/alert.vue';
 import editProjectInfoVue from '@/popUps/project/editProjectInfo.vue';
 import editChapterVue from '@/popUps/all-articles/editChapter.vue';

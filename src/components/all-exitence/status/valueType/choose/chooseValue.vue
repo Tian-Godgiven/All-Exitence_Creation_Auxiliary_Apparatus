@@ -22,29 +22,36 @@
 import { computed, reactive } from 'vue'; 
 import radioVue from '@/components/other/radio.vue';
 import { ElCheckboxGroup,ElCheckbox } from 'element-plus';
-	const {status,statusSetting} = defineProps(['status','statusSetting'])
+import Status from '@/interfaces/Status';
+import { ExitenceStatus } from '@/class/Exitence';
+import { getStatusSettingValue } from '@/hooks/all-exitence/status';
+	const {status,fullStatus} = defineProps<{
+		status:Status|ExitenceStatus,
+		fullStatus:Status
+	}>()	
 	//初始化
 	if(!Array.isArray(status.value)){
 		status.value = []
 	}
 	// 选项数组
 	const choiceList = computed(()=>{
-		return statusSetting.choices ?? []
+		const settingValue = getStatusSettingValue<string>(fullStatus.setting,"choice","arr") ?? []
+		return settingValue
 	})
 	// 选择数量
 	const min = computed(()=>{
-		return statusSetting.chooseNum[0]
+		const chooseNum = getStatusSettingValue<number>(fullStatus.setting,"chooseNum","arr") ?? []
+		return chooseNum[0] ?? 0
 	})
 	const max = computed(()=>{
-		return statusSetting.chooseNum[1]
+		const chooseNum = getStatusSettingValue<number>(fullStatus.setting,"chooseNum","arr") ?? []
+		return chooseNum[1] ?? 1
 	})
 
 	//属性设置：使用灯开关表示选项
 	const ifRadio = computed(()=>{
-		if(statusSetting.chooseByRadio){
-			return true
-		}
-		return false
+		const ifRadio = getStatusSettingValue(fullStatus.setting,"ifRadio","bool") ?? false
+		return ifRadio
 	})
 	// 灯开关选择
 	const chosenList = reactive(new Array(choiceList.value.length).fill(false))
@@ -60,10 +67,8 @@ import { ElCheckboxGroup,ElCheckbox } from 'element-plus';
 	// 属性设置：选项排列方向是否为竖向
 	const ifVertical = computed(()=>{
 		//(默认横向)
-		if(statusSetting.chooseDirection == "vertical"){
-			return true
-		}
-		return false
+		const ifVertical = getStatusSettingValue(fullStatus.setting,"chooseDirection","bool") ?? false
+		return ifVertical
 	})
 	
 </script>

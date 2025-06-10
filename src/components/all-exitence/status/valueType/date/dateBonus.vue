@@ -30,22 +30,27 @@
 </template>
 
 <script setup lang='ts'>
-    import { computed, inject, ref, watchEffect } from 'vue';
+    import { computed, ref, watchEffect } from 'vue';
     import Button from '@/components/global/Button.vue';
     import Selector from '@/components/global/Selector.vue';
     import { getTimeRule, showTimeSelector, TimeLinker } from '@/supportAbility/customTime/translateTime';
 import Status from '@/interfaces/Status';
 import { showQuickInfo } from '@/api/showQuickInfo';
 import { TimeRule } from '@/supportAbility/customTime/customTime';
+import { ExitenceStatus } from '@/class/Exitence';
+import { deleteStatusSetting, getStatusSettingValue, setStatus } from '@/hooks/all-exitence/status';
     //时间属性
-    const status = inject('status') as Status
+    const {status,fullStatus} = defineProps<{
+        status:Status|ExitenceStatus,
+        fullStatus:Status
+    }>()
 
 //当前时间规则，默认为date
     const timeRule = computed<TimeRule|null>(()=>{
-        const ruleKey = status.setting["timeRule"]
+        const ruleKey = getStatusSettingValue(fullStatus.setting,"timeRule","string")
         //默认为date
         if(!ruleKey){
-            status.setting["timeRule"] = "date"
+            setStatus(status,"timeRule","date")
             status.value = new Date().getTime()
             return "date"
         }
@@ -54,7 +59,7 @@ import { TimeRule } from '@/supportAbility/customTime/customTime';
         //获取失败时使用date
         if(!rule){
             showQuickInfo("未能获取指定的时间表达式，将使用现实时间替代")
-            status.setting["timeRule"] = "date"
+            setStatus(status,"timeRule","date")
             status.value = new Date()
             rule = "date"
         }
@@ -65,11 +70,12 @@ import { TimeRule } from '@/supportAbility/customTime/customTime';
         const tmp = await showTimeSelector()
         if(tmp){
             status.value = tmp=="date"?new Date().getTime():0
-            status.setting["timeRule"] = tmp=="date"?"date":tmp.__key
+            const timeRuleKey = tmp=="date"?"date":tmp.__key
+            setStatus(status,"timeRule",timeRuleKey)
         }
         //没有做出选择:清空
         else{
-            delete status.setting["timeRule"]
+            deleteStatusSetting(status,"timeRule")
         }
     }
 //选择首尾单位
@@ -99,8 +105,8 @@ import { TimeRule } from '@/supportAbility/customTime/customTime';
     })
     //首尾单位选择时改变status
     watchEffect(()=>{
-        status.setting["unitFrom"] = unitFrom.value
-        status.setting["unitEnd"] = unitEnd.value
+        setStatus(status,"unitFrom",unitFrom.value)
+        setStatus(status,"unitEnd",unitEnd.value)
     })
 //选择使用的数符
     const numFormatList = [
@@ -110,16 +116,16 @@ import { TimeRule } from '@/supportAbility/customTime/customTime';
     ]
     const numFormat = ref("阿拉伯数字")
     watchEffect(()=>{
-        status.setting["numFormat"] = numFormat.value
+        setStatus(status,"numFormat",numFormat.value)
     })
 //选择链接符号
     const linker = ref<false|TimeLinker>(false)
     watchEffect(()=>{
         if(linker.value != false){
-            status.setting["linker"] = linker.value
+            setStatus(status,"linker",linker.value)
         }
         else{
-            delete status.setting["linker"]
+            deleteStatusSetting(status,"linker")
         }
     })
     const linkerList = [
@@ -132,10 +138,10 @@ import { TimeRule } from '@/supportAbility/customTime/customTime';
     const showUnit = ref(true)
     watchEffect(()=>{
         if(showUnit.value == false){
-            status.setting["showUnit"] = false
+            setStatus(status,"showUnit",false)
         }
         else{
-            delete status.setting["showUnit"]
+            deleteStatusSetting(status,"showUnit")
         }
     })
 </script>

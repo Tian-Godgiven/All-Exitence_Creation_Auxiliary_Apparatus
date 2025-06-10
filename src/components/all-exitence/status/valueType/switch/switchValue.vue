@@ -3,28 +3,34 @@
 	<ElSwitch 
 		class="switch"
 		v-model="status.value"
-		:active-text="rightText"
-		:inactive-text="leftText">
+		:inactive-text="switchText.left"
+		:active-text="switchText.right">
 	</ElSwitch>
 </div>
 </template>
 
 <script setup lang="ts" name=""> 
+import { ExitenceStatus } from '@/class/Exitence';
+import { getStatusSettingValue } from '@/hooks/all-exitence/status';
+import Status from '@/interfaces/Status';
 import { ElSwitch } from 'element-plus';
 import { computed } from 'vue';
-	const {status,statusSetting} = defineProps(["status","statusSetting"])
+	const {status,fullStatus} = defineProps<{
+        status:Status|ExitenceStatus,
+        fullStatus:Status
+    }>()
 	//默认为false
 	if(!status.value){
 		status.value = false
 	}
 	//显示文本
-	const leftText = computed(()=>{
-		const tmp = statusSetting?.switch[0]
-		return  tmp??"" 
-	})
-	const rightText = computed(()=>{
-		const tmp = statusSetting?.switch[1]
-		return  tmp??"" 
+	const switchText = computed(()=>{
+		const switchValue = getStatusSettingValue<string>(fullStatus.setting,"switch","arr") 
+			?? ["",""]
+		return {
+			left:switchValue[0],
+			right:switchValue[1]
+		}
 	})
 </script>
 

@@ -12,13 +12,19 @@
 <script setup lang="ts" name="">
 import { ref, watch,computed } from 'vue'; 
 import { ElSlider } from 'element-plus';
-
-	const {status,statusSetting} = defineProps(["status","statusSetting"])
-	let min = ref(0)
-	let max = ref(100)
-	let step = ref(1)
-	watch(()=> statusSetting["range"],()=>{
-		let tmp = statusSetting["range"]
+import Status from '@/interfaces/Status';
+import { ExitenceStatus } from '@/class/Exitence';
+import { getStatusSettingValue } from '@/hooks/all-exitence/status';
+	const {status,fullStatus} = defineProps<{
+		status:Status|ExitenceStatus,
+		fullStatus:Status
+	}>()
+	const range = getStatusSettingValue<number>(fullStatus.setting,"range","arr")??[0,100,1]
+	let min = ref(range[0])
+	let max = ref(range[1])
+	let step = ref(range[2])
+	watch(()=> range,()=>{
+		let tmp = range
 		min.value = tmp[0] ?? 0
 		max.value = tmp[1] ?? 100
 		step.value = tmp[2] ?? 1
@@ -26,8 +32,9 @@ import { ElSlider } from 'element-plus';
 	// 属性设置：单位 
 	const unit = ref('')
 	const ifUnit = computed(()=>{
-		if(statusSetting.unit && statusSetting.unit != ""){
-			unit.value = statusSetting.unit
+		const unitValue = getStatusSettingValue(fullStatus.setting,"unit","string")
+		if(unitValue){
+			unit.value = unitValue
 			return true
 		}
 		return false

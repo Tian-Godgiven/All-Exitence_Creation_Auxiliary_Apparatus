@@ -1,8 +1,8 @@
 <template>
 <div class="editStatus">
-	<div class="statusInfo">
-		<StatusName :status="status" :typeStatus="typeStatus"/>
-		<StatusValue :status="status" :typeStatus="typeStatus"/>
+	<div class="status">
+		<StatusName :status :fullStatus/>
+		<StatusValue :status :fullStatus/>
 	</div>
 	
 	<!-- 属性类型与设置 -->
@@ -12,55 +12,64 @@
 			class="selectValueType" 
 			v-model="status.valueType"
 			placeholder="选择类型"
-			:list="valueTypes">
+			:list="valueTypeList">
 		</Selector>
 
 		<Button class="button" @click="switchSetting" name="设置"></Button>
-		<Button class="button" @click="confirm" :name="confirmText"></Button>
+		<Button class="button" @click="clickConfirm" :name="confirmText"></Button>
 	</div>
 
 	<!-- 额外输入栏 -->
-	<component :status="status" :is="statusBonusInputList[status.valueType]"></component>
+	<StatusBonus :status :fullStatus></StatusBonus>
 	<!-- 属性设置栏 -->
 	<settingBoxVue ref="settingBox" :show="showSettingBox"/>
 	
 </div>
 </template>
 
-<script setup lang="ts" name=""> 
-	import { inject, ref, computed, provide } from 'vue'; 
+<script setup lang="ts" name="" generic="S extends (Status|ExitenceStatus)"> 
+	import { ref, computed, provide, reactive, toRaw, Reactive } from 'vue'; 
 	import { statusValueTypeList } from '@/static/list/statusValueList';
 	import settingBoxVue from '../setting/settingBox.vue';
 	import { getStatusSetting } from "@/static/list/settingList/status/statusSettingList";
 	import StatusValue from './StatusValue.vue';
-	import { statusBonusInputList } from '@/static/list/statusBonusInputList';
 	import StatusName from './StatusName.vue';
 	import { showQuickInfo } from '@/api/showQuickInfo';
 	import { cloneDeep } from 'lodash';
 	import Button from '@/components/global/Button.vue';
 import Selector from '@/components/global/Selector.vue';
 import Status from '@/interfaces/Status';
-import { defaultStatus } from '@/hooks/all-exitence/status';
+import StatusBonus from './StatusBonus.vue';
+import { ExitenceStatus } from '@/class/Exitence';
+import { createNewEmptyStatus, getFullStatus } from '@/hooks/all-exitence/status';
 
-	const {confirmText,banValueType} = defineProps<{
+	const {confirm,confirmText,banValueType,status:oldStatus,typeStatus} = defineProps<{
+		confirm:(newStatus:S)=>void,
 		confirmText:string,
-		banValueType?:string[]
+		banValueType?:string[],
+		status?:S,
+		typeStatus:Status
 	}>()
-	
-	// 需要编辑的属性初值
-    let status = inject<Status>("status",cloneDeep(defaultStatus))
-    let typeStatus = inject<any>("typeStatus")
-    if(!status.name){
-        status.name = cloneDeep(typeStatus.name);
-    }
-    if(!status.valueType){
-        status.valueType = cloneDeep(typeStatus.valueType)
-    }
+
+	// 在接受了属性对象后，会创造一个属性对象的拷贝
+	// 所有的修改都基于这个拷贝
+	// 并在confirm中回传到父组件
+	let status:Reactive<S>
+	if(oldStatus){
+		status = reactive(cloneDeep(oldStatus))
+	}
+	else{
+		const newStatus = createNewEmptyStatus()
+		status = reactive(newStatus as S)
+	}
+
+	//完整属性
+	const fullStatus = getFullStatus(status,typeStatus)
     
 	// 选择属性类型
-	let valueTypes = statusValueTypeList
+	let valueTypeList = statusValueTypeList
 	if(banValueType){
-		valueTypes = valueTypes.reduce((acc,cur)=>{
+		valueTypeList = valueTypeList.reduce((acc,cur)=>{
 			if(!banValueType.includes(cur.value)){
 				acc.push(cur)
 			}
@@ -81,8 +90,8 @@ import { defaultStatus } from '@/hooks/all-exitence/status';
 		selectTarget:computed(()=>{
 			return {...typeStatus,...status}
 		}),
-		settingValue:{...typeStatus.setting,...status.setting},
-		optionList:getStatusSetting(status)
+		settingValue:{...fullStatus.value.setting},
+		optionList:getStatusSetting(fullStatus.value.valueType)
 	}
 	provide("settingProps",settingProps)
 	// 控制显示
@@ -93,9 +102,9 @@ import { defaultStatus } from '@/hooks/all-exitence/status';
 	
 	//确认编辑内容
     const emit = defineEmits(["confirm"])
-    function confirm(){
+    function clickConfirm(){
         // 要求name不能为空
-		if(status.name == ""){
+		if(fullStatus.value.name.trim() !== ""){
 			showQuickInfo("属性名不能为空")
 			return false
 		}
@@ -104,7 +113,8 @@ import { defaultStatus } from '@/hooks/all-exitence/status';
 			showQuickInfo("属性设置不正确")
 			return false
 		}
-        emit("confirm",status)
+		const tmp = toRaw(status) as S
+        confirm(tmp)
     }
 	
 </script>
@@ -117,7 +127,7 @@ import { defaultStatus } from '@/hooks/all-exitence/status';
 	width: 100%;
 	height: 100%;
 	padding: 10px 20px;
-	.statusInfo{
+	.status{
 		display: flex;
 		min-height: 40px;
 		width: 100%;

@@ -1,20 +1,27 @@
 <template>
-<div>
+<div class="relationUnitValue">
     <StatusValue class="unitStatus" v-for="(value,key) in source" 
-        :key="unitStatus.__key"
-        :status="unitStatus[key]" :typeStatus="value"/>
+        :key="value.__key"
+        :status="unitStatus[key]" 
+        :fullStatus="value"/>
 </div>
 </template>
 
 <script setup lang='ts'>
     import { computed,reactive, watchEffect} from 'vue';
     import StatusValue from '../../StatusValue.vue';
-    const {source,unit} = defineProps(["source","unit"])
+    import { RelationSource, RelationUnit } from './relationStatus';
+import Status from '@/interfaces/Status';
+    const {source,unit} = defineProps<{
+        source:RelationSource,
+        unit:RelationUnit
+    }>()
     //单元的属性列表
     const unitStatus = computed(()=>{
-        const tmp:any = {}
+        const tmp:Record<string,Status> = {}
         for(let key in source){
             if(!unit[key]){
+                //值为空时，使用source中对应属性的默认值
                 unit[key] = source[key].value
             }
             const status = reactive({value : unit[key]})
@@ -22,7 +29,7 @@
             watchEffect(() => {
                 unit[key] = status.value;  // 自动跟踪 status.value 的变化
             });
-            tmp[key] = status
+            tmp[key] = status as Status
         }
         return tmp
     })

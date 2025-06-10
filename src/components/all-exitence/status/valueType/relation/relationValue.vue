@@ -15,25 +15,29 @@
 <script setup lang='ts'>
     import { computed } from 'vue';
     import relationUnitValueVue from './relationUnitValue.vue';
-    const {status,statusSetting} = defineProps(["status","statusSetting"])
+import { ExitenceStatus } from '@/class/Exitence';
+import Status from '@/interfaces/Status';
+import { getStatusSettingValue } from '@/hooks/all-exitence/status';
+import { RelationSource } from './relationStatus';
+    const {status,fullStatus} = defineProps<{
+        status:Status|ExitenceStatus,
+        fullStatus:Status
+    }>()
     //获取关联体
     const relationSource = computed(()=>{
-        return statusSetting.relationSource
+        return getStatusSettingValue<RelationSource>(fullStatus.setting,"relationSource","obj")??{}
     })
     //是否显示标题:默认为true
     const ifShowTitle = computed(()=>{
-        if(statusSetting.relationTitle == null){
-            return true
-        }
-        return statusSetting.relationTitle
+        const showTitle = getStatusSettingValue(fullStatus.setting,"relationTitle","bool")??true
+        return showTitle
     })
     //是否显示新增按键:默认为true
     const ifShowAdd = computed(()=>{
-        if(statusSetting.relationAdd == null){
-            return true
-        }
-        return statusSetting.relationAdd
+        const showAdd = getStatusSettingValue(fullStatus.setting,"relationAdd","bool")??true
+        return showAdd
     })
+    //添加空单元
     function addUnit(){
         status.value.push({})
     }

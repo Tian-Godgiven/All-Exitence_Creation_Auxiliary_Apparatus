@@ -1,20 +1,13 @@
 <template>
-    <br class="trigger" v-if="valueType == 'enterLine'">
-        <!-- 换行 -->
-    </br>
+     <!-- 换行 -->
+    <br class="trigger" v-if="valueType == 'enterLine'"/>
 
-    <StatusValue :status="status" :typeStatus="typeStatus" class="statusValue"
+    <MultiValueStatus :status :fullStatus 
         v-else-if="valueType == 'statusValue'"/>
+    <MultiValueQuoteStatus :status :fullStatus class="quoteValue" 
+        v-else-if="valueType == 'quoteStatus'"/>
     
-    <div class="quoteStatus" 
-        v-else-if="valueType == 'quoteStatus'"
-        @click="showInfo">
-        <!-- 引用属性值 -->
-        <StatusValue :status="status" :typeStatus="typeStatus" 
-            :disabled="true" class="statusValue"/>
-    </div>
-    
-    <div class="quotePart" v-else-if="part && valueType == 'quotePart'"
+    <div class="quoteValue" v-else-if="part && valueType == 'quotePart'"
         @click="showInfo">
         <!-- 引用部分 -->
         <multiPartValueVue :part="targetPart"></multiPartValueVue>
@@ -41,18 +34,20 @@
 </script>
 
 <script setup lang='ts'>
-    import { computed, inject,provide, reactive } from 'vue';
-    import StatusValue from '../../StatusValue.vue';
+    import { computed, inject, reactive } from 'vue';
     import { countExpression, getExpressionText, getQuotePart, getQuoteStatus } from '@/hooks/expression/multiStatusValue';
-    import { showQuickInfo } from '@/api/showQuickInfo';
     import { getTypeStatusByKey } from '@/hooks/all-exitence/allExitence';
+    import MultiValueQuoteStatus from './partValue/MultiValueQuoteStatus.vue';
+import MultiValueStatus from './partValue/MultiValueStatus.vue';
+import Status from '@/interfaces/Status';
+import { ExitenceStatus } from '@/class/Exitence';
+import { showMultiStatusPartInfo } from './multiStatus';
 
+    //未完成：需要获取target的属性！ 
     const {part} = defineProps(["part","index"])
     const parts = inject<any>("parts")
-    const allStatus = inject<any>("allStatus") //该显示对象的所有属性
-    const allTypeStatus = inject<any>("allTypeStatus") //该显示对象所在的分类的所有属性
-    let status:any//提供给属性值组件的属性目标
-    let typeStatus:any//提供给属性值组件属性
+    let status:Status|ExitenceStatus//提供给属性值组件的属性目标
+    let fullStatus:Status//提供给属性值组件属性
     let targetPart:any//提供给引用part组件的part目标
     let expressionValue:any//表达式的值
     const valueType = part.valueType//部分的类型
@@ -61,11 +56,11 @@
     if(valueType == "statusValue"){
         status = reactive(part.value)
     }
-    //part为引用属性时，提供目标属性和其对应的分类属性
+    //part为引用属性时，从事物中提供目标属性和其对应的完整属性
     else if(valueType == "quoteStatus"){
         //获取并提供目标属性
         status = getQuoteStatus(allStatus,part.value)
-        typeStatus = getTypeStatusByKey(status.__key,allTypeStatus)
+        fullStatus = getTypeStatusByKey(status.__key,allTypeStatus)
     }
     //part为引用部分时，递归寻找目标对象
     else if(valueType == "quotePart"){
@@ -80,17 +75,11 @@
         })
     }
 
-    provide("status",status)
-    provide("typeStatus",typeStatus)
-
     //显示引用属性，引用部分，表达式的信息
     function showInfo(event:any){
         //根据类型显示的信息
         let infoText = "无内容"
-        if(valueType == "quoteStatus"){
-            infoText = "引用属性:"+(status.name??typeStatus.name)
-        }
-        else if(valueType == "quotePart"){
+        if(valueType == "quotePart"){
             infoText = "引用部分:"+targetPart.__key
         }
         else if(valueType == "expression"){
@@ -98,18 +87,7 @@
         }
         // 获取触发事件的元素的位置信息
         const rect = event.target.getBoundingClientRect();
-        const position = {
-            top:`calc(${rect.top-4}px - 1rem)`,  // 设置 div 显示在元素上方
-            left:`${rect.left + rect.width/2}`
-        }
-        showQuickInfo(infoText,{
-            minWidth:"100px",
-            height:"1rem",
-            backgroundColor:"white",
-            padding:"2px",
-            border:"1px solid black",
-            color:"rgb(61, 61, 61)"
-        },position,true,5000)
+        showMultiStatusPartInfo(rect,infoText)
     }
 
     
@@ -122,8 +100,8 @@
     .statusValue{
         width: auto !important;
     }
-    // 引用属性和引用部分不可交互
-    .quoteStatus,.quotePart{
+    // 引用属性不可交互
+    .quoteValue{
         position: relative;
         overflow: visible;
         >*{

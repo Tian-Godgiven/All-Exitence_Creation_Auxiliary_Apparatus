@@ -105,8 +105,8 @@ const statusSettingList:Record<string,SettingOption<Status>[]> = {
 }
 
 //根据属性类型获取某个设置内容项
-export function getStatusSetting(status:Status){
-	const type = status.valueType
+export function getStatusSetting(statusValueType:string){
+	const type = statusValueType
 	//注意通用的设置项放在末尾
 	if(statusSettingList[type]){
 		return [...statusSettingList?.[type],...statusSettingList.all]

@@ -11,7 +11,7 @@
 </div>
 </template>
 
-<script setup lang="ts" name=""> 
+<script setup lang="ts" name="" generic="T"> 
 	import { onMounted, onUnmounted, toRaw } from 'vue';
     import { ElementDragPayload } from "@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types";
 	import { isEqual } from 'lodash';
@@ -21,11 +21,11 @@
 		showHandle=true,
 		dragHandle=false,
 	} = defineProps<{
-		list:any[],
+		list:T[],
 		showHandle?:boolean,
 		dragHandle?:boolean}>()
 
-	function getData(item:any){
+	function getData(item:T){
         return {
 			item,
             from:list

@@ -25,9 +25,11 @@
 			:showHandle="showDrag"
 			v-slot="{item:status}"
 			:list="exitence.status">
-			<ExitenceStatus
+			<ExitenceStatusVue
 				:key="status.__key"
-				:status="status"/>
+				:exitence
+				:status
+				:fullStatus="returnFullStatus(status).value"/>
 		</DraggableList>
 		<div class="scrollSpace"></div>
     </template>
@@ -37,22 +39,26 @@
 <script setup lang="ts" name="">
 	import { onMounted, onUnmounted, provide, ref, useTemplateRef } from 'vue';
 	import textAreaVue from '@/components/other/textArea/textArea.vue';
-	import ExitenceStatus from '@/components/all-exitence/exitence/ExitenceStatus.vue';
-	import { changeExitenceName, getTypeByKey} from '@/hooks/all-exitence/allExitence';
+	import ExitenceStatusVue from '@/components/all-exitence/exitence/ExitenceStatus.vue';
+	import { changeExitenceName, getTypeOfExitence} from '@/hooks/all-exitence/allExitence';
 	import DraggableList from '@/components/other/DraggableList.vue';
 	import Status from '@/interfaces/Status';
 	import { showPopUp } from '@/hooks/pages/popUp';
 	import TargetContainer from './TargetContainer.vue';
 	import { showOnMain } from '@/hooks/pages/mainPage/showOnMain';
-	import { Exitence } from '@/class/Exitence';
+	import { Exitence, ExitenceStatus } from '@/class/Exitence';
 	import Menu from '@/components/global/Menu.vue';
 	import ListMenu from '@/components/global/ListMenu.vue';
 	import Button from '@/components/global/Button.vue';
+import { getFullStatusOfExitence, showCreateStatusPopUp } from '@/hooks/all-exitence/status';
 
 	const {exitence} = defineProps<{exitence:Exitence}>()
 	
 	//事物所属的分类
-	const type = getTypeByKey(exitence.typeKey)
+	const type = getTypeOfExitence(exitence)
+	//提供分类和事物的属性
+	provide("allStatus",exitence.status)
+	provide("allTypeStatus",type?.typeStatus??[])
 	//改变名称
 	function changeName(newName:string){
 		changeExitenceName(exitence,newName)
@@ -69,6 +75,11 @@
 		label:"新增属性",
 		click:()=>addNewStatus()
 	}]
+
+	//获取对应的完整属性
+	function returnFullStatus(status:ExitenceStatus){
+		return getFullStatusOfExitence(type,status)
+	} 
 
 	//切换管理模式
 	const showDrag = ref(false)
@@ -94,26 +105,19 @@
 	//创建新属性
 	const containerRef = useTemplateRef("containerRef")
 	function addNewStatus(){
-		showPopUp({
-			name:"新增属性",
-			vueName:"createStatus",
-			mask:true,
-			buttons:[],
-			props:{
-				allStatus:exitence.status,
-				allTypeStatus:type?.typeStatus
+		showCreateStatusPopUp({
+			popUpSet:{
+				mask:true,
+				size:{
+					height:"50%"
+				}
 			},
-			returnValue : addStatus,
-			size:{
-				width:"600px",
-				height:"50%"
-			},
+			returnValue:addStatus
 		})
 	}
 	function addStatus(newStatus:Status){
 		//将该属性添加到事物中
 		exitence.status.push(newStatus)
-		//滑动到最后
 		containerRef.value?.setScrollTop("last")
 	}
 

@@ -41,18 +41,26 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
         return false
     }
 
-    // 获取key对应的分类的属性
+    // 获取属性key对应的分类的属性
     export function getTypeStatusByKey(statusKey:string,allTypeStatus:Status[]):Status | undefined{
         return allTypeStatus.find((tmp:Status)=>
             tmp.__key == statusKey
         )
     }
 
-    // 获取key对应的分类对象
+    // 获取分类key对应的分类对象
     export function getTypeByKey(typeKey:string):Type|undefined{
         return nowAllExitence.types.find((type)=>
             type.__key == typeKey
         )
+    }
+    
+    export function getTypeOfExitence(exitence:Exitence){
+        const type = getTypeByKey(exitence.typeKey)
+        if(!type){
+            throw new Error("错误的事物对象，其所属的分类不存在")
+        }
+        return type
     }
 
     //向万物中添加新的分类
@@ -229,6 +237,16 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
         }
         return fullStatus
     }
+
+    // 获取事物属性对应的分类中的属性
+    export function getTypeStatusOfExitence(exitence:Exitence,statusKey:string){
+        //获取该事物对应的分类
+        const type = getTypeByKey(exitence.typeKey)
+        if(type){
+            return getTypeStatusByKey(statusKey,type.typeStatus)
+        }
+        return undefined
+    }   
 
 
     // 弹出弹窗，选择是否删除指定事物

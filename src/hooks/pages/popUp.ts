@@ -6,26 +6,31 @@ import { nanoid } from "nanoid"
 export let popUpList = reactive<PopUp[]>([])
 export let maskIndex = ref(0)
 
-export interface PopUp{
+//弹窗的所有可选设置
+export type PopUpSet = {
 	name?:string, //弹窗的标题名称,默认为无
-	id?:string,//弹窗的唯一性id
-	buttons:Button[]|null, //弹窗右上角显示的按钮
+	buttons?:Button[]|null, //弹窗右上角显示的按钮
 	props?:{}, //弹窗的组件中需要使用的数据
-	vueName?:string, //弹窗对应的vue对象名称
-	vue?:ShallowRef<any>, //弹窗中显示的vue组件
-	mask:boolean, //是否显示遮罩层
+	mask?:boolean, //是否显示遮罩层，默认为false
 	repeatable?:boolean,//是否允许重复同样的弹窗，默认为否
-	returnValue?:(...args: any[])=> void, //用于在弹窗中使用的返回回调事件
-	onClose?:(...args: any[])=> void, //用于在关闭弹窗中使用的回调事件，通常为reject
-	index?:number, //弹窗的位置，一般来说不需要设置,
+	//尺寸，注意仅接受字符串，需要带单位
 	size?:{
 		width?:string,
 		height?:string,
 	},
+	//位置
 	position?:{
 		x?:string,
 		y?:string
 	}
+}
+export type PopUp = PopUpSet &{
+	id?:string,//弹窗的唯一性id
+	vueName?:string, //弹窗对应的vue对象名称
+	vue?:ShallowRef<any>, //弹窗中显示的vue组件
+	returnValue?:(...args: any[])=> void, //用于在弹窗中使用的返回回调事件
+	onClose?:(...args: any[])=> void, //用于在关闭弹窗中使用的回调事件，通常为reject
+	index?:number, //弹窗的位置，一般来说不需要设置,
 }
 interface Button{
 	name:string,

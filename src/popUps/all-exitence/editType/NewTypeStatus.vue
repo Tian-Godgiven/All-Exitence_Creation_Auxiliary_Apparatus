@@ -1,19 +1,21 @@
 <template>
 <div class="newStatus">
-	<editStatus
-		@confirm="createTypeStatus" 
+	<EditStatus
+		:confirm="createTypeStatus" 
 		confirmText="新增"
+		:status="newStatus"
+		:typeStatus="newStatus"
 		:banValueType="banValueType">
-	</editStatus>
+	</EditStatus>
 </div>
 </template>
 
 <script setup lang="ts" name=""> 
 	import { provide, reactive, toRaw } from 'vue'; 
 	import Status from '@/interfaces/Status';
-	import editStatus from '@/components/all-exitence/status/editStatus.vue';
+	import EditStatus from '@/components/all-exitence/status/editStatus.vue';
 	import { cloneDeep } from 'lodash';
-import { defaultStatus } from '@/hooks/all-exitence/status';
+import { createNewEmptyStatus } from '@/hooks/all-exitence/status';
 	// 不需要的类型
 	const {banValueType,createStatus} = defineProps<{
 		banValueType?:string[],
@@ -21,7 +23,7 @@ import { defaultStatus } from '@/hooks/all-exitence/status';
 	}>()
 
 	// 新增属性
-	let newStatus = reactive<Status>(cloneDeep(defaultStatus))
+	let newStatus = reactive<Status>(createNewEmptyStatus())
 
 	// 确认新增属性
 	function createTypeStatus(newStatus:Status){

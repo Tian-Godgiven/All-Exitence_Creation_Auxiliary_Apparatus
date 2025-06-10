@@ -13,7 +13,9 @@
         <ExitenceStatus
             v-for="status in exitence.status" 
             :disabled="true"
+            :fullStatus="getFullStatusOfExitence(type,status).value"
             :status
+            :exitence
             :key="status.__key"/>
         <div class="scrollSpace"></div>
     </template>
@@ -21,7 +23,6 @@
 </template>
 
 <script setup lang='ts'>
-import { provide} from 'vue';
 import ExitenceStatus from '@/components/all-exitence/exitence/ExitenceStatus.vue';
 import { showTargetOnMain } from '@/hooks/pages/mainPage/showOnMain';
 import { closePopUp, PopUp } from '@/hooks/pages/popUp';
@@ -29,6 +30,7 @@ import { Type } from '@/class/Type';
 import TargetContainer from '@/app/pages/mainPage/components/TargetContainer.vue';
 import { Exitence } from '@/class/Exitence';
 import Button from '@/components/global/Button.vue';
+import { getFullStatusOfExitence } from '@/hooks/all-exitence/status';
     const {props,popUp} = defineProps<{
         props:{
             type:Type,
@@ -37,10 +39,6 @@ import Button from '@/components/global/Button.vue';
         popUp:PopUp
     }>()
     const {type,exitence} = props
-    
-    provide("type",type)//提供该事物所在的分类
-	provide("allStatus",exitence.status)//提供所有属性
-	provide("allTypeStatus",type.typeStatus)//提供所在的分类的所有属性
 
     function clickJumpToExitence(){
         closePopUp(popUp)

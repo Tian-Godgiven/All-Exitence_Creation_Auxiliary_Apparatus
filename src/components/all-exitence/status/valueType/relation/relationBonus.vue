@@ -1,55 +1,52 @@
 <template>
-    <div class="relationBonus">
-        <div class="relationInfo">
-            <div class="infoTitle">
-                <div>属性名</div>
-                <div>属性类型</div>
-                <div/>
-            </div>
-            <div class="info" v-for="(value,key) in relationSource">
-                <div>{{ key }}</div>
-                <div>{{ getValueType(value.valueType) }}</div>
-                <div @click="deleteRelationStatus(key as string)">删除</div>
-            </div>
+<div class="relationBonus">
+    <div class="relationInfo">
+        <div class="infoTitle">
+            <div>属性名</div>
+            <div>属性类型</div>
+            <div/>
         </div>
-        
-        <div class="buttons">
-            <div class="button" @click="addRelation">添加关联属性</div>
-            <div class="button" @click="addUnit">创建关联单元</div>
+        <div class="info" v-for="(value,key) in relationSource">
+            <div>{{ key }}</div>
+            <div>{{ getValueType(value.valueType) }}</div>
+            <div @click="deleteRelationStatus(key as string)">删除</div>
         </div>
-        
     </div>
+    
+    <div class="buttons">
+        <div class="button" @click="addRelation">添加关联属性</div>
+        <div class="button" @click="addUnit">创建关联单元</div>
+    </div>
+</div>
 </template>
 
 <script setup lang='ts'>
     import { showQuickInfo } from '@/api/showQuickInfo';
-    import { showPopUp } from '@/hooks/pages/popUp';
     import Status from '@/interfaces/Status';
-    import { reactive, inject } from 'vue';
+    import { reactive} from 'vue';
     import { statusValueTypeList } from '@/static/list/statusValueList';
+import { setStatus, showCreateStatusPopUp } from '@/hooks/all-exitence/status';
+import { ExitenceStatus } from '@/class/Exitence';
 
-    const status = inject<any>('status');
-    //初始存在一个空值
+    const {status,fullStatus} = defineProps<{
+        status:Status|ExitenceStatus,
+        fullStatus:Status
+    }>()
+
+    //未完成：什么玩意要给它一个空值啊，初始存在一个空值
     status.value = [{}]
-    const allStatus = inject<any>("allStatus")
-    const allTypeStatus = inject<any>("allTypeStatus")
-
-    const relationSource = reactive<{[statusName:string]:any}>({})
+    const relationSource = reactive<{[statusName:string]:Status}>({})
     //为属性添加关联体设置
-    status.setting["relationSource"] = relationSource
+    setStatus(status,"relationSource",relationSource)
 
     //点击弹出属性创建弹窗，将返回的属性放入关联体中
     function addRelation(){
-        showPopUp({
-            vueName:"createStatus",
-            mask:true,
-            buttons:[],
-            props:{
-                banValueType:["multi","status"],//禁止复合和嵌套类属性
-				allStatus,
-				allTypeStatus
+        showCreateStatusPopUp({
+            popUpSet:{
+                mask:true,
+                repeatable:true
             },
-            repeatable:true,//可以重复创建属性弹窗
+            banValueType:["multi","status"],//禁止复合和嵌套类属性
             returnValue:(status:Status)=>{
                 //这个属性的名称是否已存在
                 if(relationSource[status.name] != null){

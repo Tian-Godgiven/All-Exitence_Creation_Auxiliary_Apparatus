@@ -1,41 +1,45 @@
 <template>
-	<!-- 范围输入栏 -->
-	<div class="range">
-		<div class="top">
-			<div class="halfInput">下限值:
-				<downLineInputVue
-					@input="adjustRange" 
-					v-model.number="rangeMin" 
-					type="number"/>
-			</div>
-			<div class="halfInput">上限值:
-				<downLineInputVue
-					@input="adjustRange" 
-					v-model.number="rangeMax" 
-					type="number"/>
-			</div>
-		</div>
-		<div class="halfInput" >单位值:
+<!-- 范围输入栏 -->
+<div class="rangeBonus">
+	<div class="top">
+		<div class="halfInput">下限值:
 			<downLineInputVue
-				@input="adjustStep" 
-				v-model.number="rangeStep" 
+				@input="adjustRange" 
+				v-model.number="rangeMin" 
+				type="number"/>
+		</div>
+		<div class="halfInput">上限值:
+			<downLineInputVue
+				@input="adjustRange" 
+				v-model.number="rangeMax" 
 				type="number"/>
 		</div>
 	</div>
+	<div class="halfInput" >单位值:
+		<downLineInputVue
+			@input="adjustStep" 
+			v-model.number="rangeStep" 
+			type="number"/>
+	</div>
+</div>
 </template>
 	
 <script lang="ts" setup>
-import { inject, ref} from 'vue';
+import { ref} from 'vue';
 import { showQuickInfo } from '@/api/showQuickInfo';
 import Status from '@/interfaces/Status';
 import downLineInputVue from '@/components/other/input/downLineInput.vue';
-	const status = inject<Status>('status',<any>{}); 
-	if(!status){
-		console.error("没有属性传入")
-	}
+import { ExitenceStatus } from '@/class/Exitence';
+import { getStatusSettingValue, setStatus } from '@/hooks/all-exitence/status';
+	const {status,fullStatus} = defineProps<{
+        status:Status|ExitenceStatus,
+        fullStatus:Status
+    }>()
+	const range = getStatusSettingValue<number>(fullStatus.setting,"range","arr")
+		??[0,100,1]
 	// 范围输入栏
-	let rangeMin = ref(0)
-	let rangeMax = ref(100)
+	let rangeMin = ref(range[0])
+	let rangeMax = ref(range[1])
 	// 调整最大最小值
 	function adjustRange(){
 		if (rangeMin.value > rangeMax.value) {
@@ -47,7 +51,7 @@ import downLineInputVue from '@/components/other/input/downLineInput.vue';
 		changeStatus()
 	};
 	
-	let rangeStep = ref(1)
+	let rangeStep = ref(range[2])
 	// 调整步长
 	function adjustStep(){
 		if(rangeStep.value<0){
@@ -59,14 +63,14 @@ import downLineInputVue from '@/components/other/input/downLineInput.vue';
 	
 	// 修改属性
 	function changeStatus(){
-		status["setting"]["range"] = [rangeMin.value,rangeMax.value,rangeStep.value]
+		setStatus(status,"range",[rangeMin.value,rangeMax.value,rangeStep.value])
 	}
 	changeStatus()
 </script>
  
 <style lang="scss" scoped>
 	@use "@/static/style/components/inputs.scss";
-	.range{
+	.rangeBonus{
 		.top{
 			display: flex;
 		}
