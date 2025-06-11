@@ -34,7 +34,7 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
         //若重复
         if(tmp){
             //并且不与传入的type为同一个type
-            if(type && tmp != type){
+            if(type?.__key && tmp.__key != type.__key){
                 return true
             }
         }
