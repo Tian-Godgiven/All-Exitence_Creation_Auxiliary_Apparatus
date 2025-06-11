@@ -42,10 +42,10 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
     }
 
     // 获取属性key对应的分类的属性
-    export function getTypeStatusByKey(statusKey:string,allTypeStatus:Status[]):Status | undefined{
+    export function getTypeStatusByKey(statusKey:string,allTypeStatus:Status[]):Status | false{
         return allTypeStatus.find((tmp:Status)=>
             tmp.__key == statusKey
-        )
+        )??false
     }
 
     // 获取分类key对应的分类对象
@@ -63,11 +63,17 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
         return type
     }
 
-    //向万物中添加新的分类
-    export function addType(typeName:string,typeStatus:[],typeSetting:{}){
-        const type = new Type(typeName,typeStatus,typeSetting,[],[],nanoid())
-        nowAllExitence.types.push(type)
+    //创建一个新的分类
+    export function createType(name:string,status:Status[],setting:Record<string,any>){
+        const type = new Type(name,status,setting,[],[],nanoid())
         return type
+    }
+
+    //向万物中添加新的分类
+    export function addType(name:string,status:Status[],setting:Record<string,any>){
+        const newType = createType(name,status,setting)
+        nowAllExitence.types.push(newType)
+        return newType
     }
     // 显示创建分类页面，创建成功时添加该分类
     export async function createTypePopUp(){
@@ -78,9 +84,10 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
                 buttons:[],
                 vueName:"createType",
                 mask:true,
-                returnValue:(name,typeStatus,setting)=>{
+                returnValue:(newType:Type)=>{
                     //添加该分类
-                    const type = addType(name,typeStatus,setting)
+                    const type = addType(newType.name,newType.typeStatus,newType.setting)
+                    console.log(type)
                     //返回
                     resolve(type)
                 }
@@ -98,10 +105,10 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
             props:{
                 type:type,
             },
-            returnValue:(name:string,typeStatus:Status[],setting:{})=>{
-                type.name = name;
-                type.typeStatus = typeStatus;
-                type.setting= setting
+            returnValue:(newType:Type)=>{
+                type.name = newType.name
+                type.typeStatus = newType.typeStatus
+                type.setting= newType.setting
             }
         })
     }

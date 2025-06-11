@@ -2,7 +2,7 @@
 <div class="editType">
 	<div class="top">
 		<downLineInputVue 
-			v-model="name"
+			v-model="type.name"
 			class="typeName"
 			placeholder="输入分类名称"/>
 		<Button class="button" name="预制属性" @click="prepareStatus"></Button>
@@ -17,12 +17,13 @@
 					:list="typeStatus" 
 					v-slot="{item:status}">
 					<TypeStatus 
+						:type
 						@deleteStatus="deleteStatus(status)" 
 						:key="status.__key"
 						:status="status">
 					</TypeStatus>
 				</draggableListVue>
-				<NewTypeStatus :createStatus="addStatus"/>
+				<NewTypeStatus :type :createStatus="addStatus"/>
 			</template>
 		</SwitchExpand>
 		
@@ -30,9 +31,9 @@
 			<template #title @click="switchSetting">分类设置</template>
 			<template #inner>
 				<settingBoxVue 
-					:target="tmpType"
+					:target="type"
 					:optionList="typeSettingList"
-					:settingValue="tmpType.setting"
+					:settingValue="type.setting"
 					ref="settingBox"/>
 			</template>
 		</SwitchExpand>
@@ -51,8 +52,8 @@
 	import draggableListVue from '@/components/other/DraggableList.vue';
 	import NewTypeStatus from './NewTypeStatus.vue';
 	import TypeStatus from './TypeStatus.vue';
-	import { closePopUp } from '@/hooks/pages/popUp';
-	import { checkTypeNameRepeat } from '@/hooks/all-exitence/allExitence';
+	import { closePopUp, PopUp } from '@/hooks/pages/popUp';
+	import { checkTypeNameRepeat, createType } from '@/hooks/all-exitence/allExitence';
 	import { showQuickInfo } from '@/api/showQuickInfo';
 	import { cloneDeep } from 'lodash';
 	import Button from '@/components/global/Button.vue';
@@ -63,20 +64,24 @@
 	import Status from '@/interfaces/Status';
 	import FinalButtons from '@/app/stacks/popUp/FinalButtons.vue';
 	import SwitchExpand from '@/components/other/SwitchExpand.vue';
-	const {props={},popUp,returnValue} = defineProps(["props","popUp","returnValue"])
-    let {type} = props
+	type Props = {
+		type?:Type
+	}
+	const {props={},popUp,returnValue} = defineProps<{
+		props:Props,
+		popUp:PopUp,
+		returnValue:(newType:Type)=>void
+	}>()
+    
+	const {type:oldType} = props
 
 	//type存在则创建深拷贝，不存在则创建空type
-	const tmpType:Type = type? reactive(cloneDeep(type)) : reactive({
-		name:"",
-		typeStatus:reactive([]),
-		setting:reactive({})
-	})
+	const type:Type = oldType ? reactive(cloneDeep(oldType)) 
+		: reactive(createType("",[],{}))
 	
-	const {typeStatus,setting} = tmpType
-	const name = ref(tmpType.name)
+	const {typeStatus} = type
 	
-	//显示预制属性弹窗
+	//未完成：显示预制属性弹窗
 	function prepareStatus(){
 
 	}
@@ -97,12 +102,13 @@
 
 	//确认创建分类
 	function confirm(){
+		const name = type.name
 		//分类名称不可为空
-		if(name.value == "" || !name.value){
+		if(name.trim() == ""){
 			showQuickInfo("分类名不可为空")
 			return false
 		}
-		const tmp = checkTypeNameRepeat(name.value,type)
+		const tmp = checkTypeNameRepeat(name,type)
 		if(tmp){
 			showQuickInfo("分类名不可重复")
 			return false
@@ -112,7 +118,7 @@
 			showQuickInfo("分类设置不正确")
 			return false
 		}
-        returnValue(name.value,toRaw(typeStatus),toRaw(setting))
+        returnValue(toRaw(type))
 		//关闭弹窗
 		closePopUp(popUp)
 	}
