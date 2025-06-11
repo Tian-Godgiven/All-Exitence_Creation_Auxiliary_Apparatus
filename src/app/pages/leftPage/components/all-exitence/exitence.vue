@@ -15,7 +15,7 @@ import { hidePage } from '@/hooks/pages/pageChange';
 import { showTargetOnMain } from '@/hooks/pages/mainPage/showOnMain';
 import { computed } from 'vue'; 
 import { showControlPanel } from '@/hooks/controlPanel';
-import { deleteExitencePopUp, getExitencePreview} from '@/hooks/all-exitence/allExitence';
+import { deleteExitencePopUp, getExitencePreview, showSetExitencePopUp} from '@/hooks/all-exitence/allExitence';
 import { Exitence } from '@/class/Exitence';
 import ObjectLine from '../ObjectLine.vue';
 import { focusOnLeftPage, getLeftPageFocusTarget } from '@/hooks/pages/leftPage';
@@ -43,6 +43,9 @@ import { ElementDragPayload } from '@atlaskit/pragmatic-drag-and-drop/dist/types
 		showControlPanel({
 			title:`事物：${exitence.name}`,
 			option:[{
+				text:"事物设置",
+				click:()=>{showSetExitencePopUp(exitence,type)}
+			},{
 				text:"删除",
 				click:()=>{deleteExitencePopUp(type,exitence)}
 			}]

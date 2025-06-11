@@ -40,10 +40,9 @@
 	import { onMounted, onUnmounted, provide, ref, useTemplateRef } from 'vue';
 	import textAreaVue from '@/components/other/textArea/textArea.vue';
 	import ExitenceStatusVue from '@/components/all-exitence/exitence/ExitenceStatus.vue';
-	import { changeExitenceName, getTypeOfExitence} from '@/hooks/all-exitence/allExitence';
+	import { changeExitenceName, getTypeOfExitence, showSetExitencePopUp} from '@/hooks/all-exitence/allExitence';
 	import DraggableList from '@/components/other/DraggableList.vue';
 	import Status from '@/interfaces/Status';
-	import { showPopUp } from '@/hooks/pages/popUp';
 	import TargetContainer from './TargetContainer.vue';
 	import { showOnMain } from '@/hooks/pages/mainPage/showOnMain';
 	import { Exitence, ExitenceStatus } from '@/class/Exitence';
@@ -70,7 +69,7 @@ import { getFullStatusOfExitence, showCreateStatusPopUp } from '@/hooks/all-exit
 		click:()=>switchControlMode()
 	},{
 		label:"事物设置",
-		click:()=>setExitence(),
+		click:()=>showSetExitencePopUp(exitence,type),
 	},{
 		label:"新增属性",
 		click:()=>addNewStatus()
@@ -86,22 +85,7 @@ import { getFullStatusOfExitence, showCreateStatusPopUp } from '@/hooks/all-exit
 	function switchControlMode(){
 		showDrag.value = !showDrag.value
 	}
-	//点击打开设置弹窗
-	function setExitence(){
-		showPopUp({
-			name:"事物设置",
-			vueName:"setExitence",
-			mask:true,
-			buttons:[],
-			props:{
-				exitence:exitence,
-				type:type
-			},
-			returnValue(newExitence){
-				Object.assign(exitence,newExitence)
-			}
-		})
-	}
+	
 	//创建新属性
 	const containerRef = useTemplateRef("containerRef")
 	function addNewStatus(){

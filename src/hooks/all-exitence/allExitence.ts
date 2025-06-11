@@ -200,6 +200,24 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
         
     }
 
+    //打开设置事物弹窗
+    export function showSetExitencePopUp(exitence:Exitence,type:Type){
+	    showPopUp({
+			name:"事物设置",
+			vueName:"setExitence",
+			mask:true,
+			buttons:[],
+			props:{
+				exitence:exitence,
+				type:type
+			},
+			returnValue(newExitence:Exitence){
+				Object.assign(exitence,newExitence)
+                console.log(exitence)
+			}
+		})
+    }
+
     // 获取key对应的分类中的事物
     export function getExitenceByKey(type:Type,exitenceKey:string){
         return type.exitence.find(e=>e.__key == exitenceKey)

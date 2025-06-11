@@ -20,7 +20,7 @@
 <script setup lang='ts'>
     import { ref } from 'vue';
     import Button from '@/components/global/Button.vue';
-import { toString } from 'lodash';
+    import { toString } from 'lodash';
 
     const value = defineModel<string|number>({
         default:""

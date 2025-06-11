@@ -1,35 +1,31 @@
 <template>
-<!-- 设置箱，显示时会自动展开 -->
 <div class="settingBox" :class="show? 'settingBox-show':''">
 	<div class="container"> <!--别删！对css样式有用！-->
 		<settingOptionVue 
-			v-for="(option,index) in options" 
+			v-for="(option,index) in options"
+			:key="Symbol()"
+			:target
 			:setOption="option"
+			:defaultSetting
+			:chooseTarget
 			:ref="`option-${index}`"/>
 	</div>
 </div>
 </template>
 
-<script setup lang='ts'>
-    import { ref,computed, inject } from 'vue';
+<script setup lang='ts' generic="T extends SettingTarget,S">
+    import { ref,computed } from 'vue';
     import settingOptionVue from './settingOption.vue';
-import { SettingOption } from './setting';
+	import { SettingProps, SettingTarget } from './setting';
 
-    const {show=true} = defineProps<{
+    const {show=true,target,
+		selectTarget=null,
+		optionList:setOptionList,
+		defaultSetting,
+		chooseTarget
+	} = defineProps<{
 		show?:boolean, //控制显示
-	}>()
-
-    //设置目标,筛选目标,设置项表
-	const settingProps = inject<any>("settingProps",null)
-	if(!settingProps){
-		console.error(`传递的设置变量不可用:${settingProps}`)
-	}
- 
-    let {target,selectTarget=null,optionList} = settingProps
-    //请确保筛选目标是一个computed或ref对象
-    if(!selectTarget){
-        selectTarget = computed(()=>target)
-    }
+	}&SettingProps<T,S>>()
 
     //暴露一个检测设置项的值的方法
     defineExpose({
@@ -38,10 +34,18 @@ import { SettingOption } from './setting';
 
 	//需要显示的设置项
 	let options = computed(() => {
-		return optionList.flatMap((option:SettingOption<typeof selectTarget>) => {
-			// 满足该设置项的select需求或者该设置项不具备select
-			if (!option.select || option.select(selectTarget) === true) {
-				return option; // 返回一个数组，这样 flatMap 会将其扁平化
+		return setOptionList.flatMap((option) => {
+			//不需要进行select，或者满足select条件
+			if(!option.select){
+				return option
+			}
+			//或者存在select目标，且其满足select条件
+			else if(selectTarget && option.select(selectTarget)===true){
+				return option
+			}
+			//或者target满足select条件
+			else if(option.select(target)===true){
+				return option
 			}
 			return [];
 		});

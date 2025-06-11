@@ -8,9 +8,8 @@
 	<!-- 属性类型与设置 -->
 	<div class="statusSet">
 		<Selector
-			@change="changeValueType"
 			class="selectValueType" 
-			v-model="status.valueType"
+			v-model="valueType"
 			placeholder="选择类型"
 			:list="valueTypeList">
 		</Selector>
@@ -22,13 +21,18 @@
 	<!-- 额外输入栏 -->
 	<StatusBonus :status :fullStatus></StatusBonus>
 	<!-- 属性设置栏 -->
-	<settingBoxVue ref="settingBox" :show="showSettingBox"/>
+	<settingBoxVue ref="settingBox" 
+		:target="status"
+		:select-target="fullStatus"
+		:defaultSetting="fullStatus.setting"
+		:optionList="setOptionList"
+		:show="showSettingBox"/>
 	
 </div>
 </template>
 
-<script setup lang="ts" name="" generic="S extends (Status|ExitenceStatus)"> 
-	import { ref, computed, provide, reactive, toRaw, Reactive } from 'vue'; 
+<script setup lang="ts" name="" generic="S extends Status | ExitenceStatus"> 
+	import { ref, computed, reactive, toRaw, Reactive } from 'vue'; 
 	import { statusValueTypeList } from '@/static/list/statusValueList';
 	import settingBoxVue from '../setting/settingBox.vue';
 	import { getStatusSetting } from "@/static/list/settingList/status/statusSettingList";
@@ -37,18 +41,21 @@
 	import { showQuickInfo } from '@/api/showQuickInfo';
 	import { cloneDeep } from 'lodash';
 	import Button from '@/components/global/Button.vue';
-import Selector from '@/components/global/Selector.vue';
-import Status from '@/interfaces/Status';
-import StatusBonus from './StatusBonus.vue';
-import { ExitenceStatus } from '@/class/Exitence';
-import { createNewEmptyStatus, getFullStatus } from '@/hooks/all-exitence/status';
+	import Selector from '@/components/global/Selector.vue';
+	import Status from '@/interfaces/Status';
+	import StatusBonus from './StatusBonus.vue';
+	import { ExitenceStatus } from '@/class/Exitence';
+	import { createNewEmptyStatus, getFullStatus } from '@/hooks/all-exitence/status';
 
-	const {confirm,confirmText,banValueType,status:oldStatus,typeStatus} = defineProps<{
-		confirm:(newStatus:S)=>void,
-		confirmText:string,
+	const {confirm,confirmText,banValueType,
+		status:oldStatus,
+		fullStatus:oldFullStatus
+	} = defineProps<{
 		banValueType?:string[],
 		status?:S,
-		typeStatus:Status
+		fullStatus:Status
+		confirmText:string,
+		confirm:(newStatus:S)=>void,
 	}>()
 
 	// 在接受了属性对象后，会创造一个属性对象的拷贝
@@ -63,37 +70,37 @@ import { createNewEmptyStatus, getFullStatus } from '@/hooks/all-exitence/status
 		status = reactive(newStatus as S)
 	}
 
-	//完整属性
-	const fullStatus = getFullStatus(status,typeStatus)
+	//以这个新的对象为例构建一个新的fullStatus
+	const fullStatus = getFullStatus(status,oldFullStatus)
     
 	// 选择属性类型
 	let valueTypeList = statusValueTypeList
 	if(banValueType){
-		valueTypeList = valueTypeList.reduce((acc,cur)=>{
-			if(!banValueType.includes(cur.value)){
-				acc.push(cur)
+		valueTypeList = valueTypeList.flatMap((item)=>{
+			if(!banValueType.includes(item.value)){
+				return item
 			}
-			return acc
-		},<any[]>[])
+			return []
+		})
 	}
-	//切换属性类型时，清空setting和value
-	function changeValueType(){
-		status.setting = {}
-		status.value = null
-	}
+	const valueType = computed({
+		// 优先使用 status.value，为空时使用 fullStatus.value
+		get:() => {
+			return status.valueType || fullStatus.value.valueType
+		},
+		//更新时会清空其值和设置
+		set: (newValueType) => {
+			status.setting = {}
+			status.value = null
+			status.valueType = newValueType
+		}
+	})
 
 	// 属性设置箱vue
 	const settingBox = ref()
-	//提供给设置项的变量检验的是与typeStatus整合后的结果
-	const settingProps = {
-		target:status,
-		selectTarget:computed(()=>{
-			return {...typeStatus,...status}
-		}),
-		settingValue:{...fullStatus.value.setting},
-		optionList:getStatusSetting(fullStatus.value.valueType)
-	}
-	provide("settingProps",settingProps)
+	const setOptionList = computed(()=>{
+		return getStatusSetting(fullStatus.value.valueType)
+	})
 	// 控制显示
 	let showSettingBox = ref(false) 
 	function switchSetting(){
@@ -103,7 +110,6 @@ import { createNewEmptyStatus, getFullStatus } from '@/hooks/all-exitence/status
 	//确认编辑内容
     const emit = defineEmits(["confirm"])
     function clickConfirm(){
-		console.log(fullStatus.value.name.trim())
         // 要求name不能为空
 		if(fullStatus.value.name.trim() == ""){
 			showQuickInfo("属性名不能为空")

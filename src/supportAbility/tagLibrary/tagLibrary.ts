@@ -50,7 +50,6 @@ async function syncTagLibrary(projectPath:string){
 }
 //保存当前数据到项目文件中
 async function saveTagLibrary(projectPath:string|null){
-    console.log("保存时的tagLib",nowTagLibrary)
     await supportAbilitySaveProject(spName,projectPath,nowTagLibrary)
 }
 
@@ -70,7 +69,6 @@ function showManagePopUp(){
 
 //获取当前标签库的内容
 export function getTagLibrary(){
-    console.log(nowTagLibrary)
     return nowTagLibrary
 }
 

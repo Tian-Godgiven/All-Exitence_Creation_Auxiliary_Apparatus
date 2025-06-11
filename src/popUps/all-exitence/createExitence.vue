@@ -16,7 +16,11 @@
 
         <div class="setting">
             <div class="button" @click="swicthShowSettingBox">事物设置</div>
-            <settingBoxVue :show="showSettingBox" ref="settingBox"/>
+            <settingBoxVue :show="showSettingBox" ref="settingBox"
+                :target="tmpExitence"
+                :chooseTarget="[type]"
+                :optionList="exitenceSettingList"
+                :settingValue/>
         </div>
     </div>
 
@@ -27,7 +31,7 @@
 </template>
 
 <script setup lang='ts'>
-    import { reactive, ref, toRaw, provide} from 'vue';
+    import { reactive, ref, toRaw} from 'vue';
     import downLineInputVue from '@/components/other/input/downLineInput.vue';
     import { closePopUp } from '@/hooks/pages/popUp';
     import settingBoxVue from '@/components/all-exitence/setting/settingBox.vue';
@@ -91,13 +95,7 @@ import StatusValue from '@/components/all-exitence/status/StatusValue.vue';
     }
 
     //设置相关
-    const settingProps = {
-        target:tmpExitence,//实际上修改的是事物对象的setting
-        chooseTarget:[type],//必须传入一个数组
-        optionList:exitenceSettingList,
-        settingValue:{...type.setting,...tmpExitence.setting}
-    }
-    provide("settingProps",settingProps)
+    const settingValue = {...type.setting,...tmpExitence.setting}
     //控制设置框的显示
     const showSettingBox = ref(true)
     function swicthShowSettingBox(){

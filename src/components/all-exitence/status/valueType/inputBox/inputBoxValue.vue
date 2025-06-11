@@ -68,11 +68,13 @@ import { getStatusSettingValue } from '@/hooks/all-exitence/status';
 		min-height: 2.5em;
 	}
 	.textArea.withUnit{
+		width: auto;
 		max-width: calc(100% - 3rem);
 	}
 	.unit{
-		width: 3rem;
+		max-width: 3rem;
 		flex-shrink: 0;
+		word-break: break-all;
 		white-space: normal;
 	}
 }

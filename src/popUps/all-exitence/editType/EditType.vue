@@ -29,7 +29,11 @@
 		<SwitchExpand :start-expand="false">
 			<template #title @click="switchSetting">分类设置</template>
 			<template #inner>
-				<settingBoxVue ref="settingBox"></settingBoxVue>
+				<settingBoxVue 
+					:target="tmpType"
+					:optionList="typeSettingList"
+					:settingValue="tmpType.setting"
+					ref="settingBox"/>
 			</template>
 		</SwitchExpand>
 	</div>
@@ -42,23 +46,23 @@
 </template>
 
 <script setup lang="ts" name="">
-import { provide, reactive, ref, toRaw } from 'vue'; 
-import downLineInputVue from '@/components/other/input/downLineInput.vue';
-import draggableListVue from '@/components/other/DraggableList.vue';
-import NewTypeStatus from './NewTypeStatus.vue';
-import TypeStatus from './TypeStatus.vue';
-import { closePopUp } from '@/hooks/pages/popUp';
-import { checkTypeNameRepeat } from '@/hooks/all-exitence/allExitence';
-import { showQuickInfo } from '@/api/showQuickInfo';
-import { cloneDeep } from 'lodash';
-import Button from '@/components/global/Button.vue';
-import settingBoxVue from '@/components/all-exitence/setting/settingBox.vue';
-import { typeSettingList } from '@/static/list/settingList/typeSettingList';
-import { nanoid } from 'nanoid';
-import { Type } from '@/class/Type';
-import Status from '@/interfaces/Status';
-import FinalButtons from '@/app/stacks/popUp/FinalButtons.vue';
-import SwitchExpand from '@/components/other/SwitchExpand.vue';
+	import { provide, reactive, ref, toRaw } from 'vue'; 
+	import downLineInputVue from '@/components/other/input/downLineInput.vue';
+	import draggableListVue from '@/components/other/DraggableList.vue';
+	import NewTypeStatus from './NewTypeStatus.vue';
+	import TypeStatus from './TypeStatus.vue';
+	import { closePopUp } from '@/hooks/pages/popUp';
+	import { checkTypeNameRepeat } from '@/hooks/all-exitence/allExitence';
+	import { showQuickInfo } from '@/api/showQuickInfo';
+	import { cloneDeep } from 'lodash';
+	import Button from '@/components/global/Button.vue';
+	import settingBoxVue from '@/components/all-exitence/setting/settingBox.vue';
+	import { typeSettingList } from '@/static/list/settingList/typeSettingList';
+	import { nanoid } from 'nanoid';
+	import { Type } from '@/class/Type';
+	import Status from '@/interfaces/Status';
+	import FinalButtons from '@/app/stacks/popUp/FinalButtons.vue';
+	import SwitchExpand from '@/components/other/SwitchExpand.vue';
 	const {props={},popUp,returnValue} = defineProps(["props","popUp","returnValue"])
     let {type} = props
 
@@ -93,12 +97,6 @@ import SwitchExpand from '@/components/other/SwitchExpand.vue';
 	}
 
 	//分类设置
-    const typeSetting = {
-        target:tmpType,//实际上修改的是事物对象的setting
-        optionList:typeSettingList,
-        settingValue:tmpType.setting
-    }
-    provide("settingProps",typeSetting)
 	const settingBox = ref()
 
 	//确认创建分类
