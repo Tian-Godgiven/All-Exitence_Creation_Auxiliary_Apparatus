@@ -46,7 +46,7 @@
 </template>
 
 <script setup lang="ts" name="">
-	import { provide, reactive, ref, toRaw } from 'vue'; 
+	import { reactive, ref, toRaw } from 'vue'; 
 	import downLineInputVue from '@/components/other/input/downLineInput.vue';
 	import draggableListVue from '@/components/other/DraggableList.vue';
 	import NewTypeStatus from './NewTypeStatus.vue';
@@ -75,10 +75,6 @@
 	
 	const {typeStatus,setting} = tmpType
 	const name = ref(tmpType.name)
-	
-	//分类的所有属性
-	provide("allStatus",typeStatus)
-	provide("allTypeStatus",typeStatus)
 	
 	//显示预制属性弹窗
 	function prepareStatus(){

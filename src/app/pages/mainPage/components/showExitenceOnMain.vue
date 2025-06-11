@@ -37,7 +37,7 @@
 </template>
 
 <script setup lang="ts" name="">
-	import { onMounted, onUnmounted, provide, ref, useTemplateRef } from 'vue';
+	import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
 	import textAreaVue from '@/components/other/textArea/textArea.vue';
 	import ExitenceStatusVue from '@/components/all-exitence/exitence/ExitenceStatus.vue';
 	import { changeExitenceName, getTypeOfExitence, showSetExitencePopUp} from '@/hooks/all-exitence/allExitence';
@@ -55,9 +55,6 @@ import { getFullStatusOfExitence, showCreateStatusPopUp } from '@/hooks/all-exit
 	
 	//事物所属的分类
 	const type = getTypeOfExitence(exitence)
-	//提供分类和事物的属性
-	provide("allStatus",exitence.status)
-	provide("allTypeStatus",type?.typeStatus??[])
 	//改变名称
 	function changeName(newName:string){
 		changeExitenceName(exitence,newName)
@@ -127,11 +124,6 @@ import { getFullStatusOfExitence, showCreateStatusPopUp } from '@/hooks/all-exit
     onUnmounted(()=>{
         window.removeEventListener("getShowOnMainScrollTop",getScrollTop)
     })
-
-	provide("type",type)//提供该事物所在的分类
-	provide("allStatus",exitence.status)//提供所有属性
-	provide("allTypeStatus",type?.typeStatus)//提供所在的分类的所有属性
-
 </script>
 
 <style lang="scss" scoped>
