@@ -1,4 +1,9 @@
-import { getTypeStatusByKey } from "../all-exitence/allExitence";
+import { Type } from "@/class/Type";
+import { getExitenceStatusByKey, getTypeOfExitence, getTypeStatusByKey } from "../all-exitence/allExitence";
+import { Exitence, ExitenceStatus } from "@/class/Exitence";
+import Status from "@/interfaces/Status";
+import { showAlert } from "../alert";
+import { getFullStatusOfExitence } from "../all-exitence/status";
 
 // 该表达式为multi类型的属性的属性值中computed类型属性中使用到的特殊表达式
 export type MultiStatusPart = {
@@ -36,7 +41,7 @@ export function explainExpression(expressionValue:any[]){
 }
 
 // 遍历表达式数组，并计算其中的值
-export function countExpression(allStatus:any,allTypeStatus:any[],parts:any,expression:any[]){
+export function countExpression(target:Type|Exitence,parts:any,expression:any[]){
     let totalValue
     let tmpArray:any[] = []
     let lastItem:any
@@ -72,7 +77,7 @@ export function countExpression(allStatus:any,allTypeStatus:any[],parts:any,expr
                 //提取括号中的内容
                 let inside = arr.slice(startIndex+1, endIndex);
                 //计算括号内容的值
-                let insideValue = countExpression(allStatus,allTypeStatus,parts,inside);
+                let insideValue = countExpression(target,parts,inside);
                 let subExpression = [lastItem,"[",insideValue,"]"]
                 //再计算取数组表达式的值
                 let result = returnExpressionValue(subExpression)
@@ -103,7 +108,7 @@ export function countExpression(allStatus:any,allTypeStatus:any[],parts:any,expr
                 //提取括号中的内容为子表达式
                 let subExpression = arr.slice(startIndex+1, endIndex);
                 // 递归计算子表达式的值
-                let result = countExpression(allStatus,allTypeStatus,parts,subExpression);
+                let result = countExpression(target,parts,subExpression);
                 // 将计算结果添加到 tmpArray占位
                 tmpArray.push(result); 
             }
@@ -126,9 +131,9 @@ export function countExpression(allStatus:any,allTypeStatus:any[],parts:any,expr
     function returnExpressionValue(expression:any[]){
         let simbol:string
         let value:any
-        expression.flatMap((item:any) => {
+        expression.forEach((item:any) => {
             //初始化
-            let itemValue = getExpressionItemValue(allStatus,allTypeStatus,parts,item)
+            let itemValue = getExpressionItemValue(target,parts,item)
             if(value == null){
                 value = itemValue
             }
@@ -237,14 +242,14 @@ export function countExpressionPart(lastValue:any,simbol:string,nextValue:any){
 }
 
 //获取表达式对象的值
-function getExpressionItemValue(allStatus:any,allTypeStatus:any,parts:any,item:any){
+function getExpressionItemValue(target:Type|Exitence,parts:MultiStatusPart[],item:any){
     if(typeof item == "object"){
         //如果是引用属性
         if(item.type == "quoteStatus"){
             //获取目标属性
-            const targetStatus = getQuoteStatus(allStatus,item.key)
-            if(targetStatus){
-                return targetStatus.value
+            const result = getQuoteStatus(target,item.key)
+            if(result){
+                return result.fullStatus.value
             }
             else{
                 return false
@@ -254,12 +259,13 @@ function getExpressionItemValue(allStatus:any,allTypeStatus:any,parts:any,item:a
         else if(item.type == "quotePart"){
             //递归获取目标部分
             const targetPart = getQuotePart(parts,item.key)
+            if(!targetPart)return false
             //如果目标部分是引用属性,则获得其目标属性
             if(targetPart.valueType == "quoteStatus"){
-                const targetStatus = getQuoteStatus(allStatus,targetPart.value)
-                //返回属性值
-                if(targetStatus){
-                    return targetStatus.value
+                //获取目标属性
+                const result = getQuoteStatus(target,targetPart.value)
+                if(result){
+                    return result.fullStatus.value
                 }
                 else{
                     return false
@@ -267,7 +273,7 @@ function getExpressionItemValue(allStatus:any,allTypeStatus:any,parts:any,item:a
             }
             //如果目标部分是表达式，则获得其值
             else if(targetPart.valueType == "expression"){
-                const expressionValue = countExpression(allStatus,allTypeStatus,parts,targetPart.value)
+                const expressionValue = countExpression(target,parts,targetPart.value)
                 return expressionValue
             }
             //如果目标是属性值，则获得其值为一个属性对象，再获得属性的值
@@ -288,45 +294,77 @@ function getExpressionItemValue(allStatus:any,allTypeStatus:any,parts:any,item:a
 }
 
 //获取表达式的文本内容
-export function getExpressionText(allStatus:any,allTypeStatus:any,expression:any[]){
-    const infoText = expression.reduce((arr:string,value:any)=>{
+export function getExpressionText(target:Exitence|Type,expression:any[]){
+    let text = ""
+    for(let value of expression){
         if(value.type && value.type=="quotePart"){
-            arr+=("引用部分:"+value.key)
+            text+=("引用部分:"+value.key)
         }
         else if(value.type && value.type == "quoteStatus"){
-            const targetStatus = getQuoteStatus(allStatus,value.key)
-            const targetTypeStatus = getTypeStatusByKey(targetStatus.__key,allTypeStatus)
-            arr += ("引用属性:"+(targetStatus.name??targetTypeStatus?.name))
+            const result = getQuoteStatus(target,value.key)
+            //没有找到时，将这个value从表达式中删除
+            if(!result){
+                const index = expression.findIndex(value)
+                expression.splice(index,1)
+                continue;
+            }
+            const {fullStatus} = result
+            text += ("引用属性:"+fullStatus.name)
         }
         else{
-            arr+=value;
+            text+=value;
         }
-        return arr
-    },"")
-    return infoText
+    }
+    return text
 }
 
-//获取引用的属性目标
-export function getQuoteStatus(allStatus:any[],statusKey:string){
-    let tmp = allStatus.find((status:any)=>
-        status.__key == statusKey
-    )
-    
-    if(tmp){
-        return tmp
+//获取引用的属性和完整属性
+export function getQuoteStatus(target:Type|Exitence,part:MultiStatusPart)
+:{status:Status|ExitenceStatus,fullStatus:Status}|false{
+    const statusKey = part.value
+    //从目标中找到对应的属性
+    if(target instanceof Type){
+        const status = getTypeStatusByKey(statusKey,target.typeStatus)
+        if(!status){
+            onNoStatus()
+            return false
+        }
+        return {
+            status,
+            fullStatus:status
+        }
     }
     else{
-        return null
+        const type = getTypeOfExitence(target)
+        const status = getExitenceStatusByKey(statusKey,target.status)
+        if(!status){
+            onNoStatus()
+            return false
+        }
+        const fullStatus = getFullStatusOfExitence(type,status)
+        return {
+            status,
+            fullStatus:fullStatus.value
+        }
+    }
+    function onNoStatus(){
+        showAlert({
+            info:"未能获取引用的目标属性，该属性可能已被删除",
+            confirm:()=>{}
+        })
     }
 }
 //递归获取引用part的值
-export function getQuotePart(parts:any,partKey:string){
+export function getQuotePart(parts:MultiStatusPart[],part:MultiStatusPart){
+    const targetKey = part.value
     //寻找目标
-    const targetPart = parts.value.find((tmpPart:MultiStatusPart)=>
-        tmpPart.__key == partKey
+    const targetPart = parts.find((tmpPart)=>
+        tmpPart.__key == targetKey
     )
-    //递归寻找非引用part
-    if(targetPart.valueType == "quotePart"){
+    //如果没有找到
+    if(!targetPart)return false
+    //如果目标仍然是引用part，则递归查找
+    if(targetPart.valueType === "quotePart"){
         return getQuotePart(parts,targetPart)
     }
     else{

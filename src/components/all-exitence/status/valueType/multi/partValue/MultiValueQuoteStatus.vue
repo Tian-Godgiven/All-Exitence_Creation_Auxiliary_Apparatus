@@ -1,34 +1,55 @@
 <template>
 <div class="quoteStatus" 
     ref="selfRef"
-    @click="showInfo">
+    @click="onClick">
     <!-- 引用属性值 -->
-    <StatusValue :status :fullStatus
-        :disabled="true" class="statusValue"/>
+    <div class="error" v-if="!result">
+        错误：无内容
+    </div>
+    <StatusValue class="statusValue" v-else
+        :status="result.status" :fullStatus="result.fullStatus"
+        :disabled="true" />
 </div>
 </template>
 
 <script setup lang='ts'>
     import StatusValue from '../../../StatusValue.vue';
-import { ExitenceStatus } from '@/class/Exitence';
-import Status from '@/interfaces/Status';
-import { useTemplateRef } from 'vue';
-import { showMultiStatusPartInfo } from '../multiStatus';
-    const {status,fullStatus} = defineProps<{
-        status:Status|ExitenceStatus,
-        fullStatus:Status
+    import { Exitence } from '@/class/Exitence';
+    import { computed } from 'vue';
+    import { getQuoteStatus, MultiStatusPart } from '@/hooks/expression/multiStatusValue';
+    import { Type } from '@/class/Type';
+    const {showInfo,part,target} = defineProps<{
+        showInfo:(e:Event,text:string)=>void
+        part:MultiStatusPart
+        target:Exitence|Type
     }>()
-    const selfRef = useTemplateRef("selfRef")
-    function showInfo(){
-        if(!selfRef.value)return;
-        //根据类型显示的信息
-        let infoText = "引用属性:"+ fullStatus.name
-        // 获取触发事件的元素的位置信息
-        const rect = selfRef.value.getBoundingClientRect();
-        showMultiStatusPartInfo(rect,infoText)
+    //获取并提供目标属性 
+    const result = computed(()=>{
+        const tmp = getQuoteStatus(target,part.value)
+        return tmp
+    })
+    function onClick(e:MouseEvent){
+        let text:string
+        if(result.value === false){
+            text="错误：未能获取引用的目标属性"
+        }
+        else{
+            text = "引用属性:"+ result.value.fullStatus.name
+        }
+        showInfo(e,text)
     }
 </script>
 
 <style scoped lang='scss'>
+.quoteStatus{
+    .error{
+        border-radius: 10px;
+        background-color: rgb(209, 69, 69);
+        color: black;
+    }
+    .statusValue{
+        width: auto !important;
+    }
+}
 
 </style>

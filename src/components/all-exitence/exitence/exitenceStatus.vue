@@ -38,6 +38,7 @@
         //禁用状态下无效
         if(disabled)return
         showEditStatusPopUp({
+            target:exitence,
             status,
             fullStatus,
             returnValue:(newStatus:ExitenceStatus)=>{

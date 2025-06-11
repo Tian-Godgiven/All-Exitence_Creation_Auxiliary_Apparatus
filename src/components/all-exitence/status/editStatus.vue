@@ -19,7 +19,7 @@
 	</div>
 
 	<!-- 额外输入栏 -->
-	<StatusBonus :status :fullStatus></StatusBonus>
+	<StatusBonus :status :fullStatus :target></StatusBonus>
 	<!-- 属性设置栏 -->
 	<settingBoxVue ref="settingBox" 
 		:target="status"
@@ -44,15 +44,20 @@
 	import Selector from '@/components/global/Selector.vue';
 	import Status from '@/interfaces/Status';
 	import StatusBonus from './StatusBonus.vue';
-	import { ExitenceStatus } from '@/class/Exitence';
+	import { Exitence, ExitenceStatus } from '@/class/Exitence';
 	import { createNewEmptyStatus, getFullStatus } from '@/hooks/all-exitence/status';
+import { Type } from '@/class/Type';
 
-	const {confirm,confirmText,banValueType,
+	const {confirm,
+		confirmText,
+		banValueType,
+		target,
 		status:oldStatus,
 		fullStatus:oldFullStatus
 	} = defineProps<{
 		banValueType?:string[],
 		status?:S,
+		target:Exitence|Type
 		fullStatus:Status
 		confirmText:string,
 		confirm:(newStatus:S)=>void,

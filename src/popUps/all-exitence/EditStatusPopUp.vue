@@ -1,5 +1,6 @@
 <template>
 <EditStatus 
+	:target
 	:confirm
 	:status
 	:fullStatus
@@ -12,8 +13,10 @@
 	import Status from '@/interfaces/Status';
 	import EditStatus from '@/components/all-exitence/status/editStatus.vue';
 	import { closePopUp, PopUp } from '@/hooks/pages/popUp';
-	import { ExitenceStatus } from '@/class/Exitence';
+	import { Exitence, ExitenceStatus } from '@/class/Exitence';
+import { Type } from '@/class/Type';
 	type Props = {
+		target:Exitence|Type
 		status?:Status|ExitenceStatus,
 		fullStatus:Status,
 		banValueType?:string[],
@@ -23,6 +26,7 @@
 	// 编辑对象与编辑对象的属性等数据
 	const {props,popUp,returnValue} = defineProps<{props:Props,popUp:PopUp,returnValue:(newStatus:Status|ExitenceStatus)=>void}>()
 	let {
+		target,
 		status,
 		fullStatus,
 		banValueType,

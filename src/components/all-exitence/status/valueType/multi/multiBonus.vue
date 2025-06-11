@@ -39,7 +39,7 @@
 </template>
 
 <script setup lang="ts" name="">
-import { ref, shallowRef, toRaw } from 'vue'; 
+import { computed, ref, shallowRef, toRaw } from 'vue'; 
 import draggableListVue from '@/components/other/DraggableList.vue';
 import { showPopUp } from '@/hooks/pages/popUp';
 import textInputVue from "@/components/other/textInput.vue";
@@ -48,16 +48,34 @@ import multiStatusExpressionVue from '@/popUps/expression/multiStatusExpression.
 import inputVue from '@/components/other/input/downLineInput.vue'
 import { statusValueTypeList } from '@/static/list/statusValueList';
 import { MultiStatusPart } from '@/hooks/expression/multiStatusValue';
-import { showCreateStatusPopUp } from '@/hooks/all-exitence/status';
+import { getFullStatusOfExitence, showCreateStatusPopUp } from '@/hooks/all-exitence/status';
 import Status from '@/interfaces/Status';
 import { showChooseFromListPopUp } from '@/api/chooseFromList';
-import { ExitenceStatus } from '@/class/Exitence';
+import { Exitence, ExitenceStatus } from '@/class/Exitence';
+import { Type } from '@/class/Type';
+import { getTypeOfExitence } from '@/hooks/all-exitence/allExitence';
 	// 未完成：不再依赖传入的allStatus，而是使用target来获取对象，从而得到属性
-	const {status,fullStatus} = defineProps<{
+	const {status,fullStatus,target} = defineProps<{
 		status:Status|ExitenceStatus,
-		fullStatus:Status
+		fullStatus:Status,
+		target:Exitence|Type
 	}>()
-	const allStatus:Status[] = []
+
+	//对象的所有属性
+	const allStatus = computed<Status[]>(()=>{
+		//对于事物对象,传递的会是各个属性的完整属性
+		if(target instanceof Exitence){
+			//获取目标的分类
+			const type = getTypeOfExitence(target)
+			const allStatus = target.status.map(status=>{
+				return getFullStatusOfExitence(type,status).value
+			})
+			return allStatus
+		}
+		else{
+			return target.typeStatus
+		}
+	})
 
 	// 当前复合属性的值，数组内依次保存各个复合属性对象
 	const multiValue = ref<MultiStatusPart[]>(fullStatus.value ?? [])
@@ -86,11 +104,11 @@ import { ExitenceStatus } from '@/class/Exitence';
 		changeStatusValue()
 	}
 	// 检查part的关键字是否重复
-	function checkPartKey(part:any){
+	function checkPartKey(part:MultiStatusPart){
 		const key = part.__key
 		multiValue.value.forEach((thePart:MultiStatusPart) => {
 			if(key!="" && key == thePart.__key && toRaw(part) != toRaw(thePart)){
-				showQuickInfo("部分的关键字不得重复.")
+				showQuickInfo("属性部分的关键字不得重复.")
 				part.__key = ""
 			}
 		})
@@ -98,7 +116,7 @@ import { ExitenceStatus } from '@/class/Exitence';
 	// 引用相应part
 	function quotePart(part:MultiStatusPart){
 		if(!part.__key){
-			showQuickInfo("需要为相应的部分设置关键字")
+			showQuickInfo("引用的目标的部分需要设置关键字")
 			return false
 		}
 		createNewPart(part.__key,"quotePart")
@@ -116,7 +134,7 @@ import { ExitenceStatus } from '@/class/Exitence';
 			return tmp?.label + "属性"
 		}
 		else if(part.valueType == "quoteStatus"){
-			const theStatus = allStatus.find((status:any)=>status.__key == part.value)
+			const theStatus = allStatus.value.find((status:any)=>status.__key == part.value)
 			if(theStatus){
 				return "引用属性:" + theStatus.name
 			}
@@ -165,7 +183,6 @@ import { ExitenceStatus } from '@/class/Exitence';
 				createNewPart(value,type)
 			},
 			size:{
-				width:"600px",
 				height:"auto"
 			}
 		})
@@ -188,10 +205,10 @@ import { ExitenceStatus } from '@/class/Exitence';
 			}
 		})
 	}
-	// 显示选择属性弹窗，选择当前属性对应的对象中的已有属性
+	// 显示选择属性弹窗，选择当前属性所在的对象中的已有属性
 	function showQuoteStatusPopUp(){
 		showChooseFromListPopUp<Status>({
-			list:allStatus,
+			list:allStatus.value,
 			info:"点击选择引用属性",
 			emptyInfo:"当前无可选属性",
 			//允许选择非复合属性和非嵌套的属性

@@ -1,6 +1,7 @@
 <template>
 <div class="newStatus">
 	<EditStatus
+		:target="type"
 		:status="newStatus"
 		:fullStatus="newStatus"
 		confirmText="新增"
@@ -17,10 +18,12 @@
 	import { cloneDeep } from 'lodash';
 import { createNewEmptyStatus } from '@/hooks/all-exitence/status';
 import { ExitenceStatus } from '@/class/Exitence';
+import { Type } from '@/class/Type';
 	// 不需要的类型
-	const {banValueType,createStatus} = defineProps<{
+	const {banValueType,createStatus,type} = defineProps<{
 		banValueType?:string[],
 		createStatus:(status:Status)=>void
+		type:Type
 	}>()
 
 	// 新增属性

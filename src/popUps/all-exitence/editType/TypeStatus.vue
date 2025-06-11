@@ -15,7 +15,8 @@ import StatusValue from '@/components/all-exitence/status/StatusValue.vue';
 import Status from '@/interfaces/Status';
 import Button from '@/components/global/Button.vue';
 import { showEditStatusPopUp } from '@/hooks/all-exitence/status';
-	let {status} = defineProps<{status:Status}>()
+import { Type } from '@/class/Type';
+	const {status,type} = defineProps<{status:Status,type:Type}>()
 	const emits = defineEmits(["deleteStatus"])
 	//删除属性
 	function deleteStatus(){
@@ -24,6 +25,7 @@ import { showEditStatusPopUp } from '@/hooks/all-exitence/status';
 	//点击弹出更新属性
 	function showUpdateStatus(){
 		showEditStatusPopUp({
+			target:type,
 			status,
 			fullStatus:status,
 			returnValue:(newStatus)=>{

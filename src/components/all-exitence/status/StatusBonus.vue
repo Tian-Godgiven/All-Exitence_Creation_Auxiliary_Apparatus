@@ -1,17 +1,19 @@
 <template>
 <div class="statusBonus">
-    <component :status :fullStatus :is="component"></component>
+    <component :status :fullStatus :target :is="component"></component>
 </div>
 </template>
 
 <script setup lang='ts'>
     import { statusBonusInputList } from '@/static/list/statusBonusInputList';
     import Status from '@/interfaces/Status';
-    import { ExitenceStatus } from '@/class/Exitence';
-import { computed } from 'vue';
-    const {status,fullStatus} = defineProps<{
+    import { Exitence, ExitenceStatus } from '@/class/Exitence';
+    import { computed } from 'vue';
+    import { Type } from '@/class/Type';
+    const {status,fullStatus,target} = defineProps<{
         status:Status|ExitenceStatus,
-        fullStatus:Status
+        fullStatus:Status,
+        target:Exitence|Type
     }>()
     const component = computed(()=>{
         const valueType = fullStatus.valueType

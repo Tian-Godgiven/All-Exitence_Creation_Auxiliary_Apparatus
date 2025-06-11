@@ -1,4 +1,4 @@
- import { ExitenceStatus } from "@/class/Exitence";
+ import { Exitence, ExitenceStatus } from "@/class/Exitence";
 import Status from "@/interfaces/Status";
 import _, { cloneDeep, isArray, isNumber, toNumber, toString } from "lodash";
 import { nanoid } from "nanoid";
@@ -50,6 +50,9 @@ export function getFullStatus(smaller:Status|ExitenceStatus,bigger?:Status):Comp
 export function getFullStatusOfExitence(type:Type,status:ExitenceStatus){
     //从Type中寻找相关的属性
     const typeStatus = getTypeStatusByKey(status.__key,type?.typeStatus)
+    if(!typeStatus){
+        return getFullStatus(status)
+    }
     return getFullStatus(status,typeStatus)
 }
 
@@ -158,9 +161,10 @@ export function getStatusSettingValue<T>(
 }
 //打开一个属性编辑弹窗，并编辑一个属性
 export function showEditStatusPopUp<T extends Status|ExitenceStatus>({
-    name,status,fullStatus,banValueType,confirmText,returnValue
+    name,target,status,fullStatus,banValueType,confirmText,returnValue
 }:{
     name?:string,
+    target:Exitence|Type,
     status?:T,
     fullStatus:Status,
     banValueType?:string[],
@@ -173,6 +177,7 @@ export function showEditStatusPopUp<T extends Status|ExitenceStatus>({
         vueName:"updateStatus",
         buttons:[],
         props:{
+            target,
             status,
             fullStatus,
             banValueType,

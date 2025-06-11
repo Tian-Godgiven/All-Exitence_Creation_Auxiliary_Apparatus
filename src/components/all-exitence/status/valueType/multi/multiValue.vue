@@ -1,24 +1,35 @@
 <template>
-	<div class="multiValue">
-		<!-- 根据part的类型显示内容 -->
-		<MultiPartValue class="part" v-for="(part,index) in parts" :index="index" :part="part"/>
-	</div>
+<div class="multiValue">
+	<!-- 根据part的类型显示内容 -->
+	<MultiPartValue class="part"
+		:key="part.__key" 
+		v-for="part in parts" 
+		:parts
+		:target
+		:part="part"/>
+</div>
 </template>
 
 <script setup lang="ts" name="">
-import { watch, ref, provide } from 'vue'; 
+import { watch, ref } from 'vue'; 
 import MultiPartValue from './MultiPartValue.vue';
-	const {status} = defineProps(["status"])
-	const parts = ref(status.value)
-	watch(()=>status,()=>{
-		parts.value = status.value
+import { MultiStatusPart } from '@/hooks/expression/multiStatusValue';
+import Status from '@/interfaces/Status';
+import { Exitence, ExitenceStatus } from '@/class/Exitence';
+import { Type } from '@/class/Type';
+	const {fullStatus,target} = defineProps<{
+		status:Status|ExitenceStatus,
+		fullStatus:Status,
+		target:Type|Exitence
+	}>()
+	//复合属性的属性值由part组成
+	const parts = ref(fullStatus.value as MultiStatusPart[])
+	watch(()=>fullStatus,()=>{
+		parts.value = fullStatus.value
 	},{
 		immediate:true,
 		deep:true,
 	})
-	//提供当前属性中的所有parts
-	provide("parts",parts)
-	
 </script>
 
 <style lang="scss" scoped>
