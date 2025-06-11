@@ -24,10 +24,11 @@
 		
 		<!-- 新增选项输入 -->
 		<div class="newChoice">
-			<inputVue
+			<DownLineInput 
 				class="input"
 				v-model="newChoice" 
-				placeholder="新增选项"/>
+				placeholder="新增选项">
+			</DownLineInput>
 			<div class="button" @click="addChoice">新增</div>
 		</div>
 	</div>
@@ -41,7 +42,7 @@ import DownLineInput from '@/components/other/input/downLineInput.vue';
 import { ExitenceStatus } from '@/class/Exitence';
 import Status from '@/interfaces/Status';
 import { setStatus } from '@/hooks/all-exitence/status';
-	const {status,fullStatus} = defineProps<{
+	const {status} = defineProps<{
 		status:Status|ExitenceStatus,
 		fullStatus:Status
 	}>()	
