@@ -158,13 +158,11 @@ export function getStatusSettingValue<T>(
 }
 //打开一个属性编辑弹窗，并编辑一个属性
 export function showEditStatusPopUp<T extends Status|ExitenceStatus>({
-    name,status,fullStatus,banValueType,confirmText,allStatus,allTypeStatus,returnValue
+    name,status,fullStatus,banValueType,confirmText,returnValue
 }:{
     name?:string,
     status?:T,
     fullStatus:Status,
-    allStatus?:Status[],
-    allTypeStatus?:Status[],
     banValueType?:string[],
     confirmText?:string,
     returnValue:(newStatus:T)=>void
@@ -177,8 +175,6 @@ export function showEditStatusPopUp<T extends Status|ExitenceStatus>({
         props:{
             status,
             fullStatus,
-            allStatus,
-            allTypeStatus,
             banValueType,
             confirmText
         },

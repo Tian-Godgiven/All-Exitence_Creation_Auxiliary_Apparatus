@@ -13,8 +13,8 @@
     import StatusValue from '../status/StatusValue.vue';
     import { Exitence, ExitenceStatus } from '@/class/Exitence';
     import LongTap from '@/components/other/LongTap.vue';
-import { showEditStatusPopUp } from '@/hooks/all-exitence/status';
-import Status from '@/interfaces/Status';
+    import { showEditStatusPopUp } from '@/hooks/all-exitence/status';
+    import Status from '@/interfaces/Status';
 
     let {disabled,status,fullStatus,exitence} = defineProps<{
         disabled?:boolean;
