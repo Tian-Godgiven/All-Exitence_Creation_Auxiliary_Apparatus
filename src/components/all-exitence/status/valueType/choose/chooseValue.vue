@@ -35,7 +35,7 @@ import { getStatusSettingValue } from '@/hooks/all-exitence/status';
 	}
 	// 选项数组
 	const choiceList = computed(()=>{
-		const settingValue = getStatusSettingValue<string>(fullStatus.setting,"choice","arr") ?? []
+		const settingValue = getStatusSettingValue<string>(fullStatus.setting,"choices","arr") ?? []
 		return settingValue
 	})
 	// 选择数量
