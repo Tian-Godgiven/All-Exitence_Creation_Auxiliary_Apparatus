@@ -1,6 +1,6 @@
 <template>
 	<div class="chooseValue" :class="ifVertical?'vertical':'horizontal'">
-		<ElCheckboxGroup v-if="!ifRadio" :min="min" :max="max" v-model="status.value" >
+		<ElCheckboxGroup v-if="!ifRadio" :min="chooseNum[0]" :max="chooseNum[1]" v-model="status.value" >
 			<ElCheckbox
 				:value="choice"
 				v-for="(choice) in choiceList"
@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="ts" name="">
-import { computed, reactive } from 'vue'; 
+import { reactive, ref, watch } from 'vue'; 
 import radioVue from '@/components/other/radio.vue';
 import { ElCheckboxGroup,ElCheckbox } from 'element-plus';
 import Status from '@/interfaces/Status';
@@ -33,26 +33,25 @@ import { getStatusSettingValue } from '@/hooks/all-exitence/status';
 	if(!Array.isArray(status.value)){
 		status.value = []
 	}
-	// 选项数组
-	const choiceList = computed(()=>{
-		const settingValue = getStatusSettingValue<string>(fullStatus.setting,"choices","arr") ?? []
-		return settingValue
-	})
-	// 选择数量
-	const min = computed(()=>{
-		const chooseNum = getStatusSettingValue<number>(fullStatus.setting,"chooseNum","arr") ?? []
-		return chooseNum[0] ?? 0
-	})
-	const max = computed(()=>{
-		const chooseNum = getStatusSettingValue<number>(fullStatus.setting,"chooseNum","arr") ?? []
-		return chooseNum[1] ?? 1
+	const choiceList = ref<string[]>([])
+	const chooseNum = ref<number[]>([0,1])
+	const ifRadio = ref<boolean>(false)
+	const ifVertical = ref<boolean>(false)
+	watch(()=>fullStatus.setting,()=>{
+		// 选项数组
+		choiceList.value = getStatusSettingValue<string>(fullStatus.setting,"choices","arr") 
+			?? []
+		// 选择数量
+		chooseNum.value = getStatusSettingValue<number>(fullStatus.setting,"chooseNum","arr") 
+			?? []
+		//属性设置：使用灯开关表示选项
+		ifRadio.value = getStatusSettingValue(fullStatus.setting,"ifRadio","bool") 
+			?? false
+		//是否竖向排列
+		ifVertical.value = getStatusSettingValue(fullStatus.setting,"chooseDirection","bool")
+			?? false
 	})
 
-	//属性设置：使用灯开关表示选项
-	const ifRadio = computed(()=>{
-		const ifRadio = getStatusSettingValue(fullStatus.setting,"ifRadio","bool") ?? false
-		return ifRadio
-	})
 	// 灯开关选择
 	const chosenList = reactive(new Array(choiceList.value.length).fill(false))
 	function takeChoose(){
@@ -64,12 +63,6 @@ import { getStatusSettingValue } from '@/hooks/all-exitence/status';
 			return arr
 		},[])
 	}
-	// 属性设置：选项排列方向是否为竖向
-	const ifVertical = computed(()=>{
-		//(默认横向)
-		const ifVertical = getStatusSettingValue(fullStatus.setting,"chooseDirection","bool") ?? false
-		return ifVertical
-	})
 	
 </script>
 
