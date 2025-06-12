@@ -37,7 +37,7 @@ import { computed, ref } from 'vue';
 	})
 	// 选择数量，仅支持最大选择数量
 	const chooseNum = computed(()=>{
-		const maxNum = getStatusSettingValue<number>(fullStatus.setting,"choices","arr")??[0,1]
+		const maxNum = getStatusSettingValue<number>(fullStatus.setting,"chooseNum","arr")??[0,1]
 		const tmp = maxNum[1]
 		if(tmp > 1){
 			ifMultiple.value = true
