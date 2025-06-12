@@ -3,7 +3,7 @@
     <textAreaVue
         v-if="!ifDisabled" 
         mode="string"
-        v-model="status.name"
+        v-model="name"
         placeholder="属性名"/>
     <div v-else>{{ name }}</div>
 </div>
@@ -13,32 +13,32 @@
 <script setup lang='ts'>
 import { ExitenceStatus } from '@/class/Exitence';
 import textAreaVue from '@/components/other/textArea/textArea.vue';
+import { getStatusSettingValue } from '@/hooks/all-exitence/status';
 import Status from '@/interfaces/Status';
-import { ref,watch } from 'vue';
+import { computed, ref } from 'vue';
     let {status,fullStatus,disabled=false} = defineProps<{
         status:Status|ExitenceStatus,
         fullStatus:Status,
         disabled?:boolean
     }>()
+    //不允许编辑
     const ifDisabled = ref(disabled)
     //实际要显示的名称
-    const name = ref(fullStatus.name)
-    //监听属性设置的变化
-    watch(()=>status?.setting,()=>{
-        const setting = fullStatus.setting
-        //属性设置：代替属性名显示，默认为false
-        const tmp1 = setting["insteadOfName"] || false
-        if(tmp1 && tmp1.trim() != ""){
-            ifDisabled.value = true
-            name.value = tmp1
-            return;
+    const name = computed({
+        get:()=>{
+            //属性设置：代替属性名显示，默认为false
+            const insteadName = getStatusSettingValue(fullStatus.setting,"insteadOfName","string") ?? false
+            if(insteadName){
+                //禁止修改属性名
+                ifDisabled.value = true
+                name.value = insteadName
+                return insteadName
+            }
+            return fullStatus.name
+        },
+        set:(newValue)=>{
+            status.name = newValue
         }
-        //初始化 
-        ifDisabled.value = disabled
-        
-    },{
-        immediate:true,
-        deep:true
     })
     
 </script>

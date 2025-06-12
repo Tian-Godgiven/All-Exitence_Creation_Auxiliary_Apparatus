@@ -25,7 +25,7 @@ export function getFullStatus(smaller:Status|ExitenceStatus,bigger?:Status):Comp
     return computed(()=>{
         let fullStatus:Status
         if(bigger){
-            //让status1的值覆盖在status2上
+            //让小属性的值覆盖在status2上
             fullStatus = _.merge({},bigger,smaller)
         }
         //不传入更大的属性时，如果小属性的内容不足，则会自动填补
