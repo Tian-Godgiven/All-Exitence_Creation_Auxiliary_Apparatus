@@ -6,8 +6,8 @@
         :format="numFormat"
         @change="onChange">
         <template #default>
-            <div v-if="showUnit!=false" class="unitName">{{ unit.name }}</div>
-            <div v-if="linker != null && i != unitList.length-1">{{ linker }}</div>
+            <div v-if="showUnit" class="unitName">{{ unit.name }}</div>
+            <div v-if="linker && i != unitList.length-1">{{ linker }}</div>
         </template>
     </DateUnitValue>
 </div>
@@ -29,37 +29,43 @@ import { ExitenceStatus } from '@/class/Exitence';
     //是否不具备时间属性或时间属性无效
     const timeRule = computed(()=>{
         const ruleKey = getStatusSettingValue(fullStatus.setting,"timeRule","string")
+        //检查时间规则是否存在，如果不存在则使用Date替代
         if(ruleKey){
             let rule = getTimeRule(ruleKey)
             if(rule){
                 return rule
             }
+            else{
+                showQuickInfo("未能获取指定的时间表达式，将使用现实时间替代")
+                setIdleStatus(status)   
+                return "date"
+            }
         }
-        //否则均认为时间属性无效，将规则修改为date
         //未完成：关联属性的属性修改无效
-        showQuickInfo("未能获取指定的时间表达式，将使用现实时间替代")
-        setIdleStatus(status)
-        return "date"
+        return "date" //默认返回date
     })
     //日期所需要显示的单位列表
     const unitList = computed(()=>{
         const unitFrom = getStatusSettingValue(fullStatus.setting,"unitFrom","string")??undefined
         const unitEnd = getStatusSettingValue(fullStatus.setting,"unitEnd","string")??undefined
         //获取单位列表
-        return translateTimeValueToArr({
+        const list = translateTimeValueToArr({
             value:status.value,
             rule:timeRule.value,
             unitFrom,
             unitEnd
         })
+        return list
     })
-    //是否显示单位
+    //是否显示单位，默认显示
     const showUnit = computed(()=>{
-        return getStatusSettingValue(fullStatus.setting,"showUnit","bool")??false
+        return getStatusSettingValue(fullStatus.setting,"showUnit","bool")
+            ??true
     })
     //链接符号
     const linker = computed(()=>{
         return getStatusSettingValue(fullStatus.setting,"linker","string")
+            ??false
     })
     //使用的数符
     type NumFormat = "阿拉伯数字"|"简体中文数字"|"繁体中文数字"

@@ -30,7 +30,7 @@
 </template>
 
 <script setup lang='ts'>
-    import { computed, ref, watchEffect } from 'vue';
+    import { computed, ref, watch, watchEffect } from 'vue';
     import Button from '@/components/global/Button.vue';
     import Selector from '@/components/global/Selector.vue';
     import { getTimeRule, showTimeSelector, TimeLinker } from '@/supportAbility/customTime/translateTime';
@@ -67,47 +67,57 @@ import { deleteStatusSetting, getStatusSettingValue, setStatus } from '@/hooks/a
     })
 //显示选择列表，选择时间规则
     async function showDateChoose(){
-        const tmp = await showTimeSelector()
-        if(tmp){
-            status.value = tmp=="date"?new Date().getTime():0
-            const timeRuleKey = tmp=="date"?"date":tmp.__key
+        const timeRule = await showTimeSelector()
+        if(timeRule){
+            status.value = timeRule=="date"?new Date().getTime():0
+            const timeRuleKey = timeRule=="date"?"date":timeRule.__key
             setStatus(status,"timeRule",timeRuleKey)
+            //同步修改规则列表
+            getUnitList(timeRule)
+            console.log(status,fullStatus.setting)
         }
         //没有做出选择:清空
         else{
             deleteStatusSetting(status,"timeRule")
         }
     }
-//选择首尾单位
-    const unitList = computed<{label:string,value:string}[]>(()=>{
+//设置首尾单位
+    const unitList = ref<{label:string,value:string}[]>([])
+    const unitFrom = ref<string>("")
+    const unitEnd = ref<string>("")
+    getUnitList(timeRule.value)
+    //修改单位列表与首尾单位
+    function getUnitList(timeRule:TimeRule|null){
+        if(!timeRule)timeRule = "date"
         let list:string[] = []
-        if(timeRule.value == "date"){
+        if(timeRule == "date"){
             list = ["年","月","日","时","分","秒"]
         }
-        else if(timeRule.value){
-            const timeRuleUnits = timeRule.value?.units
+        else if(timeRule){
+            const timeRuleUnits = timeRule?.units
             list = timeRuleUnits.map(unit=>unit.name)
         }
-        return list.map(item=>{
+        const tmpList = list.map(item=>{
             return {
                 label:item,
                 value:item
             }
         })
-    })
-    const unitFrom = ref<string>("")
-    const unitEnd = ref<string>("")
-    //列表变化时首尾单位变化
-    watchEffect(()=>{
+        //修改当前单位列表
+        unitList.value = tmpList 
+        //修改当前首尾单位
         unitFrom.value = unitList.value[0].value
         const last = unitList.value.at(-1)
         unitEnd.value = last?last.value:""
-    })
-    //首尾单位选择时改变status
-    watchEffect(()=>{
+        //同步到status中
         setStatus(status,"unitFrom",unitFrom.value)
         setStatus(status,"unitEnd",unitEnd.value)
-    })
+    }
+    //选择首尾单位,改变status
+    watch([() => unitFrom.value, () => unitEnd.value], ([newUnitFrom, newUnitEnd]) => {
+        setStatus(status, "unitFrom", newUnitFrom);
+        setStatus(status, "unitEnd", newUnitEnd);
+    });
 //选择使用的数符
     const numFormatList = [
         {label:"阿拉伯数字",value:"阿拉伯数字"},
