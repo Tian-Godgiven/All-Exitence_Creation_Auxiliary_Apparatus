@@ -7,6 +7,7 @@
         错误：无内容
     </div>
     <StatusValue class="statusValue" v-else
+        :target
         :status="result.status" :fullStatus="result.fullStatus"
         :disabled="true" />
 </div>

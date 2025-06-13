@@ -102,15 +102,17 @@ export function getTimeRuleUnits(timeRule:TimeRule,unitFrom?:string,unitEnd?:str
     }
     //自定义时间规则类型
     else{
-        //要求若设定起始和结束，则其都必须存在于数组中
+        //要求若设定起始和结束，则其都必须存在于units中
         let allUnitList = timeRule.units
         const noFrom = unitFrom && !allUnitList.find((unit)=>unit.name==unitFrom)
         const noEnd = unitEnd && !allUnitList.find((unit)=>unit.name==unitEnd)
         if(noFrom){
-            console.error("时间规则中不存在指定的起始单位",timeRule,unitFrom)
+            console.error(timeRule,unitFrom)
+            throw new Error("时间规则中不存在指定的起始单位")
         }
         if(noEnd){
-            console.error("时间规则中不存在指定的结束单位",timeRule,unitEnd)
+            console.error(timeRule,unitEnd)
+            throw new Error("时间规则中不存在指定的结束单位")
         }
         //遍历规则中的单位
         let start = false

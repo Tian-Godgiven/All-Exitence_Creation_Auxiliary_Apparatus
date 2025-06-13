@@ -2,7 +2,7 @@
 <div class="editStatus">
 	<div class="status">
 		<StatusName :status :fullStatus/>
-		<StatusValue :status :fullStatus/>
+		<StatusValue :target :status :fullStatus/>
 	</div>
 	
 	<!-- 属性类型与设置 -->

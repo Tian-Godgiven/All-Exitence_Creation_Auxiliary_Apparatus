@@ -5,6 +5,7 @@
     <MultiValueStatus 
         :showInfo
         :part
+        :target
         v-else-if="valueType == 'statusValue'"/>
     <MultiValueQuoteStatus class="quoteValue" 
         :showInfo

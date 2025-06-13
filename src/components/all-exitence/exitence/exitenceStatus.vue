@@ -3,7 +3,7 @@
 <LongTap :duration="700" :wait-after="500" :long-tap="longTap" :key="key" class="exitenceStatus">
     <StatusName v-if="!ifNoName" :status :fullStatus :disabled="true"></StatusName>
     <!-- 属性值 -->
-    <StatusValue :status :fullStatus :disabled class="value"/>
+    <StatusValue :target="exitence" :status :fullStatus :disabled class="value"/>
 </LongTap> 
 </template>
 

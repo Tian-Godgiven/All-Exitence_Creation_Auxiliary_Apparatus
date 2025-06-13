@@ -1,6 +1,7 @@
 <template>
 <div class="relationUnitValue">
     <StatusValue class="unitStatus" v-for="(value,key) in source" 
+        :target
         :key="value.__key"
         :status="unitStatus[key]" 
         :fullStatus="value"/>
@@ -12,9 +13,12 @@
     import StatusValue from '../../StatusValue.vue';
     import { RelationSource, RelationUnit } from './relationStatus';
 import Status from '@/interfaces/Status';
-    const {source,unit} = defineProps<{
+import { Type } from '@/class/Type';
+import { Exitence } from '@/class/Exitence';
+    const {source,unit,target} = defineProps<{
         source:RelationSource,
-        unit:RelationUnit
+        unit:RelationUnit,
+        target:Type|Exitence
     }>()
     //单元的属性列表
     const unitStatus = computed(()=>{

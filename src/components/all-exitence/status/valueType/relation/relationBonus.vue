@@ -26,11 +26,13 @@
     import { reactive} from 'vue';
     import { statusValueTypeList } from '@/static/list/statusValueList';
 import { setStatus, showCreateStatusPopUp } from '@/hooks/all-exitence/status';
-import { ExitenceStatus } from '@/class/Exitence';
+import { Exitence, ExitenceStatus } from '@/class/Exitence';
+import { Type } from '@/class/Type';
 
-    const {status,fullStatus} = defineProps<{
+    const {status,fullStatus,target} = defineProps<{
         status:Status|ExitenceStatus,
-        fullStatus:Status
+        fullStatus:Status,
+        target:Exitence|Type
     }>()
 
     //未完成：什么玩意要给它一个空值啊，初始存在一个空值
@@ -42,6 +44,7 @@ import { ExitenceStatus } from '@/class/Exitence';
     //点击弹出属性创建弹窗，将返回的属性放入关联体中
     function addRelation(){
         showCreateStatusPopUp({
+            target:target,
             popUpSet:{
                 mask:true,
                 repeatable:true

@@ -191,12 +191,13 @@ export function showEditStatusPopUp<T extends Status|ExitenceStatus>({
 
 //打开一个创建新属性弹窗
 export function showCreateStatusPopUp({
-    returnValue,banValueType,confirmText,popUpSet={}
+    target,returnValue,banValueType,confirmText,popUpSet={}
 }:{
     popUpSet?:PopUpSet
     returnValue:(newStatus:Status)=>void,
     banValueType?:string[],
     confirmText?:string,
+    target:Exitence|Type
 }){
     const status = createNewEmptyStatus()
     showPopUp({
@@ -204,6 +205,7 @@ export function showCreateStatusPopUp({
         vueName:"updateStatus",
         buttons:[],
         props:{
+            target,
             status,
             fullStatus:status,
             banValueType,

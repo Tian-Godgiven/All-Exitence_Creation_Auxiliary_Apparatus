@@ -11,7 +11,10 @@
         <div class="tags">
             <input type="checkbox" v-model="ifDefaultTags" @change="changeIfDefaultTags">
             <div class="text">标签<span v-show="ifDefaultTags">：</span></div>
-            <StatusValue v-show="ifDefaultTags" :status="defaultTagStatus" :full-status="defaultTagStatus"/>
+            <StatusValue v-show="ifDefaultTags" 
+                :status="defaultTagStatus" 
+                :full-status="defaultTagStatus" 
+                :target="tmpExitence"/>
         </div>
 
         <div class="setting">

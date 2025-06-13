@@ -1,7 +1,7 @@
 <template>
 <div class="status">
 	<StatusName :status :fullStatus="status"/>
-	<StatusValue :status :fullStatus="status"/>
+	<StatusValue :status :fullStatus="status" :target="type"/>
 	<div class="buttons">
 		<Button @click="showUpdateStatus" name="编辑"></Button>
 		<Button @click="deleteStatus" name="删除"></Button>

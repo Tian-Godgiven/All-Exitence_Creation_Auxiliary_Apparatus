@@ -5,7 +5,8 @@
         </div>
         <div class="relationAdd" @click="addUnit" v-if="ifShowAdd">[+]</div>
         <relationUnitValueVue class="relationUnit" 
-            v-for="unit of status.value" 
+            v-for="unit of status.value"
+            :target 
             :unit="unit"
             :key="Symbol()"
             :source="relationSource"/>
@@ -15,13 +16,15 @@
 <script setup lang='ts'>
     import { computed } from 'vue';
     import relationUnitValueVue from './relationUnitValue.vue';
-import { ExitenceStatus } from '@/class/Exitence';
+import { Exitence, ExitenceStatus } from '@/class/Exitence';
 import Status from '@/interfaces/Status';
 import { getStatusSettingValue } from '@/hooks/all-exitence/status';
 import { RelationSource } from './relationStatus';
-    const {status,fullStatus} = defineProps<{
+import { Type } from '@/class/Type';
+    const {status,fullStatus,target} = defineProps<{
         status:Status|ExitenceStatus,
-        fullStatus:Status
+        fullStatus:Status,
+        target:Type|Exitence
     }>()
     //获取关联体
     const relationSource = computed(()=>{
