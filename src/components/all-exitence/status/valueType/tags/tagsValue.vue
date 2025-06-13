@@ -30,7 +30,15 @@ import { getStatusSettingValue } from '@/hooks/all-exitence/status';
         status:Status|ExitenceStatus,
         fullStatus:Status
     }>()
-    let tags:string[] = status.value
+    const tags = computed<string[]>(()=>{
+        //防呆
+        console.log(status)
+        if(!isArray(status.value)){
+            status.value = []
+        }
+        console.log(fullStatus.value)
+        return fullStatus.value
+    })
     //是否允许添加新标签
     const ifAddTag = computed(()=>{
         const addTag = getStatusSettingValue(fullStatus.setting,"tagsAdd","bool")
@@ -48,11 +56,6 @@ import { getStatusSettingValue } from '@/hooks/all-exitence/status';
             return false
         }
         else{
-            //防呆
-            if(!isArray(status.value)){
-                status.value = []
-                tags = status.value
-            }
             status.value.push(newTag)
         }
     }
