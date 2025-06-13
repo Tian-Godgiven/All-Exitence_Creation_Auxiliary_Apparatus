@@ -39,7 +39,7 @@
 </template>
 
 <script setup lang="ts" name="">
-import { computed, onMounted, ref, shallowRef, toRaw } from 'vue'; 
+import { onMounted, ref, shallowRef, toRaw } from 'vue'; 
 import draggableListVue from '@/components/other/DraggableList.vue';
 import { showPopUp } from '@/hooks/pages/popUp';
 import textInputVue from "@/components/other/textInput.vue";
@@ -209,7 +209,6 @@ import { getTypeOfExitence } from '@/hooks/all-exitence/allExitence';
 	}
 	// 显示选择属性弹窗，选择当前属性所在的对象中的已有属性
 	function showQuoteStatusPopUp(){
-		console.log("所有可选属性属性",allStatus.value)
 		showChooseFromListPopUp<Status>({
 			list:allStatus.value,
 			info:"点击选择引用属性",
@@ -244,6 +243,7 @@ import { getTypeOfExitence } from '@/hooks/all-exitence/allExitence';
 		showCreateStatusPopUp({
 			target,
 			popUpSet:{
+				repeatable:true,
 				mask:true,
 				size:{
 					height:"50%"
