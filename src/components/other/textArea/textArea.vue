@@ -66,8 +66,6 @@
         showPlaceholder.value = true
     }    
 
-
-
     //初始化内容
     onMounted(()=>{
         // 未传入内容时显示placeholder

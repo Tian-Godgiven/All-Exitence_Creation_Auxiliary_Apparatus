@@ -87,6 +87,7 @@ import { getFullStatusOfExitence, showCreateStatusPopUp } from '@/hooks/all-exit
 	const containerRef = useTemplateRef("containerRef")
 	function addNewStatus(){
 		showCreateStatusPopUp({
+			target:exitence,
 			popUpSet:{
 				mask:true,
 				size:{

@@ -239,6 +239,7 @@ import { getTypeOfExitence } from '@/hooks/all-exitence/allExitence';
 	// 显示创建属性弹窗，这个弹窗的尺寸和参数不一样
 	function showStatusValueInput(){
 		showCreateStatusPopUp({
+			target,
 			popUpSet:{
 				mask:true,
 				size:{

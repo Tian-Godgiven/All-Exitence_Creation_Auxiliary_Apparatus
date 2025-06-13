@@ -1,7 +1,7 @@
 import { divWeakMap } from "@/api/cursorAbility";
 import { isJumpDiv, JumpData, jumpDivHtml } from "../../supportAbility/inputSuggestion/suggester/jumpDiv";
 import { showQuickInfo } from "@/api/showQuickInfo";
-import { toString } from "lodash";
+import { isArray, toString } from "lodash";
 
 //输入区域的内容对象为纯文本或跳转对象
 export type TextAreaContent = string | JumpData
@@ -63,6 +63,10 @@ export function translateToFrontEndContent(fileContent:any[]|string){
     if(typeof fileContent == "string"){
         const textNode = document.createTextNode(fileContent)
         return [textNode]
+    }
+    else if(!isArray(fileContent)){
+        console.error(fileContent)
+        throw new Error("文件对象为非数组或单独的字符串")
     }
     const frontEndContent:any[] = []
     //遍历文件内容
