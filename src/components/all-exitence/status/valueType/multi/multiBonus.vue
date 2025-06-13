@@ -27,19 +27,19 @@
 		</div>
 		<!-- 新建part --> 
 		<div class="buttons">
-			<div @click="showInputTextPopUp()" class="button">添加文本</div>
-			<div @click="showQuoteStatusPopUp()" class="button">引用属性</div>
+			<div @click="showInputTextPopUp" class="button">添加文本</div>
+			<div @click="showQuoteStatusPopUp" class="button">引用属性</div>
 			<div @click="createNewPart('换行','enterLine')" class="button">换行</div>
 		</div>
 		<div class="buttons">
-			<div @click="showStatusValueInput()" class="button">添加属性值</div>
+			<div @click="showStatusValueInput" class="button">添加属性值</div>
 			<div @click="showExpressionPopUp('expression')" class="button">添加表达式</div>
 		</div>
 	</div>
 </template>
 
 <script setup lang="ts" name="">
-import { computed, ref, shallowRef, toRaw } from 'vue'; 
+import { computed, onMounted, ref, shallowRef, toRaw } from 'vue'; 
 import draggableListVue from '@/components/other/DraggableList.vue';
 import { showPopUp } from '@/hooks/pages/popUp';
 import textInputVue from "@/components/other/textInput.vue";
@@ -62,20 +62,22 @@ import { getTypeOfExitence } from '@/hooks/all-exitence/allExitence';
 	}>()
 
 	//对象的所有属性
-	const allStatus = computed<Status[]>(()=>{
+	const allStatus = ref<Status[]>([])
+	onMounted(()=>{
 		//对于事物对象,传递的会是各个属性的完整属性
-		if(target instanceof Exitence){
+		if("typeKey" in target){
 			//获取目标的分类
 			const type = getTypeOfExitence(target)
-			const allStatus = target.status.map(status=>{
-				return getFullStatusOfExitence(type,status).value
+			allStatus.value = target.status.map(status=>{
+				const fullStatus = getFullStatusOfExitence(type,status).value
+				return fullStatus
 			})
-			return allStatus
 		}
 		else{
-			return target.typeStatus
+			allStatus.value = target.typeStatus
 		}
 	})
+	
 
 	// 当前复合属性的值，数组内依次保存各个复合属性对象
 	const multiValue = ref<MultiStatusPart[]>(fullStatus.value ?? [])
@@ -134,7 +136,7 @@ import { getTypeOfExitence } from '@/hooks/all-exitence/allExitence';
 			return tmp?.label + "属性"
 		}
 		else if(part.valueType == "quoteStatus"){
-			const theStatus = allStatus.value.find((status:any)=>status.__key == part.value)
+			const theStatus = allStatus.value.find((status)=>status.__key == part.value)
 			if(theStatus){
 				return "引用属性:" + theStatus.name
 			}
@@ -207,6 +209,7 @@ import { getTypeOfExitence } from '@/hooks/all-exitence/allExitence';
 	}
 	// 显示选择属性弹窗，选择当前属性所在的对象中的已有属性
 	function showQuoteStatusPopUp(){
+		console.log("所有可选属性属性",allStatus.value)
 		showChooseFromListPopUp<Status>({
 			list:allStatus.value,
 			info:"点击选择引用属性",

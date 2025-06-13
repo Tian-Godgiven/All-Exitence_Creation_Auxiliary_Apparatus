@@ -319,11 +319,10 @@ export function getExpressionText(target:Exitence|Type,expression:any[]){
 }
 
 //获取引用的属性和完整属性
-export function getQuoteStatus(target:Type|Exitence,part:MultiStatusPart)
+export function getQuoteStatus(target:Type|Exitence,statusKey:string)
 :{status:Status|ExitenceStatus,fullStatus:Status}|false{
-    const statusKey = part.value
     //从目标中找到对应的属性
-    if(target instanceof Type){
+    if("typeStatus" in target){
         const status = getTypeStatusByKey(statusKey,target.typeStatus)
         if(!status){
             onNoStatus()
