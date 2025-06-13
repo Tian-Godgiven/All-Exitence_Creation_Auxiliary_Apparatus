@@ -2,19 +2,23 @@
 <div class="quotePart" 
     @click="onClick">
     <!-- 引用部分 -->
-    <multiPartValueVue :part="targetPart"></multiPartValueVue>
+    <MultiPartValue :part="targetPart" :parts :target/>
 </div>
 </template>
 
 <script setup lang='ts'>
 import { showAlert } from '@/hooks/alert';
+import MultiPartValue from '../MultiPartValue.vue';
 import { getQuotePart, MultiStatusPart } from '@/hooks/expression/multiStatusValue';
 import { nanoid } from 'nanoid';
 import { computed } from 'vue';
-    const {showInfo,part,parts} = defineProps<{
+import { Type } from '@/class/Type';
+import { Exitence } from '@/class/Exitence';
+    const {showInfo,part,parts,target} = defineProps<{
         showInfo:(e:Event,text:string)=>void
         part:MultiStatusPart
         parts:MultiStatusPart[]
+        target:Exitence|Type
     }>()
     const targetPart = computed<MultiStatusPart>(()=>{
         const tmp = getQuotePart(parts,part)

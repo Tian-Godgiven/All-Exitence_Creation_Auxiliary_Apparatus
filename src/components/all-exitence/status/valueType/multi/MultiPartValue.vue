@@ -16,6 +16,7 @@
         :showInfo
         :part
         :parts
+        :target
         v-else-if="part && valueType == 'quotePart'"/>
     <MultiValueMultiExpression 
         :showInfo
