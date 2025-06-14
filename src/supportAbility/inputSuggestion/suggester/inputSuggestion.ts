@@ -9,21 +9,23 @@ import { getExitenceStatusByKey } from "@/hooks/all-exitence/allExitence";
 import { translateToTextContent } from "@/hooks/expression/textAreaContent";
 import { isString } from "lodash";
 
-//前端页面中的通用输入建议单元
+//组件中的通用输入建议单元
 export interface SuggestionItem{
     text:string,
-    type:string,
+    type:"string"|"exitence",
     info?:string,
     showText?:string,
     target?:any,
-    attr?:any
+    attr?:any,
+    click?:(input:string,item:SuggestionItem)=>void
 }
 //文件中存储的字符串输入建议单元
 export interface StringItem{
     text:string,//字符串文本
+    attr?:any,//标识该输入建议单元的内容
     showText?:string,//显示在输入建议的标题内容
     info?:string,//显示在输入建议的解释性信息
-    click?:(input:string,item:StringItem)=>void, //点击该输入提示项的事件
+    click?:(input:string,item:SuggestionItem)=>void, //点击该输入提示项的事件
 }
 //输入建议单元in文件：事物
 export interface ExitenceItem{
@@ -32,6 +34,7 @@ export interface ExitenceItem{
     info?:string//说明性文本
     manual?:{text:string,info?:string}[], //手动创建的事物输入提示关键字 
     nickName?:string[] //事物的别名数组
+    click?:(input:string,item:SuggestionItem)=>void
 }
 //输入建议列表in文件
 export interface InputSuggestionList{
@@ -62,9 +65,104 @@ export function getInputSuggestionList(name:"project"|"global"|"all"):InputSugge
         }
 }
 
+//创建一个直接在组件中使用的输入建议表
+export function createInputSuggestionList<T>(stringType?:{
+    itemList:T[],
+    text:(item:T)=>string,
+    showText?:(item:T)=>string,
+    attr:string|((item:T)=>string),
+    click?:(item:T,input:string)=>void,//不会进行基础的补全行为
+    info?:(item:T)=>string
+},exitenceType?:{
+    exitenceList:Exitence[],
+    text?:(exitence:Exitence)=>string,
+    info?:(exitence:Exitence)=>string, 
+    nickName?:(exitence:Exitence)=>string[],
+    manual?:(exitence:Exitence)=>({text:string,info?:string}[]),
+    click?:(exitence:Exitence,input:string)=>void //会覆盖点击弹出事物弹窗的效果
+}):InputSuggestionList{
+    //生成字符串类型列表
+    const stringList = createStringTypeInputSuggestionList(stringType)
+        ??[]
+    //生成事物类型列表
+    const exitenceList = createExitenceTypeInputSuggestionList(exitenceType)
+        ??{}
+    return {
+        string:stringList,
+        exitence:exitenceList
+    }
+}
+function createStringTypeInputSuggestionList<T>(stringType?:{
+    itemList:T[],
+    text:(item:T)=>string,
+    showText?:(item:T)=>string,
+    attr:string|((item:T)=>string),
+    click?:(item:T,input:string)=>void,//不会进行基础的补全行为
+    info?:(item:T)=>string
+}){
+    if(!stringType)return;
+    const {itemList,text,showText,attr,click,info} = stringType
+    return itemList.map(item=>{
+        const typeValue = typeof attr == "string" ? attr : attr(item)
+        const tmp:StringItem = {
+            text:text(item),
+            attr:typeValue,
+        }
+        if(click){
+            tmp.click = (input)=>{
+            //触发对应的方法,覆盖原本的补全行为
+            click(item,input)
+        }}
+        if(showText){
+            tmp["showText"] = showText(item)
+        }
+        if(info){
+            tmp.info = info(item)
+        }
+        return tmp
+    })
+}
+function createExitenceTypeInputSuggestionList(exitenceType?:{
+    exitenceList:Exitence[],
+    text?:(exitence:Exitence)=>string,
+    info?:(exitence:Exitence)=>string, 
+    manual?:(exitence:Exitence)=>({text:string,info?:string}[])
+    nickName?:(exitence:Exitence)=>string[],
+    click?:(exitence:Exitence,input:string)=>void //会覆盖点击弹出事物弹窗的效果
+}){
+    if(!exitenceType)return;
+    const {exitenceList,text,info,manual, nickName,click} = exitenceType
+    const exitences:Record<string,ExitenceItem> = {}
+    exitenceList.forEach(exitence=>{
+        const tmp:ExitenceItem = {
+            text:text?text(exitence):exitence.name,//text的返回值or事物名称
+            target:exitence.typeKey,
+        }
+        if(info){tmp.info = info(exitence)}
+        if(manual){tmp.manual = manual(exitence)}
+        if(nickName){tmp.nickName = nickName(exitence)}
+        if(click){tmp.click = (input)=>{
+            click(exitence,input)
+        }}
+        exitences[exitence.__key] = tmp
+    })
+    return exitences
+}
+
 //点击一个输入提示对象
 export function clickSuggestionItem(item:SuggestionItem){
     const input = inputText.value
+    //如果存在click，则会用click替代
+    if(item.click){
+        switch(item.type){
+            case "string":
+                item.click(input,item)
+                break;
+            case "exitence":
+                item.click(input,item)
+        }
+        return;
+    }
     switch(item.type){
         //字符串自动补全
         case "string":
@@ -87,6 +185,17 @@ export function clickSuggestionItem(item:SuggestionItem){
             break;
         default:
             console.error("错误：未定义的输入建议类型")
+    }
+}
+
+//组合两个输入提示表
+export function mergeInputSuggestionList(list1:InputSuggestionList,list2:InputSuggestionList){
+    return {
+        string:[...list1.string,...list2.string],
+        exitence:{
+            ...list1.exitence,
+            ...list2.exitence
+        }
     }
 }
 
@@ -199,10 +308,11 @@ export function hideInputSuggestion(){
     ifShow.value = false
 }
 
-// 判断是否需要输入提示
+// 判断是否需要输入提示，若为是则返回提示对象列表
 export function checkInputSuggestion(
     inputSuggestionList:InputSuggestionList|"all"|"global"|"project",
-    input:string){
+    input:string
+):SuggestionItem[]|false{
     if(input == ""){
         return false
     }
@@ -211,16 +321,15 @@ export function checkInputSuggestion(
     }   
     const arr:SuggestionItem[] = [] //存储所有的输入提示
     //先判断事物类型的item
-    const allExitence = inputSuggestionList.exitence
-    for(let key in allExitence){
+    const exitenceList = inputSuggestionList.exitence
+    for(let key in exitenceList){
         //先判断是否符合事物本身的text
-        const item = allExitence[key]
+        const item = exitenceList[key]
         if(item.text.startsWith(input)){
             arr.push({
-                text:item.text,
-                info:item?.info,
-                target:[item.target,key],
-                type:"exitence"
+                ...item,
+                type:"exitence",
+                target:[item.target,key]//分类的Key,事物的key
             })
         }
         //再判断是否在手动别名中
@@ -258,6 +367,7 @@ export function checkInputSuggestion(
             arr.push({
                 ...item,
                 type:"string",
+                attr:item.attr
             })
         }
     }

@@ -2,7 +2,7 @@
 <div>
 	<textAreaVue 
 		placeholder="输入表达式"
-		:inputSuggestionList="inputSuggestionList"
+		:inputSuggestionList
 		ref="textArea"
 		class="showArea"
 		v-model="inputValue"
@@ -39,19 +39,19 @@
 </template>
 
 <script setup lang="ts" name="">
-	import { onMounted, onUnmounted, ref, shallowRef } from 'vue'; 
-	import { closePopUp, showPopUp } from '@/hooks/pages/popUp';
-	import chooseFromListVue from '@/components/other/chooseFromList.vue';
+	import { onMounted, onUnmounted, ref } from 'vue'; 
+	import { closePopUp } from '@/hooks/pages/popUp';
 	import textAreaVue from '@/components/other/textArea/textArea.vue';
 	import { showQuickInfo } from '@/api/showQuickInfo';
-	import { SuggestionItem } from '@/supportAbility/inputSuggestion/suggester/inputSuggestion';
+	import { createInputSuggestionList, mergeInputSuggestionList } from '@/supportAbility/inputSuggestion/suggester/inputSuggestion';
 import Status from '@/interfaces/Status';
 import { deleteInputLast } from '@/api/cursorAbility';
 import { explainExpression, MultiStatusPart } from '@/hooks/expression/multiStatusValue';
 import FinalButtons from '@/app/stacks/popUp/FinalButtons.vue';
+import { showChooseFromListPopUp } from '@/api/chooseFromList';
 
 const {props,popUp,returnValue} = defineProps(["props","popUp","returnValue"])
-	const {parts,typeStatus} = props
+	const {parts,allStatus}:{parts:MultiStatusPart[],allStatus:Status[]} = props
 	//输入区组件
 	const textArea = ref()
 	const inputValue = ref("")
@@ -60,25 +60,35 @@ const {props,popUp,returnValue} = defineProps(["props","popUp","returnValue"])
 	// 报错信息
 	const errorMsg = ref<any[]>([])
 
-	// 生成提示信息列表
-		//提示信息列表是这个类的属性与这个复合属性的part
-		const createSuggestionItem = (type:string,key:any,text: string, label: string) => ({
-			text,
-			showText: `${label}:${text}`,
-			type: "quote",
-			click: (input: string) => {
+	//生成提示信息列表
+		//提示信息列表是目标的属性与这个复合属性的part
+		const partsList = createInputSuggestionList({
+			itemList:parts,
+			text:(part)=>part.__key,
+			showText:(part)=>`"部分:${part.__key}`,
+			attr:"quote",
+			click:(part,input)=>{
 				// 先删除input内容
 				deleteInputLast(input.length)
 				//再添加内容
-				addItem({name:text,__key:key},type)
+				addItem({name:part.__key,__key:part.__key},"quotePart")
 			}
-		});
-		const suggestionParts = parts.map((part: MultiStatusPart) => 
-			createSuggestionItem("quotePart",part.__key,part.__key, "部分"));
-		const suggestionStatus = typeStatus.map((status: Status) =>
-			createSuggestionItem("quoteStatus",status.__key,status.name, "属性"));
-		// 合并两个数组
-		const inputSuggestionList: SuggestionItem[] = [...suggestionParts, ...suggestionStatus];
+		})
+		const statusList = createInputSuggestionList({
+			itemList:allStatus,
+			text:(status)=>status.name,
+			showText:(status)=>`"属性:${status.name}`,
+			attr:"quote",
+			click:(status,input)=>{
+				// 先删除input内容
+				deleteInputLast(input.length)
+				//再添加内容
+				addItem({name:status.name,__key:status.__key},"quoteStatus")
+			}
+		})
+		// 合并两个数组的结果
+		const inputSuggestionList = mergeInputSuggestionList(partsList,statusList)
+		console.log(allStatus)	
 	// 向输入框中添加内容
 	function addItem(value:any,type:string){
 		//引用类型添加引用div
@@ -186,12 +196,10 @@ const {props,popUp,returnValue} = defineProps(["props","popUp","returnValue"])
 	
 	// 弹出选择引用属性页面
 	function quoteStatus(){
-		showPopUp({
-			vue:shallowRef(chooseFromListVue),
-			props:{
-				list:typeStatus,
+		showChooseFromListPopUp({
+			list:allStatus,
 				info:"点击选择引用属性",
-				empty:"当前无可选属性",
+				emptyInfo:"当前无可选属性",
 				//允许选择非复合属性和非嵌套的属性
 				selectRule:(status:any)=>{
 					if(status.valueType != "multi" && status.valueType != 'status'){
@@ -202,57 +210,44 @@ const {props,popUp,returnValue} = defineProps(["props","popUp","returnValue"])
 				showValue:(status:any)=>{
 					return status.name
 				},
-				chooseValue:(status:any)=>{
-					return {name:status.name,__key:status.key}
-				}
-			},
+				returnValue:(array:Status[])=>{
+					//遍历返回的数组
+					array.forEach((status)=>{
+						const value = {name:status.name,__key:status.__key}
+						addItem(value,"quoteStatus")
+					})
+				},
+		},{
 			buttons : [],
 			mask : true,
-			returnValue : (array:[])=>{
-				//遍历返回的数组
-				array.forEach((value)=>{
-					addItem(value,"quoteStatus")
-				})
-				
-			},
-			size:{
-				width:"600px",
-				height:"auto"
-			}
 		})
 	}
 	// 弹出选择引用部分页面
 	function quotePart(){
-		showPopUp({
-			vue:shallowRef(chooseFromListVue),
-			props:{
-				list:parts,
-				info:"点击选择引用部分",
-				empty:"当前无可选部分",
-				//允许选择非换行的部分，并且该部分应具备关键字
-				selectRule:(part:any)=>{
-					if(part.valueType != "enterLine" && part.__key && part.__key != ""){
-						return true
-					}
-					return false
-				},
-				showValue:(part:any)=>{
-					return part.__key
-				},
-				chooseValue:(part:any)=>{
-					return {__key:part.__key}
+		showChooseFromListPopUp({
+			list:parts,
+			info:"点击选择引用部分",
+			emptyInfo:"当前无可选部分",
+			//允许选择非换行的部分，并且该部分应具备关键字
+			selectRule:(part:any)=>{
+				if(part.valueType != "enterLine" && part.__key && part.__key != ""){
+					return true
 				}
+				return false
 			},
-			buttons : [],
-			mask : true,
-			returnValue : (array)=>{
+			showValue:(part:any)=>{
+				return part.__key
+			},
+			returnValue : (partArr:MultiStatusPart[])=>{
 				//遍历返回的数组
-				array.forEach((value:any)=>{
-					addItem(value,"quotePart")
+				partArr.forEach((part)=>{
+					addItem(part.__key,"quotePart")
 				})
 			},
+		},{
+			buttons : [],
+			mask : true,
 			size:{
-				width:"600px",
 				height:"auto"
 			}
 		})

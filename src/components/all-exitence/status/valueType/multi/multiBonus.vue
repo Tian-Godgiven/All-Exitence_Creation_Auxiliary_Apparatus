@@ -177,7 +177,7 @@ import { getTypeOfExitence } from '@/hooks/all-exitence/allExitence';
 			props:{
 				mode:"string",
 				parts:multiValue,
-				typeStatus:allStatus
+				allStatus
 			},
 			buttons : [],
 			mask : true,
@@ -244,7 +244,7 @@ import { getTypeOfExitence } from '@/hooks/all-exitence/allExitence';
 			target,
 			popUpSet:{
 				repeatable:true,
-				mask:true,
+				mask:false,
 				size:{
 					height:"50%"
 				}
