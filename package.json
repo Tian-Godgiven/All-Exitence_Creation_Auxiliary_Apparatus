@@ -31,8 +31,12 @@
     "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
+<<<<<<< Updated upstream
     "@eslint/js": "^9.28.0",
     "@tauri-apps/cli": "^2",
+=======
+    "@tauri-apps/cli": "^2.5.0",
+>>>>>>> Stashed changes
     "@types/node": "^22.10.1",
     "@vitejs/plugin-vue": "^5.0.5",
     "eslint": "^9.28.0",
