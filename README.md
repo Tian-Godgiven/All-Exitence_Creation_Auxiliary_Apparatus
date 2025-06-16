@@ -1,11 +1,11 @@
 # 万物构造辅助装置 <br>All-Exitence Creation Auxiliary Apparatus
 
-一款提供【辅助创作者进行内容创作和管理】与【文本编辑】功能的移动端app
-
-框架：uniapp→tauri2 + vue3  
+框架：tauri2 + vue3/vite  
 语言：h5 + sass + ts  
 平台：安卓  
 类型：移动端应用程序     
+
+这个一款提供【辅助创作者进行内容创作和管理】与【文本编辑】功能的移动端app
 
 主要特色  
 1.引入面向对象的设计思路，提供对象形式的设定制作与相应的适配功能  

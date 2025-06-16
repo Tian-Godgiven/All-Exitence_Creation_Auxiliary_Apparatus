@@ -53,7 +53,7 @@ export const iconList:Record<string,string>= {
     "article":"article",//文章
     "exitence":"exitence",//事物
 
-    "more":"more",//显示更多，未完成
+    "more":"more",//显示更多
     
 }
 

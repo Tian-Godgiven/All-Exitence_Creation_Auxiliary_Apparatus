@@ -4,7 +4,7 @@
     @pointermove="mouseMove"
     @pointerdown="mouseStart"
     @pointerup="touchEnd">
-    <!-- 未完成 -->
+    <!-- 移动端测试用,待删除 -->
     <!-- <div class="touchTest">测试:{{ testInfo1 }}</div> -->
     <!-- 主页面 -->
     <MainPage/>

@@ -8,7 +8,7 @@ export const appSetting = reactive<any>({})
 export async function initAppSetting(){
     const tmp = await readFileFromPath("appData","appSetting.json")
     if(!tmp){
-        //未完成
+        //待完成，在此处创建项目的初始设置对象文件以处理读取项目设置文件失败的情况
     }
     Object.assign(appSetting,tmp)
 }

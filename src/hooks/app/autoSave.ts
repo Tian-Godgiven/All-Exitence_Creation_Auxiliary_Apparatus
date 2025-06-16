@@ -14,7 +14,7 @@ export async function saveAll(){
 
 //每隔10秒保存一次当前项目
 export function startAutoSave(){
-    //未完成：测试阶段未开启自动保存
+    //待完成：测试阶段未开启自动保存
     // setInterval(async ()=>{
     //     saveAll()
     // },10000)

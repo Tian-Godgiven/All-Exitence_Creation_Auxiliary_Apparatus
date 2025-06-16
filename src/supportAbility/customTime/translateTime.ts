@@ -250,7 +250,7 @@ export function translateTimeValueToString({
     //用的是自定义规则
     else{
         //备忘：自定义时间表达式的翻译没有做完
-        //未完成
+        //未完成：自定义时间
     }
 }
 

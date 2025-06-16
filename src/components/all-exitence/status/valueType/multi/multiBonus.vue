@@ -54,7 +54,6 @@ import { showChooseFromListPopUp } from '@/api/chooseFromList';
 import { Exitence, ExitenceStatus } from '@/class/Exitence';
 import { Type } from '@/class/Type';
 import { getTypeOfExitence } from '@/hooks/all-exitence/allExitence';
-	// 未完成：不再依赖传入的allStatus，而是使用target来获取对象，从而得到属性
 	const {status,fullStatus,target} = defineProps<{
 		status:Status|ExitenceStatus,
 		fullStatus:Status,

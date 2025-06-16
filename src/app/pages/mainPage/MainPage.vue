@@ -36,7 +36,7 @@
 	import { showLeft, showPage, switchProjectPage} from '@/hooks/pages/pageChange';
 	import Button from '@/components/global/Button.vue';
 	// import inputSupportVue from '@/app/pages/mainPage/components/inputSupport.vue';
-	// 未完成
+	// 待完成
 	import showInfoOnMainVue from '@/app/pages/mainPage/components/showInfoOnMain.vue';
 	import showArticleOnMainVue from '@/app/pages/mainPage/components/showArticleOnMain.vue';
 	import showExitenceOnMainVue from '@/app/pages/mainPage/components/showExitenceOnMain.vue';

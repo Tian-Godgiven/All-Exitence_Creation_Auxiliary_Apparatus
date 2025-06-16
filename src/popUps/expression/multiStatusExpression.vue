@@ -27,7 +27,7 @@
 		</div>
 	</div>
 	
-	<!-- 未完成：写一个注意事项说清楚顺序执行，没有乘除优先 -->
+	<!-- 待完成：写一个注意事项说清楚顺序执行，没有乘除优先 -->
 	<div class="errorArea">报错信息：
 		<div v-for="text in errorMsg" class="errorMsg">{{ text }}</div>
 	</div>

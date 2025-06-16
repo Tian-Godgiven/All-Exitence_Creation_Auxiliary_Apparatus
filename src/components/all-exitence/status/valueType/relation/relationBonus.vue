@@ -35,7 +35,7 @@ import { Type } from '@/class/Type';
         target:Exitence|Type
     }>()
 
-    //未完成：什么玩意要给它一个空值啊，初始存在一个空值
+    //待测试：什么玩意要给它一个空值啊，初始存在一个空值
     status.value = [{}]
     const relationSource = reactive<Status[]>(
         getStatusSettingValue<Status>(fullStatus.setting,"relationSource","arr")

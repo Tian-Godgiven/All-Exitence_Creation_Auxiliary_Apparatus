@@ -144,10 +144,10 @@ import { callSupportAbility } from '@/hooks/app/app';
 		})
 	})
 
-	//更多菜单选项 未完成
-	const list = [
-		{label:"导入导出",click:()=>{}},
-		{label:"设置",click:()=>{}}
+	//更多菜单选项 待完成
+	const list:{label:string,click:()=>void}[] = [
+		// {label:"导入导出",click:()=>{}},
+		// {label:"设置",click:()=>{}}
 	]
 	
 	

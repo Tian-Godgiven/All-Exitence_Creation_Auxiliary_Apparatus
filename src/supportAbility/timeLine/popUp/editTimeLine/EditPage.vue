@@ -55,7 +55,7 @@
     //选择的目标类型
     const typeList = [
         {value:"exitence",label:"事物"},
-        // {value:"status",label:"事物属性"},//未完成
+        // {value:"status",label:"事物属性"},//待完成
         {value:"article",label:"文章"},
     ]
 
