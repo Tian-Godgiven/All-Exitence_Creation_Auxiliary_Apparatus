@@ -1,4 +1,4 @@
-import { reactive  } from "vue";
+import { reactive, shallowRef  } from "vue";
 import { showPopUp } from "../pages/popUp";
 import { Chapter } from "@/class/Chapter";
 import { Article } from "@/class/Article";
@@ -8,6 +8,7 @@ import { deleteShowOnMain, showOnMain, showTargetOnMain } from "../pages/mainPag
 import { focusOnLeftPage, scrollToLeftTarget } from "../pages/leftPage";
 import { cloneDeep } from "lodash";
 import { translateToTextContent } from "../expression/textAreaContent";
+import ShowArticlePopUp from "@/popUps/all-articles/ShowArticlePopUp.vue";
 
 export type From = {chapters:Chapter[],articles:Article[]}|Chapter
 
@@ -75,6 +76,19 @@ export function changeNowAllArticles(newAllArticles:any){
         })
         
     }
+    // 显示指定文本在弹窗上
+    export function showArticleOnPopUp(article:Article){
+        const popUp = showPopUp({
+            vue:shallowRef(ShowArticlePopUp),
+            mask:true,
+            buttons:null,
+            props:{
+                article,
+            }
+        })
+        return popUp
+    }
+
     //删除文本
     export function deleteArticle(from:From,article:Article){
         //如果删除的对象正在显示
@@ -113,11 +127,6 @@ export function changeNowAllArticles(newAllArticles:any){
         if(chapter){
             return chapter.articles.find(article=>article.__key==key)
         }
-    }
-
-    //在弹窗中显示文章对象
-    export function showArticleOnPopUp(article:Article){
-        //未完成
     }
 
     //创建副本

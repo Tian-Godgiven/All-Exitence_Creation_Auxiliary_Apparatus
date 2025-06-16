@@ -75,6 +75,7 @@ export async function readDirAsArray(path:string,dirName:string){
     return infoArray
 }
 
+
 //写指定内容覆盖到目标文件
 export async function writeFileAtPath(path:string,fileName:string,content:Object|string){
     const filePath = getPath(path,fileName)

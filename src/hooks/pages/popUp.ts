@@ -50,7 +50,7 @@ export function showPopUp(popUp:PopUp){
 				return true
 			}
 		})
-		if(ifShowing)return;
+		if(ifShowing)return false;
 	}
 	
 
@@ -83,6 +83,7 @@ export function showPopUp(popUp:PopUp){
 	// 添加弹窗
 	popUp["index"] = popUpList.length
 	popUpList.push(popUp)
+	return popUp
 }
 
 // 关闭弹窗
