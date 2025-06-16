@@ -1,5 +1,6 @@
 <template>
 	<div class="popUp" 
+	ref="popUp"
 	:class="[
 		!popUp.position?.x?'centerX':'',
 		!popUp.position?.y?'centerY':''
@@ -21,7 +22,7 @@
 			</div>
 		</div>
 		
-		<div class="inner" :class="ifTop?'':'noTop'">
+		<div class="inner" ref="inner" :class="ifTop?'':'noTop'">
 			<component :is="innerVue" 
 				:popUp="popUp" 
 				:returnValue="popUp?.returnValue"
@@ -32,18 +33,45 @@
 </template>
 
 <script setup lang="ts" name="">
-import { shallowRef } from 'vue';
+import { nextTick, onMounted, shallowRef, useTemplateRef } from 'vue';
 import { PopUp } from '@/hooks/pages/popUp'; 
 import { popUpVueList } from '@/static/list/popUpVueList';
 import Button from '@/components/global/Button.vue';
+import gsap from 'gsap';
 	const {popUp} = defineProps<{popUp:PopUp}>()
 	const {name,buttons,vueName,index} = popUp
 	const innerVue = shallowRef(popUp.vue || (vueName && popUpVueList[vueName]));
 	const ifTop = name||buttons
+
+	onMounted(async()=>{
+		await nextTick();
+		popUpAnimate();
+	})
+
+	const popUpRef = useTemplateRef("popUp")
+	const innerRef = useTemplateRef("inner")
+	function popUpAnimate(){
+		// GSAP动画序列
+		const tl = gsap.timeline();
+		tl.to(popUpRef.value, {
+			scale: 1,
+			opacity: 1,
+			duration: 0.3,
+			ease: "power2.out"
+		})
+		.to(innerRef.value, {
+			opacity: 1,
+			duration: 0.2,
+			ease: "sine.in"
+		}, "-=0.2"); // 与前一个动画重叠0.1秒
+	}
+	
 </script>
 
 <style lang="scss" scoped>
 .popUp{
+	opacity:0; 
+	transform: scale(0.3);
 	background-color: $bgColor;
 	width: 650px;
 	height: 80%;
@@ -88,6 +116,7 @@ import Button from '@/components/global/Button.vue';
 	}
 		
 	.inner{
+		opacity:0;
 		position: relative;
 		z-index: 0;
 		height: calc(100% - 90px);
@@ -102,16 +131,16 @@ import Button from '@/components/global/Button.vue';
 	}
 	&.centerX{
 		left:50%;
-		transform: translateX(-50%);
+		transform: translateX(-50%) scale(0.5);
 	}
 	&.centerY{
 		top:50%;
-		transform: translateY(-50%);
+		transform: translateY(-50%) scale(0.5);
 	}
 	&.centerX.centerY{
 		left:50%;
 		top:50%;
-		transform: translate(-50%,-50%);
+		transform: translate(-50%,-50%) scale(0.5);
 	}
 }
 </style>
