@@ -1,4 +1,4 @@
-import { closePopUp, showPopUp } from "@/hooks/pages/popUp";
+import { closePopUp, PopUp, showPopUp } from "@/hooks/pages/popUp";
 import { SupportAbilitySignUpItem } from "@/static/list/supportAbilityList";
 import { ref, shallowRef } from "vue";
 import Search from "./popUp/Search.vue";
@@ -29,23 +29,26 @@ export const target = ref<("article"|"exitence")[]>(["article","exitence"])
 //搜索结果
 export const result  = ref<SearchResult[]>([])
 //显示搜索弹窗
-const popUp = {
-    vue:shallowRef(Search),
-    name:"搜索",
-    "buttons":[],
-    "mask":true,
-    "size":{
-        height:"auto"
-    }
-}
+let popUp:PopUp|false = false
 function showSearchPopUp(){
     //同时还会快速隐藏左侧页面
     hidePage("left",15)
-    showPopUp(popUp)
+    popUp = showPopUp({
+        vue:shallowRef(Search),
+        name:"搜索",
+        "buttons":[],
+        "mask":true,
+        "size":{
+            height:"auto"
+        }
+    })
 }
 //隐藏搜索弹窗，注意搜索和输入都会保存
 export function hideSearchPopUp(){
-    closePopUp(popUp)
+    if(popUp){
+        closePopUp(popUp)
+    }
+   
 }
 
 //在指定范围中搜索，返回找到的对象和内容

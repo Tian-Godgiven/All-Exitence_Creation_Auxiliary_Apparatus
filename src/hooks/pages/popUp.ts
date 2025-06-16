@@ -62,7 +62,10 @@ export function showPopUp(popUp:PopUp){
 		popUp["name"] = ""
 	}
 	// 默认具备关闭按键
-	if(popUp.buttons){
+	const haveClose = popUp.buttons?.find(item=>
+		item.name == "关闭"
+	)
+	if(popUp.buttons&&!haveClose){
 		popUp.buttons.push({
 			name:"关闭",
 			click:()=>{
