@@ -1,16 +1,17 @@
-<div aligh="center">
+
+<center>
 
 <h1>万物构造辅助装置<br>All-Exitence Creation Auxiliary Apparatus</h1>
 
-一款尝试引入对象思维的文本编辑app
+一款引入对象思维的一体式文本创作app
 
-![Badge License] ![Badge Language] ![Badge Issues] 
+![Badge License] ![Badge Language] ![Badge Issues]<br>
 ![Badge Platform] ![Badge Tauri]
 
 ---
-</div>
+</center>
 
-这是一款尝试在传统的文本编辑中引入了*对象思维*与*功能整合*的文字编辑软件。
+这是一款尝试在传统的文本编辑中引入了*对象思维*与*功能整合*的一体式文字创作软件。
 
 主要为创作者提供了可视化的对象创建与各种管理方法，以及与该功能相关或无关的各种辅助功能，以降低对复杂项目的管理难度，提高创作者对项目的掌控力。
 
@@ -20,11 +21,11 @@
 
 当前，不要忘记基础的撰写文本的功能，这个项目的创建初衷便是让用户不需要在撰写文本时，在好几个软件里来回切换。
 
-概括：
+概括一下，这是：
 
-1. 一款文本编辑软件
+1. 一款文本创作软件
 2. 引入面向对象的设计理念，提供对象形式的设计功能与相应的适配功能
-3.  对部分与文本创作相关的功能进行整合，简化操作
+3.  整合了一些与文本创作相关的辅助功能进行整合，简化在工具app之间跳转的操作
 4.  免费开源，且部分功能将支持自定义拓展
 
 ----------
@@ -83,9 +84,9 @@
 
 ## 技术框架
 
-框架：tauri2 + vue3/vite 
-语言：h5 + sass + ts 
-平台：安卓 
+框架：tauri2 + vue3/vite  
+语言：h5 + sass + ts   
+平台：安卓   
 类型：移动端应用程序
 
 ## 开发路线
@@ -124,8 +125,8 @@
 [Badge Platform]: https://img.shields.io/badge/Platform-android-green?&logo=android
 [Badge Tauri]: https://img.shields.io/badge/Tauri-black?logo=Tauri
 
-
 <!---脚注--->
+
 [^ft1]: 如果你提交反馈，我们很愿意在这之后整合更多的功能进去
 
 <!---图片--->
