@@ -1,22 +1,27 @@
 <template>
-    <FloatButton 
-        ref="floatWindowRef"
-        :ifLongTap="false"
-        :onMove="onMove" 
-        :click="click" 
-        :allowEdge="foldFloatWindow"
-        class="quickDraftFloatWindow"  
-        :style="{
-            top:position[0]+'px',
-            left:position[1]+'px'
-        }"
-        :class={fold:foldFloatWindow,unfold:!foldFloatWindow,focusing:ifFocusing}
-        v-click-outside = "clickOutside"
-        >
-        <div v-if="foldFloatWindow" class="text">暂记</div>
-        <FocusingPage v-else 
-            :float="true" :foldFloatWindow="fold"/>
-    </FloatButton>
+<FloatButton 
+    ref="floatWindowRef"
+    icon="quickDraft"
+    name="quickDraftFloatButton"
+    :ifLongTap="false"
+    :onMove="onMove" 
+    :click="click" 
+    :allowEdge="foldFloatWindow"
+    class="quickDraftFloatWindow"  
+    :style="{
+        top:position[0]+'px',
+        left:position[1]+'px'
+    }"
+    :class={fold:foldFloatWindow,unfold:!foldFloatWindow,focusing:ifFocusing}
+    v-click-outside = "clickOutside"
+    >
+    <div class="iconContainer"  v-show="foldFloatWindow" >
+        <Icon icon="quickDraft" name="quickDraftFloatButton"></Icon>
+    </div>
+    
+    <FocusingPage class="focusingPage" v-show="!foldFloatWindow"
+        :float="true" :foldFloatWindow="fold"/>
+</FloatButton>
 </template>
 
 <script setup lang='ts'>
@@ -25,6 +30,7 @@ import { ref } from 'vue';
 import { addQuickDraftItem, createQuickDraftItem, focusingItem, foldFloatWindow, nowQuickDraftSetting, showFocusingPage, switchFoldFloatWindow} from '../quickDraft';
 import FocusingPage from '../component/FocusingPage.vue';
 import { doNotOverContainer } from '@/api/doNotOverContainer';
+import Icon from '@/components/global/Icon.vue';
     //点击聚焦,聚焦时点击展开,展开时持续保持聚焦状态
     const ifFocusing = ref(false)
     function click(){
@@ -108,7 +114,7 @@ import { doNotOverContainer } from '@/api/doNotOverContainer';
         color: $antiBgColor;
         background-color: $bgColor;
         border-radius: 10px;
-        box-shadow: 0px 0px 10px 1px $bgColor40;
+        // box-shadow: 0px 0px 10px 1px $bgColor40;
         z-index: 999;
         &.fold{
             width: 100px;
@@ -121,6 +127,19 @@ import { doNotOverContainer } from '@/api/doNotOverContainer';
         &.focusing{
             box-shadow: 0px 0px 10px 1px rgb(0, 0, 0);
         }
+        >.iconContainer{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            .icon{
+                width: 80%;
+                height: 80%;
+            }
+        }
     }
-    
+    .focusingPage{
+       padding: 10px 20px;
+    }
 </style>

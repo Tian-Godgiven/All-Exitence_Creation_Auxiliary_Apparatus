@@ -49,6 +49,7 @@ export const iconList:Record<string,string>= {
     "quickDraft":"quickDraft",//暂记版
     "timeLine":"timeLine",//时间线
     "customTime":"customTime",//自定义时间
+    "tagLibrary":"tagLibrary",//标签库
 
     "article":"article",//文章
     "exitence":"exitence",//事物

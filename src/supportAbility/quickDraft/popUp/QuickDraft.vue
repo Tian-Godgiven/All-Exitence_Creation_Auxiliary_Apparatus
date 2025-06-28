@@ -1,20 +1,6 @@
 <template>
 <div class="quickDraft">
-    <div class="managePage">
-        <div class="topButtons">
-            <Button icon="add" name="创建" @click="create"></Button>
-            <Button icon="manage" name="管理模式" @click="switchManageMode"></Button>
-            <Button :icon="floatWindowKey?'hideFloat':'showFloat'" name="切换显示悬浮窗" @click="switchFloatWindow"></Button>
-            <Button icon="close" name="关闭" @click="close"></Button>
-        </div>
-        <div class="quickDraftItems">
-            <QuickDraftItem 
-                v-for="quickDraftItem in quickDraft" 
-                :key="quickDraftItem.__key"
-                :manage-mode="manageMode"
-                :quick-draft-item="quickDraftItem"/>
-        </div>
-    </div>
+    <ManagePage :popUp></ManagePage>
     <SlidePage :show="ifFocusing">
         <FocusingPage></FocusingPage>
     </SlidePage>
@@ -22,70 +8,12 @@
 </template>
 
 <script setup lang='ts'>
-    import Button from '@/components/global/Button.vue';    
-    import { addQuickDraftItem, createQuickDraftItem, nowQuickDraft , switchQuickDraftFloatWindow, switchFoldFloatWindow, floatWindowKey, ifFocusing } from '../quickDraft';
-    import { closePopUp, PopUp } from '@/hooks/pages/popUp';
-    import QuickDraftItem from '../component/QuickDraftItem.vue';
     import FocusingPage from '../component/FocusingPage.vue';
-    import { ref,onMounted,onUnmounted, toRaw } from 'vue';
-import { getMonitor } from '@/api/dragToSort';
-import SlidePage from '@/components/other/SlidePage.vue';
+    import SlidePage from '@/components/other/SlidePage.vue';
+    import ManagePage from '../component/ManagePage.vue';
+    import { ifFocusing } from '../quickDraft';
+    import { PopUp } from '@/hooks/pages/popUp';
     const {popUp} = defineProps<{popUp?:PopUp}>()
-    const quickDraft = nowQuickDraft
-    //切换管理模式
-    const manageMode = ref(false)
-    function switchManageMode(){
-        manageMode.value = !manageMode.value
-    }
-    //管理放置事件
-    let cleanup = ()=>{}
-    onMounted(()=>{
-        cleanup = getMonitor({
-            canMonitor:(source)=>{
-                const data = source.data
-                return data.type == "quickDraftItem"
-            },
-            "sourceIndex":(sourceData)=>{
-                const key = sourceData.itemKey
-                return quickDraft.findIndex((item)=>{
-                    return item.__key == key
-                })
-            },
-            "targetIndex":(targetData)=>{
-                const key = targetData.itemKey
-                return quickDraft.findIndex((item)=>{
-                    return item.__key == key
-                })
-            },
-            "list":toRaw(quickDraft),
-            returnNewList:(newList)=>{
-                Object.assign(quickDraft,newList)
-            }
-        })
-    })
-    onUnmounted(()=>{
-        cleanup()
-    })
-    //切换显示悬浮窗
-    function switchFloatWindow(){
-        switchQuickDraftFloatWindow()
-    }
-
-    //创建并添加新的暂记对象到开始
-    function create(){
-        const newItem = createQuickDraftItem()
-        addQuickDraftItem(newItem,0)
-    }
-
-    //关闭
-    function close(){
-        if(popUp)closePopUp(popUp)
-        else{
-            //收起悬浮窗
-            switchFoldFloatWindow(true)
-        }
-    }
-    
 </script>
 
 <style scoped lang='scss'>
@@ -94,25 +22,5 @@ import SlidePage from '@/components/other/SlidePage.vue';
     height: 100%;
     overflow: hidden;
     position: relative;
-    .managePage{
-        width: 100%;
-        position: relative;
-        z-index: 1;
-        .topButtons{
-            margin-left: auto;
-            display: flex;
-            >.button{
-                width: 90px;
-                height: 90px;
-            }
-        }
-        .quickDraftItems{
-            box-sizing: border-box;
-            width: 100%;
-            gap: 10px;
-            display: flex;
-            flex-direction: column;
-        }
-    }
 }
 </style>

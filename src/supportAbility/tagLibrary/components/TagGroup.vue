@@ -84,7 +84,7 @@ import Nocontent from '@/components/global/NoContent.vue';
 <style scoped lang='scss'>
 .tagGroup{
     margin: 15px 0;
-    box-shadow: 0 0 10px rgb(107, 107, 107);
+    box-shadow: $listItemShadow;
     border-radius: 10px;
     .top{
         width: 100%;

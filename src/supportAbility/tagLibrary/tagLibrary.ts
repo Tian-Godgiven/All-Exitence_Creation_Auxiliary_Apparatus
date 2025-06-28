@@ -61,7 +61,9 @@ function showManagePopUp(){
         buttons:[{
             name:"创建新标签组",
             icon:"addNew",
-            click:()=>createTagGroup('新标签组')
+            click:()=>{
+                createTagGroup('新标签组')
+            }
         }],
         mask:true
     })

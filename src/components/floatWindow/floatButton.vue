@@ -5,8 +5,8 @@
     @touchmove.stop
     @touchend.stop
     @pointerdown="touchStart"
-    @pointermove="touchMove"
-    @pointerup="touchEnd">
+    @pointermove.stop="touchMove"
+    @pointerup="touchEnd($event,true)">
     <slot></slot>
 </div>
 </template>
@@ -69,7 +69,8 @@ import { ref } from 'vue'
         oldNodePos = {x: offsetLeft,y: offsetTop};
         selectDom.style.left = `${offsetLeft}px`;
         selectDom.style.top = `${offsetTop}px`;
-        
+        //监听pointerup，松开按钮
+        document.addEventListener("pointerup",touchEnd)
     }
     function touchMove(ev:PointerEvent) {
         // 清空长按定时器
@@ -81,20 +82,22 @@ import { ref } from 'vue'
             const lefts = oldMousePos.x - oldNodePos.x;
             // y轴偏移量
             const tops = oldMousePos.y - oldNodePos.y;
-            const { pageX, pageY } = ev; // 手指位置
+            const { pageX, pageY } = ev; // 当前位置
             selectDom.style.left = `${pageX - lefts}px`;
             selectDom.style.top = `${pageY - tops}px`;
         }
     }
-    function touchEnd(ev:PointerEvent) {
+    function touchEnd(ev:PointerEvent,clickButton:boolean=false) {
         const selectDom = ev.currentTarget as HTMLElement
         // 清空定时器
         if(timeOutEvent)clearTimeout(timeOutEvent);
-        //非长按，并且没有拖拽时触发点击事件
-        if(!longTap && !moving && click){
+        console.log(clickButton,longTap,moving,click)
+        //非长按，并且没有拖拽时触发点击事件        
+        if(clickButton && !longTap && !moving && click){
+            
             click()
         }
-        //移动结算
+        //移动位置结算
         if(allowMove) {
             allowMove = false;
             const {clientWidth} = document.body;//屏幕高宽
@@ -148,7 +151,10 @@ import { ref } from 'vue'
         //状态还原
         longTap = false
         moving = false
+        //清除定时器
+        document.removeEventListener("pointerup",touchEnd)
     }
+
 
 </script>
 

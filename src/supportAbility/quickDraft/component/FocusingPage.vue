@@ -55,7 +55,7 @@
 
 <script setup lang='ts'>
     import { computed, reactive } from 'vue';
-    import { addQuickDraftItem, createQuickDraftItem, focusingItem, ifFocusing, nowQuickDraft } from '../quickDraft';
+    import { addQuickDraftItem, createQuickDraftItem, focusingItem, ifFocusing, nowQuickDraft, showQuickDraftPopUp } from '../quickDraft';
     import TextArea from '@/components/other/textArea/textArea.vue';
     import Time from '@/components/global/time.vue';
     import Button from '@/components/global/Button.vue';
@@ -107,7 +107,11 @@
     function showManagePage(){
         //收起暂记版，弹出弹窗
         if(float){
-            //未完成
+            //折叠暂记版
+            foldFloatWindow();
+            //显示管理页面
+            showQuickDraftPopUp()
+
         }
         //切换至弹窗
         else{

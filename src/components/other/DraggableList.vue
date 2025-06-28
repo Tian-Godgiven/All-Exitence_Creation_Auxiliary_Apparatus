@@ -1,6 +1,6 @@
 <template>
 <div class="draggableList">
-	<DragNode v-for="item,index in list" 
+	<DragNode class="dragNode" v-for="item,index in list" 
 		:key="Symbol()"
 		:showHandle :dragHandle
 		:item 
@@ -18,8 +18,8 @@
 	import DragNode from './DragNode.vue';
 	import { getMonitor } from '@/api/dragToSort';
 	const {list,
-		showHandle=true,
-		dragHandle=false,
+		showHandle=true,//控制显示手柄
+		dragHandle=false,//是否启用拖动手柄
 	} = defineProps<{
 		list:T[],
 		showHandle?:boolean,

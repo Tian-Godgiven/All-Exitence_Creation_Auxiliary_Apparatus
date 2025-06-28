@@ -1,6 +1,6 @@
 <template>
 <Draggable :getData :handler :canDrop> 
-    <div class="dragNode">
+    <div class="dragItem">
         <div class="dragInner">
             <slot></slot>
         </div>
@@ -43,7 +43,7 @@ import { ElementDragPayload } from '@atlaskit/pragmatic-drag-and-drop/dist/types
 </script>
 
 <style lang="scss" scoped>
-.dragNode{
+.dragItem{
     position: relative;
     display: flex;
     align-items: center;

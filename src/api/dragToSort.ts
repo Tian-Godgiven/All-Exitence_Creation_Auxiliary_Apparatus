@@ -209,7 +209,7 @@ export function getCombine({
         allowInto,
         level
     })
-    if(!draggable || !droppable)return;
+    if(!draggable || !droppable)return ()=>{};
     return combine(draggable,droppable)
 }
 
