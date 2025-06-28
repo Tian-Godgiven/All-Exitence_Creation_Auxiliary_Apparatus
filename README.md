@@ -1,5 +1,5 @@
 
-<center>
+<div align="center">
 
 <h1>万物构造辅助装置<br>All-Exitence Creation Auxiliary Apparatus</h1>
 
@@ -9,7 +9,7 @@
 ![Badge Platform] ![Badge Tauri]
 
 ---
-</center>
+</div>
 
 这是一款尝试在传统的文本编辑中引入了*对象思维*与*功能整合*的一体式文字创作软件。
 
