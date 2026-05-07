@@ -91,8 +91,7 @@ import { ref } from 'vue'
         const selectDom = ev.currentTarget as HTMLElement
         // 清空定时器
         if(timeOutEvent)clearTimeout(timeOutEvent);
-        console.log(clickButton,longTap,moving,click)
-        //非长按，并且没有拖拽时触发点击事件        
+        //非长按，并且没有拖拽时触发点击事件
         if(clickButton && !longTap && !moving && click){
             
             click()

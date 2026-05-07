@@ -70,8 +70,8 @@ export function filterExitenceByRule(exitence:Exitence,rules:any[]){
         else if(linker == "!"){
             result = result && !ruleResult
         }
-        //过程中出现不满足规则的情况时直接返回false
-        if(result == false){
+        //仅在 && 和 ! 连接符下才提前中断，|| 需要继续看后续规则
+        if(result == false && linker != "||"){
             return false
         }
     }
@@ -160,7 +160,7 @@ export function filterExitenceByRule(exitence:Exitence,rules:any[]){
                     const regex2 = /^setting\[(.*)\]$/;  // 匹配 setting[name] 结构
                     const setName = targetString.match(regex2);
                     if(setName){
-                        return exitence.setting.setName
+                        return exitence.setting[setName[1]]
                     }
                     else{
                         showQuickInfo("错误：未定义含义的分组规则对象")

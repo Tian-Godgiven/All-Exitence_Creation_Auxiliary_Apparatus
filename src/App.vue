@@ -1,6 +1,5 @@
 <template>
-<div class="app" 
-	  @touchmove="touchMove"
+<div class="app"
     @pointermove="mouseMove"
     @pointerdown="mouseStart"
     @pointerup="touchEnd">
@@ -28,7 +27,7 @@
 import { initApp, testInfo1 } from "./hooks/app/app";
 import { initProject } from "./hooks/project/project";
 import { startAutoSave } from "./hooks/app/autoSave";
-import { touchMove,touchEnd, mouseStart, mouseMove } from '@/hooks/app/appTouch'
+import { touchEnd, mouseStart, mouseMove } from '@/hooks/app/appTouch'
 import MainPage from "@/app/pages/mainPage/MainPage.vue"
 import ProjectPage from "@/app/pages/projectPage/ProjectPage.vue";
 import LeftPage from "@/app/pages/leftPage/LeftPage.vue";

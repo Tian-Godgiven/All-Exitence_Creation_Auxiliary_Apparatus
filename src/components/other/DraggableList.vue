@@ -1,7 +1,7 @@
 <template>
 <div class="draggableList">
 	<DragNode class="dragNode" v-for="item,index in list" 
-		:key="Symbol()"
+		:key="(item as any).__key ?? index"
 		:showHandle :dragHandle
 		:item 
 		:getData="()=>getData(item)" 

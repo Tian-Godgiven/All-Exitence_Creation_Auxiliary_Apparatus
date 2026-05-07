@@ -1,3 +1,1 @@
-display:flex会影响到指示线条Indicator，注意draggable所在的容器不能为display:Flex
-
-可拖动对象必须处在一个已有monitor的容器中，可使用getMonitor生成简单的上下排列监视器
+已合并至 [拖拽排序系统.md](拖拽排序系统.md)，该方案计划迁移为 SortableJS（vuedraggable）。
