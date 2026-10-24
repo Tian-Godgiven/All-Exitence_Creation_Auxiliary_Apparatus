@@ -55,10 +55,10 @@
 
 <script setup lang='ts'>
     import { computed, reactive } from 'vue';
-    import { addQuickDraftItem, createQuickDraftItem, focusingItem, ifFocusing, nowQuickDraft, showQuickDraftPopUp } from '../quickDraft';
+    import { addQuickDraftItem, createQuickDraftItem, focusingItem, ifFocusing, nowQuickDraft, showQuickDraftPage } from '../quickDraft';
     import TextArea from '@/components/other/textArea/textArea.vue';
     import Time from '@/components/global/time.vue';
-    import Button from '@/components/global/Button.vue';
+    import Button from '@/components/global/button.vue';
     const {float = false,foldFloatWindow=()=>{}} 
         = defineProps<{float?:boolean,foldFloatWindow?:()=>void}>() 
     const index = computed(()=>{
@@ -110,7 +110,7 @@
             //折叠暂记版
             foldFloatWindow();
             //显示管理页面
-            showQuickDraftPopUp()
+            showQuickDraftPage()
 
         }
         //切换至弹窗

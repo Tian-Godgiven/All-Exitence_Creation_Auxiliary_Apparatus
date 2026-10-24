@@ -14,7 +14,7 @@
 
 <script setup lang='ts'>
     import { ref } from 'vue';
-    import Button from '@/components/global/Button.vue';
+    import Button from '@/components/global/button.vue';
 import gsap from 'gsap';
 import PanelLine from './PanelLine.vue';
 import { quickPanelList } from '@/hooks/pages/mainPage/quickButton';
@@ -95,6 +95,20 @@ import { quickPanelList } from '@/hooks/pages/mainPage/quickButton';
         margin-top: 20px;
         flex-shrink: 0;
         transition: transform 0.8s ease;
+    }
+}
+@media (min-width: 900px){
+    .quickButton{
+        right: 24px;
+        top: auto;
+        bottom: 24px;
+        .button{
+            width: 100px;
+            height: 100px;
+            padding: 10px;
+            box-sizing: border-box;
+            margin: 0;
+        }
     }
 }
 </style>

@@ -1,6 +1,6 @@
 import managePx from "@/api/managePx"
 import { hideInputSupport } from "@/hooks/inputSupport/inputSupport"
-import { changePage, hidePage, leftMaxWidth, leftShowing, leftShowWidth, rightMaxWidth, rightShowing, rightShowWidth, showPage, changePageMaskWithPage } from "@/hooks/pages/pageChange"
+import { changePage, hidePage, isDesktopLayout, leftMaxWidth, leftShowing, leftShowWidth, rightMaxWidth, rightShowing, rightShowWidth, showPage, changePageMaskWithPage } from "@/hooks/pages/pageChange"
 
 // 滑动相关数据
 let touchStartTime = 0
@@ -23,6 +23,7 @@ const rpxSpeed = managePx(2) // 滑动速度阈值
 
 // 滑动开始
 export const mouseStart = (e:MouseEvent)=>{
+	if(isDesktopLayout()) return false
 	if(!changePage.value){
 		return false
 	}
@@ -33,6 +34,7 @@ export const mouseStart = (e:MouseEvent)=>{
 	touchStartTime = Date.now()
 }
 export const touchStart = (e:TouchEvent)=>{
+	if(isDesktopLayout()) return false
 	if(!changePage.value){
 		return false
 	}
@@ -120,6 +122,7 @@ function movePage(x:number,y:number){
 }
 // 滑动结束时
 export function touchEnd(){
+	if(!startMove) return false
 	
 	if(!changePage.value)return false
 

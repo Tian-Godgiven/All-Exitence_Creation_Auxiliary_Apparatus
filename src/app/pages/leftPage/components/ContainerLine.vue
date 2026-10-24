@@ -13,6 +13,8 @@
             <Button v-for="button in theButtonList" 
                 :icon="button.icon"
                 :name="button.name"
+                :disabled="button.disabled"
+                :loading="button.loading"
                 @click="button.click">
             </Button>
             <DragHandler v-show="manageMode" ref="handlerRef"/>
@@ -30,15 +32,15 @@
 <script setup lang='ts'>
     import { computed, ref, useTemplateRef } from "vue";
     import LongTap from "@/components/other/LongTap.vue";
-    import Button from "@/components/global/Button.vue";
+    import Button from "@/components/global/button.vue";
     import DragHandler from "@/components/global/DragHandler.vue";
     import { nowLeftManage } from '@/hooks/pages/leftPage';
     import { DragState } from "@/api/dragToSort";
-    import { ElementDragPayload } from "@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types";
+    import type { ElementDragPayload } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
     import Icon from "@/components/global/Icon.vue";
     import Draggable from "@/components/global/Draggable.vue";
 
-    type buttonItem = {name:string,icon?:string,click:()=>void}
+    type buttonItem = {name:string,icon?:string,click:()=>void,disabled?:boolean,loading?:boolean}
     const {click,longTap,buttonList,expending,getData,level=0,canDrop,allowInto} = defineProps<{
         click:()=>void, //点击事件
         longTap:()=>void, //长按事件
@@ -114,6 +116,17 @@
     z-index: 0;
     width: 100%;
     box-sizing: border-box;
+}
+
+@media (min-width: 900px){
+    .top{
+        height: 40px;
+        .icon{ width: 28px; height: 28px; }
+        .buttons > div{ width: 28px; padding: 4px; }
+    }
+    .top.expending{
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    }
 }
 
 

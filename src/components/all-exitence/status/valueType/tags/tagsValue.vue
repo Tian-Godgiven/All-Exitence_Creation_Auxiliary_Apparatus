@@ -22,7 +22,7 @@ import TagDiv from '@/supportAbility/tagLibrary/components/TagDiv.vue';
 import { isArray } from 'lodash';
 import { computed, ref } from 'vue';
 import ChooseTag from './ChooseTag.vue';
-import Button from '@/components/global/Button.vue';
+import Button from '@/components/global/button.vue';
 import { ExitenceStatus } from '@/class/Exitence';
 import { getStatusSettingValue } from '@/hooks/all-exitence/status';
 
@@ -94,7 +94,7 @@ import { getStatusSettingValue } from '@/hooks/all-exitence/status';
             flex-wrap: wrap;
             .tag{
                 min-width: 50px;
-                border:3px solid black;
+                border:2px solid black;
                 padding: 5px 10px;
                 margin: 5px 5px;
             }
@@ -105,6 +105,27 @@ import { getStatusSettingValue } from '@/hooks/all-exitence/status';
         flex-shrink: 0;
         width: 50px;
         height: 50px;
+    }
+}
+@media (min-width: 900px){
+    .tagsValue.editMode{
+        width: 100%;
+        margin: 0;
+        padding: 8px;
+        border-radius: 4px;
+        border: 1px solid $bgColor70;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+    .tagsValue{
+        .tagContainer .tag{
+            border-width: 2px;
+            padding: 3px 8px;
+            margin: 3px;
+        }
+        .edit,.close{
+            width: 28px;
+            height: 28px;
+        }
     }
 }
 </style>

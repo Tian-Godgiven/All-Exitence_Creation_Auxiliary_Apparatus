@@ -3,7 +3,9 @@
 	ref="popUp"
 	:class="[
 		!popUp.position?.x?'centerX':'',
-		!popUp.position?.y?'centerY':''
+		!popUp.position?.y?'centerY':'',
+		popUp.className,
+		popUp.size?.height && popUp.size.height !== 'auto' ? 'fixedHeight' : ''
 	]" 
 	:style="{
 		zIndex:index,
@@ -36,7 +38,7 @@
 import { nextTick, onMounted, shallowRef, useTemplateRef } from 'vue';
 import { PopUp } from '@/hooks/pages/popUp'; 
 import { popUpVueList } from '@/static/list/popUpVueList';
-import Button from '@/components/global/Button.vue';
+import Button from '@/components/global/button.vue';
 import gsap from 'gsap';
 	const {popUp} = defineProps<{popUp:PopUp}>()
 	const {name,buttons,vueName,index} = popUp
@@ -45,6 +47,7 @@ import gsap from 'gsap';
 
 	onMounted(async()=>{
 		await nextTick();
+		keepPositionInViewport()
 		popUpAnimate();
 	})
 
@@ -65,6 +68,17 @@ import gsap from 'gsap';
 			ease: "sine.in"
 		}, "-=0.2"); // 与前一个动画重叠0.1秒
 	}
+
+	function keepPositionInViewport(){
+		if(!popUp.position || !popUpRef.value)return
+		const margin = 8
+		const requestedX = Number.parseFloat(popUp.position.x)
+		const requestedY = Number.parseFloat(popUp.position.y)
+		const x = Math.min(Math.max(requestedX, margin), window.innerWidth - popUpRef.value.offsetWidth - margin)
+		const y = Math.min(Math.max(requestedY, margin), window.innerHeight - popUpRef.value.offsetHeight - margin)
+		popUp.position.x = `${x}px`
+		popUp.position.y = `${y}px`
+	}
 	
 </script>
 
@@ -73,38 +87,45 @@ import gsap from 'gsap';
 	opacity:0; 
 	transform: scale(0.3);
 	background-color: $bgColor;
-	width: 650px;
-	height: 80%;
+	// width: 650px;
+	height: auto;
 	max-width: 100%;
 	max-height: 80vh;
-	box-shadow: black 0px 0px 50px;
+	box-shadow: rgba(114, 114, 114, 0.76) 0px 0px 8px;
 	position: absolute;
 	box-sizing: border-box;
 	border-radius: 10px;
 	pointer-events: auto;
 	overflow:hidden;
+	display: flex;
+	flex-direction: column;
+	&.controlPanelPopUp{
+		box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+		.inner{ padding: 2px !important;}
+	}
 	.top{
-		padding:0 20px;
-		padding-top: 20px;
+		padding: 0 16px;
 		position: relative;
 		display: flex;
+		flex: 0 0 auto;
 		justify-content: space-between;
 		z-index: 1;
 		&.noTitle{
-			height: 0;
+			height: 36px;
 		}
 		.title{
 			flex-grow: 1;
 			position: relative;
-			height: 70px;
+			height: 44px;
 			top: 0px;
-			width: 300px;
-			font-size: 1.5rem;
+			max-width: 300px;
+			font-size: 1.25rem;
 			display: flex;
 			align-items: center;
 		}
 		.buttons{
-			height: 50px;
+			height: 28px;
+			align-self: center;
 			display: flex;
 			gap: 5px;
 			.button{
@@ -119,15 +140,20 @@ import gsap from 'gsap';
 		opacity:0;
 		position: relative;
 		z-index: 0;
-		height: calc(100% - 90px);
+		flex: 0 1 auto;
 		width: 100%;
 		display:flex;
 		box-sizing: border-box;
-		padding: 0 20px;
+		padding: 0 16px 16px;
+		overflow: auto;
 		&.noTop{
-			height: 100%;
-			padding: 10px 20px;
+			padding: 16px;
 		}
+	}
+	&.fixedHeight .inner{
+		flex: 1 1 auto;
+		min-height: 0;
+		max-height: none;
 	}
 	&.centerX{
 		left:50%;
@@ -141,6 +167,15 @@ import gsap from 'gsap';
 		left:50%;
 		top:50%;
 		transform: translate(-50%,-50%) scale(0.5);
+	}
+}
+
+@media (min-width: 900px){
+	.popUp{
+		max-height: min(760px, calc(100vh - 48px));
+		.inner{
+			max-height: calc(min(760px, 100vh - 48px) - 52px);
+		}
 	}
 }
 </style>

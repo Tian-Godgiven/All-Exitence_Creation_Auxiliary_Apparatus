@@ -12,8 +12,8 @@
 
 <script setup lang='ts'>
     import DraggableList from '@/components/other/DraggableList.vue';
-import Button from '@/components/global/Button.vue';
-import GroupRule from '@/components/all-exitence/group/GroupRule.vue';
+import Button from '@/components/global/button.vue';
+import GroupRule from '@/components/all-exitence/group/groupRule.vue';
 import { Group } from '@/class/Group';
     const {group} = defineProps<{group:Group}>()
     //删除已有的分组规则

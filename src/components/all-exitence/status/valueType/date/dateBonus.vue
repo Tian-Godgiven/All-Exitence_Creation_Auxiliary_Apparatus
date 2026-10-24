@@ -31,7 +31,7 @@
 
 <script setup lang='ts'>
     import { computed, ref, watch, watchEffect } from 'vue';
-    import Button from '@/components/global/Button.vue';
+    import Button from '@/components/global/button.vue';
     import Selector from '@/components/global/Selector.vue';
     import { getTimeRule, showTimeSelector, TimeLinker } from '@/supportAbility/customTime/translateTime';
 import Status from '@/interfaces/Status';

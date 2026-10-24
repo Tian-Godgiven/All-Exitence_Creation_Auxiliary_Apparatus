@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang='ts'>
-import Button from './Button.vue';
+import Button from './button.vue';
 </script>
 
 <style scoped lang='scss'>
@@ -23,7 +23,7 @@ import Button from './Button.vue';
         height: 60px;
         max-height: 70%;
         background-color: $bgColor;
-        border: 3px solid $bgColor70;
+        border: 2px solid $bgColor70;
         border-radius: 10px;
         box-shadow: $groundShadow;
         >.icon{

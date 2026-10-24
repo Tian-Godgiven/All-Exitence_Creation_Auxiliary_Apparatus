@@ -38,11 +38,11 @@ import BoxInput from '@/components/other/input/BoxInput.vue';
 import SwitchExpand from '@/components/other/SwitchExpand.vue';
 import NewTag from './NewTag.vue';
 import { ref } from 'vue';
-import Button from '@/components/global/Button.vue';
+import Button from '@/components/global/button.vue';
 import Nocontent from '@/components/global/NoContent.vue';
     const {tagGroup,index} = defineProps<{tagGroup:TagGroup,index:number}>()
     //长按
-    const longTap = function(){
+    const longTap = function(position?:{x:number,y:number}){
         showControlPanel({
             option:[{
                 text:"删除",
@@ -60,7 +60,7 @@ import Nocontent from '@/components/global/NoContent.vue';
                     createTagGroup("未命名标签组",index)
                 }
             }]
-        })
+        },position)
     }
     //显示新增标签
     const addNewTag = ref(false)

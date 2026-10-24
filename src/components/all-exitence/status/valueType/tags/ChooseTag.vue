@@ -27,7 +27,7 @@
 </template>
 
 <script setup lang='ts'>
-    import Button from '@/components/global/Button.vue';
+    import Button from '@/components/global/button.vue';
 import NoContent from '@/components/global/NoContent.vue';
 import DownLineInput from '@/components/other/input/downLineInput.vue';
 import { callSupportAbility } from '@/hooks/app/app';
@@ -114,5 +114,35 @@ import SwitchExpand from '@/components/other/SwitchExpand.vue';
     margin: 10px;
     height: 3px;
 	background-color: $bgColor80;
+}
+
+@media (min-width: 900px){
+    .chooseTag{
+        .inputTag{
+            width: 100%;
+            align-items: center;
+            gap: 6px;
+            .downLineInput{
+                flex: 1 1 auto;
+                min-width: 0;
+            }
+            .button{
+                width: 32px;
+                height: 32px;
+            }
+        }
+        .tagLibrary .tagGroup .tags{
+            margin-left: 0;
+            gap: 4px 8px;
+            .tag{
+                padding: 3px 8px;
+                border-radius: 4px;
+            }
+        }
+    }
+    .separateLine{
+        margin: 8px 0;
+        height: 1px;
+    }
 }
 </style>

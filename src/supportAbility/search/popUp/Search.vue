@@ -41,7 +41,7 @@
 
 <script setup lang='ts'>
     import DownLineInput from '@/components/other/input/downLineInput.vue';
-    import Button from '@/components/global/Button.vue';
+    import Button from '@/components/global/button.vue';
     import Icon from '@/components/global/Icon.vue';
     import { hideSearchPopUp, input, range, result, searchAt, SearchResult, target } from '../search';
     import { focusOnExitence } from '@/hooks/all-exitence/allExitence';
@@ -81,6 +81,7 @@ import ScrollBar from '@/components/global/ScrollBar.vue';
     .downLineInput{
         font-size: $fontSize20;
         flex-grow: 1;
+        max-width: none;
         margin-right: 15px;
     }
     .button{
@@ -146,6 +147,74 @@ import ScrollBar from '@/components/global/ScrollBar.vue';
         .preview{
             font-size: 0.8rem;
             color: $previewText;
+        }
+    }
+}
+
+@media (min-width: 900px){
+    .input{
+        align-items: center;
+        gap: 12px;
+        padding-bottom: 12px;
+        .downLineInput{
+            margin-right: 0;
+        }
+        .button{
+            width: auto;
+            min-width: 72px;
+            height: 34px;
+            flex: 0 0 auto;
+            padding: 0 14px;
+            border: 2px solid black;
+            border-radius: 6px;
+            white-space: nowrap;
+        }
+    }
+    .setting{
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        .option{
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            .button{
+                height: 30px;
+                margin: 0;
+                padding: 0 10px;
+                border-radius: 4px;
+                .choice{
+                    gap: 4px;
+                }
+            }
+            .icon{
+                width: 18px;
+                height: 18px;
+            }
+            > div:not(.button){
+                display: flex;
+                align-items: center;
+                gap: 4px;
+            }
+            input[type="checkbox"]{
+                width: 16px;
+                height: 16px;
+                margin: 0;
+            }
+        }
+    }
+    .result{
+        margin-top: 12px;
+        .item{
+            width: 100%;
+            align-items: flex-end;
+            justify-content: left;
+            text-align: left;
+            padding: 8px;
+            .title{
+                justify-content: flex-start;
+                margin-right:4px;
+            }
         }
     }
 }

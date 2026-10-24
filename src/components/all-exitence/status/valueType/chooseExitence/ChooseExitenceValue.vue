@@ -44,7 +44,7 @@
     import EditPart from './EditPart.vue';
     import { getChooseExitenceStatusList, removeExitenceFromChooseExitenceStatus, type ChooseExitenceStatus } from '@/hooks/all-exitence/status/chooseExitence';
     import { getExitenceByKey, getTypeByKey, showExitenceOnPopUp } from '@/hooks/all-exitence/allExitence';
-    import Button from '@/components/global/Button.vue';
+    import Button from '@/components/global/button.vue';
     import { getStatusSettingValue } from '@/hooks/all-exitence/status';
 import Status from '@/interfaces/Status';
     const {status,fullStatus} = defineProps<{
@@ -119,6 +119,11 @@ import Status from '@/interfaces/Status';
 </script>
 
 <style scoped lang='scss'>
+@media (min-width: 900px){
+    .chooseExitenceValue.editMode{
+        width: min(70vw, 600px, calc(100% - 12px));
+    }
+}
 .chooseExitenceValue{
     overflow: hidden;
 }

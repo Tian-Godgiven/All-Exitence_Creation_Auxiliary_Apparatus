@@ -78,12 +78,10 @@
             display: flex;
             .icon{
                 flex-shrink: 0;
-                width: 40px;
-                height: 40px;
             } 
             >:not(.icon){
-                min-height: 40px;
-                width: calc(100% - 40px);
+                flex: 1 1 auto;
+                min-width: 0;
             }
         }
         

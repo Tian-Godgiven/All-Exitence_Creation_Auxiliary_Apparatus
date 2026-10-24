@@ -37,7 +37,7 @@
 <script setup lang='ts'>
     import { createNewProject } from '@/hooks/project/project';
     import TargetContainer from './TargetContainer.vue';
-    import Button from '@/components/global/Button.vue';
+    import Button from '@/components/global/button.vue';
 
     const {target} = defineProps<{
         target:"app"|"project"
@@ -84,7 +84,7 @@
         justify-content: center;
         align-items: center;
         width: 60%;
-        border:3px solid black;
+        border:2px solid black;
         border-radius: 20px;
         padding: 20px;
     }

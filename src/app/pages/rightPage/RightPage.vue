@@ -10,7 +10,9 @@
 			</Button>
 		</div>
 	</div>
-	<AbilityGroup v-for="list,name in abilities" :list :name/>
+	<div class="abilityList">
+		<Ability v-for="ability in abilities" :ability />
+	</div>
 </div>
 </template>
 
@@ -18,16 +20,16 @@
 import { rightMaxWidth, rightShowWidth} from '@/hooks/pages/pageChange';
 import { computed } from 'vue';
 import { rightAbilityList } from '@/static/list/rightAbilityList';
-import AbilityGroup from './components/AbilityGroup.vue';
+import Ability from './components/Ability.vue';
 import { callSupportAbility } from '@/hooks/app/app';
-import Button from '@/components/global/Button.vue';
+import Button from '@/components/global/button.vue';
 	// 由于右侧页面是从右往左的，因此实际设定的是该页面的right属性
 	let rightWidth = computed(()=>{
 		return (rightShowWidth.value - rightMaxWidth) +"px"
 	})
 	
 	//功能列表
-	let abilities = rightAbilityList
+	const abilities = computed(()=>Object.values(rightAbilityList.value).flat())
 	//标题栏按键
 	const buttons = [
 		{"name":"设置",click:()=>callSupportAbility("appSetting"),icon:"setting"}
@@ -36,6 +38,26 @@ import Button from '@/components/global/Button.vue';
 </script>
 
 <style lang="scss" scoped>
+@media (min-width: 900px){
+	.rightPage.rightPage{
+		width: 320px;
+		border-left: 1px solid $bgColor70;
+		box-sizing: border-box;
+	}
+	.rightPage .abilityList{
+		align-content: start;
+		grid-auto-rows: 80px;
+	}
+	.rightPage.rightPage .top{
+		height: 60px;
+		.buttons .button{
+			width: 48px;
+			height: 48px;
+		}
+	}
+	.rightPage.rightPage .abilityList{ height: calc(100% - 60px); }
+}
+
 // 右侧页面
 .rightPage{
 	position: absolute;
@@ -61,13 +83,14 @@ import Button from '@/components/global/Button.vue';
 			flex-grow: 1;
 			display: flex;
 			align-items: center;
-			font-weight: 600;
+			// font-weight: 600;
 			height: 100%;
-			font-size: $fontSize60;
+			font-size: $fontSize40;
 		}
 		.buttons{
 			height: 100%;
 			display: flex;
+			align-items: center;
 			.button{
 				width: 80px;
 				height: 100%;
@@ -75,6 +98,12 @@ import Button from '@/components/global/Button.vue';
 				box-sizing: border-box;
 			}
 		}
+	}
+	.abilityList{
+		height: calc(100% - 110px);
+		overflow: auto;
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
 	}
 }
 </style>

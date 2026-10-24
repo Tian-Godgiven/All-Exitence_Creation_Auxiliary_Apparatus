@@ -27,7 +27,8 @@ import { Group } from '@/class/Group';
 import { Type } from '@/class/Type';
 import { nowLeftManage } from '@/hooks/pages/leftPage';
 import ContainerLine from '../ContainerLine.vue';
-import { ElementDragPayload } from '@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types';
+import type { ElementDragPayload } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
+import { isActionPending } from '@/hooks/app/pendingAction';
 
 	let {group,type} = defineProps<{group:Group,type:Type}>() 
 
@@ -42,7 +43,7 @@ import { ElementDragPayload } from '@atlaskit/pragmatic-drag-and-drop/dist/types
 		group.expending = !expending.value
 	}
 	// 长按显示控制面板
-	const longTap = ()=>{
+	const longTap = (position?:{x:number,y:number})=>{
 		showControlPanel({
 			title:`分组：${group.name}`,
 			option:[{
@@ -52,18 +53,18 @@ import { ElementDragPayload } from '@atlaskit/pragmatic-drag-and-drop/dist/types
 				text:"删除",
 				click:()=>deleteGroup(type,group)
 			}]
-		})
+		},position)
 	}
 
 	//按键列表
-	const buttonList = {
+	const buttonList = computed(()=>({
 		unmanage:[
 			{name:"编辑",click:()=>updateGroupPopUp(type,group),icon:"edit"},
 		],
 		manage:[
-			{name:"删除",click:()=>deleteGroup(type,group),icon:"delete"}
+			{name:"删除",click:()=>deleteGroup(type,group),icon:"delete",loading:isActionPending(`trash:group:${group.__key}`),disabled:isActionPending(`trash:group:${group.__key}`)}
 		]
-	}
+	}))
 	
 	//获取数据
 	function getData(){

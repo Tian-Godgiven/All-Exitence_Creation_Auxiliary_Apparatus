@@ -30,7 +30,7 @@
     import { addCustomTimeRule, checkCustomTimeRule, CustomTimeRule, CustomTimeRuleUnit, editCustomTimeRule, getCustomEqualToUnit, hideEditPage, sortRuleUnits} from '../customTime';
     import { cloneDeep } from 'lodash';
     import DownLineInput from '@/components/other/input/downLineInput.vue';
-    import Button from '@/components/global/Button.vue';
+    import Button from '@/components/global/button.vue';
     import EditTimeRuleUnit from './EditTimeRuleUnit.vue';
     import { editTarget } from '../customTime'; 
     import { nanoid } from 'nanoid';
@@ -125,7 +125,7 @@
             .button{
                 height: 40px;
                 width: 40px;
-                border: 3px solid black;
+                border: 2px solid black;
                 border-radius: 5px;
             }
         }

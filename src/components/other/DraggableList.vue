@@ -13,7 +13,7 @@
 
 <script setup lang="ts" name="" generic="T"> 
 	import { onMounted, onUnmounted, toRaw } from 'vue';
-    import { ElementDragPayload } from "@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types";
+    import type { ElementDragPayload } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 	import { isEqual } from 'lodash';
 	import DragNode from './DragNode.vue';
 	import { getMonitor } from '@/api/dragToSort';

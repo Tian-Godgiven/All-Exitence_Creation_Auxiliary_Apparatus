@@ -1,13 +1,15 @@
 import { addToRightPage } from "@/hooks/pages/rightPage"
 import { TextAreaContent } from "@/hooks/expression/textAreaContent"
 import { tryReadFileAtPath, writeFileAtPath } from "@/hooks/fileSysytem"
-import { showPopUp } from "@/hooks/pages/popUp"
-import { reactive, ref, shallowRef, toRaw } from "vue"
+import { reactive, ref, toRaw } from "vue"
 import QuickDraft from "./popUp/QuickDraft.vue"
+import { openMainToolPage } from "@/hooks/pages/mainPage/toolPage"
 import { nanoid } from "nanoid"
 import FloatWindow from "./popUp/FloatWindow.vue"
 import { addFloatWindow, deleteFloatWindow} from "@/hooks/pages/floatWindow"
-import { SupportAbilitySignUpItem } from "@/static/list/supportAbilityList"
+import type { SupportAbilitySignUpItem } from "@/static/list/supportAbilityList"
+import type { ProjectFeature } from "@/repository/projectFeature"
+import { cloneDeep } from "lodash"
 
 //注册对象
 export const quickDraftItem:SupportAbilitySignUpItem = {
@@ -49,11 +51,32 @@ const idleQuickDraft:QuickDraft = {
 //初始化:添加按键即可，切换项目的同时会切换至对应的暂记版
 export const nowQuickDraft = reactive<QuickDraft['items']>([])
 export const nowQuickDraftSetting = reactive<QuickDraft['setting']>(idleQuickDraft.setting)
+export const quickDraftProjectFeature:ProjectFeature<QuickDraft> = {
+    key:"quick-draft",
+    createDefault:()=>cloneDeep(idleQuickDraft),
+    load:(data)=>{
+        nowQuickDraft.length = 0
+        nowQuickDraft.push(...cloneDeep(data.items))
+        Object.assign(nowQuickDraftSetting,cloneDeep(data.setting))
+        const focusedKey = data.setting.focusingItem
+        focusingItem.value = focusedKey
+            ? nowQuickDraft.find((item)=>item.__key == focusedKey) ?? null
+            : null
+        loadQuickDraftFloatWindow(nowQuickDraftSetting.floatWindow)
+    },
+    snapshot:()=>({
+        items:cloneDeep(toRaw(nowQuickDraft)),
+        setting:{
+            ...cloneDeep(toRaw(nowQuickDraftSetting)),
+            focusingItem:focusingItem.value?.__key ?? null
+        }
+    })
+}
 function initQuickDraft(){
     //添加右侧功能按键
     addToRightPage({
         "icon":"quickDraft",
-        "click":()=>showQuickDraftPopUp(),
+        "click":()=>showQuickDraftPage(),
         "name":"暂记版"
     },"灵感迸发")
 }
@@ -93,12 +116,15 @@ export async function changeQuickDraft(projectPath:string){
     loadQuickDraftFloatWindow(setting.floatWindow)
 }
 
-//显示暂记版弹窗
-export async function showQuickDraftPopUp(){
-    showPopUp({
-        vue:shallowRef(QuickDraft),
-        "buttons":null,
-        "mask":true,
+//显示暂记版工具页
+export function showQuickDraftPage(){
+    ifFocusing.value = false
+    openMainToolPage({
+        name:"暂记版",
+        component:QuickDraft,
+        onClose:()=>{
+            ifFocusing.value = false
+        }
     })
 }
 //加载暂记版悬浮窗

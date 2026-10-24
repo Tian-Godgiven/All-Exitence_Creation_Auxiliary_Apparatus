@@ -39,4 +39,10 @@
 			width: 550px;
 			height: 60px;
 		}
+    @media (min-width: 900px){
+        .chapterName{
+            width: min(100%, 420px);
+            height: 44px;
+        }
+    }
 </style>

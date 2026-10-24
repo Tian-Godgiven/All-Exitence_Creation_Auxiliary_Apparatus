@@ -81,4 +81,10 @@ import { getStatusSettingValue } from '@/hooks/all-exitence/status';
 .hoverBox:focus-within{
 	border-color: blue;
 };
+
+@media (min-width: 900px){
+	.inputBox{
+		max-width: 600px;
+	}
+}
 </style>

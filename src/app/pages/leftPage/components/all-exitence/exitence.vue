@@ -20,7 +20,8 @@ import { Exitence } from '@/class/Exitence';
 import ObjectLine from '../ObjectLine.vue';
 import { focusOnLeftPage, getLeftPageFocusTarget } from '@/hooks/pages/leftPage';
 import { Type } from '@/class/Type';
-import { ElementDragPayload } from '@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types';
+import type { ElementDragPayload } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
+	import { isActionPending } from '@/hooks/app/pendingAction';
 
 	let {type,exitence} = defineProps<{type:Type,exitence:Exitence}>()
 	const name = computed(()=>{
@@ -38,7 +39,7 @@ import { ElementDragPayload } from '@atlaskit/pragmatic-drag-and-drop/dist/types
 		return getLeftPageFocusTarget() == exitence.__key
 	})
 
-	const longTap = ()=>{
+	const longTap = (position?:{x:number,y:number})=>{
 		//显示控制面板
 		showControlPanel({
 			title:`事物：${exitence.name}`,
@@ -49,7 +50,7 @@ import { ElementDragPayload } from '@atlaskit/pragmatic-drag-and-drop/dist/types
 				text:"删除",
 				click:()=>{deleteExitencePopUp(type,exitence)}
 			}]
-		})
+		},position)
 	}
 	//点击将事物显示在主页面并聚焦该对象
 	const click = ()=>{
@@ -62,9 +63,9 @@ import { ElementDragPayload } from '@atlaskit/pragmatic-drag-and-drop/dist/types
 	}
 
 	//管理模式按钮
-	const buttonList = [
-		{name:"删除",click:()=>deleteExitencePopUp(type,exitence),icon:"delete"}
-	]
+	const buttonList = computed(()=>[
+		{name:"删除",click:()=>deleteExitencePopUp(type,exitence),icon:"delete",loading:isActionPending(`trash:exitence:${exitence.__key}`),disabled:isActionPending(`trash:exitence:${exitence.__key}`)}
+	])
 
 	//获取数据
 	function getData(){

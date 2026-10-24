@@ -286,7 +286,7 @@ const {props,popUp,returnValue} = defineProps(["props","popUp","returnValue"])
 	.showArea{
 		width: 100%;
 		height: 120px;
-		border: 3px solid black;
+		border: 2px solid black;
 		padding: 5px;
 		border-radius: 10px;
 		margin-bottom: 30px;
@@ -300,7 +300,7 @@ const {props,popUp,returnValue} = defineProps(["props","popUp","returnValue"])
 			user-select: none;
 			margin: 5px;
 			padding: 5px;
-			border: 3px solid black;
+			border: 2px solid black;
 		}
 		
 	}

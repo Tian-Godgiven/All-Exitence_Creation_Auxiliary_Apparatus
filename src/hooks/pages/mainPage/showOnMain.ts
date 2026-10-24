@@ -175,7 +175,7 @@ export function getShowOnMainInfo(){
         }()
         const info = {
             type:showOnMain.type,//对象类型
-            from:showOnMain.from,//对象来源
+            from:showOnMain.type === "article" ? [...showOnMain.target.from] : showOnMain.from,//对象来源
             targetKey,//对象key
         } as ProjectLastTarget
         return info

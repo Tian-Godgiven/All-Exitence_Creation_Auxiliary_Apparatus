@@ -14,15 +14,19 @@ export function disableChangePage(){
 export let leftShowWidth = ref(0) //左侧显示的宽度，页面本身的宽度固定
 export const leftMaxWidth = managePx(650) //左侧页面最大宽度
 export let leftShowing = false//左侧页面是否完全显示
+export function isDesktopLayout(){
+	return window.matchMedia('(min-width: 900px)').matches
+}
 // 显示左侧页面
 export function showLeft(){
+	if(isDesktopLayout()) return
 	showPage("left")
 	changePageMaskWithPage("left")
 }
 
 // 控制右侧页面显示
 export let rightShowWidth = ref(0)
-export const rightMaxWidth = window.innerWidth * 0.7
+export const rightMaxWidth = isDesktopLayout() ? 320 : window.innerWidth * 0.7
 export let rightShowing = false
 // 切换右侧页面显示
 export function switchRight(){
@@ -59,6 +63,7 @@ export function switchProjectPage(){
 const hideAnimateTime = 25
 const showAnimateTime = 15 //动画持续时间（单位帧）
 export function hidePage(pageName:'left'|'right'|'project',animateTime?:number) {
+	if(pageName === 'left' && isDesktopLayout()) return
 	switch(pageName){
 		case "left":
 			leftShowing = false
@@ -103,6 +108,7 @@ export function hidePage(pageName:'left'|'right'|'project',animateTime?:number) 
 }
 // 显示页面
 export function showPage(pageName:'left'|'right'|'project') {
+	if(pageName === 'left' && isDesktopLayout()) return
 	switch(pageName){
 		case "left":
 			leftShowing = true
@@ -122,7 +128,22 @@ export function showPage(pageName:'left'|'right'|'project') {
 	}
 
 	// 每帧移动速度
-	const speed = Math.abs(maxValue) / showAnimateTime
+	const animateTime = pageName === "right" && isDesktopLayout() ? 15 : showAnimateTime
+	if(pageName === "right" && isDesktopLayout()){
+		const startValue = changeTarget.value
+		let frame = 0
+		const animate = () => {
+			frame += 1
+			const progress = Math.min(frame / animateTime, 1)
+			const easedProgress = (1 - Math.cos(Math.PI * progress)) / 2
+			changeTarget.value = startValue + (maxValue - startValue) * easedProgress
+			if(whileAnimating){whileAnimating()}
+			if(progress < 1){ requestAnimationFrame(animate) }
+		}
+		animate()
+		return
+	}
+	const speed = Math.abs(maxValue) / animateTime
 	const reduce = () => {
 		if (changeTarget.value < maxValue) {
 			if(changeTarget.value + speed >= maxValue){
@@ -140,6 +161,10 @@ export function showPage(pageName:'left'|'right'|'project') {
 
 // 控制左右两侧页面显示时的遮罩层透明度变化
 export function changePageMaskWithPage(pageName:"left"|"right"){
+	if(pageName === "right" && isDesktopLayout()){
+		showMask(()=>hidePage(pageName), 0)
+		return
+	}
 	const clickMask = ()=>hidePage(pageName)
 	const percent = pageName=='left'?leftShowWidth.value/leftMaxWidth:rightShowWidth.value/rightMaxWidth
 	changePageMask(percent,clickMask)

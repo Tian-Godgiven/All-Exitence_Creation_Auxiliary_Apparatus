@@ -34,11 +34,11 @@
     import { manageMode,deleteMission, finishMission, Mission, repeatMission, tryAgain, editMission} from '../missionList';
     import { computed, ref } from 'vue';
     import { showControlPanel } from '@/hooks/controlPanel';
-    import Button from '@/components/global/Button.vue';
+    import Button from '@/components/global/button.vue';
 
     const {mission} = defineProps<{mission:Mission}>()
     //长按显示控制面板
-    function longTap(){
+    function longTap(position?:{x:number,y:number}){
         showControlPanel({
             option:[{
                 "text":"编辑/详情",
@@ -47,7 +47,7 @@
                 text:"删除",
                 click:()=>{deleteMission(mission)}
             }]
-        })
+        },position)
     }
 
     //点击展开任务内容
@@ -86,7 +86,7 @@
 .mission{
     box-sizing: border-box;
     width: 100%;
-    border: 3px solid black;
+    border: 2px solid black;
     border-radius: 10px;
     padding: 15px;
     margin-bottom: 10px; 

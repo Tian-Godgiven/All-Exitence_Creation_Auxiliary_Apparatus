@@ -1,12 +1,10 @@
 <template>
 <div class="managePage">
     <div class="top">
-        <div class="title">暂记版</div>
         <div class="buttons">
             <Button icon="add" name="创建" @click="create"></Button>
             <Button icon="manage" name="管理模式" @click="switchManageMode"></Button>
             <Button :icon="floatWindowKey?'hideFloat':'showFloat'" name="切换显示悬浮窗" @click="switchFloatWindow"></Button>
-            <Button icon="closePopUp" name="关闭" @click="close"></Button>
         </div>
     </div>
     <DraggableList 
@@ -25,13 +23,11 @@
 
 <script setup lang="ts">
 import DraggableList from '@/components/other/DraggableList.vue';
-import Button from '@/components/global/Button.vue';
-import { addQuickDraftItem, createQuickDraftItem, nowQuickDraft , switchQuickDraftFloatWindow, switchFoldFloatWindow, floatWindowKey } from '../quickDraft';
-import { closePopUp, PopUp } from '@/hooks/pages/popUp';
+import Button from '@/components/global/button.vue';
+import { addQuickDraftItem, createQuickDraftItem, nowQuickDraft , switchQuickDraftFloatWindow, floatWindowKey } from '../quickDraft';
 import { ref } from 'vue';
 import QuickDraftItem from './QuickDraftItem.vue';
 
-    const {popUp} = defineProps<{popUp?:PopUp}>()
     const quickDraft = nowQuickDraft
     //切换管理模式
     const manageMode = ref(false)
@@ -50,27 +46,20 @@ import QuickDraftItem from './QuickDraftItem.vue';
         addQuickDraftItem(newItem,0)
     }
 
-    //关闭
-    function close(){
-        if(popUp)closePopUp(popUp)
-        else{
-            //收起悬浮窗
-            switchFoldFloatWindow(true)
-        }
-    }
 </script>
 
 <style scoped lang="scss">
 .managePage{
         width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
         position: relative;
         z-index: 1;
         .top{
             display: flex;
+            flex: 0 0 auto;
             height: 2.5rem;
-            .title{
-                font-size: $midFontSize;
-            }
             .buttons{
                 margin-left: auto;
                 display: flex;
@@ -82,6 +71,9 @@ import QuickDraftItem from './QuickDraftItem.vue';
         }
         .container{
             box-sizing: border-box;
+            min-height: 0;
+            flex: 1;
+            overflow: auto;
             width: 100%;
             display: flex;
             flex-direction: column;

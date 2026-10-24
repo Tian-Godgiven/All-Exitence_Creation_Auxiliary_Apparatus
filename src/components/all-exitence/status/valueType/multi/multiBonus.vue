@@ -286,7 +286,7 @@ import { getTypeOfExitence } from '@/hooks/all-exitence/allExitence';
 			display: flex;
 			width: 100%;
 			.button{
-				border: 3px solid black;
+				border: 2px solid black;
 				padding:5px 15px;
 				box-sizing: border-box;
 			}

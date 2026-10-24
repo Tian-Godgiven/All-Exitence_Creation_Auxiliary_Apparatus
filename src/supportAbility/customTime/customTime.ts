@@ -1,9 +1,9 @@
-import { SupportAbilitySignUpItem } from "@/static/list/supportAbilityList"
+import type { SupportAbilitySignUpItem } from "@/static/list/supportAbilityList"
 import { showPopUp } from "@/hooks/pages/popUp"
 import { reactive, ref, shallowRef, toRaw } from "vue"
 import Manager from "./popUp/Manager.vue"
-import { addToRightPage } from "@/hooks/pages/rightPage"
-import { createDirByPath, ifExists, tryReadFileAtPath, writeFileAtPath } from "@/hooks/fileSysytem"
+import { tauriFeatureRepository } from "@/repository/tauriFeatureRepository"
+import { showOperationError } from "@/hooks/alert"
 import { showQuickInfo } from "@/api/showQuickInfo"
 import { showAlert } from "@/hooks/alert"
 
@@ -35,29 +35,33 @@ export type CustomTimeRule ={
 
 //时间表达式库
 export const customTimeLib = reactive<CustomTimeRule[]>([])
+let customTimeAvailable = false
 
 //初始化
 async function initCustomTime(){
-    //尝试创建对应文件夹
-    const ifExisit = await ifExists("supportAbility","customTime")
-    if(!ifExisit){createDirByPath("supportAbility","customTime")}
-    //尝试读取时间表达式库
-    const tmp = await tryReadFileAtPath(
-        "supportAbility/customTime","customTime.json",true,[])
-    customTimeLib.length = 0
-    Object.assign(customTimeLib,tmp)
-    //注册右侧按钮
-    addToRightPage({
-        "name":"自定义时间",
-        "click":()=>showCustomTimeManager(),
-        "icon":"customTime"
-    },"客制化")
+    try{
+        const data = await tauriFeatureRepository.loadGlobal<CustomTimeRule[]>("custom-time")
+        if(data === null){
+            await tauriFeatureRepository.saveGlobal("custom-time",[])
+        }
+        else{
+            customTimeLib.length = 0
+            customTimeLib.push(...data)
+        }
+        customTimeAvailable = true
+    }
+    catch(error){
+        showOperationError("读取自定义时间",error)
+    }
 }
 
 //保存
 async function saveCustomTime(){
-    //保存全局时间表达式
-    await writeFileAtPath("supportAbility/customTime","customTime.json",toRaw(customTimeLib))
+    if(!customTimeAvailable)return
+    try{
+        await tauriFeatureRepository.saveGlobal("custom-time",toRaw(customTimeLib))
+    }
+    catch(error){showOperationError("保存自定义时间",error)}
 }
 
 //将自定义时间表达式添加到指定位置

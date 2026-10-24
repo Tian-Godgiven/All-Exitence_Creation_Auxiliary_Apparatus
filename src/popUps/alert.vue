@@ -72,6 +72,8 @@ import FinalButtons from '@/app/stacks/popUp/FinalButtons.vue';
 .alert{
     .info{
         white-space: pre-wrap;
+        overflow-wrap: anywhere;
+        user-select: text;
     }
     .buttons{
         flex-wrap: wrap;

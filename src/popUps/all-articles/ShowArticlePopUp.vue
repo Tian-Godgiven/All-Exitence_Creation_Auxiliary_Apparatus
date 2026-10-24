@@ -31,7 +31,7 @@ import { Article } from '@/class/Article';
 import TextArea from '@/components/other/textArea/textArea.vue';
 import { showTargetOnMain } from '@/hooks/pages/mainPage/showOnMain';
 import { closePopUp, PopUp } from '@/hooks/pages/popUp';
-import Button from '@/components/global/Button.vue';
+import Button from '@/components/global/button.vue';
 	const {props,popUp} = defineProps<{
 		props:{
 			article:Article,

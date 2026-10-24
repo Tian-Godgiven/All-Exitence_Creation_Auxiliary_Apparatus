@@ -3,6 +3,7 @@ import vueClickOutSide from "@/api/vue-clickOutSide"
 import 'element-plus/dist/index.css'
 import "vue-scroll-picker/lib/style.css";//滚动条组件
 import 'virtual:svg-icons-register'//注册svg图标
+import '@/static/style/base.scss'
 
 import App from "./App.vue";
 import VueScrollPicker from "vue-scroll-picker";

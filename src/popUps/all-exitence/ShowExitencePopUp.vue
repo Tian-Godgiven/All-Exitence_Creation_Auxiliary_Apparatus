@@ -23,13 +23,13 @@
 </template>
 
 <script setup lang='ts'>
-import ExitenceStatus from '@/components/all-exitence/exitence/ExitenceStatus.vue';
+import ExitenceStatus from '@/components/all-exitence/exitence/exitenceStatus.vue';
 import { showTargetOnMain } from '@/hooks/pages/mainPage/showOnMain';
 import { closePopUp, PopUp } from '@/hooks/pages/popUp';
 import { Type } from '@/class/Type';
 import TargetContainer from '@/app/pages/mainPage/components/TargetContainer.vue';
 import { Exitence } from '@/class/Exitence';
-import Button from '@/components/global/Button.vue';
+import Button from '@/components/global/button.vue';
 import { getFullStatusOfExitence } from '@/hooks/all-exitence/status';
     const {props,popUp} = defineProps<{
         props:{

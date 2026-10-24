@@ -13,7 +13,7 @@
 	<template #inner>
 		<div class="inner">
 			<chapterVue v-for="childChapter in chapters" 
-				:key="chapter.__key"
+				:key="childChapter.__key"
 				:level="level+1"
 				:from="chapter"
 				:chapter="childChapter">
@@ -42,7 +42,8 @@
 	import { showControlPanel } from "@/hooks/controlPanel";
 	import { Chapter } from "@/class/Chapter";
 	import ContainerLine from "../ContainerLine.vue";
-	import { ElementDragPayload } from "@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types";
+	import type { ElementDragPayload } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
+	import { isActionPending } from '@/hooks/app/pendingAction';
 
 	let {chapter,from,level} = defineProps<{chapter:Chapter,from:{chapters:Chapter[]},level:number}>()
 	//展开与切换展开
@@ -54,7 +55,7 @@
 		chapter.expending = !expending.value
 	}
 	//长按显示控制面板
-	const longTap = ()=>{
+	const longTap = (position?:{x:number,y:number})=>{
 		showControlPanel({
 			title:`章节：${chapter.name}`,
 			option:[{
@@ -64,7 +65,7 @@
 				text:"重命名",
 				click:()=>{updateChapter(chapter)}
 			}]
-		})
+		},position)
 	}
 	//拖拽数据
 	function getData(){
@@ -101,15 +102,15 @@
 	}
 
 	//按键列表
-	const buttonList = {
+	const buttonList = computed(()=>({
 		unmanage:[
-			{name:"插入章节",click:()=>clickAddChapter(),icon:"addContainer"},
+			{name:"新增章节",click:()=>clickAddChapter(),icon:"addContainer"},
 			{name:"插入文章",click:()=>clickAddArticle(),icon:"addContent"}
 		],
 		manage:[
-			{name:"删除",click:()=>deleteChapterPopUp(from,chapter),icon:"delete"}
+			{name:"删除",click:()=>deleteChapterPopUp(from,chapter),icon:"delete",loading:isActionPending(`trash:chapter:${chapter.__key}`),disabled:isActionPending(`trash:chapter:${chapter.__key}`)}
 		]
-	}
+	}))
 	const canDrop = (source:ElementDragPayload)=>{
 		const type = source.data.type
 		//要求必须放置在chapter或文章上
@@ -125,7 +126,7 @@
 .chapter{
 	position: relative;
 	:deep(>.top){
-		border-bottom: 3px solid $bgColor70;
+		border-bottom: 1px solid $bgColor70;
 		box-sizing: border-box;
 		background-color: $bgColor90;
 		height: 70px;
@@ -138,10 +139,17 @@
 	}
 }
 
+@media (min-width: 900px){
+	.chapter{
+		:deep(>.top){ height: 40px; }
+		.title{ line-height: 40px; }
+	}
+}
+
 .chapterShadow{
 	background-color: white;
 	width: 100px;
 	height: 50px;
-	border: 3px solid black;
+	border: 2px solid black;
 }
 </style>

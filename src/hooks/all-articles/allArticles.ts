@@ -9,8 +9,42 @@ import { focusOnLeftPage, scrollToLeftTarget } from "../pages/leftPage";
 import { cloneDeep } from "lodash";
 import { translateToTextContent } from "../expression/textAreaContent";
 import ShowArticlePopUp from "@/popUps/all-articles/ShowArticlePopUp.vue";
+import { moveObjectToTrash } from "@/hooks/project/trash";
 
 export type From = {chapters:Chapter[],articles:Article[]}|Chapter
+
+export function moveArticleTreeItem(
+    kind:"article"|"chapter",
+    item:Article|Chapter,
+    source:From,
+    destination:From,
+    index:number,
+):boolean {
+    const sourceItems = kind === "article" ? source.articles : source.chapters
+    const destinationItems = kind === "article" ? destination.articles : destination.chapters
+    const sourceIndex = sourceItems.findIndex(candidate=>candidate.__key === item.__key)
+    if(sourceIndex < 0 || !Number.isInteger(index) || index < 0 || index > destinationItems.length)return false
+    if(kind === "chapter" && "__key" in destination && containsChapter(item as Chapter,destination.__key))return false
+
+    sourceItems.splice(sourceIndex,1)
+    const insertionIndex = sourceItems === destinationItems && sourceIndex < index ? index-1 : index
+    destinationItems.splice(insertionIndex,0,item as Article & Chapter)
+    const path = "__key" in destination ? [...destination.from,destination.__key] : []
+    if(kind === "chapter") updateChapterFrom(item as Chapter,path)
+    else item.from = path
+    return true
+}
+
+function containsChapter(chapter:Chapter,key:string):boolean {
+    return chapter.__key === key || chapter.chapters.some(child=>containsChapter(child,key))
+}
+
+function updateChapterFrom(chapter:Chapter,from:string[]):void {
+    chapter.from = from
+    const childPath = [...from,chapter.__key]
+    chapter.articles.forEach(article=>{article.from = [...childPath]})
+    chapter.chapters.forEach(child=>updateChapterFrom(child,[...childPath]))
+}
 
 //当前文章
 export const nowAllArticles = reactive<{
@@ -71,7 +105,7 @@ export function changeNowAllArticles(newAllArticles:any){
         showAlert({
             "info":`删除${position}${title}？`,
             confirm:()=>{
-                deleteArticle(from,article)
+                void deleteArticle(from,article)
             }
         })
         
@@ -90,11 +124,29 @@ export function changeNowAllArticles(newAllArticles:any){
     }
 
     //删除文本
-    export function deleteArticle(from:From,article:Article){
-        //如果删除的对象正在显示
-        deleteShowOnMain(article)
+    export async function deleteArticle(from:From,article:Article){
         const index = from.articles.indexOf(article)
-        from.articles.splice(index,1)
+        if(index < 0)return false
+        try{
+            const moved = await moveObjectToTrash({
+                kind:"article",
+                parent:"__key" in from ? {kind:"chapter",__key:from.__key} : {kind:"root",__key:null},
+                index,
+                label:article.title || "未命名文本",
+                snapshot:cloneDeep(article),
+            },()=>{
+                deleteShowOnMain(article)
+                const currentIndex = from.articles.indexOf(article)
+                if(currentIndex >= 0)from.articles.splice(currentIndex,1)
+            })
+            if(!moved)return false
+        }
+        catch(error){
+            console.error(error)
+            showAlert({info:"放入回收站失败，文本未被删除。",confirm:()=>{}})
+            return false
+        }
+        return true
     }
 
     //聚焦到指定文章
@@ -200,12 +252,12 @@ export function changeNowAllArticles(newAllArticles:any){
         }
         return new Promise((resolve)=>{
             showPopUp({
-                name:"插入章节",
+                name:"新增章节",
                 vueName:"createChapter",
                 mask:true,
                 buttons:[],
                 props:{
-                    title:`向${fromText}插入章节`
+                    title:`向${fromText}新增章节`
                 },
                 size:{
                     height:"auto"
@@ -268,18 +320,38 @@ export function changeNowAllArticles(newAllArticles:any){
         showAlert({
             "info":`删除章节${chapter.name}及其中的所有内容？`,
             "confirm":()=>{
-                deleteChapter(from,chapter)
+                void deleteChapter(from,chapter)
             }
         })
     }
-    function deleteChapter(from:{chapters:Chapter[]},chapter:Chapter){
-        //判断其中的文章是否显示在主页面
-        chapter.articles.forEach(article=>{
-            deleteShowOnMain(article)
-        })
-        //从from中移除这个chapter
+    async function deleteChapter(from:{chapters:Chapter[]},chapter:Chapter){
         const index = from.chapters.indexOf(chapter)
-        from.chapters.splice(index,1)
+        if(index < 0)return false
+        try{
+            const moved = await moveObjectToTrash({
+                kind:"chapter",
+                parent:"__key" in from ? {kind:"chapter",__key:from.__key} : {kind:"root",__key:null},
+                index,
+                label:chapter.name || "未命名章节",
+                snapshot:cloneDeep(chapter),
+            },()=>{
+                hideChapterArticles(chapter)
+                const currentIndex = from.chapters.indexOf(chapter)
+                if(currentIndex >= 0)from.chapters.splice(currentIndex,1)
+            })
+            if(!moved)return false
+        }
+        catch(error){
+            console.error(error)
+            showAlert({info:"放入回收站失败，章节未被删除。",confirm:()=>{}})
+            return false
+        }
+        return true
+    }
+
+    function hideChapterArticles(chapter:Chapter){
+        chapter.articles.forEach(article=>deleteShowOnMain(article))
+        chapter.chapters.forEach(child=>hideChapterArticles(child))
     }
 
     //更新指定章节的名称

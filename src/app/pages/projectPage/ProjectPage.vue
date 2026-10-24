@@ -1,5 +1,5 @@
 <template>
-<div class="projectPage" ref="projectRef">
+<div class="projectPage" :class="{desktopShowing: ifShowProject}" ref="projectRef">
     <div class="inner">
         <ProjectInfo v-for="project in projectList" :project="project"></ProjectInfo>
     </div>
@@ -16,15 +16,38 @@
     import { disableChangePage, enableChangePage, hideMask, ifShowProject, showMask} from '@/hooks/pages/pageChange';
     import { createNewProject, nowProjectList } from '@/hooks/project/project';
     import ProjectInfo from './components/ProjectInfo.vue';
-    import { computed, useTemplateRef, watch } from 'vue';
+import { computed, useTemplateRef, watch } from 'vue';
     import gsap from 'gsap';
-    import Button from '@/components/global/Button.vue';
+    import Button from '@/components/global/button.vue';
 import BottomPanel from './components/BottomPanel.vue';
+import { isDesktopLayout } from '@/hooks/pages/pageChange';
 
     const projectRef = useTemplateRef("projectRef")
     //显示与隐藏该页面的动画
     watch(ifShowProject,()=>{
         if(!projectRef.value)return;
+        if(isDesktopLayout()){
+            gsap.to(projectRef.value, {
+                opacity: ifShowProject.value ? 1 : 0,
+                duration: 0.2,
+                ease: "power2.inOut",
+                onStart:()=>{
+                    if(ifShowProject.value){
+                        disableChangePage()
+                        showMask(()=>{
+                            ifShowProject.value = false
+                        },0)
+                    }
+                },
+                onComplete:()=>{
+                    if(!ifShowProject.value){
+                        hideMask()
+                        enableChangePage()
+                    }
+                }
+            })
+            return
+        }
         if(ifShowProject.value){
             gsap.to(projectRef.value,{
                 y:"0%",
@@ -96,5 +119,48 @@ import BottomPanel from './components/BottomPanel.vue';
         }
     }
     
+}
+
+@media (min-width: 900px){
+    .projectPage{
+        top: 50%;
+        bottom: auto;
+        left: 50%;
+        width: min(560px, calc(100vw - 48px));
+        height: min(560px, calc(100vh - 96px));
+        max-height: calc(100vh - 96px);
+        z-index: 6;
+        border-radius: 8px;
+        transform: translate(-50%, -50%);
+        opacity: 0;
+        pointer-events: none;
+        .inner{
+            height: calc(100% - 56px);
+            overflow: auto;
+            padding-top: 12px;
+        }
+        .bottom{
+            position: absolute;
+            height: 56px;
+            :deep(svg.bottomPanel){ display: none; }
+            :deep(.title){
+                top: 50%;
+                left: 20px;
+                font-size: 1.25rem;
+            }
+            .button{
+                top: 50%;
+                left: auto;
+                right: 16px;
+                width: 32px;
+                height: 32px;
+                padding: 8px;
+                border-radius: 6px;
+                transform: translateY(-50%);
+                box-shadow: none;
+            }
+        }
+        &.desktopShowing{ pointer-events: auto; }
+    }
 }
 </style>

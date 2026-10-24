@@ -18,8 +18,9 @@
 	import { Article } from '@/class/Article';
 	import { focusOnLeftPage, getLeftPageFocusTarget} from '@/hooks/pages/leftPage';
 	import ObjectLine from '../ObjectLine.vue';
-	import { ElementDragPayload } from '@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types';
+	import type { ElementDragPayload } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { Chapter } from '@/class/Chapter';
+	import { isActionPending } from '@/hooks/app/pendingAction';
 
 	let {article,from,level} = defineProps<{article:Article,from:{articles:Article[],chapters:Chapter[]},level:number}>()
 	//显示的标题
@@ -51,7 +52,7 @@ import { Chapter } from '@/class/Chapter';
 	})
 
 	//长按和点击事件
-	const longTap = ()=>{
+	const longTap = (position?:{x:number,y:number})=>{
 		//显示控制面板
 		showControlPanel({
 			title:`文本：${article.title}`,
@@ -82,7 +83,7 @@ import { Chapter } from '@/class/Chapter';
 					insertTo(article,1)
 				}
 			}]
-		})
+		},position)
 	}
 	const click = ()=>{
 		//点击将文章显示在主页面
@@ -95,9 +96,9 @@ import { Chapter } from '@/class/Chapter';
 		hidePage("left")
 	}
 	//按钮
-	const buttonList = [
-		{name:"删除",click:()=>deleteArticlePopUp(from,article),icon:"delete"}
-	]
+	const buttonList = computed(()=>[
+		{name:"删除",click:()=>deleteArticlePopUp(from,article),icon:"delete",loading:isActionPending(`trash:article:${article.__key}`),disabled:isActionPending(`trash:article:${article.__key}`)}
+	])
 
 	//插入某个对象到某个地方
 	function insertTo(target:any,indexAdd:number,ifChapter:boolean=false){

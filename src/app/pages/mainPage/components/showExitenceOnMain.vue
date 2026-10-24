@@ -39,7 +39,7 @@
 <script setup lang="ts" name="">
 	import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
 	import textAreaVue from '@/components/other/textArea/textArea.vue';
-	import ExitenceStatusVue from '@/components/all-exitence/exitence/ExitenceStatus.vue';
+	import ExitenceStatusVue from '@/components/all-exitence/exitence/exitenceStatus.vue';
 	import { changeExitenceName, getTypeOfExitence, showSetExitencePopUp} from '@/hooks/all-exitence/allExitence';
 	import DraggableList from '@/components/other/DraggableList.vue';
 	import Status from '@/interfaces/Status';
@@ -48,7 +48,7 @@
 	import { Exitence, ExitenceStatus } from '@/class/Exitence';
 	import Menu from '@/components/global/Menu.vue';
 	import ListMenu from '@/components/global/ListMenu.vue';
-	import Button from '@/components/global/Button.vue';
+	import Button from '@/components/global/button.vue';
 import { getFullStatusOfExitence, showCreateStatusPopUp } from '@/hooks/all-exitence/status';
 
 	const {exitence} = defineProps<{exitence:Exitence}>()

@@ -12,7 +12,7 @@
 <script setup lang='ts'>
     import { type Icon } from '@/static/list/iconList';
     import IconVue from './Icon.vue';
-    import Button from './Button.vue';
+    import Button from './button.vue';
     type Option = {
         label:string,
         icon?:Icon,
@@ -39,7 +39,7 @@
 .listMenu{
     word-break: keep-all;
 	background-color: $bgColor;
-    border: 3px solid rgb(187, 187, 187);
+    border: 2px solid rgb(187, 187, 187);
     border-radius: 10px;
     box-shadow: $groundShadow;
     overflow: visible;

@@ -38,7 +38,6 @@
     "eslint": "^9.28.0",
     "eslint-plugin-vue": "^10.2.0",
     "globals": "^16.2.0",
-    "postcss-px-to-viewport": "^1.1.1",
     "sass": "^1.83.4",
     "sass-loader": "^16.0.4",
     "typescript": "^5.2.2",

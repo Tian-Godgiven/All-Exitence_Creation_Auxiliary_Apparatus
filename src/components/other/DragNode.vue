@@ -18,7 +18,7 @@
     import { computed, useTemplateRef } from 'vue';
     import Draggable from '@/components/global/Draggable.vue'
     import DragHandler from '@/components/global/DragHandler.vue';
-import { ElementDragPayload } from '@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types';
+import type { ElementDragPayload } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
     
     const {
         getData,

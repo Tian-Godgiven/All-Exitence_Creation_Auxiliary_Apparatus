@@ -4,7 +4,7 @@
         <div class="name">{{ project.name }}</div>
         <div class="buttons">
             <Button icon="edit" name="编辑" @click="editProjectInfo(project)"></Button>
-            <Button icon="delete" name="删除" @click="deleteProject(project)"></Button>
+            <Button icon="delete" name="删除" :disabled="isActionPending(`project-delete:${project.__key}`)" :loading="isActionPending(`project-delete:${project.__key}`)" @click="deleteProject(project)"></Button>
         </div>
     </div>
     <div class="info">{{ project?.info }}</div>
@@ -14,7 +14,8 @@
 <script setup lang='ts'>
     import { hidePage } from '@/hooks/pages/pageChange';
     import { deleteProject, moveToProject, editProjectInfo, ProjectInfo } from '@/hooks/project/project';
-    import Button from '@/components/global/Button.vue';
+    import Button from '@/components/global/button.vue';
+    import { isActionPending } from '@/hooks/app/pendingAction';
     const {project} = defineProps<{project:ProjectInfo}>()
     //点击切换到项目
     async function clickMoveProject(){

@@ -5,7 +5,7 @@
 			v-model="type.name"
 			class="typeName"
 			placeholder="输入分类名称"/>
-		<Button class="button" name="预制属性" @click="prepareStatus"></Button>
+		<Button class="button" name="预制属性" bordered @click="prepareStatus"></Button>
 	</div>
 
 	<div class="inner">
@@ -23,7 +23,7 @@
 						:status="status">
 					</TypeStatus>
 				</draggableListVue>
-				<NewTypeStatus :type :createStatus="addStatus"/>
+					<NewTypeStatus :type :createStatus="addStatus" :banValueType="['relation','multi','status']"/>
 			</template>
 		</SwitchExpand>
 		
@@ -56,7 +56,7 @@
 	import { checkTypeNameRepeat, createType } from '@/hooks/all-exitence/allExitence';
 	import { showQuickInfo } from '@/api/showQuickInfo';
 	import { cloneDeep } from 'lodash';
-	import Button from '@/components/global/Button.vue';
+	import Button from '@/components/global/button.vue';
 	import settingBoxVue from '@/components/all-exitence/setting/settingBox.vue';
 	import { typeSettingList } from '@/static/list/settingList/typeSettingList';
 	import { nanoid } from 'nanoid';
@@ -145,7 +145,6 @@
 	.button{
 		height: 80px;
 		width: 80px;
-		border: 3px solid black;
 		margin: 10px
 	}
 }
@@ -161,8 +160,28 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			border: 3px solid black;
+			border: 2px solid black;
 			padding: 5px;
+		}
+	}
+}
+@media (min-width: 900px){
+	.top{
+		height: 52px;
+		align-items: center;
+		justify-content: space-between;
+		.typeName{
+			top: auto;
+			margin-top: 0;
+			width: min(100%, 420px);
+			height: 44px;
+		}
+		.button{
+			flex: 0 0 auto;
+			width: auto;
+			height: 34px;
+			margin: 0 0 0 12px;
+			padding: 0 12px;
 		}
 	}
 }

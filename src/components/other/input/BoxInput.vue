@@ -26,7 +26,7 @@
 
 <script setup lang='ts'>
     import { toString } from 'lodash';
-    import Button from '@/components/global/Button.vue';
+    import Button from '@/components/global/button.vue';
     import { computed, nextTick, ref, useTemplateRef } from 'vue';
     import MultiLineInput from '../textArea/MultiLineInput.vue';
     const value = defineModel<string|number>({

@@ -43,7 +43,7 @@
 import { showQuickInfo } from '@/api/showQuickInfo';
 import { groupRuleSimbolList } from '@/static/list/groupRuleList';
 import Selector from '@/components/global/Selector.vue';
-import Button from '@/components/global/Button.vue';
+import Button from '@/components/global/button.vue';
 
     //分组所在的分类对象
     const type = inject<any>("type")
@@ -124,7 +124,7 @@ import Button from '@/components/global/Button.vue';
         box-sizing: border-box;
 		width: 100%;
 		padding: 10px 20px;
-        border: 3px dashed black;
+        border: 2px dashed black;
 
         .ruleTarget{
             .selectTarget{
@@ -168,7 +168,7 @@ import Button from '@/components/global/Button.vue';
             margin: 10px;
             margin-left: auto;
             padding: 5px 15px;
-            border: 3px solid black;
+            border: 2px solid black;
         }
             
     }

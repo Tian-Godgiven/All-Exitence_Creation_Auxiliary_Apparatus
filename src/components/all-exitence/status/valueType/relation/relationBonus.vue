@@ -106,7 +106,7 @@ import { Type } from '@/class/Type';
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 3px solid black;
+            border: 2px solid black;
             width: 50%;
             box-sizing: border-box;
             padding: 5px;

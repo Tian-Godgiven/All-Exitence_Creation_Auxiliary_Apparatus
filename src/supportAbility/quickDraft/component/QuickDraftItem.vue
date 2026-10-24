@@ -40,13 +40,13 @@
 
     const {quickDraftItem,manageMode} = defineProps<{quickDraftItem:QuickDraftItem,manageMode:boolean}>()
     //长按显示控制面板
-    function longTap(){
+    function longTap(position?:{x:number,y:number}){
         showControlPanel({
             option:[{
                 text:"删除",
                 click:()=>deleteQuickDraftItem(quickDraftItem)
             }]
-        })
+        },position)
     }
     //点击聚焦到该暂记对象
     function click(){

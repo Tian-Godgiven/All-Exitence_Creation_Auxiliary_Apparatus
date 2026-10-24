@@ -33,11 +33,11 @@ export type DragState = {
  * @returns 
  */
 export function getDraggable({
-    element,dragHandle,data,idle,dragState,preview=false,onDrop=()=>{}
+    element,dragHandle,getData,idle,dragState,preview=false,onDrop=()=>{}
 }:{
     element:HTMLElement,
     dragHandle?:HTMLElement|null,
-    data:any,
+    getData:()=>Record<string, any>,
     idle:DragState,
     dragState:Ref<DragState>,
     preview?:boolean,
@@ -49,7 +49,7 @@ export function getDraggable({
         element,
 		dragHandle:dragHandle??element,
         getInitialData() {
-            return data
+            return getData()
         },
         onGenerateDragPreview({ nativeSetDragImage }) {
             if(!preview)return;
@@ -195,7 +195,7 @@ export function getCombine({
     const draggable = getDraggable({
         element,
         dragHandle,
-        data:getData(),
+        getData,
         idle,
         dragState,
         preview

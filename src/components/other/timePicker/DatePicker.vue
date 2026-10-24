@@ -56,7 +56,7 @@
     }
     .time{
         text-align: center;
-        border: 3px solid rgb(167, 167, 167);
+        border: 2px solid rgb(167, 167, 167);
         border-radius: 10px;
     }
     .picker {

@@ -12,6 +12,8 @@ import { isArray} from "lodash";
 import { deleteShowOnMain, showOnMain, showTargetOnMain } from "../pages/mainPage/showOnMain";
 import { focusOnLeftPage, scrollToLeftTarget } from "../pages/leftPage";
 import { translateToTextContent } from "../expression/textAreaContent";
+import { moveObjectToTrash } from "@/hooks/project/trash";
+import { cloneDeep } from "lodash";
 
 //当前万物
 export const nowAllExitence = reactive<{types:Type[]}>({types:[]})
@@ -119,18 +121,36 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
         showAlert({
             info:`删除分类${type.name}及其中的所有内容？`,
             "confirm":()=>{
-                deleteType(type)
+                void deleteType(type)
             }
         })
     }
-    export function deleteType(type:Type){
-        //分别删除其中的事物
-        type.exitence.forEach((exitence:Exitence)=>{
-            deleteExitence(exitence,type)
-        })
-        //再从项目中删除该分类
+    export async function deleteType(type:Type){
         const index = nowAllExitence.types.indexOf(type)
-        nowAllExitence.types.splice(index,1)
+        if(index < 0)return false
+        try{
+            const moved = await moveObjectToTrash({
+                kind:"type",
+                parent:{kind:"root",__key:null},
+                index,
+                label:type.name || "未命名分类",
+                snapshot:cloneDeep(type),
+            },()=>{
+                type.exitence.forEach((exitence:Exitence)=>{
+                    deleteExitenceInputSuggestion(exitence.__key)
+                    deleteShowOnMain(exitence)
+                })
+                const currentIndex = nowAllExitence.types.indexOf(type)
+                if(currentIndex >= 0)nowAllExitence.types.splice(currentIndex,1)
+            })
+            if(!moved)return false
+        }
+        catch(error){
+            console.error(error)
+            showAlert({info:"放入回收站失败，分类未被删除。",confirm:()=>{}})
+            return false
+        }
+        return true
     }
 
     //聚焦指定的分类
@@ -280,19 +300,35 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
             "info":`删除${type.name}中的事物${exitence.name}？\n
                 这会使得所有指向该事物的索引失效！`,
             confirm:()=>{
-                deleteExitence(exitence,type)
+                void deleteExitence(exitence,type)
             }
         })
     }
     // 删除指定分类中的事物
-    export function deleteExitence(exitence:Exitence,type:Type){
-        //删除事物的输入建议
-        deleteExitenceInputSuggestion(exitence.__key)
-        //删除显示在页面上的情况
-        deleteShowOnMain(exitence)
-        //删除分类中的事物
+    export async function deleteExitence(exitence:Exitence,type:Type){
         const index = type.exitence.indexOf(exitence)
-        type.exitence.splice(index,1)
+        if(index < 0)return false
+        try{
+            const moved = await moveObjectToTrash({
+                kind:"exitence",
+                parent:{kind:"type",__key:type.__key},
+                index,
+                label:exitence.name || "未命名事物",
+                snapshot:cloneDeep(exitence),
+            },()=>{
+                deleteExitenceInputSuggestion(exitence.__key)
+                deleteShowOnMain(exitence)
+                const currentIndex = type.exitence.indexOf(exitence)
+                if(currentIndex >= 0)type.exitence.splice(currentIndex,1)
+            })
+            if(!moved)return false
+        }
+        catch(error){
+            console.error(error)
+            showAlert({info:"放入回收站失败，事物未被删除。",confirm:()=>{}})
+            return false
+        }
+        return true
     }
 
     //聚焦事物对象，将其显示在主页面上
@@ -466,13 +502,31 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
         return newGroup
     }
     // 删除分组，不会删除其中的事物
-    export function deleteGroup(type:Type,group:Group){
+    export async function deleteGroup(type:Type,group:Group){
         showAlert({
             info:`删除${type.name}中的分组${group.name}？`,
-            confirm:()=>{
+            confirm:async()=>{
                 //从type中移除这个group
                 const index = type.groups.indexOf(group)
-                type.groups.splice(index,1)
+                if(index < 0)return
+                try{
+                    const moved = await moveObjectToTrash({
+                        kind:"group",
+                        parent:{kind:"type",__key:type.__key},
+                        index,
+                        label:group.name || "未命名分组",
+                        snapshot:cloneDeep(group),
+                    },()=>{
+                        const currentIndex = type.groups.indexOf(group)
+                        if(currentIndex >= 0)type.groups.splice(currentIndex,1)
+                    })
+                    if(!moved)return
+                }
+                catch(error){
+                    console.error(error)
+                    showAlert({info:"放入回收站失败，分组未被删除。",confirm:()=>{}})
+                    return
+                }
             }
         })
     }

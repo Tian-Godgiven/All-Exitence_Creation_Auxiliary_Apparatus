@@ -36,7 +36,8 @@ import { showControlPanel } from "@/hooks/controlPanel";
 import { Type } from "@/class/Type";
 import ContainerLine from "../ContainerLine.vue";
 import { nowLeftManage } from "@/hooks/pages/leftPage";
-import { ElementDragPayload } from "@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types";
+import type { ElementDragPayload } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
+import { isActionPending } from "@/hooks/app/pendingAction";
 
 	let {type} = defineProps<{type:Type}>()
 	//切换展开
@@ -47,7 +48,7 @@ import { ElementDragPayload } from "@atlaskit/pragmatic-drag-and-drop/dist/types
 		type.expending = !expending.value
 	}
 	//长按显示控制面板
-	function longTap(){
+	function longTap(position?:{x:number,y:number}){
 		showControlPanel({
 			title:`分类：${type.name}`,
 			option:[{
@@ -57,7 +58,7 @@ import { ElementDragPayload } from "@atlaskit/pragmatic-drag-and-drop/dist/types
 				text:"删除分类",
 				click:()=>{deleteTypePopUp(type)}
 			}]
-		})
+		},position)
 	}
 
 	// 没有分组的事物
@@ -90,15 +91,15 @@ import { ElementDragPayload } from "@atlaskit/pragmatic-drag-and-drop/dist/types
 		createGroupPopUp(type)
 	}
 	//按键列表
-	const buttonList = {
+	const buttonList = computed(()=>({
 		unmanage:[
 			{name:"创建分组",click:clickCreateGroup,icon:"addContainer"},
 			{name:"创建事物",click:clickCreateExitence,icon:"addContent"},
 		],
 		manage:[
-			{name:"删除",click:()=>deleteTypePopUp(type),icon:"delete"}
+			{name:"删除",click:()=>deleteTypePopUp(type),icon:"delete",loading:isActionPending(`trash:type:${type.__key}`),disabled:isActionPending(`trash:type:${type.__key}`)}
 		]
-	}
+	}))
 	
 	//获取数据
 	function getData(){
@@ -124,9 +125,16 @@ import { ElementDragPayload } from "@atlaskit/pragmatic-drag-and-drop/dist/types
 	.title{
 		line-height: 70px;
 		width: 100%;
-		height: 65px;
+		height: 40px;
 		font-size: $fontSize20;
 		@include textMaxLine(1);
+	}
+}
+
+@media (min-width: 900px){
+	.type{
+		:deep(>.top){ height: 40px;border-bottom: 1px solid $bgColor70; }
+		.title{ height: 40px; line-height: 40px; }
 	}
 }
 </style>

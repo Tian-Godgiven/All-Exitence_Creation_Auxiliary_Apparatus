@@ -40,7 +40,7 @@
 <script setup lang='ts'>
     import DownLineInput from '@/components/other/input/downLineInput.vue';
     import TextArea from '@/components/other/textArea/textArea.vue';
-    import Button from '@/components/global/Button.vue';
+    import Button from '@/components/global/button.vue';
     import { computed, reactive, shallowRef, } from 'vue';
     import { showPopUp } from '@/hooks/pages/popUp';
     import { nanoid } from 'nanoid';
@@ -146,7 +146,7 @@
         margin-top: 15px;
         width: 100%; 
         box-sizing: border-box;
-        border: 3px solid black;
+        border: 2px solid black;
         padding: 12px;
         .missionInner{
             max-height: 600px;

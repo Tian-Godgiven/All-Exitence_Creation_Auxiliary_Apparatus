@@ -1,6 +1,10 @@
 <template>
 <div class="leftPage" :style="{left:leftWidth}">
 	<div class="top">
+		<div class="desktopModes" v-if="!nowLeftManage">
+			<button type="button" :class="{active: !model}" @click="changeLeftPageMode('all-article')">文章</button>
+			<button type="button" :class="{active: model}" @click="changeLeftPageMode('all-exitence')">万物</button>
+		</div>
 		<div class="title" :class="nowLeftManage?'manageMode':''" 
 			@click="title.click">
 			{{ title.name }}
@@ -40,7 +44,7 @@
 	import { Type } from '@/class/Type';
 	import { Chapter } from '@/class/Chapter';
 	import { changeLeftPageMode, nowLeftManage, nowLeftPageMode, scrollTargetId } from '@/hooks/pages/leftPage';
-	import Button from '@/components/global/Button.vue';	
+	import Button from '@/components/global/button.vue';
 	import Menu from '@/components/global/Menu.vue';
 import ListMenu from '@/components/global/ListMenu.vue';
 import { callSupportAbility } from '@/hooks/app/app';
@@ -154,6 +158,41 @@ import { callSupportAbility } from '@/hooks/app/app';
 </script>
 
 <style lang="scss" scoped>
+.desktopModes{ display: none; }
+@media (min-width: 900px){
+	.leftPage.leftPage{
+		left: 0 !important;
+		width: 320px !important;
+		border-right: 1px solid $bgColor70;
+		box-sizing: border-box;
+		> .top{
+			height: 110px;
+			flex-wrap: wrap;
+			.desktopModes{
+				display: flex;
+				width: 100%;
+				height: 54px;
+				button{
+					flex: 1;
+					border: 0;
+					border-bottom: 2px solid transparent;
+					background: transparent;
+					color: inherit;
+					cursor: pointer;
+					font: inherit;
+					&.active{ border-bottom-color: currentColor; font-weight: 600; }
+				}
+			}
+			.title:not(.manageMode){ display: none; }
+			.title.manageMode{ height: 54px; width: 100%; font-size: 1rem; }
+			.buttons{
+				height: 53px;
+				width: 100%;
+				.button{ width: 48px; }
+			}
+		}
+	}
+}
 .leftPage{
 	top:0; 
 	height: 100%;
@@ -171,7 +210,7 @@ import { callSupportAbility } from '@/hooks/app/app';
 		position: relative;
 		z-index: 1;
 		box-sizing: border-box;
-		border-bottom: 3px solid $bgColor70;
+		border-bottom: 1px solid $bgColor70;
 		.title{
 			flex-grow: 1;
 			display: flex;
@@ -206,5 +245,21 @@ import { callSupportAbility } from '@/hooks/app/app';
 		}
 	}
 	
+}
+
+@media (min-width: 900px){
+	.leftPage.leftPage > .top{
+		height: 120px;
+		.desktopModes, .title.manageMode{ height: 60px; }
+		.desktopModes button{ font-size: 1.1rem; }
+		.buttons{
+			height: 60px;
+			.button{
+				height: 60px;
+				padding: 14px;
+			}
+		}
+	}
+	.leftPage.leftPage > .inner{ height: calc(100% - 120px); }
 }
 </style>

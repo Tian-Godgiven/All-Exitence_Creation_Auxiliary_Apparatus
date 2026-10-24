@@ -58,7 +58,7 @@
     .suggester{
         background-color: $bgColor;
         box-sizing:content-box;
-        border: 3px solid black;
+        border: 2px solid black;
         padding: 10px;
         position: fixed;
         width: 350px;

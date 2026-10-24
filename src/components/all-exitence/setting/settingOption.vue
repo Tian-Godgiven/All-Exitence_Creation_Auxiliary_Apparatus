@@ -2,7 +2,7 @@
 <!-- 用于创建不同type的设置项 -->
 <div class="setOption" :class="setOption.type">
 
-	<div cla ss="text">{{setOption.text}}</div>
+	<div class="text">{{setOption.text}}</div>
 
 	<div class="checkBoxOption inner"
 		v-if="setOption.type == 'checkBox'">
@@ -30,7 +30,7 @@
 			<DownLineInput @blur="setTarget" v-model="setValue[index]"/>
 		</div>
 		<!-- 单个输入框 -->
-		<DownLineInput v-else @blur="setTarget" v-model="(setValue as string)"/>
+		<DownLineInput v-else @blur="setTarget" v-model="setValue"/>
 	</div>
 </div>
 </template>
@@ -211,6 +211,30 @@ import DownLineInput from '@/components/other/input/downLineInput.vue';
 				flex-shrink: 0;
 			}
 		}
+	}
+}
+
+@media (min-width: 900px){
+	.setOption{
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(180px, 320px);
+		align-items: center;
+		column-gap: 20px;
+		padding: 8px 0;
+		.text{
+			max-width: none;
+		}
+		.inner{
+			width: 100%;
+			min-width: 0;
+		}
+	}
+	.chooseOption .selector{
+		max-width: 320px;
+	}
+	.checkBoxOption{
+		justify-self: end;
+		width: auto !important;
 	}
 }
 </style>

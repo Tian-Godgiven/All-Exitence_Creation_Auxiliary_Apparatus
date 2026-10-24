@@ -14,8 +14,8 @@
 			:list="valueTypeList">
 		</Selector>
 
-		<Button class="button" @click="switchSetting" name="设置"></Button>
-		<Button class="button" @click="clickConfirm" :name="confirmText"></Button>
+		<Button class="button" bordered @click="switchSetting" name="设置"></Button>
+		<Button class="button" bordered @click="clickConfirm" :name="confirmText"></Button>
 	</div>
 
 	<!-- 额外输入栏 -->
@@ -37,10 +37,10 @@
 	import settingBoxVue from '../setting/settingBox.vue';
 	import { getStatusSetting } from "@/static/list/settingList/status/statusSettingList";
 	import StatusValue from './StatusValue.vue';
-	import StatusName from './StatusName.vue';
+	import StatusName from './statusName.vue';
 	import { showQuickInfo } from '@/api/showQuickInfo';
 	import { cloneDeep } from 'lodash';
-	import Button from '@/components/global/Button.vue';
+	import Button from '@/components/global/button.vue';
 	import Selector from '@/components/global/Selector.vue';
 	import Status from '@/interfaces/Status';
 	import StatusBonus from './StatusBonus.vue';
@@ -162,10 +162,28 @@ import { Type } from '@/class/Type';
 			margin-left: 10px;
 			width: 20%;
 			height: 60px;
-			border:3px solid black;
 		}
 	}
 	
+}
+
+@media (min-width: 900px){
+	.editStatus .statusSet{
+		gap: 8px;
+		.selectValueType{
+			flex: 1 1 auto;
+			width: auto;
+			min-width: 0;
+		}
+		.button{
+			flex: 0 0 auto;
+			width: auto;
+			min-width: 72px;
+			height: 34px;
+			margin-left: 0;
+			padding: 0 12px;
+		}
+	}
 }
 	
 	

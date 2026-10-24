@@ -22,7 +22,7 @@
 
 <script setup lang='ts'>
     import { ref, useTemplateRef } from 'vue';
-    import Button from '@/components/global/Button.vue';
+    import Button from '@/components/global/button.vue';
     import MultiLineInput from '@/components/other/textArea/MultiLineInput.vue';
     import { nextTick } from 'vue';
     let {tag,deleteTag,updateTag} = defineProps<{

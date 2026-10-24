@@ -10,7 +10,8 @@
 		tagName:'section'
 	}"
 	ref="selfRef"
-	@pointerdown.stop="touchStart">
+	@pointerdown.stop="touchStart"
+	@contextmenu.prevent.stop="contextMenu">
 	<slot></slot>
 </div>
 </template>
@@ -23,7 +24,7 @@
 		waitAfter?:number,//长按时间超过该数值后，才开始计算长按时间
 		duration?:number,
 		disabled?:boolean,
-		longTap:()=>void,
+		longTap:(position?:{x:number,y:number})=>void,
 		click?:()=>void
 	}>()
     //长按和点击
@@ -38,6 +39,10 @@
 	//点击开始
 	function touchStart(e:PointerEvent){
 		if(unref(disabled))return;
+		if(e.pointerType === "mouse"){
+			if(e.button === 0) click?.()
+			return;
+		}
 		if(touching)return
 		touching = true
 		timeout = Date.now()
@@ -56,6 +61,11 @@
 			},waitAfter)
 		}
 		document.addEventListener("pointerup",touchEnd)
+	}
+	// Desktop uses the same operation menu through the standard right-click gesture.
+	function contextMenu(event:MouseEvent){
+		if(unref(disabled))return;
+		longTap({x:event.clientX,y:event.clientY})
 	}
 	//长按一段时间后
 	function waitUntil(){
@@ -79,7 +89,7 @@
 				//判断时间是否足够
 				const timeDis = Date.now() - timeout
 				if(timeDis > duration+waitAfter){
-					longTap()
+					longTap({x:e.clientX,y:e.clientY})
 				}
 				//长按时间不足，阻止进一步的动画
 				else if(waitAfter!==0 && timeDis>waitAfter){

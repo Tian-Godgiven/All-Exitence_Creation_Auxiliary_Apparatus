@@ -10,10 +10,10 @@
 </template>
 
 <script setup lang="ts" name="typeStatus">
-import StatusName from '@/components/all-exitence/status/StatusName.vue';
+import StatusName from '@/components/all-exitence/status/statusName.vue';
 import StatusValue from '@/components/all-exitence/status/StatusValue.vue';
 import Status from '@/interfaces/Status';
-import Button from '@/components/global/Button.vue';
+import Button from '@/components/global/button.vue';
 import { showEditStatusPopUp } from '@/hooks/all-exitence/status';
 import { Type } from '@/class/Type';
 	const {status,type} = defineProps<{status:Status,type:Type}>()

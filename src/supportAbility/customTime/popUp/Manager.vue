@@ -28,7 +28,7 @@
     import EditTimeRule from '../components/EditTimeRule.vue';
     import { CustomTimeRule, deleteCustomTimeRule, customTimeLib, ifShowEditPage, showEditPage } from '../customTime';
     import TimeRule from '../components/TimeRule.vue';
-    import Button from '@/components/global/Button.vue';
+    import Button from '@/components/global/button.vue';
 import { closePopUp, PopUp } from '@/hooks/pages/popUp';
 import SlidePage from '@/components/other/SlidePage.vue';
     const {popUp} = defineProps<{popUp:PopUp}>()    
@@ -55,7 +55,7 @@ import SlidePage from '@/components/other/SlidePage.vue';
         display: flex;
         .button{
             border-radius: 10px;
-            border: 3px solid black;
+            border: 2px solid black;
             height: 60px;
         }
     }

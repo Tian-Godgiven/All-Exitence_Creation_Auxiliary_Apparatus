@@ -18,8 +18,7 @@
         </div>
 
         <div class="setting">
-            <div class="button" @click="swicthShowSettingBox">事物设置</div>
-            <settingBoxVue :show="showSettingBox" ref="settingBox"
+            <settingBoxVue ref="settingBox"
                 :target="tmpExitence"
                 :chooseTarget="[type]"
                 :optionList="exitenceSettingList"
@@ -97,14 +96,7 @@ import StatusValue from '@/components/all-exitence/status/StatusValue.vue';
         changeIfDefaultTags()
     }
 
-    //设置相关
     const settingValue = {...type.setting,...tmpExitence.setting}
-    //控制设置框的显示
-    const showSettingBox = ref(true)
-    function swicthShowSettingBox(){
-        showSettingBox.value = !showSettingBox.value
-    }
-    //设置框Vue
     const settingBox = ref()
 
     //确认创建
@@ -124,9 +116,19 @@ import StatusValue from '@/components/all-exitence/status/StatusValue.vue';
 </script>
 
 <style scoped lang='scss'>
+    .createExitence{
+        width: 100%;
+        height: 100%;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        :deep(.finalButtons){
+            flex: 0 0 auto;
+        }
+    }
     .top{
         display: flex;
-        height: 100px;
+        flex: 0 0 100px;
         position: relative;
         .exitenceName{
             position: relative;
@@ -139,7 +141,8 @@ import StatusValue from '@/components/all-exitence/status/StatusValue.vue';
     }
     .inner{
         width: 100%;
-        max-height: calc(100% - 200px);
+        flex: 1 1 auto;
+        min-height: 0;
         overflow: auto;
         .tags{
             display: flex;
@@ -147,15 +150,25 @@ import StatusValue from '@/components/all-exitence/status/StatusValue.vue';
                 flex-shrink: 0;
             }
         }
-        .setting{
-            width: 100%;
-            .button{
-                width: 30%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                border: 3px solid black;
-                padding: 5px;
+        .setting{ width: 100%; }
+    }
+    @media (min-width: 900px){
+        .top{
+            flex: 0 0 auto;
+        }
+        .top .exitenceName{
+            top: 0;
+            margin-top: 0;
+            width: min(100%, 420px);
+            height: 44px;
+        }
+        .tags{
+            align-items: center;
+            gap: 8px;
+            :deep(> .value){
+                width: auto;
+                min-width: 0;
+                flex: 1 1 auto;
             }
         }
     }

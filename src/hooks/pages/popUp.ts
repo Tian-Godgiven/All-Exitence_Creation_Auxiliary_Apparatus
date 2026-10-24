@@ -12,6 +12,7 @@ export type PopUpSet = {
 	buttons?:Button[]|null, //弹窗右上角显示的按钮
 	props?:{}, //弹窗的组件中需要使用的数据
 	mask?:boolean, //是否显示遮罩层，默认为false
+	maskAlpha?:number, //遮罩透明度，默认为0.3
 	repeatable?:boolean,//是否允许重复同样的弹窗，默认为否
 	//尺寸，注意仅接受字符串，需要带单位
 	size?:{
@@ -23,6 +24,7 @@ export type PopUpSet = {
 		x?:string,
 		y?:string
 	}
+	className?:string,
 }
 export type PopUp = PopUpSet &{
 	id?:string,//弹窗的唯一性id
@@ -61,18 +63,21 @@ export function showPopUp(popUp:PopUp){
 	if(!popUp.name){
 		popUp["name"] = ""
 	}
-	// 默认具备关闭按键
-	const haveClose = popUp.buttons?.find(item=>
-		item.name == "关闭"
-	)
-	if(popUp.buttons&&!haveClose){
-		popUp.buttons.push({
-			name:"关闭",
-			click:()=>{
-				closePopUp()
-			},
-			icon:"closePopUp"
-		})
+	// 普通弹窗始终提供关闭按键；上下文菜单没有顶部操作栏。
+	if(popUp.className !== "controlPanelPopUp"){
+		popUp.buttons ??= []
+		const haveClose = popUp.buttons.find(item=>
+			item.name == "关闭"
+		)
+		if(!haveClose){
+			popUp.buttons.push({
+				name:"关闭",
+				click:()=>{
+					closePopUp()
+				},
+				icon:"closePopUp"
+			})
+		}
 	}
 	
 	//弹窗显示mask
@@ -115,6 +120,7 @@ export function closePopUp(popUp?:PopUp){
 		const index = maskPopUp.indexOf(popUp)
 		maskPopUp.splice(index,1)
 		maskIndex.value -= 1
+		maskAlpha.value = maskPopUp.at(-1)?.maskAlpha ?? 0.3
 	}
 
 	//已经没有任何弹窗时
@@ -127,15 +133,17 @@ export function closePopUp(popUp?:PopUp){
 
 // 弹窗的遮罩层
 export let ifMask = ref(false)
-export let maskAlpha = 0.3
+export const maskAlpha = ref(0.3)
 export const maskPopUp:PopUp[] = [] //mask对应的popUp堆栈，每次点击mask都会关闭最外层的popUp
 
 function showMask(popUp:PopUp){
 	ifMask.value = true
 	maskPopUp.push(popUp)
+	maskAlpha.value = popUp.maskAlpha ?? 0.3
 }
 function hideMask(){
 	ifMask.value = false
+	maskAlpha.value = 0.3
 }
 //关闭最外层的弹窗
 export function clickMask(){

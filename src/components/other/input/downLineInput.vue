@@ -10,6 +10,7 @@
         @blur="onBlur" />
     <Button @click="clearInput" class="clearButton" 
         icon="close" 
+        icon-size="16px"
         color="white"
         v-if="clear" v-show="toString(value).length>0">
     </Button>
@@ -19,7 +20,7 @@
 
 <script setup lang='ts'>
     import { ref } from 'vue';
-    import Button from '@/components/global/Button.vue';
+    import Button from '@/components/global/button.vue';
     import { toString } from 'lodash';
 
     const value = defineModel<string|number>({
@@ -86,5 +87,26 @@
     }
     .downLine.focusing{
         background-color: black;
+    }
+    @media (min-width: 900px){
+        .downLineInput{
+            width: min(100%, 420px);
+            min-height: 36px;
+        }
+        .input{
+            min-height: 35px;
+            padding-right: 24px;
+        }
+        .clearButton{
+            top: calc(50% - 1px);
+            width: 18px;
+            height: 18px;
+            padding: 1px;
+            transform: translateY(-50%);
+        }
+        .downLine{
+            bottom: 1px;
+            height: 1px;
+        }
     }
 </style>

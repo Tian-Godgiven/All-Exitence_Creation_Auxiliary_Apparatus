@@ -1,11 +1,12 @@
-import { showPopUp } from "@/hooks/pages/popUp";
 import { addToRightPage } from "@/hooks/pages/rightPage";
-import { SupportAbilitySignUpItem } from "@/static/list/supportAbilityList";
-import { reactive, shallowRef } from "vue";
+import type { SupportAbilitySignUpItem } from "@/static/list/supportAbilityList";
+import { reactive, toRaw } from "vue";
 import ManagePage from "./ManagePage.vue";
+import { openMainToolPage } from "@/hooks/pages/mainPage/toolPage";
 import { supportAbilitySaveProject, supportAbilitySyncProject } from "@/hooks/app/supportAbility";
 import { nanoid } from "nanoid";
 import { showQuickInfo } from "@/api/showQuickInfo";
+import type { ProjectFeature } from "@/repository/projectFeature";
 
 //名称
 const spName = "tagLibrary"
@@ -15,7 +16,7 @@ export const tagLibrarySignUpItem:SupportAbilitySignUpItem = {
     "init":initTagLibrary,
     "syncProject":(projectPath)=>syncTagLibrary(projectPath),
     "save":saveTagLibrary,
-    "call":()=>showManagePopUp()
+    "call":()=>showManagePage()
 }
 
 //默认内容
@@ -33,12 +34,21 @@ export type TagGroup = {
 }
 //当前标签库内容
 const nowTagLibrary = reactive<TagGroup[]>([])
+export const tagLibraryProjectFeature:ProjectFeature<TagGroup[]> = {
+    key:"tag-library",
+    createDefault:()=>structuredClone(defaultTagLibrary),
+    load:(data)=>{
+        nowTagLibrary.length = 0
+        nowTagLibrary.push(...structuredClone(data))
+    },
+    snapshot:()=>structuredClone(toRaw(nowTagLibrary))
+}
 
 //初始化：右侧页面按键
 function initTagLibrary(){
     addToRightPage({
         "name":"标签库",
-        "click":()=>showManagePopUp(),
+        "click":()=>showManagePage(),
         "icon":"tagLibrary"
     },"客制化")
 }
@@ -53,19 +63,18 @@ async function saveTagLibrary(projectPath:string|null){
     await supportAbilitySaveProject(spName,projectPath,nowTagLibrary)
 }
 
-//显示标签库管理弹窗
-function showManagePopUp(){
-    showPopUp({
+//显示标签库管理工具页
+function showManagePage(){
+    openMainToolPage({
         name:"标签库",
-        vue:shallowRef(ManagePage),
-        buttons:[{
+        component:ManagePage,
+        actions:[{
             name:"创建新标签组",
             icon:"addNew",
             click:()=>{
                 createTagGroup('新标签组')
             }
-        }],
-        mask:true
+        }]
     })
 }
 

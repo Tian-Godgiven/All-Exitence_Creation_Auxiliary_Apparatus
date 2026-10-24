@@ -10,6 +10,8 @@
             <Button v-for="button in buttonList" 
                 :icon="button.icon"
                 :name="button.name"
+                :disabled="button.disabled"
+                :loading="button.loading"
                 @click="button.click">
             </Button>
             <DragHandler ref="handlerRef" v-show="manageMode">
@@ -26,13 +28,13 @@
 <script setup lang='ts'>
     import { computed, useTemplateRef } from "vue";
     import LongTap from "@/components/other/LongTap.vue";
-    import Button from "@/components/global/Button.vue";
+    import Button from "@/components/global/button.vue";
     import DragHandler from "@/components/global/DragHandler.vue";
     import { nowLeftManage } from '@/hooks/pages/leftPage';
     import Draggable from "@/components/global/Draggable.vue";
-    import { ElementDragPayload } from "@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types";
+    import type { ElementDragPayload } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
     import Separator from "./Separator.vue";
-    type buttonItem = {name:string,icon?:string,click:()=>void}
+    type buttonItem = {name:string,icon?:string,click:()=>void,disabled?:boolean,loading?:boolean}
     const {focusing,click,longTap,buttonList,getData,canDrop,level=0} = defineProps<{
         focusing:boolean//聚焦
         click:()=>void, //点击事件

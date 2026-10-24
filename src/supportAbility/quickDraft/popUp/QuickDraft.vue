@@ -1,6 +1,6 @@
 <template>
 <div class="quickDraft">
-    <ManagePage :popUp></ManagePage>
+    <ManagePage></ManagePage>
     <SlidePage :show="ifFocusing">
         <FocusingPage></FocusingPage>
     </SlidePage>
@@ -12,8 +12,6 @@
     import SlidePage from '@/components/other/SlidePage.vue';
     import ManagePage from '../component/ManagePage.vue';
     import { ifFocusing } from '../quickDraft';
-    import { PopUp } from '@/hooks/pages/popUp';
-    const {popUp} = defineProps<{popUp?:PopUp}>()
 </script>
 
 <style scoped lang='scss'>

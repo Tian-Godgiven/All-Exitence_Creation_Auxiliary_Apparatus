@@ -38,7 +38,7 @@ import DownLineInput from '@/components/other/input/downLineInput.vue';
 <style scoped lang='scss'>
 .newTag{
         min-width: 50px;
-        border:3px solid black;
+        border:2px solid black;
         padding: 5px 10px;
         margin: 5px 5px;
         max-width: 200px;

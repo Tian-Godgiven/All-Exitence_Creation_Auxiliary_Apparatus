@@ -38,7 +38,7 @@ import { ref } from 'vue';
         gap: 6px;
         flex-wrap: wrap;
         .addNewTag{
-            border: 3px solid black;
+            border: 2px solid black;
             width: auto;
             padding: 6px 0;
             display: flex;

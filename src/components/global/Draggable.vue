@@ -21,7 +21,7 @@
     import { onMounted, onUnmounted, useTemplateRef, watch } from "vue";
 	import { DragState, getCombine } from '@/api/dragToSort';
     import indicatorVue from "@/components/other/indicator.vue";
-    import { ElementDragPayload } from "@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types";
+    import type { ElementDragPayload } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
     let {handler: handler,getData,canDrop,allowInto=false,level=0} = defineProps<{
         handler?:HTMLElement|null,//手柄元素
         getData:()=>any,
@@ -88,7 +88,7 @@
 <style scoped lang='scss'>
 .dragIn{
     box-sizing: border-box;
-    border: 5px solid blue;
+    border: 2px solid blue;
 }
 .dragging{
     opacity: 0.5;

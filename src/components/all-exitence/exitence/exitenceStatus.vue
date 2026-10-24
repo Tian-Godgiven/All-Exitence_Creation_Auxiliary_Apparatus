@@ -9,7 +9,7 @@
 
 <script setup lang='ts'>
     import { computed, ref} from 'vue';
-    import StatusName from '../status/StatusName.vue';
+    import StatusName from '../status/statusName.vue';
     import StatusValue from '../status/StatusValue.vue';
     import { Exitence, ExitenceStatus } from '@/class/Exitence';
     import LongTap from '@/components/other/LongTap.vue';

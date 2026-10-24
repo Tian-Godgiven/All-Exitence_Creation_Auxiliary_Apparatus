@@ -13,28 +13,31 @@
 	</div>
 	
 	<!-- 首页内容 -->
-	<ScrollBar class="inner">
-	<div class="content" :key="refreshKey">
-		<showInfoOnMainVue :target="showOnMain.target" v-if="showOnMain.type=='info'"/>
-		<showArticleOnMainVue :article="showOnMain.target" v-else-if="showOnMain.type == 'article'"/>
-		<showExitenceOnMainVue :exitence="showOnMain.target" v-else-if="showOnMain.type == 'exitence'"/>
+	<div class="mainContentArea">
+		<ScrollBar class="inner">
+			<div class="content" :key="refreshKey">
+				<showInfoOnMainVue :target="showOnMain.target" v-if="showOnMain.type=='info'"/>
+				<showArticleOnMainVue :article="showOnMain.target" v-else-if="showOnMain.type == 'article'"/>
+				<showExitenceOnMainVue :exitence="showOnMain.target" v-else-if="showOnMain.type == 'exitence'"/>
+			</div>
+		</ScrollBar>
+		<MainToolPage v-if="activeMainToolPage" :toolPage="activeMainToolPage" />
 	</div>
-	</ScrollBar>
 	
 
 	<!-- 快捷键 -->
-	<QuickButton/>
+	<QuickButton v-if="!activeMainToolPage"/>
 	
 	<!-- 输入辅助栏 -->
 	<!-- <inputSupportVue/> -->
 	<!-- 输入提示组件 -->
-	<Suggester/>
+	<Suggester v-if="!activeMainToolPage"/>
 </div>
 </template>
 
 <script setup lang="ts">
 	import { showLeft, showPage, switchProjectPage} from '@/hooks/pages/pageChange';
-	import Button from '@/components/global/Button.vue';
+	import Button from '@/components/global/button.vue';
 	// import inputSupportVue from '@/app/pages/mainPage/components/inputSupport.vue';
 	// 待完成
 	import showInfoOnMainVue from '@/app/pages/mainPage/components/showInfoOnMain.vue';
@@ -48,6 +51,8 @@
 	import QuickButton from '@/app/pages/mainPage/components/quickButton.vue/QuickButton.vue';
 import { callSupportAbility } from '@/hooks/app/app';
 import ScrollBar from '@/components/global/ScrollBar.vue';
+import MainToolPage from './components/MainToolPage.vue';
+import { activeMainToolPage } from '@/hooks/pages/mainPage/toolPage';
 // 功能按键
 	const buttons = [{
 		name:"手动保存",
@@ -78,6 +83,13 @@ import ScrollBar from '@/components/global/ScrollBar.vue';
 </script>
 
 <style lang="scss" scoped>
+@media (min-width: 900px){
+	.mainPage{
+		margin-left: 320px;
+		width: calc(100% - 320px) !important;
+		.top .leftPageShowButton{ display: none; }
+	}
+}
 .mainPage{
 	width: 100%;
 	height: 100%;
@@ -95,7 +107,8 @@ import ScrollBar from '@/components/global/ScrollBar.vue';
 		.projectName{
 			font-size: 1.1rem;
 			display: flex;
-			text-align: center;
+			text-align: left;
+			justify-content: flex-start;
 			align-items: center;
 			flex-grow: 1;
 		}
@@ -115,8 +128,13 @@ import ScrollBar from '@/components/global/ScrollBar.vue';
 		}
 	}
 	// 内容
-	.inner{
+	.mainContentArea{
 		height: calc(100% - 110px);
+		position: relative;
+		overflow: hidden;
+	}
+	.inner{
+		height: 100%;
 		background-color: $bgColor;
 		box-sizing: border-box;
 		position: relative;
@@ -129,5 +147,25 @@ import ScrollBar from '@/components/global/ScrollBar.vue';
 	}
 	
 	
+}
+
+@media (min-width: 900px){
+	.mainPage.mainPage{
+		.top{
+			height: 60px;
+			box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+			.projectName{ padding-left: 24px; font-size: 1.25rem; }
+			.buttons{
+				width: auto;
+				gap: 4px;
+				.button{
+					width: 48px;
+					height: 48px;
+					padding: 12px;
+				}
+			}
+		}
+		.mainContentArea{ height: calc(100% - 60px); }
+	}
 }
 </style>

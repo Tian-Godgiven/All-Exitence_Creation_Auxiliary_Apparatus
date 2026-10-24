@@ -52,7 +52,7 @@
 	import EditMission from '../components/EditMission.vue';
 	import missionVue from '../components/mission.vue';
 	import MissionTag from '../components/missionTag.vue';
-	import Button from '@/components/global/Button.vue';
+	import Button from '@/components/global/button.vue';
 	import { createNewMission, ifShowEditMission, Mission, MissionState, nowMissionList, manageMode } from '../missionList';
 	import SlidePage from '@/components/other/SlidePage.vue';
 	const missionList = nowMissionList
