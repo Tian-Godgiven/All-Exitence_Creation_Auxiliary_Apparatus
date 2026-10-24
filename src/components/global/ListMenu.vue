@@ -41,8 +41,8 @@
 	background-color: $bgColor;
     border: 2px solid rgb(187, 187, 187);
     border-radius: 10px;
-    box-shadow: $groundShadow;
-    overflow: visible;
+    box-shadow: $menuShadow;
+    overflow: hidden;
     .title{
         font-size: 0.8rem;
         color: $bgColor40;

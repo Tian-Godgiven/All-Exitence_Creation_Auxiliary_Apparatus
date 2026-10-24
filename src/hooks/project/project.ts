@@ -105,6 +105,8 @@ function featureName(featureKey: string): string {
     "input-suggestion": "输入建议",
     "quick-draft": "暂记版",
     "tag-library": "标签库",
+    timeline: "时间线",
+    "timeline-trash": "时间线回收站",
   };
   return names[featureKey] ?? featureKey;
 }

@@ -7,6 +7,7 @@ import { supportAbilitySaveProject, supportAbilitySyncProject } from "@/hooks/ap
 import { nanoid } from "nanoid";
 import { showQuickInfo } from "@/api/showQuickInfo";
 import type { ProjectFeature } from "@/repository/projectFeature";
+import { cloneDeep } from "lodash";
 
 //名称
 const spName = "tagLibrary"
@@ -36,12 +37,12 @@ export type TagGroup = {
 const nowTagLibrary = reactive<TagGroup[]>([])
 export const tagLibraryProjectFeature:ProjectFeature<TagGroup[]> = {
     key:"tag-library",
-    createDefault:()=>structuredClone(defaultTagLibrary),
+    createDefault:()=>cloneDeep(defaultTagLibrary),
     load:(data)=>{
         nowTagLibrary.length = 0
-        nowTagLibrary.push(...structuredClone(data))
+        nowTagLibrary.push(...cloneDeep(data))
     },
-    snapshot:()=>structuredClone(toRaw(nowTagLibrary))
+    snapshot:()=>cloneDeep(toRaw(nowTagLibrary))
 }
 
 //初始化：右侧页面按键

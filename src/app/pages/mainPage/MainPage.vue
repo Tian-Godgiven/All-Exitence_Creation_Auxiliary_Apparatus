@@ -18,6 +18,7 @@
 			<div class="content" :key="refreshKey">
 				<showInfoOnMainVue :target="showOnMain.target" v-if="showOnMain.type=='info'"/>
 				<showArticleOnMainVue :article="showOnMain.target" v-else-if="showOnMain.type == 'article'"/>
+				<showTypeOnMainVue :type="showOnMain.target" v-else-if="showOnMain.type == 'type'"/>
 				<showExitenceOnMainVue :exitence="showOnMain.target" v-else-if="showOnMain.type == 'exitence'"/>
 			</div>
 		</ScrollBar>
@@ -42,6 +43,7 @@
 	// 待完成
 	import showInfoOnMainVue from '@/app/pages/mainPage/components/showInfoOnMain.vue';
 	import showArticleOnMainVue from '@/app/pages/mainPage/components/showArticleOnMain.vue';
+	import showTypeOnMainVue from '@/app/pages/mainPage/components/showTypeOnMain.vue';
 	import showExitenceOnMainVue from '@/app/pages/mainPage/components/showExitenceOnMain.vue';
 	import { showOnMain } from '@/hooks/pages/mainPage/showOnMain';
 	import { computed, ref, watch } from 'vue';

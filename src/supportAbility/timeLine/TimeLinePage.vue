@@ -1,36 +1,49 @@
 <template>
     <div class="timeLinePage">
-        <aside class="sideBar">
-            <div class="sideBarTop"><span>时间线</span><Button icon="add" name="新建时间线" @click="createTimeLine" /></div>
-            <button v-for="item in timeLines" :key="item.__key" class="timeLineItem" :class="{ active: item === selected }" @click="selectTimeLine(item)">{{ item.name }}</button>
-
-            <div v-if="selectedNode" class="editor">
-                <label>事件名称<input v-model="selectedNode.node.label"></label>
-                <label>关联对象<select :value="selectedNode.node.target?.type ?? 'event'" @change="changeTargetType($event)"><option value="event">自由事件</option><option value="chapter">章节</option><option value="article">文章</option></select></label>
-                <label v-if="selectedNode.node.target">选择对象<select :value="selectedNode.node.target.key" @change="changeTarget($event)"><option value="">请选择</option><option v-for="target in selectableTargets" :key="target.key" :value="target.key">{{ target.label }}</option></select></label>
-                <label>开始时间<input v-model.number="selectedNode.node.start" type="number" min="0"></label>
-                <label>结束时间<input v-model.number="selectedNode.node.end" type="number" :min="selectedNode.node.start"></label>
-                <Button icon="delete" name="删除事件" @click="deleteNode" />
+        <aside class="sideBar" :class="{ collapsed: isSidebarCollapsed }">
+            <div class="sideBarTop">
+                <span v-if="!isSidebarCollapsed">时间线</span>
+                <Button v-if="!isSidebarCollapsed" icon="add" name="新建时间线" @click="createTimeLine" />
             </div>
+            <template v-if="!isSidebarCollapsed">
+                <button v-for="item in timeLines" :key="item.__key" class="timeLineItem" :class="{ active: item === selected }" @click="selectTimeLine(item)" @contextmenu.stop.prevent="openTimeLineMenu($event, item)">{{ item.name }}</button>
+            </template>
+
         </aside>
+        <Button class="sidebarToggle" :icon="isSidebarCollapsed ? 'rightArrow' : 'leftArrow'" :icon-size="14" :name="isSidebarCollapsed ? '展开时间线列表' : '收起时间线列表'" @click="isSidebarCollapsed = !isSidebarCollapsed" />
 
         <main v-if="selected" class="workspace">
-            <div class="toolBar"><input v-model="selected.name" aria-label="时间线名称"><Button icon="addContainer" name="新建时间片段" @click="createSegment" /><Button icon="add" :disabled="!selectedSegment" :name="connectionStart ? '取消连接' : '连接片段'" @click="startConnection" /><Button icon="backMain" name="复位画布" @click="resetCanvas" /><Button icon="delete" name="删除片段" :disabled="!selectedSegment" @click="deleteSegment" /><Button icon="delete" name="删除时间线" @click="deleteTimeLine" /></div>
             <div class="workArea">
-            <div ref="canvasRef" class="canvas" @pointerdown="startCanvasPan" @contextmenu.prevent @wheel.prevent="zoomCanvas">
+            <div ref="canvasRef" class="canvas" @pointerdown="startCanvasPan" @contextmenu.capture="handleCanvasContextMenu" @contextmenu.prevent @wheel.prevent="zoomCanvas">
+                <div v-if="selected.segments.length === 0" class="emptyTimeline">
+                    <p>点击创建时间片段</p>
+                    <div class="emptyTimelineActions">
+                        <Button icon="addContainer" name="创建时间片段" @click="createSegment" />
+                        <Button icon="help" name="操作提示" @click="showMainToolPageHelp(help)" />
+                    </div>
+                </div>
+                <Button class="resetCanvasButton" icon="backMain" name="复位画布" @click="resetCanvas" />
                 <div class="scene" :style="{ transform: `translate(${canvasViewport.x}px, ${canvasViewport.y}px) scale(${canvasViewport.scale})` }">
                     <svg class="connections" viewBox="0 0 4000 2400" preserveAspectRatio="none"><g v-for="connection in selected.connections" :key="connection.__key"><path class="connectionLine" :d="connectionPath(connection)" /><path class="connectionHitArea" :d="connectionPath(connection)" @contextmenu.stop.prevent="openConnectionMenu($event, connection)" /><text :x="connectionLabelPoint(connection).x" :y="connectionLabelPoint(connection).y" @click.stop="editConnection(connection)" @contextmenu.stop.prevent="openConnectionMenu($event, connection)">{{ connectionLabel(connection) }}</text></g></svg>
-                    <section v-for="segment in selected.segments" :key="segment.__key" class="segment" :class="{ connecting: connectionStart === segment, active: selectedSegment === segment }" :style="{ transform: `translate(${segment.position.x}px, ${segment.position.y}px)` }" @pointerdown="startSegmentDrag($event, segment)" @click="selectSegment(segment, true)" @contextmenu.stop.prevent="openSegmentMenu($event, segment)">
+                    <section v-for="segment in selected.segments" :key="segment.__key" class="segment" :class="{ connecting: connectionStart === segment, active: selectedSegment === segment, expanded: isExpandedSegment(segment) }" :style="{ transform: `translate(${segment.position.x}px, ${segment.position.y}px)` }" @pointerdown="startSegmentDrag($event, segment)" @click="selectSegment(segment, true)" @dblclick.stop.prevent="createNodeAt($event, segment)" @contextmenu.stop.prevent="openSegmentMenu($event, segment)">
                         <header v-if="titleSegment === segment"><span>{{ segment.name }} · {{ segment.length }} {{ segment.unit }}</span></header>
-                        <div class="track" :style="{ width: `${segment.length * segment.unitWidth}px`, '--unit-width': `${segment.unitWidth}px` }">
+                        <div class="track" :class="{ calendar: segment.axisOrigin }" :style="{ width: `${segment.length * segment.unitWidth}px`, '--unit-width': `${segment.unitWidth}px` }">
                             <div class="rulerLine"></div>
-                            <span v-for="unit in segment.length + 1" :key="unit - 1" class="tick" :class="{ major: (unit - 1) % 5 === 0 }" :style="{ left: `${(unit - 1) * segment.unitWidth}px` }"><span v-if="(unit - 1) % 5 === 0" class="tickValue">{{ unit - 1 }}</span></span>
-                            <button v-for="node in segment.nodes" :key="node.__key" class="node" :class="{ selected: selectedNode?.node === node, range: node.end != null && node.end > node.start }" :style="nodeStyle(segment, node)" @pointerdown.stop="startNodeDrag($event, segment, node)" @click.stop="selectNode(segment, node)"><span v-if="isRange(node)" class="rangeHandle start" @pointerdown.stop="resizeNodeRange($event, segment, node, 'start')"></span>{{ node.label }}<span v-if="isRange(node)" class="rangeHandle end" @pointerdown.stop="resizeNodeRange($event, segment, node, 'end')"></span></button>
+                            <template v-for="unit in segment.length + 1" :key="unit - 1">
+                                <span class="tick" :class="{ major: (segment.axisStart + unit - 1) % 5 === 0, long: isTimeLineLongTick(segment, segment.axisStart + unit - 1) }" :style="{ left: `${(unit - 1) * segment.unitWidth}px` }"></span>
+                                <span v-if="(segment.axisStart + unit - 1) % 5 === 0 || isTimeLineLongTick(segment, segment.axisStart + unit - 1)" class="tickValue" :style="{ left: `${(unit - 1) * segment.unitWidth}px` }">{{ timeLineTickLabel(segment, segment.axisStart + unit - 1) }}</span>
+                            </template>
+                            <button v-for="node in segment.nodes" :key="node.__key" class="node" :class="{ selected: selectedNode?.node === node, range: node.end != null && node.end > node.start }" :style="nodeStyle(segment, node)" :data-timeline-node-key="node.__key" @pointerdown.stop="startNodeDrag($event, segment, node)" @click.stop="handleNodeClick(node, segment)" @dblclick.stop @contextmenu.stop.prevent="openNodeMenu($event, segment, node)"><span v-if="isRange(node)" class="rangeHandle start" @pointerdown.stop="resizeNodeRange($event, segment, node, 'start')" @click.stop></span>{{ nodeDisplayLabel(node) }}<span v-if="isRange(node)" class="rangeHandle end" @pointerdown.stop="resizeNodeRange($event, segment, node, 'end')" @click.stop></span></button>
+                            <template v-for="node in segment.nodes" :key="`${node.__key}-content`">
+                                <div v-if="expandedNodeKey === node.__key && node.kind === 'card' && hasNodeContent(node)" class="expandedCard" :style="expandedNodeStyle(segment, node)" :data-timeline-node-key="node.__key" @pointerdown.stop @dblclick.stop>
+                                    <strong>{{ nodeDisplayLabel(node) }}</strong>
+                                    <TextArea :model-value="node.content ?? []" mode="disabled" />
+                                </div>
+                            </template>
                             <span v-for="node in segment.nodes" :key="`${node.__key}-anchor`" class="nodeAnchor" :style="nodeAnchorStyle(segment, node)"></span>
-                            <Button class="expandButton start" icon="add" name="向前扩张 50 单位" @click="expand(segment, 'start')" />
-                            <Button class="expandButton end" icon="add" name="向后扩张 50 单位" @click="expand(segment, 'end')" />
+                            <Button class="expandButton start" icon="add" name="向前扩张 50 单位" @click="expand(segment, 'start')" @dblclick.stop />
+                            <Button class="expandButton end" icon="add" name="向后扩张 50 单位" @click="expand(segment, 'end')" @dblclick.stop />
                         </div>
-                        <Button class="addNode" icon="add" name="新建事件" @click="createNode(segment)" />
                     </section>
                 </div>
             </div>
@@ -51,46 +64,42 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, reactive, ref, watch } from "vue"
+import { onBeforeUnmount, onMounted, reactive, ref, watch } from "vue"
 import Button from "@/components/global/button.vue"
-import { nowAllArticles } from "@/hooks/all-articles/allArticles"
+import TextArea from "@/components/other/textArea/textArea.vue"
+import { focusOnArticle, nowAllArticles } from "@/hooks/all-articles/allArticles"
 import { showAlert } from "@/hooks/alert"
 import { showPopUp } from "@/hooks/pages/popUp"
 import { showControlPanel } from "@/hooks/controlPanel"
+import { showMainToolPageHelp } from "@/hooks/pages/mainPage/toolPage"
+import type { MainToolPageHelp } from "@/hooks/pages/mainPage/toolPage"
 import { shallowRef } from "vue"
 import SegmentEditor from "./SegmentEditor.vue"
+import TimeLineNameEditor from "./TimeLineNameEditor.vue"
 import NodeEditor from "./NodeEditor.vue"
 import ConnectionEditor from "./ConnectionEditor.vue"
-import { createStoryTimeLine, createTimeLineConnection, createTimeLineNode, createTimeLineSegment, deleteStoryTimeLine, deleteTimeLineSegment, expandSegment, nowStoryTimeLines } from "./timeLine"
+import { createStoryTimeLine, createTimeLineConnection, createTimeLineNode, createTimeLineSegment, deleteTimeLineSegment, expandSegment, isTimeLineLongTick, moveStoryTimeLineToTrash, nowStoryTimeLines, timeLineTickLabel } from "./timeLine"
 import type { StoryTimeLine, TimeLineConnection, TimeLineNode, TimeLineSegment } from "./timeLine"
 
 const timeLines = nowStoryTimeLines
+const { help } = defineProps<{ help: MainToolPageHelp }>()
 const selected = ref<StoryTimeLine | null>(timeLines[0] ?? null)
 const canvasRef = ref<HTMLElement>()
 const selectedSegment = ref<TimeLineSegment | null>(null)
 const selectedNode = ref<{ segment: TimeLineSegment, node: TimeLineNode } | null>(null)
 const titleSegment = ref<TimeLineSegment | null>(null)
 const connectionStart = ref<TimeLineSegment | null>(null)
+const expandedNodeKey = ref<string | null>(null)
+const isSidebarCollapsed = ref(false)
 const canvasViewport = reactive({ x: 0, y: 0, scale: 1 })
 const touchPointers = new Map<number, { x: number, y: number }>()
 let stopDragging: (() => void) | null = null
+let suppressNodeClick = false
+let suppressNodeClickTimer: ReturnType<typeof setTimeout> | null = null
+let suppressCanvasContextMenu = false
+let suppressCanvasContextMenuTimer: ReturnType<typeof setTimeout> | null = null
 let touchStart: { points: { x: number, y: number }[], viewport: { x: number, y: number, scale: number } } | null = null
 
-type TargetOption = { type: "chapter" | "article", key: string, label: string }
-const articleTargets = computed<TargetOption[]>(() => {
-    const targets: TargetOption[] = []
-    const collect = (parent: typeof nowAllArticles, path: string[]) => {
-        parent.chapters.forEach((chapter) => {
-            const label = [...path, chapter.name || "未命名章节"].join(" / ")
-            targets.push({ type: "chapter", key: chapter.__key, label })
-            collect(chapter, [...path, chapter.name || "未命名章节"])
-        })
-        parent.articles.forEach((article) => targets.push({ type: "article", key: article.__key, label: [...path, article.title || "未命名文章"].join(" / ") }))
-    }
-    collect(nowAllArticles, [])
-    return targets
-})
-const selectableTargets = computed(() => articleTargets.value.filter((target) => target.type === selectedNode.value?.node.target?.type))
 watch(selected, (timeLine) => {
     if(timeLine) Object.assign(canvasViewport, timeLine.viewport)
 }, { immediate: true })
@@ -99,12 +108,28 @@ watch(canvasViewport, (viewport) => {
 })
 
 function createTimeLine(){ selected.value = createStoryTimeLine() }
+function openTimeLineMenu(event: MouseEvent, timeLine: StoryTimeLine){
+    showControlPanel({ option: [
+        { text: "修改名称", click: () => renameTimeLine(timeLine) },
+        { text: "删除时间线", danger: true, click: () => confirmDeleteTimeLine(timeLine) },
+    ] }, { x: event.clientX, y: event.clientY })
+}
+function renameTimeLine(timeLine: StoryTimeLine){
+    showPopUp({
+        name: "修改时间线名称",
+        vue: shallowRef(TimeLineNameEditor),
+        mask: true,
+        props: { name: timeLine.name },
+        returnValue: (name: string) => { timeLine.name = name },
+    })
+}
 function selectTimeLine(timeLine: StoryTimeLine){
     selected.value = timeLine
     selectedSegment.value = null
     selectedNode.value = null
     connectionStart.value = null
     titleSegment.value = null
+    expandedNodeKey.value = null
 }
 function createSegment(){
     if(!selected.value) return
@@ -125,16 +150,38 @@ function editSegment(segment: TimeLineSegment){
         vue: shallowRef(SegmentEditor),
         mask: true,
         props: { segment: { ...segment } },
-        returnValue: (setting) => Object.assign(segment, setting),
+        returnValue: (setting) => saveSegmentSettings(segment, setting),
     })
 }
-function createNode(segment: TimeLineSegment){ selectSegment(segment); createTimeLineNode(segment) }
+function saveSegmentSettings(segment: TimeLineSegment, setting: Pick<TimeLineSegment, "name" | "timeRuleKey" | "unit" | "length" | "unitWidth" | "calendarName" | "axisOrigin">){
+    const axisStart = segment.axisStart ?? 0
+    const newLength = Number.isFinite(setting.length) ? Math.max(1, setting.length) : segment.length
+    const newEnd = axisStart + newLength
+    const affectedNodes = segment.nodes.filter((node) => node.start > newEnd || (node.end != null && node.end > newEnd))
+    const apply = () => {
+        affectedNodes.forEach((node) => {
+            if(node.start > newEnd) node.start = newEnd
+            if(node.end != null) node.end = Math.max(node.start, Math.min(node.end, newEnd))
+        })
+        Object.assign(segment, setting, { length: newLength })
+    }
+    if(newLength < segment.length && affectedNodes.length){
+        const details = affectedNodes.map((node) => node.start > newEnd
+            ? `“${node.label}”将移到片段末尾${node.end != null && node.end > newEnd ? "，范围终点也会移到末尾" : ""}`
+            : `“${node.label}”的范围终点将裁剪到 ${newEnd}`)
+        showAlert({ info: `缩短时间片段会调整以下节点时间，但不会删除节点：\n${details.join("\n")}\n确定继续吗？`, confirm: apply })
+        return
+    }
+    apply()
+}
 function openSegmentMenu(event: MouseEvent, segment: TimeLineSegment){
     selectedSegment.value = segment
     selectedNode.value = null
     const options = [
-        { text: "创建事件", click: () => createNodeAt(event, segment) },
+        { text: "创建节点", click: () => createNodeAt(event, segment) },
         { text: "创建关系", click: () => beginConnection(segment) },
+        { text: "编辑片段", click: () => editSegment(segment) },
+        { text: "删除片段", danger: true, click: () => deleteSegment(segment) },
     ]
     showControlPanel({ option: options }, { x: event.clientX, y: event.clientY })
 }
@@ -143,18 +190,42 @@ function createNodeAt(event: MouseEvent, segment: TimeLineSegment){
     const track = (event.target as HTMLElement).closest<HTMLElement>(".track") ?? segmentElement?.querySelector<HTMLElement>(".track")
     if(!track) return
     const rect = track.getBoundingClientRect()
-    const start = Math.max(0, Math.min(segment.length, Math.round((event.clientX - rect.left) / canvasViewport.scale / segment.unitWidth)))
+    const start = segment.axisStart + Math.max(0, Math.min(segment.length, Math.round((event.clientX - rect.left) / canvasViewport.scale / segment.unitWidth)))
     const offsetY = Math.max(0, Math.min(78, (event.clientY - rect.top) / canvasViewport.scale - 17))
+    openNodeEditor(segment, start, offsetY)
+}
+function openNodeEditor(segment: TimeLineSegment, start: number, offsetY: number){
     showPopUp({
-        name: "创建时间线事件",
+        name: "创建时间线节点",
         vue: shallowRef(NodeEditor),
         mask: true,
-        props: { start, offsetY },
+        props: { start, offsetY, minTime: segment.axisStart, maxTime: segment.axisStart + segment.length },
         returnValue: (setting) => {
             const node = createTimeLineNode(segment, setting)
             selectNode(segment, node)
         },
     })
+}
+function editNode(segment: TimeLineSegment, node: TimeLineNode){
+    showPopUp({
+        name: "编辑时间线节点",
+        vue: shallowRef(NodeEditor),
+        mask: true,
+        props: { start: node.start, offsetY: node.offsetY, minTime: segment.axisStart, maxTime: segment.axisStart + segment.length, node },
+        returnValue: (setting) => Object.assign(node, setting),
+    })
+}
+function openNodeMenu(event: MouseEvent, segment: TimeLineSegment, node: TimeLineNode){
+    selectNode(segment, node)
+    const options = [{ text: "编辑节点", click: () => editNode(segment, node) }]
+    const article = node.target?.type === "article" ? findArticle(node.target.key) : undefined
+    if(article){
+        options.push({ text: "跳转到文章", click: () => {
+            focusOnArticle(article, false)
+        } })
+    }
+    options.push({ text: "删除节点", danger: true, click: () => deleteNode(segment, node) })
+    showControlPanel({ option: options }, { x: event.clientX, y: event.clientY })
 }
 function beginConnection(segment: TimeLineSegment){
     connectionStart.value = connectionStart.value === segment ? null : segment
@@ -185,28 +256,32 @@ function editConnection(connection: TimeLineConnection){
 function openConnectionMenu(event: MouseEvent, connection: TimeLineConnection){
     showControlPanel({ option: [
         { text: "编辑关系", click: () => editConnection(connection) },
-        { text: "删除关系", click: () => deleteConnection(connection) },
+        { text: "删除关系", danger: true, click: () => deleteConnection(connection) },
     ] }, { x: event.clientX, y: event.clientY })
 }
 function expand(segment: TimeLineSegment, direction: "start" | "end"){
     expandSegment(segment, direction)
 }
-function deleteSegment(){
-    if(!selected.value || !selectedSegment.value) return
-    showAlert({ info: `删除时间片段“${selectedSegment.value.name}”？`, confirm: () => {
-        deleteTimeLineSegment(selected.value!, selectedSegment.value!)
-        selectedSegment.value = null; selectedNode.value = null; connectionStart.value = null
-        titleSegment.value = null
+function deleteSegment(segment = selectedSegment.value){
+    const timeLine = selected.value
+    if(!timeLine || !segment) return
+    showAlert({ info: `删除时间片段“${segment.name}”？`, confirm: () => {
+        deleteTimeLineSegment(timeLine, segment)
+        if(selectedSegment.value === segment) selectedSegment.value = null
+        if(selectedNode.value?.segment === segment) selectedNode.value = null
+        if(connectionStart.value === segment) connectionStart.value = null
+        if(titleSegment.value === segment) titleSegment.value = null
     }})
 }
-function deleteTimeLine(){
-    if(!selected.value) return
-    showAlert({ info: `删除时间线“${selected.value.name}”？`, confirm: () => {
-        const index = timeLines.indexOf(selected.value!)
-        deleteStoryTimeLine(selected.value!)
-        selected.value = timeLines[index] ?? timeLines[index - 1] ?? null
-        selectedSegment.value = null; selectedNode.value = null; connectionStart.value = null
-        titleSegment.value = null
+function confirmDeleteTimeLine(timeLine: StoryTimeLine){
+    showAlert({ info: `删除时间线“${timeLine.name}”？它会移入时间线回收站。`, confirm: async () => {
+        const index = timeLines.indexOf(timeLine)
+        if(!(await moveStoryTimeLineToTrash(timeLine))) return
+        if(selected.value === timeLine){
+            selected.value = timeLines[index] ?? timeLines[index - 1] ?? null
+            selectedSegment.value = null; selectedNode.value = null; connectionStart.value = null
+            titleSegment.value = null; expandedNodeKey.value = null
+        }
     }})
 }
 function selectSegment(segment: TimeLineSegment, showTitle = false){
@@ -232,7 +307,29 @@ function selectNode(segment: TimeLineSegment, node: TimeLineNode){
     selectedSegment.value = segment
     selectedNode.value = { segment, node }
 }
-function startConnection(){ if(selectedSegment.value) beginConnection(selectedSegment.value) }
+function handleNodeClick(node: TimeLineNode, segment: TimeLineSegment){
+    if(suppressNodeClick){
+        suppressNodeClick = false
+        if(suppressNodeClickTimer) clearTimeout(suppressNodeClickTimer)
+        suppressNodeClickTimer = null
+        return
+    }
+    toggleNode(node, segment)
+}
+function toggleNode(node: TimeLineNode, segment: TimeLineSegment){
+    selectNode(segment, node)
+    expandedNodeKey.value = node.kind === "card" && hasNodeContent(node) && expandedNodeKey.value !== node.__key ? node.__key : null
+}
+function isExpandedSegment(segment: TimeLineSegment){
+    return segment.nodes.some((node) => node.__key === expandedNodeKey.value)
+}
+function closeExpandedNodeOnOutsideClick(event: PointerEvent){
+    const expandedKey = expandedNodeKey.value
+    if(!expandedKey) return
+    const target = event.target
+    if(target instanceof Element && target.closest("[data-timeline-node-key]")?.getAttribute("data-timeline-node-key") === expandedKey) return
+    expandedNodeKey.value = null
+}
 function startSegmentDrag(event: PointerEvent, segment: TimeLineSegment){
     if(event.button !== 0 || (event.target as HTMLElement).closest("input, .button, .node, .rangeHandle")) return
     event.stopPropagation()
@@ -243,6 +340,7 @@ function startSegmentDrag(event: PointerEvent, segment: TimeLineSegment){
     })
 }
 function startNodeDrag(event: PointerEvent, segment: TimeLineSegment, node: TimeLineNode){
+    if(event.button !== 0) return
     selectNode(segment, node)
     const track = (event.currentTarget as HTMLElement).closest(".track")
     if(!track) return
@@ -252,11 +350,21 @@ function startNodeDrag(event: PointerEvent, segment: TimeLineSegment, node: Time
         time: node.start,
         offsetY: node.offsetY,
     }
+    let moved = false
     startDragging(event.pointerId, (moveEvent) => {
+        if(Math.hypot(moveEvent.clientX - start.x, moveEvent.clientY - start.y) > 3) moved = true
         const horizontalDelta = (moveEvent.clientX - start.x) / canvasViewport.scale / segment.unitWidth
-        node.start = Math.max(0, Math.min(segment.length, Math.round(start.time + horizontalDelta)))
+        node.start = Math.max(segment.axisStart, Math.min(segment.axisStart + segment.length, Math.round(start.time + horizontalDelta)))
         node.offsetY = start.offsetY + (moveEvent.clientY - start.y) / canvasViewport.scale
         if(node.end != null && node.end < node.start) node.end = node.start
+    }, () => {
+        if(!moved) return
+        suppressNodeClick = true
+        if(suppressNodeClickTimer) clearTimeout(suppressNodeClickTimer)
+        suppressNodeClickTimer = setTimeout(() => {
+            suppressNodeClick = false
+            suppressNodeClickTimer = null
+        }, 0)
     })
 }
 function resizeNodeRange(event: PointerEvent, segment: TimeLineSegment, node: TimeLineNode, edge: "start" | "end"){
@@ -270,15 +378,15 @@ function resizeNodeRange(event: PointerEvent, segment: TimeLineSegment, node: Ti
 }
 function getTrackValue(event: PointerEvent, track: Element, segment: TimeLineSegment){
     const rect = track.getBoundingClientRect()
-    return Math.max(0, Math.min(segment.length, Math.round((event.clientX - rect.left) / canvasViewport.scale / segment.unitWidth)))
+    return segment.axisStart + Math.max(0, Math.min(segment.length, Math.round((event.clientX - rect.left) / canvasViewport.scale / segment.unitWidth)))
 }
-function startDragging(pointerId: number, move: (event: PointerEvent) => void){
+function startDragging(pointerId: number, move: (event: PointerEvent) => void, onEnd?: () => void){
     stopDragging?.()
     const onMove = (event: PointerEvent) => {
         if(event.pointerId === pointerId) move(event)
     }
     const onUp = (event: PointerEvent) => {
-        if(event.pointerId === pointerId) stopDragging?.()
+        if(event.pointerId === pointerId){ stopDragging?.(); onEnd?.() }
     }
     document.addEventListener("pointermove", onMove)
     document.addEventListener("pointerup", onUp)
@@ -295,7 +403,28 @@ function startCanvasPan(event: PointerEvent){
     if(event.pointerType === "touch"){ startTouchGesture(event); return }
     if(event.button !== 2) return
     const start = { x: event.clientX, y: event.clientY, viewport: { ...canvasViewport } }
-    startDragging(event.pointerId, (moveEvent) => { canvasViewport.x = start.viewport.x + moveEvent.clientX - start.x; canvasViewport.y = start.viewport.y + moveEvent.clientY - start.y })
+    let moved = false
+    startDragging(event.pointerId, (moveEvent) => {
+        if(Math.hypot(moveEvent.clientX - start.x, moveEvent.clientY - start.y) > 4) moved = true
+        canvasViewport.x = start.viewport.x + moveEvent.clientX - start.x
+        canvasViewport.y = start.viewport.y + moveEvent.clientY - start.y
+    }, () => {
+        if(!moved) return
+        suppressCanvasContextMenu = true
+        if(suppressCanvasContextMenuTimer) clearTimeout(suppressCanvasContextMenuTimer)
+        suppressCanvasContextMenuTimer = setTimeout(() => {
+            suppressCanvasContextMenu = false
+            suppressCanvasContextMenuTimer = null
+        }, 700)
+    })
+}
+function handleCanvasContextMenu(event: MouseEvent){
+    if(!suppressCanvasContextMenu) return
+    event.preventDefault()
+    event.stopPropagation()
+    suppressCanvasContextMenu = false
+    if(suppressCanvasContextMenuTimer) clearTimeout(suppressCanvasContextMenuTimer)
+    suppressCanvasContextMenuTimer = null
 }
 function zoomCanvas(event: WheelEvent){
     if(!canvasRef.value) return
@@ -331,9 +460,34 @@ function resetTouchStart(){ touchStart = { points: [...touchPointers.values()].m
 function distance(first: { x: number, y: number }, second: { x: number, y: number }){ return Math.hypot(first.x - second.x, first.y - second.y) }
 function midpoint(first: { x: number, y: number }, second: { x: number, y: number }){ return { x: (first.x + second.x) / 2, y: (first.y + second.y) / 2 } }
 
-function changeTargetType(event: Event){ const node = selectedNode.value?.node; if(node){ const type = (event.target as HTMLSelectElement).value; node.target = type === "event" ? undefined : { type: type as "chapter" | "article", key: "" } } }
-function changeTarget(event: Event){ const node = selectedNode.value?.node; if(!node?.target) return; const key = (event.target as HTMLSelectElement).value; node.target.key = key; const target = selectableTargets.value.find((item) => item.key === key); if(target) node.label = target.label }
-function deleteNode(){ if(selectedNode.value){ const { segment, node } = selectedNode.value; segment.nodes.splice(segment.nodes.indexOf(node), 1); selectedNode.value = null } }
+function deleteNode(segment = selectedNode.value?.segment, node = selectedNode.value?.node){
+    if(!segment || !node) return
+    segment.nodes.splice(segment.nodes.indexOf(node), 1)
+    if(selectedNode.value?.node === node) selectedNode.value = null
+    if(expandedNodeKey.value === node.__key) expandedNodeKey.value = null
+}
+function findArticle(key: string){
+    const find = (parent: typeof nowAllArticles): (typeof nowAllArticles.articles)[number] | undefined => {
+        const match = parent.articles.find((article) => article.__key === key)
+        if(match) return match
+        for(const chapter of parent.chapters){
+            const nested = find(chapter)
+            if(nested) return nested
+        }
+    }
+    return find(nowAllArticles)
+}
+function nodeDisplayLabel(node: TimeLineNode){
+    return node.target?.type === "article" ? findArticle(node.target.key)?.title || node.label : node.label
+}
+function hasNodeContent(node: TimeLineNode){
+    return Array.isArray(node.content) ? node.content.length > 0 : Boolean(node.content)
+}
+function expandedNodeStyle(segment: TimeLineSegment, node: TimeLineNode){
+    const base = nodeStyle(segment, node)
+    if("display" in base) return base
+    return { ...base, left: `${(node.start - (segment.axisStart ?? 0)) * segment.unitWidth}px`, top: `${node.offsetY + 38}px` }
+}
 function deleteConnection(connection: TimeLineConnection){
     const timeLine = timeLines.find((item) => item.connections.includes(connection))
     if(!timeLine) return
@@ -363,28 +517,44 @@ function connectionLabelPoint(connection: TimeLineConnection){ const from = conn
 function connectionLabel(connection: TimeLineConnection){ return connection.type === "parallel" ? "同时" : connection.gap ? `${connection.gap.value}${connection.gap.unit}后` : "之后" }
 function isRange(node: TimeLineNode){ return node.end != null && node.end > node.start }
 function nodeStyle(segment: TimeLineSegment, node: TimeLineNode){
-    const left = Math.max(0, Math.min(segment.length, node.start)) * segment.unitWidth
-    const width = isRange(node) ? Math.max(1, Math.min(segment.length, node.end!) - node.start) * segment.unitWidth : undefined
+    const axisStart = segment.axisStart ?? 0, axisEnd = axisStart + segment.length
+    if(node.start > axisEnd || (node.end != null && node.end < axisStart)) return { display: "none" }
+    const visibleStart = Math.max(axisStart, Math.min(axisEnd, node.start))
+    const left = (visibleStart - axisStart) * segment.unitWidth
+    const width = isRange(node) ? Math.max(1, Math.min(axisEnd, node.end!) - visibleStart) * segment.unitWidth : undefined
     return width
         ? { left: `${left}px`, top: `${node.offsetY}px`, width: `${width}px` }
         : { left: `${left}px`, top: `${node.offsetY}px` }
 }
 function nodeAnchorStyle(segment: TimeLineSegment, node: TimeLineNode){
+    const axisStart = segment.axisStart ?? 0, axisEnd = axisStart + segment.length
+    if(node.start > axisEnd || (node.end != null && node.end < axisStart)) return { display: "none" }
     const rulerY = 55
     const nodeBottom = node.offsetY + 34
     const top = node.offsetY < rulerY ? nodeBottom : rulerY
     const height = Math.max(8, node.offsetY < rulerY ? rulerY - nodeBottom : node.offsetY - rulerY)
     return {
-        left: `${node.start * segment.unitWidth}px`,
+        left: `${(Math.max(axisStart, Math.min(axisEnd, node.start)) - axisStart) * segment.unitWidth}px`,
         top: `${top}px`,
         height: `${height}px`,
     }
 }
-onBeforeUnmount(() => { stopDragging?.(); document.removeEventListener("pointermove", moveTouchGesture); document.removeEventListener("pointerup", stopTouchGesture); document.removeEventListener("pointercancel", stopTouchGesture) })
+onMounted(() => document.addEventListener("pointerdown", closeExpandedNodeOnOutsideClick, true))
+onBeforeUnmount(() => {
+    stopDragging?.()
+    document.removeEventListener("pointerdown", closeExpandedNodeOnOutsideClick, true)
+    if(suppressNodeClickTimer) clearTimeout(suppressNodeClickTimer)
+    if(suppressCanvasContextMenuTimer) clearTimeout(suppressCanvasContextMenuTimer)
+    document.removeEventListener("pointermove", moveTouchGesture)
+    document.removeEventListener("pointerup", stopTouchGesture)
+    document.removeEventListener("pointercancel", stopTouchGesture)
+})
 </script>
 
 <style scoped lang="scss">
 .timeLinePage {
+    --timeline-sidebar-width: 220px;
+    position: relative;
     display: flex;
     height: 100%;
     background: $bgColor;
@@ -399,8 +569,37 @@ onBeforeUnmount(() => { stopDragging?.(); document.removeEventListener("pointerm
     border-right: 1px solid $bgColor70;
 }
 
+.sideBar.collapsed {
+    width: 0;
+    padding: 0;
+    overflow: hidden;
+    border-right: 0;
+}
+
+.sidebarToggle {
+    position: absolute;
+    z-index: 4;
+    top: 50%;
+    left: var(--timeline-sidebar-width);
+    display: flex;
+    width: 20px;
+    height: 64px;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    transform: translateY(-50%);
+    border: 1px solid $bgColor70;
+    border-left: 0;
+    border-radius: 0 5px 5px 0;
+    background: $bgColor;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.12);
+}
+
+.sideBar.collapsed + .sidebarToggle {
+    left: 0;
+}
+
 .sideBarTop,
-.toolBar,
 header {
     display: flex;
     align-items: center;
@@ -412,9 +611,7 @@ header {
 }
 
 .sideBarTop .button,
-.toolBar .button,
-header .button,
-.addNode {
+header .button {
     width: 32px;
     height: 32px;
     padding: 7px;
@@ -536,26 +733,45 @@ header .button,
     color: $previewText;
 }
 
-.toolBar {
-    padding: 12px;
-    border-bottom: 1px solid $bgColor70;
-}
-
-.toolBar input,
-header input {
-    min-width: 0;
-    flex: 1;
-    border: 0;
-    background: transparent;
-    font: inherit;
-}
-
 .canvas {
     position: relative;
     flex: 1;
     overflow: hidden;
     cursor: grab;
     touch-action: none;
+}
+
+.emptyTimeline {
+    position: absolute;
+    z-index: 2;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: none;
+}
+
+.emptyTimeline p {
+    margin: 0;
+    color: $previewText;
+}
+
+.emptyTimelineActions {
+    display: flex;
+    gap: 8px;
+    pointer-events: auto;
+}
+
+.resetCanvasButton {
+    position: absolute;
+    z-index: 2;
+    top: 8px;
+    right: 8px;
+    width: 36px;
+    height: 36px;
+    padding: 8px;
 }
 
 .canvas:has(:active) {
@@ -573,7 +789,7 @@ header input {
 
 .connections {
     position: absolute;
-    z-index: 2;
+    z-index: 0;
     top: 0;
     left: 0;
     display: block;
@@ -613,6 +829,10 @@ header input {
     z-index: 1;
     top: 16px;
     left: 16px;
+}
+
+.segment.expanded {
+    z-index: 3;
 }
 
 .segment.connecting .track {
@@ -658,13 +878,30 @@ header input {
 }
 
 .tick.major {
-    top: 35px;
-    height: 20px;
+    top: 39px;
+    height: 16px;
+}
+
+.tick.long {
+    top: 39px;
+    height: 16px;
+    width: 2px;
+}
+
+.track.calendar .tick.major {
+    top: 44px;
+    height: 11px;
+}
+
+.track.calendar .tick.long {
+    top: 39px;
+    height: 16px;
+    width: 2px;
 }
 
 .tickValue {
     position: absolute;
-    top: 25px;
+    top: 59px;
     left: 50%;
     transform: translateX(-50%);
     color: $previewText;
@@ -693,6 +930,26 @@ header input {
     max-width: none;
     transform: none;
     text-align: left;
+}
+
+.expandedCard {
+    position: absolute;
+    z-index: 5;
+    display: flex;
+    width: 280px;
+    max-height: 260px;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px;
+    overflow: auto;
+    transform: translateX(-50%);
+    border: 1px solid $bgColor70;
+    background: $bgColor;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
+}
+
+.expandedCard :deep(.textArea) {
+    min-height: 40px;
 }
 
 .nodeAnchor {
@@ -731,7 +988,8 @@ header input {
     transition: opacity 0.15s;
 }
 
-.segment:hover .expandButton {
+.expandButton:hover,
+.expandButton:focus-visible {
     pointer-events: auto;
     opacity: 1;
 }
@@ -744,13 +1002,6 @@ header input {
     right: -34px;
 }
 
-.addNode {
-    position: absolute;
-    top: 0;
-    right: 0;
-    transform: translateX(100%);
-}
-
 .empty {
     display: grid;
     flex: 1;
@@ -758,6 +1009,10 @@ header input {
 }
 
 @media (max-width: 899px) {
+    .timeLinePage {
+        --timeline-sidebar-width: 170px;
+    }
+
     .sideBar {
         width: 170px;
     }

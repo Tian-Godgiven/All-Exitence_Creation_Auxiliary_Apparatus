@@ -14,6 +14,7 @@ export type SupportAbilitySignUpItem = {
     syncProject?:(projecyPath:string)=>Promise<void>,//同步/移动到项目时触发的事件
     save?:(projectName:string|null)=>void|Promise<void>, //软件保存时触发的事件
     call?:()=>void //软件响应指定名称的辅助功能时触发的事件,
+    recycleBinEntry?:{name:string,click:()=>void} //功能自行管理回收站时，在公共回收站提供的入口
 }
 
 export const supportAbilityList:SupportAbilitySignUpItem[] = [

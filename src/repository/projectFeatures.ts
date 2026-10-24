@@ -14,5 +14,6 @@ export async function loadProjectFeatures(): Promise<ProjectFeature<unknown>[]> 
     quickDraft.quickDraftProjectFeature,
     tagLibrary.tagLibraryProjectFeature,
     timeLine.timeLineProjectFeature,
+    timeLine.timeLineTrashProjectFeature,
   ];
 }

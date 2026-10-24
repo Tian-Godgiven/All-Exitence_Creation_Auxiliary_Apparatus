@@ -1,7 +1,7 @@
 <template>
 <!-- 显示属性 -->
-<LongTap :duration="700" :wait-after="500" :long-tap="longTap" :key="key" class="exitenceStatus">
-    <StatusName v-if="!ifNoName" :status :fullStatus :disabled="true"></StatusName>
+<LongTap :duration="700" :wait-after="500" :long-tap="longTap" :key="key" class="exitenceStatus" :class="{noLabel:ifNoName}">
+    <StatusName v-if="!ifNoName" :status :fullStatus :disabled="true" class="label"></StatusName>
     <!-- 属性值 -->
     <StatusValue :target="exitence" :status :fullStatus :disabled class="value"/>
 </LongTap> 
@@ -15,6 +15,7 @@
     import LongTap from '@/components/other/LongTap.vue';
     import { showEditStatusPopUp } from '@/hooks/all-exitence/status';
     import Status from '@/interfaces/Status';
+    import { showControlPanel } from '@/hooks/controlPanel';
 
     let {disabled,status,fullStatus,exitence} = defineProps<{
         disabled?:boolean;
@@ -34,24 +35,41 @@
         return false
     })
     //长按更新属性
-    function longTap(){
+    function longTap(position?:{x:number,y:number}){
         //禁用状态下无效
         if(disabled)return
-        showEditStatusPopUp({
-            target:exitence,
-            status,
-            fullStatus,
-            returnValue:(newStatus:ExitenceStatus)=>{
-                Object.assign(status,newStatus)
-                //手动更新这个div
-                key.value+=1
-            }
-        })
+        showControlPanel({
+            title:`属性：${fullStatus.name}`,
+            option:[{
+                text:'编辑属性',
+                click:()=>showEditStatusPopUp({
+                    target:exitence,
+                    status,
+                    fullStatus,
+                    returnValue:(newStatus:ExitenceStatus)=>{
+                        Object.assign(status,newStatus)
+                        key.value+=1
+                    }
+                })
+            }]
+        },position)
     }
 </script>
 
 <style scoped lang='scss'>
     .exitenceStatus{
-		display: flex;
+		display: grid;
+		grid-template-columns: max-content minmax(0, 1fr);
+		align-items: center;
+		gap: 12px;
+		.label{ min-width: 0; }
+		.value{ min-width: 0; }
+		&.noLabel{ grid-template-columns: minmax(0, 1fr); }
+	}
+	@media (max-width: 899px){
+		.exitenceStatus{
+			grid-template-columns: minmax(0, 1fr);
+			gap: 4px;
+		}
 	}
 </style>

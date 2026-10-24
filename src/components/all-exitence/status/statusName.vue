@@ -1,13 +1,15 @@
 <template>
-<div class="statusName">
-    <textAreaVue
-        v-if="!ifDisabled" 
-        mode="string"
-        v-model="name"
-        placeholder="属性名"/>
-    <div v-else>{{ name }}</div>
+<div class="statusLabel">
+    <div class="statusName">
+        <textAreaVue
+            v-if="!ifDisabled"
+            mode="string"
+            v-model="name"
+            placeholder="属性名"/>
+        <div v-else>{{ name }}</div>
+    </div>
+    <span class="separator">：</span>
 </div>
-<div class="separator">：</div>
 </template>
 
 <script setup lang='ts'>
@@ -44,11 +46,27 @@ import { computed, ref } from 'vue';
 </script>
 
 <style scoped lang='scss'>
-    .statusName{
-        flex-shrink: 0;
-        max-width: 4rem;
-    }
-    .separator{
-        min-width: 1rem;
+    .statusLabel{
+        display: flex;
+        align-items: flex-start;
+        align-self: start;
+        flex: 0 1 auto;
+        width: fit-content;
+        max-width: 100%;
+        min-width: 0;
+        .statusName{
+            min-width: 0;
+            flex: 0 1 auto;
+            width: fit-content;
+            max-width: calc(100% - 1rem);
+            overflow-wrap: anywhere;
+            :deep(.textArea){
+                width: auto;
+                min-width: 1ch;
+            }
+        }
+        .separator{
+            flex: 0 0 auto;
+        }
     }
 </style>

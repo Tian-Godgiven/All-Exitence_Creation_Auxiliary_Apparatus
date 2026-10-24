@@ -48,7 +48,8 @@ import type { ElementDragPayload } from '@atlaskit/pragmatic-drag-and-drop/eleme
 				click:()=>{showSetExitencePopUp(exitence,type)}
 			},{
 				text:"删除",
-				click:()=>{deleteExitencePopUp(type,exitence)}
+				click:()=>{deleteExitencePopUp(type,exitence)},
+				danger:true
 			}]
 		},position)
 	}

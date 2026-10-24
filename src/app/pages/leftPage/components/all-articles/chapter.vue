@@ -60,7 +60,8 @@
 			title:`章节：${chapter.name}`,
 			option:[{
 				text:"删除",
-				click:()=>{deleteChapterPopUp(from,chapter)}
+				click:()=>{deleteChapterPopUp(from,chapter)},
+				danger:true
 			},{
 				text:"重命名",
 				click:()=>{updateChapter(chapter)}

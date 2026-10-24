@@ -6,7 +6,8 @@ export type Control = {
     title?:string,
     option:{
         text:string,
-        click:()=>any
+        click:()=>any,
+        danger?:boolean,
     }[]
 }
 

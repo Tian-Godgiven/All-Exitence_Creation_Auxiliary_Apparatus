@@ -1,7 +1,7 @@
 <template>
 <div class="status">
 	<StatusName :status :fullStatus="status"/>
-	<StatusValue :status :fullStatus="status" :target="type"/>
+	<StatusValue class="statusValue" :status :fullStatus="status" :target="type"/>
 	<div class="buttons">
 		<Button @click="showUpdateStatus" name="编辑"></Button>
 		<Button @click="deleteStatus" name="删除"></Button>
@@ -38,19 +38,32 @@ import { Type } from '@/class/Type';
 
 <style lang="scss" scoped>
 	.status{
-		display: flex;
-		:deep(.statusName){
-			width: 200px;
-		}
+		display: grid;
+		grid-template-columns: max-content minmax(0, 1fr) auto;
+		align-items: center;
+		gap: 12px;
+		:deep(.statusLabel){ min-width: 0; }
 		.statusValue{
-			width: calc(100% - 200px);
+			min-width: 0;
 		}
 		.buttons{
+			display: flex;
+			gap: 4px;
 			.button{
-				height: 50px;
-				width: 50px;
-				overflow: hidden;
+				height: 44px;
+				min-width: 56px;
+				padding: 0 10px;
+				white-space: nowrap;
 			}
+		}
+	}
+	@media (max-width: 899px){
+		.status{
+			grid-template-columns: minmax(0, 1fr) auto;
+			gap: 6px;
+			:deep(.statusLabel){ grid-column: 1 / -1; }
+			.statusValue{ grid-column: 1 / -1; }
+			.buttons{ grid-column: 1 / -1; justify-content: flex-end; }
 		}
 	}
 </style>

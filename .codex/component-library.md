@@ -17,6 +17,11 @@ Use the existing shared form components before adding native inputs or new wrapp
 - `src/components/global/ListMenu.vue` (`ListMenu`): shared menu content for a list of actions. Pass `list` as `{ label, icon?, click, clickClose? }[]`; use `controlShow` when the parent menu needs to close after an action.
 - `src/hooks/controlPanel.ts` (`showControlPanel`): pointer-positioned control/context menu popup. Pass a `Control` with `option` entries shaped as `{ text, click }` and an optional `{ x, y }` screen position. It uses the shared `controlPanel` popup and closes a previously opened control panel before showing another.
 
+## Visual Conventions
+
+- Use the shared palette in `src/static/style/variables/color.scss`. Destructive actions such as delete should use the semantic `$dangerColor`; for `showControlPanel`, set `danger: true` on the corresponding option so the shared menu renders its label in that color.
+- An auxiliary ability that owns a feature-specific trash area can provide `recycleBinEntry` on its `SupportAbilitySignUpItem`. The public recycle bin renders the entry; the ability owns its trash data, recovery, and permanent deletion behavior.
+
 ## Component Discovery Rule
 
 - Before building a component or interaction for a new requirement, search the existing component library and feature code for an implementation that already fits. Prefer reusing it over creating a parallel component.

@@ -1,5 +1,6 @@
 import { addArticle, addChapterPopUp, focusOnArticle, focusOnChapter } from "@/hooks/all-articles/allArticles"
-import { createExitencePopUp, createTypePopUp, focusOnExitence, focusOnType } from "@/hooks/all-exitence/allExitence"
+import { createEmptyType, createExitencePopUp, focusOnExitence, focusOnType } from "@/hooks/all-exitence/allExitence"
+import { showTargetOnMain } from "./showOnMain"
 import { computed, reactive} from "vue"
 import { nowLeftPageMode } from "../leftPage"
 
@@ -20,9 +21,13 @@ export const quickPanelBaseList = {
             const exitence = await createExitencePopUp()
             focusOnExitence(exitence,false)
         }},
-        {label:"创建分类",click:async()=>{
-            const type = await createTypePopUp()
-            focusOnType(type,true)
+        {label:"创建分类",click:()=>{
+            const type = createEmptyType()
+            focusOnType(type,false)
+            showTargetOnMain({
+                type:"type",
+                target:type
+            })
         }},
     ],
     "all-article":[

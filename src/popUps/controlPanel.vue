@@ -2,7 +2,7 @@
 <div class="controlPanel" ref="panelRef">
     <div class="title" v-if="control.title">{{control.title}}</div>
     <div class="inner">
-        <Button class="option" v-for="option in control.option"  @click="clickControl(option)">
+        <Button class="option" :class="{ danger: option.danger }" v-for="option in control.option"  @click="clickControl(option)">
             {{ option.text }}
         </Button>
     </div>
@@ -63,6 +63,7 @@ import Button from '@/components/global/button.vue';
             font-size: 1rem;
 			padding: 8px 12px;
 			transition: background-color 0.15s ease;
+            &.danger{ color: $dangerColor; }
 			&:hover{
 				background-color: $bgColor90;
 			}

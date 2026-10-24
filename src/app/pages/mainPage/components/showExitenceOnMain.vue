@@ -133,14 +133,14 @@ import { getFullStatusOfExitence, showCreateStatusPopUp } from '@/hooks/all-exit
 	height: 30%;
 }
 .exitenceAbility{
-	width: 60px;
-	height: 60px;
+	width: 40px;
+	height: 40px;
 	.button{
 		border-radius: 10px;
 		box-sizing: border-box;
 		padding: 6px;
-		width: 60px;
-		height: 60px;
+		width: 40px;
+		height: 40px;
 	}
 }
 </style>

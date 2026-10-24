@@ -19,6 +19,7 @@ export const iconList:Record<string,string>= {
     "rightUp":"rightUp",//右侧页面抬升
     "backMain":"backMain",//返回主页面
     "closePopUp":"closePopUp",//关闭弹窗,圆包围的x号
+    "help":"help",//帮助与操作提示
 
     "time":"time",//时钟
     "timer":"timer",//计时器

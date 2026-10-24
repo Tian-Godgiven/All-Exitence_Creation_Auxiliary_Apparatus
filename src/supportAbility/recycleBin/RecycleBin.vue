@@ -1,6 +1,9 @@
 <template>
   <div class="recycleBin">
-    <div v-if="records.length === 0" class="empty">回收站为空</div>
+    <div v-if="recycleBinEntries.length" class="featureEntries">
+      <Button v-for="entry in recycleBinEntries" :key="entry.name" :name="entry.name" @click="entry.click" />
+    </div>
+    <div v-if="records.length === 0" class="empty">{{ recycleBinEntries.length ? "通用回收站为空" : "回收站为空" }}</div>
     <div v-for="record in records" :key="record.__key" class="record">
       <div class="recordInfo">
         <div class="label">{{ record.label }}</div>
@@ -26,8 +29,10 @@ import {
 } from "@/repository/tauriProjectRepository";
 import type { TrashIndexEntry, TrashKind } from "@/repository/types";
 import { isActionPending, runPendingAction } from "@/hooks/app/pendingAction";
+import { supportAbilityList } from "@/static/list/supportAbilityList";
 
 const records = ref<TrashIndexEntry[]>([]);
+const recycleBinEntries = supportAbilityList.flatMap((ability) => ability.recycleBinEntry ? [ability.recycleBinEntry] : []);
 
 onMounted(() => {
   void reload();
@@ -102,6 +107,14 @@ function formatTime(time: number): string {
   color: $previewText;
   padding: 28px 12px;
   text-align: center;
+}
+
+.featureEntries {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid $bgColor70;
 }
 
 .record {

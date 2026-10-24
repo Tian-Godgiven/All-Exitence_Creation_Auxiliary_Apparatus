@@ -29,7 +29,7 @@
 import groupVue from "./group.vue"
 import exitenceVue from "./exitence.vue"
 import { computed } from "vue";
-import { createExitencePopUp, createGroupPopUp, deleteTypePopUp, getNoGroupExitence, updateTypePopUp } from "@/hooks/all-exitence/allExitence";
+import { createExitencePopUp, createGroupPopUp, deleteTypePopUp, getNoGroupExitence } from "@/hooks/all-exitence/allExitence";
 import { showTargetOnMain } from "@/hooks/pages/mainPage/showOnMain";
 import { hidePage } from "@/hooks/pages/pageChange";
 import { showControlPanel } from "@/hooks/controlPanel";
@@ -46,6 +46,14 @@ import { isActionPending } from "@/hooks/app/pendingAction";
 	})
 	const click = ()=>{
 		type.expending = !expending.value
+		openTypePage()
+	}
+	function openTypePage(){
+		showTargetOnMain({
+			type:"type",
+			target:type
+		})
+		hidePage("left")
 	}
 	//长按显示控制面板
 	function longTap(position?:{x:number,y:number}){
@@ -53,10 +61,11 @@ import { isActionPending } from "@/hooks/app/pendingAction";
 			title:`分类：${type.name}`,
 			option:[{
 				text:"编辑分类",
-				click:()=>{updateTypePopUp(type)}
+				click:openTypePage
 			},{
 				text:"删除分类",
-				click:()=>{deleteTypePopUp(type)}
+				click:()=>{deleteTypePopUp(type)},
+				danger:true
 			}]
 		},position)
 	}

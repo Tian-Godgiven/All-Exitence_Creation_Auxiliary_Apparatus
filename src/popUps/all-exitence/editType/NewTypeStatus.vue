@@ -1,12 +1,14 @@
 <template>
 <div class="newStatus">
 	<EditStatus
+		inline
 		:target="type"
 		:status="newStatus"
 		:fullStatus="newStatus"
-		confirmText="新增"
+		confirmText="确认"
 		:confirm="createTypeStatus" 
 		:banValueType="banValueType">
+		<template #header>新增属性</template>
 	</EditStatus>
 </div>
 </template>
@@ -34,11 +36,19 @@ import { Type } from '@/class/Type';
 		// 将当前分类属性的数据传递回创建分类组件，形成新的属性
 		const newTypeStatus = cloneDeep(toRaw(newStatus)) as Status
 		createStatus(newTypeStatus)
+		Object.assign(newStatus,createNewEmptyStatus())
 	}
 	
 </script>
 
 <style lang="scss" scoped>
-	
-	
+	.newStatus{
+		margin-top: 18px;
+		padding-top: 18px;
+		border-top: 1px solid $bgColor70;
+		:deep(.editStatus){
+			border: 1px solid $bgColor70;
+			border-radius: 6px;
+		}
+	}
 </style>

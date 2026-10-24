@@ -20,6 +20,7 @@
                     @click="action.click"
                 />
             </div>
+            <Button v-if="toolPage.help" name="操作提示" icon="help" @click="showMainToolPageHelp(toolPage.help)" />
             <Button name="关闭" icon="closePopUp" @click="closeMainToolPage" />
         </header>
         <div class="content">
@@ -31,7 +32,7 @@
 <script setup lang="ts">
 import { nextTick, onMounted, useTemplateRef } from "vue"
 import Button from "@/components/global/button.vue"
-import { closeMainToolPage, MainToolPage } from "@/hooks/pages/mainPage/toolPage"
+import { closeMainToolPage, MainToolPage, showMainToolPageHelp } from "@/hooks/pages/mainPage/toolPage"
 
 const { toolPage } = defineProps<{ toolPage: MainToolPage }>()
 const toolPageRef = useTemplateRef("toolPageRef")

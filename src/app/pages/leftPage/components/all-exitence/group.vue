@@ -51,7 +51,8 @@ import { isActionPending } from '@/hooks/app/pendingAction';
 				click:()=>updateGroupPopUp(type,group)
 			},{
 				text:"删除",
-				click:()=>deleteGroup(type,group)
+				click:()=>deleteGroup(type,group),
+				danger:true
 			}]
 		},position)
 	}

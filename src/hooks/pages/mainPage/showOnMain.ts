@@ -1,6 +1,7 @@
 import { Article } from "@/class/Article"
 import { Exitence } from "@/class/Exitence"
 import { focusOnExitence, getExitenceByKey, getTypeByKey} from "@/hooks/all-exitence/allExitence"
+import { Type } from "@/class/Type"
 import { onNoContent, ProjectLastTarget } from "@/hooks/project/project"
 import { reactive } from "vue"
 import { focusOnArticle, getArticleByKey } from "@/hooks/all-articles/allArticles"
@@ -18,6 +19,12 @@ export type ShowOnMainItem =
         target:Article,
         from:string[],
         type:"article"
+    }|
+    //分类
+    {
+        target:Type,
+        from:null,
+        type:"type"
     }|
     //信息
     {
@@ -52,6 +59,12 @@ export function showArticleOnMain(article:Article){
     showOnMain.target = reactive(article)
     showOnMain.type = 'article'
 }
+// 显示分类在主页面
+export function showTypeOnMain(type:Type){
+    showOnMain.from = null
+    showOnMain.target = reactive(type)
+    showOnMain.type = 'type'
+}
 // 显示软件初始页面在主页面
 export function showInitialAppOnMain(){
     showOnMain.from = null
@@ -70,6 +83,9 @@ type ShowOnMainTarget = {
         type:"exitence",
         target:Exitence
     }|{
+        type:"type",
+        target:Type
+    }|{
         type:"article",
         target:Article
     }|{
@@ -82,6 +98,9 @@ export function showTargetOnMain({type,target}:ShowOnMainTarget){
     //先找到该对象
     if(type == "exitence"){
         showExitenceOnMain(target)
+    }
+    else if(type == "type"){
+        showTypeOnMain(target)
     }
     else if(type == "article"){
         showArticleOnMain(target)
@@ -142,7 +161,7 @@ function saveLastTargetOnMain(){
     const scrollTop = showOnMain.scrollTop
     const target = showOnMain.target
     //保存在这个对象中
-    if(target && typeof target != "string"){
+    if(target && typeof target != "string" && showOnMain.type != "type"){
         target.lastScrollTop = scrollTop
     }
 }

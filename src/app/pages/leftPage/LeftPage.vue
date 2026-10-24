@@ -39,7 +39,9 @@
 	import AllExitence from './components/all-exitence/all-exitence.vue';
 	import AllArticles from './components/all-articles/all-articles.vue';
 	import { computed, nextTick, onMounted, useTemplateRef, watch } from "vue"
-	import { createTypePopUp, nowAllExitence } from '@/hooks/all-exitence/allExitence';
+	import { createEmptyType, nowAllExitence } from '@/hooks/all-exitence/allExitence';
+	import { showTargetOnMain } from '@/hooks/pages/mainPage/showOnMain';
+	import { hidePage } from '@/hooks/pages/pageChange';
 	import { addChapterPopUp, nowAllArticles } from '@/hooks/all-articles/allArticles';
 	import { Type } from '@/class/Type';
 	import { Chapter } from '@/class/Chapter';
@@ -114,7 +116,12 @@ import { callSupportAbility } from '@/hooks/app/app';
 	function createNew(){
 		//万物类
 		if(model.value){
-			createTypePopUp()
+			const type = createEmptyType()
+			showTargetOnMain({
+				type:"type",
+				target:type
+			})
+			hidePage("left")
 		}
 		else{
 			addChapterPopUp()

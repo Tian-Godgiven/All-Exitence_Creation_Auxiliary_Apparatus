@@ -65,7 +65,8 @@ import { Chapter } from '@/class/Chapter';
 				}
 			},{
 				text:"删除",
-				click:()=>{deleteArticlePopUp(from,article)}
+				click:()=>{deleteArticlePopUp(from,article)},
+				danger:true
 			},{
 				text:"插入新文本到上方",
 				click:()=>{

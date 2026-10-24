@@ -1,6 +1,7 @@
 <template>
 <div class="value" :class="disabled?'disabled':''">
-	<component :status :fullStatus :target :is="statusValueVueList[valueType]"></component>
+	<component v-if="valueComponent" :status :fullStatus :target :is="valueComponent"></component>
+	<div v-else class="unsupportedValue">{{ unsupportedValue }}</div>
 </div>
 </template>
 
@@ -25,6 +26,21 @@ import { Type } from '@/class/Type';
 	//优先使用status中的valueType
 	let valueType = computed(()=>{
 		return fullStatus.valueType
+	})
+	const valueComponent = computed(()=>statusValueVueList[valueType.value])
+	const unsupportedValue = computed(()=>{
+		const value = status.value
+		if(value == null)return ''
+		if(typeof value == 'string' || typeof value == 'number' || typeof value == 'boolean'){
+			return String(value)
+		}
+		if(Array.isArray(value)){
+			if(value.every(part=>typeof part == 'string' || (part && typeof part.text == 'string'))){
+				return value.map(part=>typeof part == 'string' ? part : part.text).join('')
+			}
+		}
+		try{return JSON.stringify(value,null,2)}
+		catch{return String(value)}
 	})
 
 	//监听属性值的改变
@@ -62,5 +78,10 @@ import { Type } from '@/class/Type';
 	}
 	.value.disabled{
 		pointer-events: none;
+	}
+	.unsupportedValue{
+		max-width: 100%;
+		white-space: pre-wrap;
+		overflow-wrap: anywhere;
 	}
 </style>

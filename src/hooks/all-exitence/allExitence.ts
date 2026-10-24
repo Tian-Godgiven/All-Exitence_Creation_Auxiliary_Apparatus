@@ -77,40 +77,29 @@ export function changeNowAllExitence(newAllExitence:{types:Type[]}){
         nowAllExitence.types.push(newType)
         return newType
     }
-    // 显示创建分类页面，创建成功时添加该分类
-    export async function createTypePopUp(){
-        return new Promise<Type>((resolve)=>{
-            // 显示创建分类页面
-            showPopUp({
-                name:"创建分类",
-                buttons:[],
-                vueName:"createType",
-                mask:true,
-                returnValue:(newType:Type)=>{
-                    //添加该分类
-                    const type = addType(newType.name,newType.typeStatus,newType.setting)
-                    console.log(type)
-                    //返回
-                    resolve(type)
-                }
-            })
-        })
-        
+
+    // 立即创建一个可在详情页继续编辑的空分类
+    export function createEmptyType(){
+        const baseName = '未命名分类'
+        let name = baseName
+        let index = 2
+        while(checkTypeNameRepeat(name)){
+            name = `${baseName} ${index}`
+            index += 1
+        }
+        return addType(name,[],{})
     }
 
-    // 显示编辑分类页面
-    export function updateTypePopUp(type:Type){
+    //打开分类设置弹窗
+    export function showSetTypePopUp(type:Type){
         showPopUp({
-            vueName:"updateType",
+            name:'分类设置',
+            vueName:'setType',
             mask:true,
             buttons:[],
-            props:{
-                type:type,
-            },
-            returnValue:(newType:Type)=>{
-                type.name = newType.name
-                type.typeStatus = newType.typeStatus
-                type.setting= newType.setting
+            props:{type},
+            returnValue:(setting:Record<string,any>)=>{
+                type.setting = setting
             }
         })
     }

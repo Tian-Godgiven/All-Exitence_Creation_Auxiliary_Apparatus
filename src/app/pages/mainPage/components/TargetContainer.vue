@@ -1,7 +1,10 @@
 <template>
 <div class="container">
 	<div class="top">
-        <div class="title" :style="{'text-align':titleAlign}">
+		<div class="title" :style="{
+			'text-align':titleAlign,
+			'justify-content':titleAlign == 'left' ? 'flex-start' : titleAlign == 'right' ? 'flex-end' : 'center'
+		}">
             <slot name="title"></slot>
         </div>
         <slot name="topBar"></slot>
@@ -54,13 +57,13 @@ import { useTemplateRef } from 'vue';
 	height: 100%;
 	box-sizing: border-box;
 	.top{
-		min-height: 70px;
+		min-height: 40px;
 		width: 100%;
 		position: relative;
 		display: flex;
 		z-index: 2;
 		.title{
-			min-height: 70px;
+			min-height: 40px;
             width: 100%;
             flex-grow: 1;
 			font-weight: bold;
@@ -75,7 +78,7 @@ import { useTemplateRef } from 'vue';
 	}
 	
 	.inner{
-		height: calc(100% - 110px);
+		height: calc(100% - 40px);
 		width: 100%;
 		position: relative;
 		z-index: 1;

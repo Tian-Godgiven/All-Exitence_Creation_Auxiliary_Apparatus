@@ -14,6 +14,7 @@ $focusingColor:rgb(220,220,220);
 $textNumColor: rgba($antiBgColor,0.35);
 $textColor: rgb(0,0,0);
 $previewText: rgb(120, 120, 120);
+$dangerColor: rgb(190, 45, 45); // destructive actions and error emphasis
 
 $buttonColor:rgb(50,50,50);
 
@@ -28,3 +29,5 @@ $listItemShadow:0 0 10px rgb(107, 107, 107);
 $downShadow:rgb(185, 185, 185) 0 4px 8px;
 //周围阴影
 $groundShadow:rgb(98, 98, 98) 0 0 8px;
+//菜单阴影
+$menuShadow:0 6px 16px rgba($antiBgColor,0.12);

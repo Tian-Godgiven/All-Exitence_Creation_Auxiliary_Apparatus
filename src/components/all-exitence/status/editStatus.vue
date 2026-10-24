@@ -1,8 +1,13 @@
 <template>
-<div class="editStatus">
+<div class="editStatus" :class="{inline}">
+	<div v-if="inline" class="statusHeader">
+		<slot name="header"></slot>
+		<Button class="button" @click="switchSetting" icon="setting"></Button>
+	</div>
 	<div class="status">
 		<StatusName :status :fullStatus/>
-		<StatusValue :target :status :fullStatus/>
+		<StatusValue class="statusValue" :target :status :fullStatus/>
+		<Button v-if="inline" class="button" bordered @click="clickConfirm" :name="confirmText"></Button>
 	</div>
 	
 	<!-- 属性类型与设置 -->
@@ -14,8 +19,8 @@
 			:list="valueTypeList">
 		</Selector>
 
-		<Button class="button" bordered @click="switchSetting" name="设置"></Button>
-		<Button class="button" bordered @click="clickConfirm" :name="confirmText"></Button>
+		<Button v-if="!inline" class="button" bordered @click="switchSetting" name="设置"></Button>
+		<Button v-if="!inline" class="button" bordered @click="clickConfirm" :name="confirmText"></Button>
 	</div>
 
 	<!-- 额外输入栏 -->
@@ -51,11 +56,13 @@ import { Type } from '@/class/Type';
 	const {confirm,
 		confirmText,
 		banValueType,
+		inline=false,
 		target,
 		status:oldStatus,
 		fullStatus:oldFullStatus
 	} = defineProps<{
 		banValueType?:string[],
+		inline?:boolean,
 		status?:S,
 		target:Exitence|Type
 		fullStatus:Status
@@ -144,10 +151,42 @@ import { Type } from '@/class/Type';
 		min-height: 40px;
 		width: 100%;
 		.statusValue{
-			width: calc(100% - 150px);
+			flex: 1 1 0;
+			width: auto;
+			min-width: 0;
 		}
-		:deep(.statusName){
-			width: 150px;
+		:deep(.statusLabel){
+			flex: 0 0 150px;
+		}
+	}
+	&.inline{
+		.statusHeader{
+			min-height: 42px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			font-weight: 600;
+			.button{
+				width: 34px;
+				height: 34px;
+				padding: 6px;
+			}
+		}
+		.status{
+			align-items: stretch;
+			:deep(.statusLabel){ flex: 0 0 150px; }
+			.statusValue{ flex: 1 1 0; width: auto; min-width: 0; }
+			.button{
+				flex: 0 0 auto;
+				min-width: 72px;
+				height: 40px;
+				margin-left: 8px;
+				padding: 0 12px;
+			}
+		}
+		.statusSet{
+			height: 54px;
+			.selectValueType{ width: 100%; }
 		}
 	}
 	.statusSet{
@@ -183,6 +222,14 @@ import { Type } from '@/class/Type';
 			margin-left: 0;
 			padding: 0 12px;
 		}
+	}
+}
+
+@media (max-width: 899px){
+	.editStatus.inline .status{
+		flex-wrap: wrap;
+		:deep(.statusLabel){ flex-basis: 130px; }
+		.button{ margin-left: auto; }
 	}
 }
 	
