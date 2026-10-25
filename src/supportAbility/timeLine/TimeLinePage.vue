@@ -621,7 +621,7 @@ onBeforeUnmount(() => {
     border-left: 0;
     border-radius: 0 5px 5px 0;
     background: $bgColor;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.12);
+    box-shadow: $sidebarToggleShadow;
 }
 
 .sideBar.collapsed + .sidebarToggle {
@@ -766,6 +766,7 @@ header .button {
     position: relative;
     flex: 1;
     overflow: hidden;
+    background: $paperCanvasColor;
     cursor: grab;
     touch-action: none;
 }
@@ -830,7 +831,7 @@ header .button {
 
 .connections .connectionLine {
     fill: none;
-    stroke: rgba($previewText, 0.62);
+    stroke: $timeLineConnectionColor;
     stroke-width: 1.5px;
     vector-effect: non-scaling-stroke;
     pointer-events: none;
@@ -1001,7 +1002,7 @@ header .button {
     transform: translateX(-50%);
     border: 1px solid $bgColor70;
     background: $bgColor;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
+    box-shadow: $expandedCardShadow;
 }
 
 .expandedCard :deep(.textArea) {

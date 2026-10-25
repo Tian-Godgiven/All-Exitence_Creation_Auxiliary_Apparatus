@@ -68,6 +68,8 @@ export const tauriCoreProjectRepository: CoreProjectRepository = {
     assertCurrentFormat(articlesPath, project.articles);
     assertCurrentFormat(exitencePath, project.exitence);
 
+    await repositoryFileSystem.ensureDirectory(repositoryPaths.projectDirectory(projectKey));
+
     await Promise.all([
       repositoryFileSystem.writeTextAtomically(metadataPath, serializeDocument(project.metadata)),
       repositoryFileSystem.writeTextAtomically(articlesPath, serializeDocument(project.articles)),

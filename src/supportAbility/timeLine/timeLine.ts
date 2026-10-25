@@ -100,7 +100,7 @@ export const timeLineTrashProjectFeature: ProjectFeature<TimeLineTrashRecord[]> 
 
 export const timeLineSignUpItem: SupportAbilitySignUpItem = {
     name: "timeLine",
-    init: () => addToRightPage({ name: "时间线", icon: "timeLine", click: showTimeLinePage }, "可视化"),
+    init: () => addToRightPage({ key: "timeline", name: "时间线", icon: "timeLine", click: showTimeLinePage }),
     recycleBinEntry: { name: "时间线回收站", click: showTimeLineTrashPage },
 }
 

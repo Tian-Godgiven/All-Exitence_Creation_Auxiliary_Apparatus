@@ -1,6 +1,18 @@
 //颜色
 $bgColor: rgb(255, 255, 255); //背景颜色
+$paperCanvasColor: #f8f6ef; //自由画布的纸张底色
 $antiBgColor: rgb(0,0,0); //反色
+
+// Semantically named UI colors. New interface styles should use these instead of literal values.
+$overlayColor: $antiBgColor;
+$scrollbarColor: rgb(34, 34, 34);
+$resizeHandleColor: rgb(138, 138, 138);
+$floatingSurfaceShadow: rgba($antiBgColor, 0.18);
+$raisedSurfaceShadow: rgba($antiBgColor, 0.26);
+$subtleSurfaceShadow: rgba($antiBgColor, 0.12);
+$sidebarToggleShadow: 2px 0 5px rgba($antiBgColor, 0.12);
+$expandedCardShadow: 0 4px 14px rgba($antiBgColor, 0.16);
+$paperNoteColor: $bgColor;
 
 $back85:lightgrey; 
 $bgColor90:rgb(230,230,230);
@@ -16,6 +28,10 @@ $textNumColor: rgba($antiBgColor,0.35);
 $textColor: rgb(0,0,0);
 $previewText: rgb(120, 120, 120);
 $dangerColor: rgb(190, 45, 45); // destructive actions and error emphasis
+$canvasConnectionColor: rgba($previewText, 0.55);
+$timeLineConnectionColor: rgba($previewText, 0.62);
+$connectionPreviewColor: rgba($antiBgColor, 0.7);
+$selectionBoxFillColor: rgba($antiBgColor, 0.08);
 
 $buttonColor:rgb(50,50,50);
 

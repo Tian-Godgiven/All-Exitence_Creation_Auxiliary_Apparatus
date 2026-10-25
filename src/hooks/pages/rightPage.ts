@@ -1,16 +1,11 @@
-import { RightAbility, RightAbilityGroupName, rightAbilityList } from "../../static/list/rightAbilityList";
+import { RightAbility, rightAbilityList } from "../../static/list/rightAbilityList";
 
 /**
  * 
  * @param ability
- * @param groupName 
  */
-export function addToRightPage(ability: RightAbility, groupName:RightAbilityGroupName) {
-    const group = rightAbilityList.value[groupName]
-    if(group){
-        group.push(ability)
-    }
-    else{
-        rightAbilityList.value[groupName] = [ability]
-    }
+export function addToRightPage(ability: RightAbility) {
+    const existing = rightAbilityList.value.find((item) => item.key === ability.key)
+    if(existing) Object.assign(existing, ability)
+    else rightAbilityList.value.push(ability)
 }

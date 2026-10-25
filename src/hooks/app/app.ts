@@ -26,6 +26,11 @@ export async function initApp(){
 
 //初始化辅助功能
 async function initSupportAbility(){
+    const names = new Set<string>()
+    for(const ability of supportAbilityList){
+        if(names.has(ability.name)) throw new Error(`辅助功能注册名称重复：${ability.name}`)
+        names.add(ability.name)
+    }
     for(const ability of supportAbilityList){
         await ability.init()
     }

@@ -9,6 +9,7 @@ Use the existing shared form components before adding native inputs or new wrapp
 - `src/components/other/input/BoxInput.vue` (`BoxInput`): click-to-edit display field backed by the multiline editor. Use for compact inline editing, not ordinary form fields.
 - `src/components/other/textArea/MultiLineInput.vue` (`MultiLineInput`): plain multiline contenteditable input with `v-model` and placeholder support.
 - `src/components/other/textArea/textArea.vue` (`TextArea`): article-oriented editor supporting structured content, input suggestions, and writing assistance. Do not use as a generic form textarea.
+- `element-plus` (`ElColorPicker`): use for user-selected color values. Import `ElColorPicker` explicitly in the SFC because the project does not register Element Plus components globally; use `:teleported="false"` inside a project popup.
 
 ## Related Controls
 
@@ -20,6 +21,7 @@ Use the existing shared form components before adding native inputs or new wrapp
 ## Visual Conventions
 
 - Use the shared palette in `src/static/style/variables/color.scss`. Destructive actions such as delete should use the semantic `$dangerColor`; for `showControlPanel`, set `danger: true` on the corresponding option so the shared menu renders its label in that color.
+- Put reusable interface colors, translucencies, and shadows in `color.scss` with names that describe their purpose. New UI styles should consume those semantic variables instead of literal color values. Keep user-configurable palette entries and business/content-specific colors in their own data or feature styles.
 - An auxiliary ability that owns a feature-specific trash area can provide `recycleBinEntry` on its `SupportAbilitySignUpItem`. The public recycle bin renders the entry; the ability owns its trash data, recovery, and permanent deletion behavior.
 
 ## Component Discovery Rule
@@ -30,3 +32,8 @@ Use the existing shared form components before adding native inputs or new wrapp
 ## Usage Rule
 
 For new forms, prefer `DownLineInput` for text/numbers and `Selector` for option lists. Keep validation and data normalization in the feature form when the shared component does not expose the needed native attributes. Avoid raw `<input>` and `<select>` unless a specialized interaction requires native behavior and the reason is clear.
+
+## Feature Registration
+
+- Each `SupportAbilitySignUpItem.name` in `src/static/list/supportAbilityList.ts` must be unique. Application startup validates this before invoking feature initialization.
+- Register an item in the right tool library with `addToRightPage({ key, name, icon, click })`. `key` is a stable unique identifier; re-registering the same key updates the existing entry rather than rendering a duplicate.

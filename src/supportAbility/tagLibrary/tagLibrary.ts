@@ -48,10 +48,11 @@ export const tagLibraryProjectFeature:ProjectFeature<TagGroup[]> = {
 //初始化：右侧页面按键
 function initTagLibrary(){
     addToRightPage({
+        key:"tag-library",
         "name":"标签库",
         "click":()=>showManagePage(),
         "icon":"tagLibrary"
-    },"客制化")
+    })
 }
 
 //同步项目读取相应数据，无文件时也会创建对应项目的标签库文件

@@ -6,12 +6,13 @@ export const recycleBinItem: SupportAbilitySignUpItem = {
   name: "recycleBin",
   init: () => {
     addToRightPage({
+      key: "recycle-bin",
       name: "回收站",
       icon: "delete",
       click: () => {
         void showRecycleBin();
       },
-    }, "其他");
+      });
   },
   call: () => {
     void showRecycleBin();

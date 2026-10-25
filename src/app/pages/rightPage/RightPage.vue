@@ -39,7 +39,7 @@ import Button from '@/components/global/button.vue';
 	onBeforeUnmount(() => document.removeEventListener("pointerdown", closeOnOutsidePointerDown, true))
 	
 	//功能列表
-	const abilities = computed(()=>Object.values(rightAbilityList.value).flat())
+	const abilities = computed(()=>rightAbilityList.value)
 	//标题栏按键
 	const buttons = [
 		{"name":"设置",click:()=>callSupportAbility("appSetting"),icon:"setting"}

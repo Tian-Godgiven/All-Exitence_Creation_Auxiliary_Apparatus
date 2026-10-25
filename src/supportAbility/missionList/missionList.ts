@@ -71,10 +71,11 @@ export async function initMissionList(){
 
     //向右侧页面添加按键
     addToRightPage({
+          key:"mission-list",
         name:"任务列表",
         click:()=>showMissionListPopUp(),
         icon:"missionList"
-    },"创作计划")
+      })
 }
 
 //保存任务列表

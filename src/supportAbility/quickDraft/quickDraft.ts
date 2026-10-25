@@ -1,200 +1,160 @@
-import { addToRightPage } from "@/hooks/pages/rightPage"
-import { TextAreaContent } from "@/hooks/expression/textAreaContent"
-import { tryReadFileAtPath, writeFileAtPath } from "@/hooks/fileSysytem"
-import { reactive, ref, toRaw } from "vue"
-import QuickDraft from "./popUp/QuickDraft.vue"
-import { openMainToolPage } from "@/hooks/pages/mainPage/toolPage"
-import { nanoid } from "nanoid"
-import FloatWindow from "./popUp/FloatWindow.vue"
-import { addFloatWindow, deleteFloatWindow} from "@/hooks/pages/floatWindow"
-import type { SupportAbilitySignUpItem } from "@/static/list/supportAbilityList"
-import type { ProjectFeature } from "@/repository/projectFeature"
+import { reactive, toRaw, watch } from "vue"
 import { cloneDeep } from "lodash"
+import { nanoid } from "nanoid"
+import { addToRightPage } from "@/hooks/pages/rightPage"
+import { addFloatWindow } from "@/hooks/pages/floatWindow"
+import { openMainToolPage } from "@/hooks/pages/mainPage/toolPage"
+import type { TextAreaContent } from "@/hooks/expression/textAreaContent"
+import type { ProjectFeature } from "@/repository/projectFeature"
+import type { SupportAbilitySignUpItem } from "@/static/list/supportAbilityList"
+import { tauriFeatureRepository } from "@/repository/tauriFeatureRepository"
+import { nowProjectPath } from "@/hooks/project/project"
+import QuickDraftPage from "./QuickDraftPage.vue"
+import QuickDraftFloat from "./QuickDraftFloat.vue"
 
-//注册对象
-export const quickDraftItem:SupportAbilitySignUpItem = {
-    name:"quickDraft",
-    init:()=>initQuickDraft(),
-    save:(projectPath)=>saveQuickDraft(projectPath),
-    //同步and创建
-    syncProject:async(projectPath)=>await changeQuickDraft(projectPath)
-}
-
-//类
-export type QuickDraftItem = {
-    inner:TextAreaContent[],
-    time:number,
-    __key:string
-}
-export type QuickDraft = {
-    items:QuickDraftItem[],
-    setting:{
-        focusingItem:string | null,
-        floatWindow:{
-            show:boolean,
-            position:[number,number] //top和left，单位px
-        }
-    }
-}
-//默认对象
-const idleQuickDraft:QuickDraft = {
-    items:[],
-    setting:{
-        focusingItem:null,
-        floatWindow:{
-            show:true,
-            position:[100,100]
-        }
-    }
+export type QuickDraftNote = {
+    __key: string,
+    inner: TextAreaContent[],
+    colorKey: string | null,
+    position: { x: number, y: number },
+    size: { width: number, height: number },
+    updatedAt: number,
 }
 
-//初始化:添加按键即可，切换项目的同时会切换至对应的暂记版
-export const nowQuickDraft = reactive<QuickDraft['items']>([])
-export const nowQuickDraftSetting = reactive<QuickDraft['setting']>(idleQuickDraft.setting)
-export const quickDraftProjectFeature:ProjectFeature<QuickDraft> = {
-    key:"quick-draft",
-    createDefault:()=>cloneDeep(idleQuickDraft),
-    load:(data)=>{
-        nowQuickDraft.length = 0
-        nowQuickDraft.push(...cloneDeep(data.items))
-        Object.assign(nowQuickDraftSetting,cloneDeep(data.setting))
-        const focusedKey = data.setting.focusingItem
-        focusingItem.value = focusedKey
-            ? nowQuickDraft.find((item)=>item.__key == focusedKey) ?? null
-            : null
-        loadQuickDraftFloatWindow(nowQuickDraftSetting.floatWindow)
+export type QuickDraftColor = { __key: string, name: string, value: string }
+
+export type QuickDraftConnection = { __key: string, from: string, to: string }
+
+export type QuickDraftBoard = {
+    notes: QuickDraftNote[],
+    connections: QuickDraftConnection[],
+    viewport: { x: number, y: number, scale: number },
+}
+
+const defaultBoard: QuickDraftBoard = { notes: [], connections: [], viewport: { x: 0, y: 0, scale: 1 } }
+const defaultColors: QuickDraftColor[] = [
+    { __key: "yellow", name: "黄色", value: "#d5a928" },
+    { __key: "blue", name: "蓝色", value: "#5289b9" },
+    { __key: "green", name: "绿色", value: "#67a875" },
+    { __key: "pink", name: "粉色", value: "#c77194" },
+]
+export const nowQuickDraftBoard = reactive<QuickDraftBoard>(cloneDeep(defaultBoard))
+export const nowGlobalQuickDraftBoard = reactive<QuickDraftBoard>(cloneDeep(defaultBoard))
+export const nowQuickDraftColors = reactive<QuickDraftColor[]>(cloneDeep(defaultColors))
+const globalFeatureKey = "quick-draft-inbox"
+let canSaveGlobalBoard = false
+let globalSaveTimer: ReturnType<typeof setTimeout> | null = null
+const remoteProjectBoards = new Map<string, QuickDraftBoard>()
+const remoteProjectSaveTimers = new Map<string, ReturnType<typeof setTimeout>>()
+let quickDraftFloatWindowKey: string | null = null
+type GlobalQuickDraftData = { board: QuickDraftBoard, colors: QuickDraftColor[] }
+
+export const quickDraftProjectFeature: ProjectFeature<QuickDraftBoard> = {
+    key: "quick-draft",
+    createDefault: () => cloneDeep(defaultBoard),
+    load: (data) => {
+        // The former linear quick-draft format is intentionally not migrated.
+        Object.assign(nowQuickDraftBoard, cloneDeep(normalizeBoard(data)))
     },
-    snapshot:()=>({
-        items:cloneDeep(toRaw(nowQuickDraft)),
-        setting:{
-            ...cloneDeep(toRaw(nowQuickDraftSetting)),
-            focusingItem:focusingItem.value?.__key ?? null
-        }
-    })
-}
-function initQuickDraft(){
-    //添加右侧功能按键
-    addToRightPage({
-        "icon":"quickDraft",
-        "click":()=>showQuickDraftPage(),
-        "name":"暂记版"
-    },"灵感迸发")
-}
-//保存 
-async function saveQuickDraft(projectPath:string|null){
-    if(projectPath==null)return;
-    //保存当前聚焦对象的key
-    const focusingKey = focusingItem.value?.__key ?? null
-    nowQuickDraftSetting.focusingItem = focusingKey
-    //保存设置和item
-    const dataPath = `${projectPath}/data`
-    await writeFileAtPath(dataPath,"quickDraft.json",{
-        items:toRaw(nowQuickDraft),
-        setting:toRaw(nowQuickDraftSetting)
-    })
-}
-//切换暂记版
-export async function changeQuickDraft(projectPath:string){
-    //切换到对应项目的暂记版
-    const dataPath = projectPath+"/data"
-    //尝试读取项目暂记版，失败时创建默认暂记版
-    let quickDraft:QuickDraft = await tryReadFileAtPath(
-        dataPath,"quickDraft.json",true,idleQuickDraft)
-    //切换当前暂记版
-    nowQuickDraft.length = 0 //清空数组内容
-    Object.assign(nowQuickDraft,quickDraft.items)
-    Object.assign(nowQuickDraftSetting,quickDraft.setting)
-    //读取设置
-    const setting = quickDraft.setting
-    //读取记录的聚焦暂记对象
-    const focusingKey = setting.focusingItem
-    if(focusingKey){
-        const result = quickDraft.items.find((item)=>item.__key == focusingKey)
-        if(result)focusingItem.value = result
-    }
-    //加载或隐藏悬浮窗
-    loadQuickDraftFloatWindow(setting.floatWindow)
+    snapshot: () => cloneDeep(toRaw(nowQuickDraftBoard)),
 }
 
-//显示暂记版工具页
-export function showQuickDraftPage(){
-    ifFocusing.value = false
-    openMainToolPage({
-        name:"暂记版",
-        component:QuickDraft,
-        onClose:()=>{
-            ifFocusing.value = false
-        }
-    })
-}
-//加载暂记版悬浮窗
-export let floatWindowKey = ref<string|null>(null)
-export function loadQuickDraftFloatWindow(floatWindowSetting:QuickDraft["setting"]["floatWindow"]){
-    //显示:在app中添加悬浮窗
-    if(floatWindowSetting.show && floatWindowKey.value==null){
-        floatWindowKey.value = addFloatWindow(FloatWindow)
-    }
-    //隐藏:将已有的悬浮窗删除
-    else if(!floatWindowSetting.show && floatWindowKey.value){
-        deleteFloatWindow(floatWindowKey.value)
-        floatWindowKey.value = null
-    }
-}
-//控制悬浮窗的显示与否
-export function switchQuickDraftFloatWindow(show?:boolean,position?:[number,number]){
-    //修改设置项
-    if(show==null){
-        show = !nowQuickDraftSetting.floatWindow.show
-    }
-    nowQuickDraftSetting.floatWindow.show = show
-    if(!position){position = nowQuickDraftSetting.floatWindow.position}
-    else{
-        nowQuickDraftSetting.floatWindow.position = position
-    }
-    //重新加载悬浮窗
-    loadQuickDraftFloatWindow(nowQuickDraftSetting.floatWindow)
-}
-//控制悬浮窗的折叠与否
-export const foldFloatWindow = ref(true)
-export function switchFoldFloatWindow(bool?:boolean){
-    if(bool!=null)foldFloatWindow.value = bool
-    else{
-        foldFloatWindow.value = !foldFloatWindow.value
-    }
+export const quickDraftItem: SupportAbilitySignUpItem = {
+    name: "quickDraft",
+    init: async () => {
+        const data = normalizeGlobalData(await tauriFeatureRepository.loadGlobal<GlobalQuickDraftData | QuickDraftBoard>(globalFeatureKey))
+        Object.assign(nowGlobalQuickDraftBoard, cloneDeep(data.board))
+        nowQuickDraftColors.splice(0, nowQuickDraftColors.length, ...cloneDeep(data.colors))
+        canSaveGlobalBoard = true
+        addToRightPage({ key: "quick-draft", name: "便签夹", icon: "quickDraft", click: showQuickDraftPage })
+        if(!quickDraftFloatWindowKey) quickDraftFloatWindowKey = addFloatWindow(QuickDraftFloat)
+    },
 }
 
+export function showQuickDraftPage(){ openMainToolPage({ name: "便签夹", component: QuickDraftPage }) }
 
-//创建暂记块
-export function createQuickDraftItem(){
-    const quickDraftItem:QuickDraftItem = {
-        inner:[""],
-        time:Date.now(),
-        __key:nanoid()
-    }
-    return quickDraftItem
-}
-//添加暂记快
-export function addQuickDraftItem(item:QuickDraftItem,index?:number){
-    if(!index){
-        nowQuickDraft.push(item)
-        return;
-    }
-    nowQuickDraft.splice(index,0,item)
-}
-//删除暂记块
-export function deleteQuickDraftItem(item:QuickDraftItem){
-    const index = nowQuickDraft.indexOf(item)
-    if(index > -1){
-        nowQuickDraft.splice(index,1)
-    }
+export function createQuickDraftNote(position = { x: 80, y: 80 }){
+    return createQuickDraftNoteOnBoard(nowQuickDraftBoard, [""], position)
 }
 
-//显示聚焦页面
-export const ifFocusing = ref(false)
-export const focusingItem = ref<QuickDraftItem|null>(null)
-export function showFocusingPage(item?:QuickDraftItem){
-    ifFocusing.value = true
-    if(item){
-        focusingItem.value = item
+export function createQuickDraftNoteOnBoard(board: QuickDraftBoard, inner: TextAreaContent[], position = { x: 80, y: 80 }, colorKey = nowQuickDraftColors[0]?.__key ?? null){
+    const note: QuickDraftNote = {
+        __key: nanoid(), inner: cloneDeep(toRaw(inner)), colorKey, position, size: { width: 240, height: 150 }, updatedAt: Date.now(),
+    }
+    board.notes.push(note)
+    return note
+}
+
+export function deleteQuickDraftNote(note: QuickDraftNote){
+    const index = nowQuickDraftBoard.notes.indexOf(note)
+    if(index >= 0) nowQuickDraftBoard.notes.splice(index, 1)
+    nowQuickDraftBoard.connections = nowQuickDraftBoard.connections.filter(connection => connection.from !== note.__key && connection.to !== note.__key)
+}
+
+export function createQuickDraftConnection(board: QuickDraftBoard, from: QuickDraftNote, to: QuickDraftNote){
+    const exists = board.connections.some(connection =>
+        (connection.from === from.__key && connection.to === to.__key) ||
+        (connection.from === to.__key && connection.to === from.__key))
+    if(!exists) board.connections.push({ __key: nanoid(), from: from.__key, to: to.__key })
+}
+
+export function moveGlobalQuickDraftNote(note: QuickDraftNote, targetProjectKey: string){
+    const relatedConnections = nowGlobalQuickDraftBoard.connections.filter(connection => connection.from === note.__key || connection.to === note.__key)
+    return { relatedConnections, move: async () => {
+        const target = normalizeBoard(await tauriFeatureRepository.load<QuickDraftBoard>(targetProjectKey, "quick-draft"))
+        const copiedNote = cloneDeep(toRaw(note))
+        if(!target.notes.some(item => item.__key === copiedNote.__key)) target.notes.push(copiedNote)
+        await tauriFeatureRepository.save(targetProjectKey, "quick-draft", target)
+        if(nowProjectPath.value === targetProjectKey && !nowQuickDraftBoard.notes.some(item => item.__key === copiedNote.__key)) nowQuickDraftBoard.notes.push(copiedNote)
+        const cachedTarget = remoteProjectBoards.get(targetProjectKey)
+        if(cachedTarget && !cachedTarget.notes.some(item => item.__key === copiedNote.__key)) cachedTarget.notes.push(copiedNote)
+        nowGlobalQuickDraftBoard.notes.splice(nowGlobalQuickDraftBoard.notes.indexOf(note), 1)
+        nowGlobalQuickDraftBoard.connections = nowGlobalQuickDraftBoard.connections.filter(connection => !relatedConnections.includes(connection))
+        await saveGlobalBoard()
+    } }
+}
+
+export async function loadQuickDraftProjectBoard(projectKey: string){
+    if(nowProjectPath.value === projectKey) return nowQuickDraftBoard
+    const cached = remoteProjectBoards.get(projectKey)
+    if(cached) return cached
+    const board = reactive<QuickDraftBoard>(cloneDeep(normalizeBoard(await tauriFeatureRepository.load<QuickDraftBoard>(projectKey, "quick-draft"))))
+    remoteProjectBoards.set(projectKey, board)
+    watch(board, () => {
+        const timer = remoteProjectSaveTimers.get(projectKey)
+        if(timer) clearTimeout(timer)
+        remoteProjectSaveTimers.set(projectKey, setTimeout(() => {
+            remoteProjectSaveTimers.delete(projectKey)
+            void tauriFeatureRepository.save(projectKey, "quick-draft", cloneDeep(toRaw(board)))
+        }, 400))
+    }, { deep: true })
+    return board
+}
+
+function normalizeBoard(board: QuickDraftBoard | null | undefined): QuickDraftBoard{
+    const raw = board as any
+    return {
+        notes: (raw?.notes ?? []).map((note: any) => {
+            const { tags: _tags, color: oldColor, ...rest } = note
+            return {
+                ...rest,
+                colorKey: typeof note.colorKey === "string" ? note.colorKey : typeof oldColor === "string" ? oldColor : null,
+                size: note.size ?? { width: 240, height: 150 },
+            }
+        }),
+        connections: raw?.connections ?? [],
+        viewport: raw?.viewport ?? cloneDeep(defaultBoard.viewport),
     }
 }
+function normalizeGlobalData(data: GlobalQuickDraftData | QuickDraftBoard | null): GlobalQuickDraftData{
+    const raw = data as any
+    if(raw?.board) return { board: normalizeBoard(raw.board), colors: Array.isArray(raw.colors) ? raw.colors : cloneDeep(defaultColors) }
+    return { board: normalizeBoard(raw), colors: cloneDeep(defaultColors) }
+}
+async function saveGlobalBoard(){ await tauriFeatureRepository.saveGlobal(globalFeatureKey, { board: cloneDeep(toRaw(nowGlobalQuickDraftBoard)), colors: cloneDeep(toRaw(nowQuickDraftColors)) }) }
+
+watch([nowGlobalQuickDraftBoard, nowQuickDraftColors], () => {
+    if(!canSaveGlobalBoard) return
+    if(globalSaveTimer) clearTimeout(globalSaveTimer)
+    globalSaveTimer = setTimeout(() => { globalSaveTimer = null; void saveGlobalBoard() }, 400)
+}, { deep: true })
