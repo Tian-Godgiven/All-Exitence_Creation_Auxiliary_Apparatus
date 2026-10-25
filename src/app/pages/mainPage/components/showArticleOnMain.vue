@@ -14,6 +14,7 @@
             class="articleText"
             inputSuggestionList="all"
             v-model="article.inner"
+            :textStyleEnabled="true"
             :inputSupport="true"> 
         </textAreaVue>
     </template>
@@ -95,6 +96,7 @@ import type { TimeLineNode, TimeLineSegment } from '@/supportAbility/timeLine/ti
         padding-bottom: 100%;
         height: auto;
         overflow: visible;
+        overflow-x: clip;
     }
     .articleInfo { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
     .wordCount { padding: 5px 12px; border-radius: 6px; background: rgba($antiBgColor, 0.6); color: $bgColor; }

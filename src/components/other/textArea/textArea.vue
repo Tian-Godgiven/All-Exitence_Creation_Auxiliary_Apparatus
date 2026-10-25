@@ -9,6 +9,7 @@
     tabindex="0"
     @scrollend="scrollEnd"
     @click="clickEvent"
+    @contextmenu="textStyleContextMenu"
     @input="onInput"
     @blur="onBlur"
     @focus="onFocus">
@@ -22,8 +23,14 @@
     import { checkInputSuggestion, hideInputSuggestion, InputSuggestionList, showInputSuggester } from '@/supportAbility/inputSuggestion/suggester/inputSuggestion';
     import { addInputLast, addInputLastDiv, deleteInputLast } from '@/api/cursorAbility';
     import { findTargetDivs } from '@/hooks/findTargetDiv';
-    import { translateToFileContent, translateToFrontEndContent } from '@/hooks/expression/textAreaContent';
+    import { createTextStyleDom, getTextStyleData, isTextStyleDom, setTextStyleDomData, translateToFileContent, translateToFrontEndContent, type TextStyleData, type TextStyleSnapshot } from '@/hooks/expression/textAreaContent';
     import { toString } from 'lodash';
+    import { showPopUp } from '@/hooks/pages/popUp';
+    import { shallowRef } from 'vue';
+    import TextStyleMenu from '@/supportAbility/textStyle/TextStyleMenu.vue';
+    import TextStyleInstanceEditor from '@/supportAbility/textStyle/TextStyleInstanceEditor.vue';
+    import { makeTextStyleData, normalizeTextStyleSnapshot } from '@/supportAbility/textStyle/textStyle';
+    import type { TextStyleMaterial } from '@/supportAbility/textStyle/textStyle';
 
     const textArea = useTemplateRef('textArea');
     let showPlaceholder = ref(true) //当前是否显示placeholder
@@ -31,12 +38,13 @@
     let selectionRange:Range //记录光标上一次聚焦的位置
 
     //占位符，是否启用输入辅助，输入建议列表，输入模式
-    let {placeholder,inputSupport=false,inputSuggestionList,mode} = defineProps<{
+    let {placeholder,inputSupport=false,inputSuggestionList,mode,textStyleEnabled=false} = defineProps<{
         placeholder?:string,
         inputSupport?:boolean,
         inputSuggestionList?:InputSuggestionList|"project"|"global"|"all"|null,
         mode?:"string"|"all"|"disabled",
-        scrollEnd?:(e:Event)=>void
+        scrollEnd?:(e:Event)=>void,
+        textStyleEnabled?:boolean,
     }>()
     //初始值
     const content = defineModel<any>()
@@ -50,6 +58,88 @@
         getContentDom,
         deleteContent,
     })
+
+    function textStyleContextMenu(event: MouseEvent){
+        if(!textStyleEnabled || !textArea.value)return
+        const range = getCurrentRange()
+        const styles = getTextStyleTargets(event.target)
+        if((!range || range.collapsed) && styles.length === 0)return
+        event.preventDefault()
+        showPopUp({
+            vue: shallowRef(TextStyleMenu),
+            className: "controlPanelPopUp",
+            mask: false,
+            buttons: null,
+            size: { width: "auto", height: "auto" },
+            position: { x: `${event.clientX}px`, y: `${event.clientY}px` },
+            props: {
+                styles,
+                apply: (material: TextStyleMaterial) => configureNewTextStyle(range,styles[0]?.element,material),
+                edit: (style: { element: HTMLElement, data: TextStyleData }) => editTextStyle(style),
+                remove: (style: { element: HTMLElement, data: TextStyleData }) => removeTextStyle(style.element),
+            },
+        })
+    }
+
+    function getCurrentRange(): Range | null{
+        const selection = window.getSelection()
+        if(!selection?.rangeCount)return null
+        const range = selection.getRangeAt(0)
+        if(!textArea.value?.contains(range.commonAncestorContainer))return null
+        return range.cloneRange()
+    }
+
+    function getTextStyleTargets(target: EventTarget | null){
+        const styles: { element: HTMLElement, data: TextStyleData }[] = []
+        let current = target instanceof Node ? target : null
+        while(current && current !== textArea.value){
+            if(isTextStyleDom(current)){
+                const data = getTextStyleData(current)
+                if(data)styles.push({ element: current, data })
+            }
+            current = current.parentNode
+        }
+        return styles
+    }
+
+    function applyTextStyle(range: Range | null,target: HTMLElement | undefined,material: TextStyleMaterial){
+        if(!textArea.value)return
+        if(target && (!range || range.collapsed || !target.contains(range.commonAncestorContainer))){
+            range = document.createRange()
+            range.selectNodeContents(target)
+        }
+        if(!range)return
+        if(range.collapsed)return
+        const content = range.extractContents()
+        const data = makeTextStyleData(material,[])
+        const dom = createTextStyleDom(data)
+        dom.appendChild(content)
+        range.insertNode(dom)
+        syncContent()
+    }
+
+    function configureNewTextStyle(range: Range | null,target: HTMLElement | undefined,material: TextStyleMaterial){
+        showPopUp({ name: `添加${material.name}`, vue: shallowRef(TextStyleInstanceEditor), mask: true, buttons: [], size: { height: "auto" }, props: {
+            snapshot: material.snapshot,
+            saveSnapshot: (snapshot: TextStyleSnapshot) => applyTextStyle(range,target,{ ...material, snapshot }),
+        }})
+    }
+
+    function editTextStyle(style: { element: HTMLElement, data: TextStyleData }){
+        showPopUp({ name: `修改${style.data.snapshot.name}`, vue: shallowRef(TextStyleInstanceEditor), mask: true, buttons: [], size: { height: "auto" }, props: {
+            snapshot: style.data.snapshot,
+            saveSnapshot: (snapshot: TextStyleSnapshot) => {
+                setTextStyleDomData(style.element,{ ...style.data, materialKey: undefined, snapshot: normalizeTextStyleSnapshot(snapshot) })
+                syncContent()
+            },
+        }})
+    }
+
+    function removeTextStyle(dom: HTMLElement){
+        while(dom.firstChild)dom.parentNode?.insertBefore(dom.firstChild,dom)
+        dom.remove()
+        syncContent()
+    }
         
     //显示占位符
     function loadPlaceholder(){
@@ -316,4 +406,39 @@
             color:rgb(125, 125, 125)!important;
         }
     }
+</style>
+
+<style lang="scss">
+.textStyleContent.textStyleShake,
+.textStylePreview.textStyleShake {
+    display:inline-block;
+    animation:textStyleShake 0.18s infinite;
+    animation-delay:var(--text-style-shake-phase, 0s);
+}
+@keyframes textStyleShake {
+    0%,100% { transform:translate(0,0); }
+    12.5% { transform:translate(var(--text-style-shake-x-1), var(--text-style-shake-y-1)); }
+    25% { transform:translate(var(--text-style-shake-x-2), var(--text-style-shake-y-2)); }
+    37.5% { transform:translate(var(--text-style-shake-x-3), var(--text-style-shake-y-3)); }
+    50% { transform:translate(var(--text-style-shake-x-4), var(--text-style-shake-y-4)); }
+    62.5% { transform:translate(var(--text-style-shake-x-5), var(--text-style-shake-y-5)); }
+    75% { transform:translate(var(--text-style-shake-x-6), var(--text-style-shake-y-6)); }
+    87.5% { transform:translate(var(--text-style-shake-x-7), var(--text-style-shake-y-7)); }
+    94% { transform:translate(var(--text-style-shake-x-8), var(--text-style-shake-y-8)); }
+}
+.textStyleContent.textStyleProgressiveBlur,
+.textStylePreview.textStyleProgressiveBlur { position:relative; display:inline-block; }
+.textStyleProgressiveBlurContent {
+    display:inline-block;
+    filter:blur(var(--text-style-blur-start, 0px));
+    mask-image:linear-gradient(var(--text-style-blur-direction), black 0%, black calc(var(--text-style-blur-center) - 50%), transparent calc(var(--text-style-blur-center) + 50%), transparent 100%);
+}
+.textStyleProgressiveBlurOverlay {
+    position:absolute;
+    inset:0;
+    filter:blur(var(--text-style-blur));
+    mask-image:linear-gradient(var(--text-style-blur-direction), transparent 0%, transparent calc(var(--text-style-blur-center) - 50%), black calc(var(--text-style-blur-center) + 50%), black 100%);
+    pointer-events:none;
+    white-space:pre-wrap;
+}
 </style>

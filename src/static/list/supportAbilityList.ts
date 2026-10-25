@@ -6,6 +6,7 @@ import { searchSighUpItem } from "@/supportAbility/search/search";
 import { tagLibrarySignUpItem } from "@/supportAbility/tagLibrary/tagLibrary";
 import { recycleBinItem } from "@/supportAbility/recycleBin/recycleBin";
 import { timeLineSignUpItem } from "@/supportAbility/timeLine/timeLine";
+import { textStyleSignUpItem } from "@/supportAbility/textStyle/textStyle";
 
 export type SupportAbilitySignUpItem = {
     name:string,
@@ -25,5 +26,6 @@ export const supportAbilityList:SupportAbilitySignUpItem[] = [
     searchSighUpItem,
     tagLibrarySignUpItem,
     recycleBinItem,
-    timeLineSignUpItem
+    timeLineSignUpItem,
+    textStyleSignUpItem,
 ]

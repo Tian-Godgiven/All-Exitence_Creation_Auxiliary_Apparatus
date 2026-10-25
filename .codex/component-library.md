@@ -9,6 +9,8 @@ Use the existing shared form components before adding native inputs or new wrapp
 - `src/components/other/input/BoxInput.vue` (`BoxInput`): click-to-edit display field backed by the multiline editor. Use for compact inline editing, not ordinary form fields.
 - `src/components/other/textArea/MultiLineInput.vue` (`MultiLineInput`): plain multiline contenteditable input with `v-model` and placeholder support.
 - `src/components/other/textArea/textArea.vue` (`TextArea`): article-oriented editor supporting structured content, input suggestions, and writing assistance. Do not use as a generic form textarea.
+- `TextArea` accepts `:textStyleEnabled="true"` for article text that supports global text-style materials. A selected text range opens the material menu on right-click; existing styled content opens its style menu on right-click. Keep this disabled for ordinary structured inputs unless that feature explicitly supports text-style content.
+- `src/components/all-exitence/status/valueType/range/rangeValue.vue` (`RangeValue`): use as `v-model` with `min`, `max`, and `step` for numeric sliders outside the status system. It remains compatible with its existing `status` and `fullStatus` props.
 - `element-plus` (`ElColorPicker`): use for user-selected color values. Import `ElColorPicker` explicitly in the SFC because the project does not register Element Plus components globally; use `:teleported="false"` inside a project popup.
 
 ## Related Controls
