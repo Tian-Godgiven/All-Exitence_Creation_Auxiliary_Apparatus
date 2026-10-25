@@ -60,8 +60,9 @@ import { getStatusSettingValue } from '@/hooks/all-exitence/status';
 .inputBox{
 	display: flex;
 	width: 100%;
-	border:4px solid $bgColor70;
-	border-radius: 10px;
+	min-width: 0;
+	border: 1px solid $inputBorderColor;
+	border-radius: 4px;
 	box-sizing: border-box;
 	padding:5px 10px;
 	:deep(.textArea){
@@ -79,7 +80,7 @@ import { getStatusSettingValue } from '@/hooks/all-exitence/status';
 	}
 }
 .hoverBox:focus-within{
-	border-color: blue;
+	border-color: $bgColor40;
 };
 
 @media (min-width: 900px){

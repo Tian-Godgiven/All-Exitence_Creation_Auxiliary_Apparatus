@@ -78,54 +78,42 @@ import { getStatusSettingValue } from '@/hooks/all-exitence/status';
 
 <style scoped lang='scss'>
 .tagsValue{
+    width: 100%;
+    min-width: 0;
     &.editMode{
-        width: 70vw;
         box-sizing: border-box;
-        box-shadow: $groundShadow;
-        margin: 6px;
-        border-radius: 20px;
-        padding: 10px;
+        border: 1px solid $inputBorderColor;
+        border-radius: 4px;
+        padding: 8px;
     }
     .top{
         display: flex;
         .tagContainer{
             display: flex;
             flex-grow: 1;
+            min-width: 0;
             flex-wrap: wrap;
+            align-items: flex-start;
+            gap: 4px;
             .tag{
-                min-width: 50px;
-                border:2px solid black;
-                padding: 5px 10px;
-                margin: 5px 5px;
+                max-width: 100%;
+                border: 1px solid $bgColor85;
+                border-radius: 4px;
+                padding: 3px 8px;
+                background: $bgColor90;
+                color: $textColor;
+                :deep(.delete){
+                    width: 28px;
+                    height: 28px;
+                }
             }
         }
     }
     
     .edit,.close{
         flex-shrink: 0;
-        width: 50px;
-        height: 50px;
-    }
-}
-@media (min-width: 900px){
-    .tagsValue.editMode{
-        width: 100%;
-        margin: 0;
-        padding: 8px;
-        border-radius: 4px;
-        border: 1px solid $bgColor70;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-    }
-    .tagsValue{
-        .tagContainer .tag{
-            border-width: 2px;
-            padding: 3px 8px;
-            margin: 3px;
-        }
-        .edit,.close{
-            width: 28px;
-            height: 28px;
-        }
+        width: 28px;
+        height: 28px;
     }
 }
 </style>

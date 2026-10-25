@@ -75,6 +75,7 @@ import { Type } from '@/class/Type';
 	.value{
 		flex-grow: 1;
 		width: 100%;
+		min-width: 0;
 	}
 	.value.disabled{
 		pointer-events: none;

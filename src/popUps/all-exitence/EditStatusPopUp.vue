@@ -1,5 +1,8 @@
 <template>
 <EditStatus 
+	inline
+	ref="editorRef"
+	:showSettingButton="false"
 	:target
 	:confirm
 	:status
@@ -13,6 +16,7 @@
 	import Status from '@/interfaces/Status';
 	import EditStatus from '@/components/all-exitence/status/editStatus.vue';
 	import { closePopUp, PopUp } from '@/hooks/pages/popUp';
+	import { ref } from 'vue';
 	import { Exitence, ExitenceStatus } from '@/class/Exitence';
 import { Type } from '@/class/Type';
 	type Props = {
@@ -25,6 +29,12 @@ import { Type } from '@/class/Type';
 
 	// 编辑对象与编辑对象的属性等数据
 	const {props,popUp,returnValue} = defineProps<{props:Props,popUp:PopUp,returnValue:(newStatus:Status|ExitenceStatus)=>void}>()
+	const editorRef = ref<{switchSetting:()=>void}>()
+	popUp.buttons?.unshift({
+		name:"属性设置",
+		icon:"setting",
+		click:()=>editorRef.value?.switchSetting()
+	})
 	let {
 		target,
 		status,
@@ -41,6 +51,13 @@ import { Type } from '@/class/Type';
 	
 	
 </script>
+
+<style scoped lang="scss">
+.editStatus{
+	border: 0;
+	padding: 12px;
+}
+</style>
 
 <style lang="scss" scoped>
 @use "@/static/style/components/inputs.scss";

@@ -1,13 +1,20 @@
 <template>
 <div class="editStatus" :class="{inline}">
-	<div v-if="inline" class="statusHeader">
+	<div v-if="inline && $slots.header" class="statusHeader">
 		<slot name="header"></slot>
-		<Button class="button" @click="switchSetting" icon="setting"></Button>
+		<Button v-if="showSettingButton" class="settingButton" icon="setting" @click="switchSetting"></Button>
 	</div>
+	<StatusEditorLayout v-if="inline" :confirmText @confirm="clickConfirm">
+		<template #name><StatusName :status :fullStatus/></template>
+		<template #value><StatusValue :target :status :fullStatus/></template>
+		<template #type>
+			<Selector v-model="valueType" placeholder="选择类型" :list="valueTypeList"/>
+		</template>
+	</StatusEditorLayout>
+	<template v-else>
 	<div class="status">
 		<StatusName :status :fullStatus/>
 		<StatusValue class="statusValue" :target :status :fullStatus/>
-		<Button v-if="inline" class="button" bordered @click="clickConfirm" :name="confirmText"></Button>
 	</div>
 	
 	<!-- 属性类型与设置 -->
@@ -19,9 +26,10 @@
 			:list="valueTypeList">
 		</Selector>
 
-		<Button v-if="!inline" class="button" bordered @click="switchSetting" name="设置"></Button>
-		<Button v-if="!inline" class="button" bordered @click="clickConfirm" :name="confirmText"></Button>
+		<Button class="button" bordered @click="switchSetting" name="设置"></Button>
+		<Button class="button" bordered @click="clickConfirm" :name="confirmText"></Button>
 	</div>
+	</template>
 
 	<!-- 额外输入栏 -->
 	<StatusBonus :status :fullStatus :target></StatusBonus>
@@ -43,6 +51,7 @@
 	import { getStatusSetting } from "@/static/list/settingList/status/statusSettingList";
 	import StatusValue from './StatusValue.vue';
 	import StatusName from './statusName.vue';
+	import StatusEditorLayout from './StatusEditorLayout.vue';
 	import { showQuickInfo } from '@/api/showQuickInfo';
 	import { cloneDeep } from 'lodash';
 	import Button from '@/components/global/button.vue';
@@ -57,12 +66,14 @@ import { Type } from '@/class/Type';
 		confirmText,
 		banValueType,
 		inline=false,
+		showSettingButton=true,
 		target,
 		status:oldStatus,
 		fullStatus:oldFullStatus
 	} = defineProps<{
 		banValueType?:string[],
 		inline?:boolean,
+		showSettingButton?:boolean,
 		status?:S,
 		target:Exitence|Type
 		fullStatus:Status
@@ -118,6 +129,7 @@ import { Type } from '@/class/Type';
 	function switchSetting(){
 		showSettingBox.value = !showSettingBox.value
 	}
+	defineExpose({switchSetting})
 	
 	//确认编辑内容
     const emit = defineEmits(["confirm"])
@@ -155,39 +167,6 @@ import { Type } from '@/class/Type';
 			width: auto;
 			min-width: 0;
 		}
-		:deep(.statusLabel){
-			flex: 0 0 150px;
-		}
-	}
-	&.inline{
-		.statusHeader{
-			min-height: 42px;
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			font-weight: 600;
-			.button{
-				width: 34px;
-				height: 34px;
-				padding: 6px;
-			}
-		}
-		.status{
-			align-items: stretch;
-			:deep(.statusLabel){ flex: 0 0 150px; }
-			.statusValue{ flex: 1 1 0; width: auto; min-width: 0; }
-			.button{
-				flex: 0 0 auto;
-				min-width: 72px;
-				height: 40px;
-				margin-left: 8px;
-				padding: 0 12px;
-			}
-		}
-		.statusSet{
-			height: 54px;
-			.selectValueType{ width: 100%; }
-		}
 	}
 	.statusSet{
 		display: flex;
@@ -202,6 +181,14 @@ import { Type } from '@/class/Type';
 			width: 20%;
 			height: 60px;
 		}
+	}
+	.statusHeader{
+		min-height: 42px;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		font-weight: 600;
+		.settingButton{ width: 34px; height: 34px; padding: 6px; }
 	}
 	
 }
@@ -225,13 +212,6 @@ import { Type } from '@/class/Type';
 	}
 }
 
-@media (max-width: 899px){
-	.editStatus.inline .status{
-		flex-wrap: wrap;
-		:deep(.statusLabel){ flex-basis: 130px; }
-		.button{ margin-left: auto; }
-	}
-}
 	
 	
 </style>

@@ -84,65 +84,45 @@ import SwitchExpand from '@/components/other/SwitchExpand.vue';
 .chooseTag{
     .inputTag{
         display: flex;
-        width: 80%;
+        width: 100%;
+        align-items: center;
+        gap: 6px;
+        .downLineInput{
+            flex: 1 1 auto;
+            min-width: 0;
+        }
         .button{
             flex-shrink: 0;
-            width: 50px;
-            height: 50px;
+            width: 32px;
+            height: 32px;
         }
     }
     .tagLibrary{
         .tagGroup{
             .tags{
-                margin-left: 20px;
+                margin-left: 0;
                 flex-wrap: wrap;
-                gap: 5px 10px;
+                gap: 4px;
                 display: flex;
                 .tag{
                     height: fit-content;
                     position: relative;
-                    padding: 5px 15px;
-                    border-radius: 10px;
-                    background-color: $bgColor40;
-                    color: white;
+                    padding: 3px 8px;
+                    border: 1px solid $bgColor85;
+                    border-radius: 4px;
+                    background-color: $bgColor90;
+                    color: $textColor;
+                    cursor: pointer;
+                    &:hover{ background-color: $bgColor85; }
                 }
             }
         }
     }
 }
 .separateLine{
-    margin: 10px;
-    height: 3px;
+    margin: 8px 0;
+    height: 1px;
 	background-color: $bgColor80;
 }
 
-@media (min-width: 900px){
-    .chooseTag{
-        .inputTag{
-            width: 100%;
-            align-items: center;
-            gap: 6px;
-            .downLineInput{
-                flex: 1 1 auto;
-                min-width: 0;
-            }
-            .button{
-                width: 32px;
-                height: 32px;
-            }
-        }
-        .tagLibrary .tagGroup .tags{
-            margin-left: 0;
-            gap: 4px 8px;
-            .tag{
-                padding: 3px 8px;
-                border-radius: 4px;
-            }
-        }
-    }
-    .separateLine{
-        margin: 8px 0;
-        height: 1px;
-    }
-}
 </style>

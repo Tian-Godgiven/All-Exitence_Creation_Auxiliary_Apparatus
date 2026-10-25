@@ -1,6 +1,7 @@
 <template>
 <div 
 	v-wave="{
+		disabled: noWave,
 		color:'grey',
 		initialOpacity: 0.5,
 		finalOpacity:0.2,
@@ -20,10 +21,11 @@
     import gsap from 'gsap';
 	import { unref, useTemplateRef} from 'vue';
     //禁用模式
-	const {disabled=false,longTap,click,waitAfter=0,duration=500} = defineProps<{
+	const {disabled=false,longTap,click,waitAfter=0,duration=500,noWave=false} = defineProps<{
 		waitAfter?:number,//长按时间超过该数值后，才开始计算长按时间
 		duration?:number,
 		disabled?:boolean,
+		noWave?:boolean,
 		longTap:(position?:{x:number,y:number})=>void,
 		click?:()=>void
 	}>()
@@ -47,7 +49,7 @@
 		touching = true
 		timeout = Date.now()
 		//如果设置了等待时间
-		if(waitAfter!==0||stopWave){
+		if(!noWave && (waitAfter!==0||stopWave)){
 			stopWave = false//只阻止一次
 			//阻止即时触发波动
 			e.stopImmediatePropagation()
@@ -92,7 +94,7 @@
 					longTap({x:e.clientX,y:e.clientY})
 				}
 				//长按时间不足，阻止进一步的动画
-				else if(waitAfter!==0 && timeDis>waitAfter){
+				else if(!noWave && waitAfter!==0 && timeDis>waitAfter){
 					stopWave = true
 					e.stopImmediatePropagation()
 					//移除蒙版元素,其在上方被定义为section标签

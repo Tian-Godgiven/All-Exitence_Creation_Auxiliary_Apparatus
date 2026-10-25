@@ -56,6 +56,7 @@ import { getStatusSettingValue } from '@/hooks/all-exitence/status';
 <style lang="scss" scoped>
 .inputValue{
 	width: 100%;
+	min-width: 0;
 	display: flex;
 	.textArea.withUnit{
 		width: auto;

@@ -174,7 +174,7 @@ export function showEditStatusPopUp<T extends Status|ExitenceStatus>({
     returnValue:(newStatus:T)=>void
 }){
     showPopUp({
-        name,
+        name: name ?? "编辑属性",
         mask:false,
         vueName:"updateStatus",
         buttons:[],
@@ -201,6 +201,7 @@ export function showCreateStatusPopUp({
 }){
     const status = createNewEmptyStatus()
     showPopUp({
+        name: "新增属性",
         ...popUpSet,
         vueName:"updateStatus",
         buttons:[],

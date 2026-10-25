@@ -62,7 +62,7 @@ import { computed, ref } from 'vue';
             overflow-wrap: anywhere;
             :deep(.textArea){
                 width: auto;
-                min-width: 1ch;
+                min-width: 4em;
             }
         }
         .separator{

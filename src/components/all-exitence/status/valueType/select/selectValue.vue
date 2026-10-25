@@ -1,6 +1,7 @@
 <template>
 	<div class="selectValue">
 		<ElSelect
+			popper-class="status-select-popper"
 		    v-model="status.value"
 		    :multiple="ifMultiple"
 			:clearable="true"
@@ -52,6 +53,22 @@ import { computed, ref } from 'vue';
 
 <style lang="scss" scoped>
 	.selectValue{
-		min-width: 200px;
+		width: 100%;
+		max-width: 600px;
+		min-width: 0;
+		--el-color-primary: #{$bgColor40};
+		--el-border-color: #{$inputBorderColor};
+		--el-border-color-hover: #{$bgColor40};
+		--el-text-color-regular: #{$textColor};
+		--el-text-color-placeholder: #{$previewText};
 	}
+</style>
+
+<style lang="scss">
+.status-select-popper.el-popper{
+	--el-color-primary: #{$bgColor40};
+	--el-fill-color-light: #{$bgColor90};
+	--el-text-color-regular: #{$textColor};
+	--el-border-color-light: #{$inputBorderColor};
+}
 </style>

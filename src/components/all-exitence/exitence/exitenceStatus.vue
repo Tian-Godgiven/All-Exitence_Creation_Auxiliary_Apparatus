@@ -1,6 +1,6 @@
 <template>
 <!-- 显示属性 -->
-<LongTap :duration="700" :wait-after="500" :long-tap="longTap" :key="key" class="exitenceStatus" :class="{noLabel:ifNoName}">
+<LongTap :duration="700" :wait-after="500" :long-tap="longTap" :key="key" no-wave class="exitenceStatus" :class="{noLabel:ifNoName}">
     <StatusName v-if="!ifNoName" :status :fullStatus :disabled="true" class="label"></StatusName>
     <!-- 属性值 -->
     <StatusValue :target="exitence" :status :fullStatus :disabled class="value"/>
