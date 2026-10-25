@@ -109,11 +109,11 @@ const timeLineHelp = {
     info: "右键时间线列表项可修改名称或删除时间线。\n\n在右侧片段列表新建时间片段；右键时间片段可创建节点、创建关系、编辑或删除片段。双击片段可在对应位置创建节点。\n\n拖动画布可平移，滚轮可缩放；点击片段列表项可定位片段。节点可拖动调整时间，右键节点可编辑、删除或跳转到文章。",
 }
 
-export function showTimeLinePage(){
+export function showTimeLinePage(target?: { timeLineKey: string, segmentKey: string, nodeKey: string }){
     openMainToolPage({
         name: "时间线",
         component: TimeLinePage,
-        props: { help: timeLineHelp },
+        props: { help: timeLineHelp, target },
         help: timeLineHelp,
     })
 }

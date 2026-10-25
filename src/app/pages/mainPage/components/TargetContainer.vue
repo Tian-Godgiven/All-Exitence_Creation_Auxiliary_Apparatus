@@ -86,20 +86,11 @@ import { useTemplateRef } from 'vue';
 	.info{
 		position: absolute;
 		display: flex;
-		align-items: center;
-		justify-content: center;
+		align-items: flex-end;
 		top:10px;
 		right:20px;
-		padding: 5px 12px;
-		border-top-left-radius: 50px;  /* 左上角圆角 */
-		border-top-right-radius: 50px; /* 右上角圆角 */
-		border-bottom-left-radius: 50px; /* 左下角圆角 */
-		border-bottom-right-radius: 50px; /* 右下角圆角 */
-		background-color: rgba($antiBgColor,0.6);
-		color: $bgColor;
-		height: 30px;
-		font-size: 20px;
-		text-align: center;
+		font-size: 13px;
+		text-align: right;
 		z-index: 2;
 	}
 }

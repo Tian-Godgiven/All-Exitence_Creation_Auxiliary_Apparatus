@@ -33,14 +33,17 @@
                                 <span class="tick" :class="{ major: (segment.axisStart + unit - 1) % 5 === 0, long: isTimeLineLongTick(segment, segment.axisStart + unit - 1) }" :style="{ left: `${(unit - 1) * segment.unitWidth}px` }"></span>
                                 <span v-if="(segment.axisStart + unit - 1) % 5 === 0 || isTimeLineLongTick(segment, segment.axisStart + unit - 1)" class="tickValue" :style="{ left: `${(unit - 1) * segment.unitWidth}px` }">{{ timeLineTickLabel(segment, segment.axisStart + unit - 1) }}</span>
                             </template>
-                            <button v-for="node in segment.nodes" :key="node.__key" class="node" :class="{ article: node.kind === 'article', selected: selectedNode?.node === node, range: node.end != null && node.end > node.start }" :style="nodeStyle(segment, node)" :data-timeline-node-key="node.__key" @pointerdown.stop="startNodeDrag($event, segment, node)" @click.stop="handleNodeClick(node, segment)" @dblclick.stop="openNodeArticle(node)" @contextmenu.stop.prevent="openNodeMenu($event, segment, node)"><span v-if="isRange(node)" class="rangeHandle start" @pointerdown.stop="resizeNodeRange($event, segment, node, 'start')" @click.stop></span><span v-if="node.kind === 'article'" class="nodeKind">文章</span><span class="nodeLabel">{{ nodeDisplayLabel(node) }}</span><span v-if="isRange(node)" class="rangeHandle end" @pointerdown.stop="resizeNodeRange($event, segment, node, 'end')" @click.stop></span></button>
+                            <button v-for="node in segment.nodes" :key="node.__key" class="node" :class="{ article: node.kind === 'article', selected: selectedNode?.node === node, range: isRange(node) }" :style="nodeStyle(segment, node)" :data-timeline-node-key="node.__key" @pointerdown.stop="startNodeDrag($event, segment, node)" @click.stop="handleNodeClick(node, segment)" @dblclick.stop="openNodeArticle(node)" @contextmenu.stop.prevent="openNodeMenu($event, segment, node)"><span v-if="node.kind === 'article'" class="nodeKind">文章</span><span class="nodeLabel">{{ nodeDisplayLabel(node) }}</span></button>
                             <template v-for="node in segment.nodes" :key="`${node.__key}-content`">
                                 <div v-if="expandedNodeKey === node.__key && node.kind === 'card' && hasNodeContent(node)" class="expandedCard" :style="expandedNodeStyle(segment, node)" :data-timeline-node-key="node.__key" @pointerdown.stop @dblclick.stop>
                                     <strong>{{ nodeDisplayLabel(node) }}</strong>
                                     <TextArea :model-value="node.content ?? []" mode="disabled" />
                                 </div>
                             </template>
-                            <span v-for="node in segment.nodes" :key="`${node.__key}-anchor`" class="nodeAnchor" :style="nodeAnchorStyle(segment, node)"></span>
+                            <template v-for="node in segment.nodes" :key="`${node.__key}-anchor`">
+                                <span class="nodeAnchor" :class="{ rangeHandle: isRange(node) }" :style="nodeAnchorStyle(segment, node, 'start')" @pointerdown.stop="isRange(node) && resizeNodeRange($event, segment, node, 'start')"></span>
+                                <span v-if="isRange(node)" class="nodeAnchor rangeHandle" :style="nodeAnchorStyle(segment, node, 'end')" @pointerdown.stop="resizeNodeRange($event, segment, node, 'end')"></span>
+                            </template>
                             <Button class="expandButton start" icon="add" name="向前扩张 50 单位" @click="expand(segment, 'start')" @dblclick.stop />
                             <Button class="expandButton end" icon="add" name="向后扩张 50 单位" @click="expand(segment, 'end')" @dblclick.stop />
                         </div>
@@ -64,7 +67,7 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, reactive, ref, watch } from "vue"
+import { nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from "vue"
 import Button from "@/components/global/button.vue"
 import TextArea from "@/components/other/textArea/textArea.vue"
 import { focusOnArticle, nowAllArticles } from "@/hooks/all-articles/allArticles"
@@ -82,8 +85,8 @@ import { createStoryTimeLine, createTimeLineConnection, createTimeLineNode, crea
 import type { StoryTimeLine, TimeLineConnection, TimeLineNode, TimeLineSegment } from "./timeLine"
 
 const timeLines = nowStoryTimeLines
-const { help } = defineProps<{ help: MainToolPageHelp }>()
-const selected = ref<StoryTimeLine | null>(timeLines[0] ?? null)
+const { help, target } = defineProps<{ help: MainToolPageHelp, target?: { timeLineKey: string, segmentKey: string, nodeKey: string } }>()
+const selected = ref<StoryTimeLine | null>(timeLines.find(item => item.__key === target?.timeLineKey) ?? timeLines[0] ?? null)
 const canvasRef = ref<HTMLElement>()
 const selectedSegment = ref<TimeLineSegment | null>(null)
 const selectedNode = ref<{ segment: TimeLineSegment, node: TimeLineNode } | null>(null)
@@ -338,8 +341,8 @@ function startSegmentDrag(event: PointerEvent, segment: TimeLineSegment){
     event.stopPropagation()
     const start = { x: event.clientX, y: event.clientY, position: { ...segment.position } }
     startDragging(event.pointerId, (moveEvent) => {
-        segment.position.x = start.position.x + (moveEvent.clientX - start.x) / canvasViewport.scale
-        segment.position.y = start.position.y + (moveEvent.clientY - start.y) / canvasViewport.scale
+        segment.position.x = Math.round((start.position.x + (moveEvent.clientX - start.x) / canvasViewport.scale) / 20) * 20
+        segment.position.y = Math.round((start.position.y + (moveEvent.clientY - start.y) / canvasViewport.scale) / 20) * 20
     })
 }
 function startNodeDrag(event: PointerEvent, segment: TimeLineSegment, node: TimeLineNode){
@@ -351,15 +354,17 @@ function startNodeDrag(event: PointerEvent, segment: TimeLineSegment, node: Time
         x: event.clientX,
         y: event.clientY,
         time: node.start,
+        end: node.end,
         offsetY: node.offsetY,
     }
     let moved = false
     startDragging(event.pointerId, (moveEvent) => {
         if(Math.hypot(moveEvent.clientX - start.x, moveEvent.clientY - start.y) > 3) moved = true
         const horizontalDelta = (moveEvent.clientX - start.x) / canvasViewport.scale / segment.unitWidth
-        node.start = Math.max(segment.axisStart, Math.min(segment.axisStart + segment.length, Math.round(start.time + horizontalDelta)))
+        const duration = start.end != null ? start.end - start.time : 0
+        node.start = Math.max(segment.axisStart, Math.min(segment.axisStart + segment.length - duration, Math.round(start.time + horizontalDelta)))
         node.offsetY = start.offsetY + (moveEvent.clientY - start.y) / canvasViewport.scale
-        if(node.end != null && node.end < node.start) node.end = node.start
+        if(start.end != null) node.end = node.start + duration
     }, () => {
         if(!moved) return
         suppressNodeClick = true
@@ -371,12 +376,14 @@ function startNodeDrag(event: PointerEvent, segment: TimeLineSegment, node: Time
     })
 }
 function resizeNodeRange(event: PointerEvent, segment: TimeLineSegment, node: TimeLineNode, edge: "start" | "end"){
+    if(event.button !== 0) return
     const track = (event.currentTarget as HTMLElement).closest(".track")
     if(!track || node.end == null) return
+    const fixedTime = edge === "start" ? node.end : node.start
     startDragging(event.pointerId, (moveEvent) => {
         const value = getTrackValue(moveEvent, track, segment)
-        if(edge === "start") node.start = Math.min(value, node.end!)
-        else node.end = Math.max(value, node.start)
+        node.start = Math.min(value, fixedTime)
+        node.end = Math.max(value, fixedTime)
     })
 }
 function getTrackValue(event: PointerEvent, track: Element, segment: TimeLineSegment){
@@ -489,9 +496,11 @@ function hasNodeContent(node: TimeLineNode){
 function expandedNodeStyle(segment: TimeLineSegment, node: TimeLineNode){
     const base = nodeStyle(segment, node)
     if("display" in base) return base
-    const left = `${(node.start - (segment.axisStart ?? 0)) * segment.unitWidth}px`
-    if(isNodeAboveRuler(node)) return { ...base, left, top: "auto", bottom: `${116 - node.offsetY}px` }
-    return { ...base, left, top: `${node.offsetY + 38}px` }
+    const center = isRange(node) ? (node.start + node.end!) / 2 : node.start
+    const left = `${(center - (segment.axisStart ?? 0)) * segment.unitWidth}px`
+    if(isNodeAboveRuler(node)) return { left, bottom: `${116 - node.offsetY}px` }
+    const element = Array.from(canvasRef.value?.querySelectorAll<HTMLElement>(".node[data-timeline-node-key]") ?? []).find(item => item.dataset.timelineNodeKey === node.__key)
+    return { left, top: `${node.offsetY + (element?.offsetHeight ?? 34) + 4}px` }
 }
 function deleteConnection(connection: TimeLineConnection){
     const timeLine = timeLines.find((item) => item.connections.includes(connection))
@@ -520,19 +529,20 @@ function connectionPath(connection: TimeLineConnection){
 }
 function connectionLabelPoint(connection: TimeLineConnection){ const from = connectionStartPoint(connection), to = connectionEndPoint(connection); return { x: (from.x + to.x) / 2, y: (from.y + to.y) / 2 - 8 } }
 function connectionLabel(connection: TimeLineConnection){ return connection.type === "parallel" ? "同时" : connection.gap ? `${connection.gap.value}${connection.gap.unit}后` : "之后" }
-function isRange(node: TimeLineNode){ return node.end != null && node.end > node.start }
+function isRange(node: TimeLineNode){ return node.end != null }
 function isNodeAboveRuler(node: TimeLineNode){ return node.offsetY < 55 }
 function nodeStyle(segment: TimeLineSegment, node: TimeLineNode){
     const axisStart = segment.axisStart ?? 0, axisEnd = axisStart + segment.length
     if(node.start > axisEnd || (node.end != null && node.end < axisStart)) return { display: "none" }
     const visibleStart = Math.max(axisStart, Math.min(axisEnd, node.start))
-    const left = (visibleStart - axisStart) * segment.unitWidth
-    const width = isRange(node) ? Math.max(1, Math.min(axisEnd, node.end!) - visibleStart) * segment.unitWidth : undefined
-    return width
-        ? { left: `${left}px`, top: `${node.offsetY}px`, width: `${width}px` }
+    const visibleEnd = isRange(node) ? Math.max(visibleStart, Math.min(axisEnd, node.end!)) : visibleStart
+    const left = ((visibleStart + visibleEnd) / 2 - axisStart) * segment.unitWidth
+    const width = isRange(node) ? Math.max(0, Math.min(axisEnd, node.end!) - visibleStart) * segment.unitWidth : undefined
+    return width != null
+        ? { left: `${left}px`, top: `${node.offsetY}px`, minWidth: `${width + 4}px` }
         : { left: `${left}px`, top: `${node.offsetY}px` }
 }
-function nodeAnchorStyle(segment: TimeLineSegment, node: TimeLineNode){
+function nodeAnchorStyle(segment: TimeLineSegment, node: TimeLineNode, edge: "start" | "end"){
     const axisStart = segment.axisStart ?? 0, axisEnd = axisStart + segment.length
     if(node.start > axisEnd || (node.end != null && node.end < axisStart)) return { display: "none" }
     const rulerY = 55
@@ -540,12 +550,25 @@ function nodeAnchorStyle(segment: TimeLineSegment, node: TimeLineNode){
     const top = node.offsetY < rulerY ? nodeBottom : rulerY
     const height = Math.max(8, node.offsetY < rulerY ? rulerY - nodeBottom : node.offsetY - rulerY)
     return {
-        left: `${(Math.max(axisStart, Math.min(axisEnd, node.start)) - axisStart) * segment.unitWidth}px`,
+        left: `${(Math.max(axisStart, Math.min(axisEnd, edge === "end" ? node.end! : node.start)) - axisStart) * segment.unitWidth}px`,
         top: `${top}px`,
         height: `${height}px`,
     }
 }
-onMounted(() => document.addEventListener("pointerdown", closeExpandedNodeOnOutsideClick, true))
+onMounted(() => {
+    document.addEventListener("pointerdown", closeExpandedNodeOnOutsideClick, true)
+    const segment = selected.value?.segments.find(item => item.__key === target?.segmentKey)
+    const node = segment?.nodes.find(item => item.__key === target?.nodeKey)
+    if(segment && node) nextTick(() => {
+        focusSegment(segment)
+        selectNode(segment, node)
+        if(canvasRef.value){
+            const rect = canvasRef.value.getBoundingClientRect()
+            canvasViewport.x = rect.width / 2 - (segment.position.x + (node.start - segment.axisStart) * segment.unitWidth) * canvasViewport.scale
+            canvasViewport.y = rect.height / 2 - (segment.position.y + node.offsetY) * canvasViewport.scale
+        }
+    })
+})
 onBeforeUnmount(() => {
     stopDragging?.()
     document.removeEventListener("pointerdown", closeExpandedNodeOnOutsideClick, true)
@@ -919,22 +942,21 @@ header .button {
     position: absolute;
     z-index: 2;
     max-width: 180px;
-    height: 34px;
+    min-height: 34px;
     padding: 5px 9px;
     box-sizing: border-box;
-    overflow: hidden;
+    overflow: visible;
     cursor: grab;
     transform: translateX(-50%);
     border: 1px solid $antiBgColor;
     background: $bgColor;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    white-space: normal;
+    overflow-wrap: anywhere;
 }
 
 .node.range {
-    min-width: 18px;
+    width: max-content;
     max-width: none;
-    transform: none;
     text-align: left;
 }
 
@@ -945,10 +967,13 @@ header .button {
     font-weight: 600;
 }
 
+.node.article.selected {
+    background: $bgColor90;
+}
+
 .nodeLabel {
     display: block;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    max-width: 160px;
 }
 
 .nodeKind {
@@ -992,19 +1017,11 @@ header .button {
 }
 
 .rangeHandle {
-    position: absolute;
-    top: 0;
-    bottom: 0;
+    z-index: 3;
     width: 8px;
+    background: linear-gradient(to right, transparent 3px, $antiBgColor 3px, $antiBgColor 5px, transparent 5px);
+    touch-action: none;
     cursor: ew-resize;
-}
-
-.rangeHandle.start {
-    left: 0;
-}
-
-.rangeHandle.end {
-    right: 0;
 }
 
 .expandButton {
