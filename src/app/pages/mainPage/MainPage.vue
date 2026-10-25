@@ -8,7 +8,8 @@
 			<Button v-for="(button) in buttons" 
 				@click="button.click"
 				:name="button.name"
-				:icon="button.icon"/>
+				:icon="button.icon"
+				:class="{ rightPageToggle: button.name === '辅助功能' }"/>
 		</div>
 	</div>
 	

@@ -33,7 +33,7 @@
                                 <span class="tick" :class="{ major: (segment.axisStart + unit - 1) % 5 === 0, long: isTimeLineLongTick(segment, segment.axisStart + unit - 1) }" :style="{ left: `${(unit - 1) * segment.unitWidth}px` }"></span>
                                 <span v-if="(segment.axisStart + unit - 1) % 5 === 0 || isTimeLineLongTick(segment, segment.axisStart + unit - 1)" class="tickValue" :style="{ left: `${(unit - 1) * segment.unitWidth}px` }">{{ timeLineTickLabel(segment, segment.axisStart + unit - 1) }}</span>
                             </template>
-                            <button v-for="node in segment.nodes" :key="node.__key" class="node" :class="{ selected: selectedNode?.node === node, range: node.end != null && node.end > node.start }" :style="nodeStyle(segment, node)" :data-timeline-node-key="node.__key" @pointerdown.stop="startNodeDrag($event, segment, node)" @click.stop="handleNodeClick(node, segment)" @dblclick.stop @contextmenu.stop.prevent="openNodeMenu($event, segment, node)"><span v-if="isRange(node)" class="rangeHandle start" @pointerdown.stop="resizeNodeRange($event, segment, node, 'start')" @click.stop></span>{{ nodeDisplayLabel(node) }}<span v-if="isRange(node)" class="rangeHandle end" @pointerdown.stop="resizeNodeRange($event, segment, node, 'end')" @click.stop></span></button>
+                            <button v-for="node in segment.nodes" :key="node.__key" class="node" :class="{ article: node.kind === 'article', selected: selectedNode?.node === node, range: node.end != null && node.end > node.start }" :style="nodeStyle(segment, node)" :data-timeline-node-key="node.__key" @pointerdown.stop="startNodeDrag($event, segment, node)" @click.stop="handleNodeClick(node, segment)" @dblclick.stop="openNodeArticle(node)" @contextmenu.stop.prevent="openNodeMenu($event, segment, node)"><span v-if="isRange(node)" class="rangeHandle start" @pointerdown.stop="resizeNodeRange($event, segment, node, 'start')" @click.stop></span><span v-if="node.kind === 'article'" class="nodeKind">文章</span><span class="nodeLabel">{{ nodeDisplayLabel(node) }}</span><span v-if="isRange(node)" class="rangeHandle end" @pointerdown.stop="resizeNodeRange($event, segment, node, 'end')" @click.stop></span></button>
                             <template v-for="node in segment.nodes" :key="`${node.__key}-content`">
                                 <div v-if="expandedNodeKey === node.__key && node.kind === 'card' && hasNodeContent(node)" class="expandedCard" :style="expandedNodeStyle(segment, node)" :data-timeline-node-key="node.__key" @pointerdown.stop @dblclick.stop>
                                     <strong>{{ nodeDisplayLabel(node) }}</strong>
@@ -220,12 +220,15 @@ function openNodeMenu(event: MouseEvent, segment: TimeLineSegment, node: TimeLin
     const options = [{ text: "编辑节点", click: () => editNode(segment, node) }]
     const article = node.target?.type === "article" ? findArticle(node.target.key) : undefined
     if(article){
-        options.push({ text: "跳转到文章", click: () => {
-            focusOnArticle(article, false)
-        } })
+        options.push({ text: "跳转到文章", click: () => openNodeArticle(node) })
     }
     options.push({ text: "删除节点", danger: true, click: () => deleteNode(segment, node) })
     showControlPanel({ option: options }, { x: event.clientX, y: event.clientY })
+}
+function openNodeArticle(node: TimeLineNode){
+    if(node.kind !== "article" || node.target?.type !== "article") return
+    const article = findArticle(node.target.key)
+    if(article) focusOnArticle(article, false)
 }
 function beginConnection(segment: TimeLineSegment){
     connectionStart.value = connectionStart.value === segment ? null : segment
@@ -486,7 +489,9 @@ function hasNodeContent(node: TimeLineNode){
 function expandedNodeStyle(segment: TimeLineSegment, node: TimeLineNode){
     const base = nodeStyle(segment, node)
     if("display" in base) return base
-    return { ...base, left: `${(node.start - (segment.axisStart ?? 0)) * segment.unitWidth}px`, top: `${node.offsetY + 38}px` }
+    const left = `${(node.start - (segment.axisStart ?? 0)) * segment.unitWidth}px`
+    if(isNodeAboveRuler(node)) return { ...base, left, top: "auto", bottom: `${116 - node.offsetY}px` }
+    return { ...base, left, top: `${node.offsetY + 38}px` }
 }
 function deleteConnection(connection: TimeLineConnection){
     const timeLine = timeLines.find((item) => item.connections.includes(connection))
@@ -516,6 +521,7 @@ function connectionPath(connection: TimeLineConnection){
 function connectionLabelPoint(connection: TimeLineConnection){ const from = connectionStartPoint(connection), to = connectionEndPoint(connection); return { x: (from.x + to.x) / 2, y: (from.y + to.y) / 2 - 8 } }
 function connectionLabel(connection: TimeLineConnection){ return connection.type === "parallel" ? "同时" : connection.gap ? `${connection.gap.value}${connection.gap.unit}后` : "之后" }
 function isRange(node: TimeLineNode){ return node.end != null && node.end > node.start }
+function isNodeAboveRuler(node: TimeLineNode){ return node.offsetY < 55 }
 function nodeStyle(segment: TimeLineSegment, node: TimeLineNode){
     const axisStart = segment.axisStart ?? 0, axisEnd = axisStart + segment.length
     if(node.start > axisEnd || (node.end != null && node.end < axisStart)) return { display: "none" }
@@ -930,6 +936,31 @@ header .button {
     max-width: none;
     transform: none;
     text-align: left;
+}
+
+.node.article {
+    overflow: visible;
+    border-radius: 5px;
+    background: transparent;
+    font-weight: 600;
+}
+
+.nodeLabel {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.nodeKind {
+    position: absolute;
+    top: -10px;
+    left: 3px;
+    padding: 0 3px;
+    background: $bgColor;
+    color: $previewText;
+    font-size: 0.72em;
+    font-weight: 400;
+    line-height: 1.2;
 }
 
 .expandedCard {

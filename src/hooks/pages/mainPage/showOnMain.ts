@@ -5,6 +5,7 @@ import { Type } from "@/class/Type"
 import { onNoContent, ProjectLastTarget } from "@/hooks/project/project"
 import { reactive } from "vue"
 import { focusOnArticle, getArticleByKey } from "@/hooks/all-articles/allArticles"
+import { closeMainToolPage } from "./toolPage"
 
 export type ShowOnMainItem = 
     {scrollTop:number} & (
@@ -95,6 +96,7 @@ type ShowOnMainTarget = {
 export function showTargetOnMain({type,target}:ShowOnMainTarget){
     //保存上一个对象的信息
     saveLastTargetOnMain()
+    if(type === "article" || type === "type" || type === "exitence") closeMainToolPage()
     //先找到该对象
     if(type == "exitence"){
         showExitenceOnMain(target)

@@ -1,5 +1,5 @@
 <template>
-<div class="rightPage" :style="{right:rightWidth}">
+<div ref="rightPageRef" class="rightPage" :style="{right:rightWidth}">
 	<div class="top">
 		<div class="title">工具库</div>
 		<div class="buttons">
@@ -17,8 +17,8 @@
 </template>
 
 <script setup lang="ts" name="RightPage">
-import { rightMaxWidth, rightShowWidth} from '@/hooks/pages/pageChange';
-import { computed } from 'vue';
+import { hidePage, rightMaxWidth, rightShowWidth} from '@/hooks/pages/pageChange';
+import { computed, onBeforeUnmount, onMounted, useTemplateRef } from 'vue';
 import { rightAbilityList } from '@/static/list/rightAbilityList';
 import Ability from './components/Ability.vue';
 import { callSupportAbility } from '@/hooks/app/app';
@@ -27,6 +27,16 @@ import Button from '@/components/global/button.vue';
 	let rightWidth = computed(()=>{
 		return (rightShowWidth.value - rightMaxWidth) +"px"
 	})
+	const rightPageRef = useTemplateRef("rightPageRef")
+	function closeOnOutsidePointerDown(event: PointerEvent){
+		if(rightShowWidth.value === 0) return
+		const target = event.target
+		if(!(target instanceof Element)) return
+		if(rightPageRef.value?.contains(target) || target.closest(".rightPageToggle")) return
+		hidePage("right")
+	}
+	onMounted(() => document.addEventListener("pointerdown", closeOnOutsidePointerDown, true))
+	onBeforeUnmount(() => document.removeEventListener("pointerdown", closeOnOutsidePointerDown, true))
 	
 	//功能列表
 	const abilities = computed(()=>Object.values(rightAbilityList.value).flat())

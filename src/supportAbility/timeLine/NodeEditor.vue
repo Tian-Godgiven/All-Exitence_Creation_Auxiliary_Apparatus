@@ -28,8 +28,8 @@ const props = defineProps<{
     returnValue?: (value: Pick<TimeLineNode, "kind" | "label" | "start" | "offsetY" | "end" | "target" | "content">) => void,
 }>()
 const kindOptions = [
-    { label: "文章引用", value: "article" },
-    { label: "内容卡片", value: "card" },
+    { label: "文章节点（双击跳转）", value: "article" },
+    { label: "内容卡片（点击展开）", value: "card" },
 ]
 const articleOptions = computed(() => {
     const articles: { value: string, label: string }[] = []
