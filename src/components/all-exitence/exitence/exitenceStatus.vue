@@ -60,10 +60,19 @@
     .exitenceStatus{
 		display: grid;
 		grid-template-columns: max-content minmax(0, 1fr);
-		align-items: center;
+		align-items: start;
 		gap: 12px;
 		.label{ min-width: 0; }
-		.value{ min-width: 0; }
+		.value{
+			min-width: 0;
+			min-height: 40px;
+			display: flex;
+			align-items: center;
+		}
+		:deep(.inputBox){
+			position: relative;
+			top: 2px;
+		}
 		&.noLabel{ grid-template-columns: minmax(0, 1fr); }
 	}
 	@media (max-width: 899px){

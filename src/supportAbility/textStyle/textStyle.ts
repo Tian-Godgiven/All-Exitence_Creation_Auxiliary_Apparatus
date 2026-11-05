@@ -4,7 +4,7 @@ import { addToRightPage } from "@/hooks/pages/rightPage"
 import { openMainToolPage } from "@/hooks/pages/mainPage/toolPage"
 import { tauriFeatureRepository } from "@/repository/tauriFeatureRepository"
 import type { SupportAbilitySignUpItem } from "@/static/list/supportAbilityList"
-import type { TextAreaContent, TextStyleBlurValue, TextStyleData, TextStyleDirection, TextStyleShakeDirection, TextStyleSnapshot, TextStyleShakeValue } from "@/hooks/expression/textAreaContent"
+import type { TextAreaContent, TextStyleBlurValue, TextStyleData, TextStyleDirection, TextStyleOffsetValue, TextStyleOpacityValue, TextStyleShakeDirection, TextStyleSnapshot, TextStyleShakeValue, TextStyleSpoilerValue } from "@/hooks/expression/textAreaContent"
 import { isTextStyleData, textStyleDirections } from "@/hooks/expression/textAreaContent"
 import { mapArticle, nowAllArticles } from "@/hooks/all-articles/allArticles"
 import TextStyleLibrary from "./TextStyleLibrary.vue"
@@ -20,15 +20,19 @@ export type TextStyleMaterial =
     | (TextStyleMaterialBase & { effect: "shake", snapshot: Extract<TextStyleSnapshot,{ effect: "shake" }> })
     | (TextStyleMaterialBase & { effect: "blur", snapshot: Extract<TextStyleSnapshot,{ effect: "blur" }> })
     | (TextStyleMaterialBase & { effect: "offset", snapshot: Extract<TextStyleSnapshot,{ effect: "offset" }> })
+    | (TextStyleMaterialBase & { effect: "opacity", snapshot: Extract<TextStyleSnapshot,{ effect: "opacity" }> })
+    | (TextStyleMaterialBase & { effect: "spoiler", snapshot: Extract<TextStyleSnapshot,{ effect: "spoiler" }> })
 
 const globalFeatureKey = "text-style-materials"
 const defaultMaterials: TextStyleMaterial[] = [
     { __key: "bold", name: "加粗", effect: "fontWeight", snapshot: { effect: "fontWeight", name: "加粗", value: 700 } },
     { __key: "italic", name: "斜体", effect: "italic", snapshot: { effect: "italic", name: "斜体", value: true } },
     { __key: "color", name: "颜色", effect: "color", snapshot: { effect: "color", name: "颜色", value: "#b44b4b" } },
-    { __key: "shake", name: "抖动", effect: "shake", snapshot: { effect: "shake", name: "抖动", value: { strength: 3.5, frequency: 5.5, regularity: 70, synchronized: true, directions: textStyleDirections.map(item=>item.value) } } },
+    { __key: "shake", name: "抖动", effect: "shake", snapshot: { effect: "shake", name: "抖动", value: { strength: 3.5, frequency: 5.5, regularity: 70, synchronized: false, directions: textStyleDirections.map(item=>item.value) } } },
     { __key: "blur", name: "模糊", effect: "blur", snapshot: { effect: "blur", name: "模糊", value: { amount: 1, startAmount: 0, progressive: false, direction: "right", center: 50 } } },
-    { __key: "offset", name: "错位", effect: "offset", snapshot: { effect: "offset", name: "错位", value: 3 } },
+    { __key: "offset", name: "错位", effect: "offset", snapshot: { effect: "offset", name: "错位", value: { amount: 3, seed: 0 } } },
+    { __key: "opacity", name: "透明", effect: "opacity", snapshot: { effect: "opacity", name: "透明", value: { opacity: 45, startOpacity: 100, progressive: false, direction: "right", center: 50 } } },
+    { __key: "spoiler", name: "防剧透", effect: "spoiler", snapshot: { effect: "spoiler", name: "防剧透", value: { reveal: "hover" } } },
 ]
 
 export const nowTextStyleMaterials = reactive<TextStyleMaterial[]>(cloneDeep(defaultMaterials))
@@ -56,6 +60,9 @@ export function snapshotFromMaterial(material: TextStyleMaterial): TextStyleSnap
     const snapshot = cloneDeep(material.snapshot)
     if(snapshot.effect === "shake")snapshot.value = normalizeShakeValue(snapshot.value)
     if(snapshot.effect === "blur")snapshot.value = normalizeBlurValue(snapshot.value)
+    if(snapshot.effect === "opacity")snapshot.value = normalizeOpacityValue(snapshot.value)
+    if(snapshot.effect === "spoiler")snapshot.value = normalizeSpoilerValue(snapshot.value)
+    if(snapshot.effect === "offset")snapshot.value = normalizeOffsetValue(snapshot.value)
     return snapshot
 }
 
@@ -110,18 +117,24 @@ function normalizeMaterials(data: TextStyleMaterial[] | null): TextStyleMaterial
         const snapshot = { ...material.snapshot, effect: defaultMaterial.effect, name: defaultMaterial.name } as TextStyleSnapshot
         if(snapshot.effect === "blur")snapshot.value = normalizeBlurValue(snapshot.value)
         if(snapshot.effect === "shake")snapshot.value = normalizeShakeValue(snapshot.value)
+        if(snapshot.effect === "opacity")snapshot.value = normalizeOpacityValue(snapshot.value)
+        if(snapshot.effect === "spoiler")snapshot.value = normalizeSpoilerValue(snapshot.value)
+        if(snapshot.effect === "offset")snapshot.value = normalizeOffsetValue(snapshot.value)
         return { ...defaultMaterial, snapshot } as TextStyleMaterial
     }) as TextStyleMaterial[]
 }
 
 export function makeTextStyleData(material: TextStyleMaterial,content: TextAreaContent[]): TextStyleData{
-    return { type: "textStyle", materialKey: material.__key, snapshot: snapshotFromMaterial(material), content }
+    return { type: "textStyle", scope: "text", materialKey: material.__key, snapshot: snapshotFromMaterial(material), content }
 }
 
 export function normalizeTextStyleSnapshot(snapshot: TextStyleSnapshot): TextStyleSnapshot{
     const next = cloneDeep(snapshot)
     if(next.effect === "shake")next.value = normalizeShakeValue(next.value)
     if(next.effect === "blur")next.value = normalizeBlurValue(next.value)
+    if(next.effect === "opacity")next.value = normalizeOpacityValue(next.value)
+    if(next.effect === "spoiler")next.value = normalizeSpoilerValue(next.value)
+    if(next.effect === "offset")next.value = normalizeOffsetValue(next.value)
     return next
 }
 
@@ -155,4 +168,20 @@ function normalizeBlurValue(value: TextStyleBlurValue | number): TextStyleBlurVa
     const candidate = raw as Partial<TextStyleBlurValue>
     const direction = textStyleDirections.some(item=>item.value === candidate.direction) ? candidate.direction as TextStyleDirection : "right"
     return { amount:Math.min(6,Math.max(0,Number(candidate.amount) || 0)), startAmount:Math.min(6,Math.max(0,Number(candidate.startAmount) || 0)), progressive:!!candidate.progressive, direction, center:Math.min(100,Math.max(0,Number(candidate.center ?? 50))) }
+}
+
+function normalizeOpacityValue(value: TextStyleOpacityValue | number): TextStyleOpacityValue{
+    const raw = typeof value === "number" ? { opacity:value } : value ?? { opacity:100 }
+    const candidate = raw as Partial<TextStyleOpacityValue>
+    const direction = textStyleDirections.some(item=>item.value === candidate.direction) ? candidate.direction as TextStyleDirection : "right"
+    return { opacity:Math.min(100,Math.max(0,Number(candidate.opacity) || 0)), startOpacity:Math.min(100,Math.max(0,Number(candidate.startOpacity ?? 100))), progressive:!!candidate.progressive, direction, center:Math.min(100,Math.max(0,Number(candidate.center ?? 50))) }
+}
+
+function normalizeSpoilerValue(value: TextStyleSpoilerValue | undefined): TextStyleSpoilerValue{
+    return { reveal:value?.reveal === "click" ? "click" : "hover" }
+}
+
+function normalizeOffsetValue(value: TextStyleOffsetValue | number): TextStyleOffsetValue{
+    const raw = typeof value === "number" ? { amount:value } : value ?? { amount:0 }
+    return { amount:Math.min(12,Math.max(0,Number(raw.amount) || 0)), seed:typeof raw.seed === "number" ? raw.seed : Math.random() * 100000 }
 }

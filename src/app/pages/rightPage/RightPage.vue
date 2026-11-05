@@ -2,13 +2,6 @@
 <div ref="rightPageRef" class="rightPage" :style="{right:rightWidth}">
 	<div class="top">
 		<div class="title">工具库</div>
-		<div class="buttons">
-			<Button v-for="button in buttons"
-				:name="button.name"
-				:icon="button.icon"
-				@click="button.click">
-			</Button>
-		</div>
 	</div>
 	<div class="abilityList">
 		<Ability v-for="ability in abilities" :ability />
@@ -21,8 +14,6 @@ import { hidePage, rightMaxWidth, rightShowWidth} from '@/hooks/pages/pageChange
 import { computed, onBeforeUnmount, onMounted, useTemplateRef } from 'vue';
 import { rightAbilityList } from '@/static/list/rightAbilityList';
 import Ability from './components/Ability.vue';
-import { callSupportAbility } from '@/hooks/app/app';
-import Button from '@/components/global/button.vue';
 	// 由于右侧页面是从右往左的，因此实际设定的是该页面的right属性
 	let rightWidth = computed(()=>{
 		return (rightShowWidth.value - rightMaxWidth) +"px"
@@ -40,11 +31,6 @@ import Button from '@/components/global/button.vue';
 	
 	//功能列表
 	const abilities = computed(()=>rightAbilityList.value)
-	//标题栏按键
-	const buttons = [
-		{"name":"设置",click:()=>callSupportAbility("appSetting"),icon:"setting"}
-	]
-	
 </script>
 
 <style lang="scss" scoped>
@@ -60,10 +46,6 @@ import Button from '@/components/global/button.vue';
 	}
 	.rightPage.rightPage .top{
 		height: 60px;
-		.buttons .button{
-			width: 48px;
-			height: 48px;
-		}
 	}
 	.rightPage.rightPage .abilityList{ height: calc(100% - 60px); }
 }
@@ -96,17 +78,6 @@ import Button from '@/components/global/button.vue';
 			// font-weight: 600;
 			height: 100%;
 			font-size: $fontSize40;
-		}
-		.buttons{
-			height: 100%;
-			display: flex;
-			align-items: center;
-			.button{
-				width: 80px;
-				height: 100%;
-				padding: 12px;
-				box-sizing: border-box;
-			}
 		}
 	}
 	.abilityList{

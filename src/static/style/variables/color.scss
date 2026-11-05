@@ -1,50 +1,38 @@
-//颜色
-$bgColor: rgb(255, 255, 255); //背景颜色
-$paperCanvasColor: #f8f6ef; //自由画布的纸张底色
-$antiBgColor: rgb(0,0,0); //反色
-
-// Semantically named UI colors. New interface styles should use these instead of literal values.
-$overlayColor: $antiBgColor;
-$scrollbarColor: rgb(34, 34, 34);
-$resizeHandleColor: rgb(138, 138, 138);
-$floatingSurfaceShadow: rgba($antiBgColor, 0.18);
-$raisedSurfaceShadow: rgba($antiBgColor, 0.26);
-$subtleSurfaceShadow: rgba($antiBgColor, 0.12);
-$sidebarToggleShadow: 2px 0 5px rgba($antiBgColor, 0.12);
-$expandedCardShadow: 0 4px 14px rgba($antiBgColor, 0.16);
-$paperNoteColor: $bgColor;
-
-$back85:lightgrey; 
-$bgColor90:rgb(230,230,230);
-$bgColor85:rgb(220,220,220);
-$bgColor80:rgb(210,210,210);
-$bgColor70:rgb(190,190,190);
-$bgColor40:rgb(100,100,100);
-
-$focusingColor:rgb(220,220,220);
-$inputBorderColor: $bgColor70;
-
-$textNumColor: rgba($antiBgColor,0.35);
-$textColor: rgb(0,0,0);
-$previewText: rgb(120, 120, 120);
-$dangerColor: rgb(190, 45, 45); // destructive actions and error emphasis
-$canvasConnectionColor: rgba($previewText, 0.55);
-$timeLineConnectionColor: rgba($previewText, 0.62);
-$connectionPreviewColor: rgba($antiBgColor, 0.7);
-$selectionBoxFillColor: rgba($antiBgColor, 0.08);
-
-$buttonColor:rgb(50,50,50);
-
-$rightButtonColor:rgb(230,230,230);
-
-//阴影
-
-//
-$listItemShadow:0 0 10px rgb(107, 107, 107);
-
-//底部阴影
-$downShadow:rgb(185, 185, 185) 0 4px 8px;
-//周围阴影
-$groundShadow:rgb(98, 98, 98) 0 0 8px;
-//菜单阴影
-$menuShadow:0 6px 16px rgba($antiBgColor,0.12);
+// Colors are runtime CSS variables so the application theme can switch without rebuilding.
+$bgColor: var(--app-bg);
+$paperCanvasColor: var(--app-paper-canvas);
+$antiBgColor: var(--app-anti-bg);
+$overlayColor: var(--app-overlay);
+$scrollbarColor: var(--app-scrollbar);
+$resizeHandleColor: var(--app-resize-handle);
+$floatingSurfaceShadow: var(--app-floating-shadow);
+$raisedSurfaceShadow: var(--app-raised-shadow);
+$subtleSurfaceShadow: var(--app-subtle-shadow);
+$sidebarToggleShadow: var(--app-sidebar-toggle-shadow);
+$expandedCardShadow: var(--app-expanded-card-shadow);
+$paperNoteColor: var(--app-bg);
+$back85: var(--app-back-85);
+$bgColor90: var(--app-bg-90);
+$bgColor85: var(--app-bg-85);
+$bgColor80: var(--app-bg-80);
+$bgColor70: var(--app-bg-70);
+$bgColor40: var(--app-bg-40);
+$focusingColor: var(--app-focusing);
+$inputBorderColor: var(--app-bg-70);
+$textNumColor: var(--app-text-num);
+$textColor: var(--app-text);
+$previewText: var(--app-preview-text);
+$dangerColor: var(--app-danger);
+$canvasConnectionColor: var(--app-canvas-connection);
+$timeLineConnectionColor: var(--app-timeline-connection);
+$connectionPreviewColor: var(--app-connection-preview);
+$selectionBoxFillColor: var(--app-selection-fill);
+$subtleBackgroundColor: var(--app-subtle-bg);
+$strongOverlayColor: var(--app-overlay-strong);
+$transparentColor: var(--app-transparent);
+$buttonColor: var(--app-button);
+$rightButtonColor: var(--app-bg-90);
+$listItemShadow: var(--app-list-item-shadow);
+$downShadow: var(--app-down-shadow);
+$groundShadow: var(--app-ground-shadow);
+$menuShadow: var(--app-menu-shadow);

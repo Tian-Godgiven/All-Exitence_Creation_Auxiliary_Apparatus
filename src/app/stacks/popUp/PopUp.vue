@@ -15,7 +15,7 @@
 		top:popUp.position?.y
 	}">
 		<div class="top" :class="name?'':'noTitle'" v-if="ifTop">
-			<div class="title" v-if="name">{{ name }}</div>
+			<div class="title" v-if="name"><span>{{ name }}</span><component v-if="titleVue" :is="titleVue" :props="popUp.props" /></div>
 			<div class="space" v-else-if="buttons!=null"></div>
 			<div class="buttons" v-if="buttons!=null">
 				<Button v-for="(button) in buttons" 
@@ -41,7 +41,7 @@ import { popUpVueList } from '@/static/list/popUpVueList';
 import Button from '@/components/global/button.vue';
 import gsap from 'gsap';
 	const {popUp} = defineProps<{popUp:PopUp}>()
-	const {name,buttons,vueName,index} = popUp
+	const {name,buttons,vueName,index,titleVue} = popUp
 	const innerVue = shallowRef(popUp.vue || (vueName && popUpVueList[vueName]));
 	const ifTop = name||buttons
 
@@ -121,7 +121,11 @@ import gsap from 'gsap';
 			max-width: 300px;
 			font-size: 1.25rem;
 			display: flex;
+			gap: 8px;
 			align-items: center;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
 		}
 		.buttons{
 			height: 28px;

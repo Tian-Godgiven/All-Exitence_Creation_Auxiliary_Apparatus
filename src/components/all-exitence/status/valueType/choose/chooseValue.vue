@@ -11,8 +11,7 @@
 		
 		<div v-else-if="ifRadio" class="choice">
 			<div class="radioChoice" v-for="(choice,index) in choiceList">
-				<radioVue v-model="chosenList[index]" @change="takeChoose"></radioVue>
-				<div>{{ choice }}</div>
+				<radioVue v-model="chosenList[index]" :text="choice" @change="takeChoose"></radioVue>
 			</div>
 		</div>
 	</div>
@@ -69,6 +68,13 @@ import { getStatusSettingValue } from '@/hooks/all-exitence/status';
 <style lang="scss" scoped>
 	.chooseValue{
 		width: 100%;
+		--el-color-primary: #{$bgColor40};
+		--el-checkbox-bg-color: #{$bgColor};
+		--el-checkbox-input-border-color: #{$inputBorderColor};
+		--el-checkbox-checked-bg-color: #{$bgColor40};
+		--el-checkbox-checked-input-border-color: #{$bgColor40};
+		--el-checkbox-checked-text-color: #{$textColor};
+		--el-checkbox-input-border-color-hover: #{$bgColor40};
 		display: flex;
 		flex-wrap: wrap;
 		.choice{
@@ -78,11 +84,15 @@ import { getStatusSettingValue } from '@/hooks/all-exitence/status';
 			.checkbox{
 				:deep(){
 					.el-checkbox__input.is-checked .el-checkbox__inner{
-						background-color: black;
+						background-color: $bgColor40;
+						border-color: $bgColor40;
 					}
 					.el-checkbox__inner{
-						background-color: lightblue;
+						background-color: $bgColor;
+						border-color: $inputBorderColor;
+						border-radius: 3px;
 					}
+					.el-checkbox__input.is-focus .el-checkbox__inner{ border-color: $bgColor40; }
 					.el-checkbox__inner::after{
 						border-color: white;
 					}

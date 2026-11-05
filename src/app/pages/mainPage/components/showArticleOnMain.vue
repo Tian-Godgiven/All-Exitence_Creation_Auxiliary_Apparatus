@@ -9,13 +9,14 @@
         </textAreaVue>
     </template>
     <template #inner>
-        <textAreaVue 
+        <textAreaVue
             ref="document"
             class="articleText"
+            :style="editorStyle"
             inputSuggestionList="all"
             v-model="article.inner"
             :textStyleEnabled="true"
-            :inputSupport="true"> 
+            :inputSupport="true">
         </textAreaVue>
     </template>
     <template #info>
@@ -26,6 +27,7 @@
             </button>
         </div>
     </template>
+    <ProjectOverviewTasks :article="article" />
 </TargetContainer>
 </template>
 
@@ -38,9 +40,16 @@ import { Article } from '@/class/Article';
 import { showOnMain } from '@/hooks/pages/mainPage/showOnMain';
 import { formatTimeLineDate, getTimeLineDate, nowStoryTimeLines, showTimeLinePage } from '@/supportAbility/timeLine/timeLine';
 import type { TimeLineNode, TimeLineSegment } from '@/supportAbility/timeLine/timeLine';
+import ProjectOverviewTasks from '@/supportAbility/projectOverview/ProjectOverviewTasks.vue';
+import { appSetting } from '@/hooks/app/appSetting';
+import { getEditorFontFamily, normalizeEditorFontSize } from '@/supportAbility/appSetting/editorTypography';
     const {article} = defineProps<{
         article:Article,
     }>()
+    const editorStyle = computed(() => ({
+        fontFamily: getEditorFontFamily(appSetting.editorFont),
+        fontSize: `${normalizeEditorFontSize(appSetting.editorFontSize)}px`,
+    }))
     // 内容栏字符数量
 	let textNum = computed(()=>{
         const inner = translateToTextContent(article.inner)
@@ -99,7 +108,7 @@ import type { TimeLineNode, TimeLineSegment } from '@/supportAbility/timeLine/ti
         overflow-x: clip;
     }
     .articleInfo { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
-    .wordCount { padding: 5px 12px; border-radius: 6px; background: rgba($antiBgColor, 0.6); color: $bgColor; }
+    .wordCount { padding: 5px 12px; border-radius: 6px; background: $strongOverlayColor; color: $bgColor; }
     .timeLineReference { max-width: 260px; padding: 0; border: 0; background: transparent; color: $previewText; font: inherit; text-align: right; cursor: pointer; overflow-wrap: anywhere; }
     .timeLineReference:hover { text-decoration: underline; }
 </style>

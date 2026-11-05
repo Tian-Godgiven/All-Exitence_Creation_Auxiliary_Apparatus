@@ -7,6 +7,8 @@ import { tagLibrarySignUpItem } from "@/supportAbility/tagLibrary/tagLibrary";
 import { recycleBinItem } from "@/supportAbility/recycleBin/recycleBin";
 import { timeLineSignUpItem } from "@/supportAbility/timeLine/timeLine";
 import { textStyleSignUpItem } from "@/supportAbility/textStyle/textStyle";
+import { projectOverviewSignUpItem } from "@/supportAbility/projectOverview/projectOverview";
+import { appSettingSignUpItem } from "@/supportAbility/appSetting/appSettingAbility";
 
 export type SupportAbilitySignUpItem = {
     name:string,
@@ -19,6 +21,7 @@ export type SupportAbilitySignUpItem = {
 }
 
 export const supportAbilityList:SupportAbilitySignUpItem[] = [
+    appSettingSignUpItem,
     inputSuggestionSighUpItem,
     // missionListItem,待完成
     quickDraftItem,
@@ -28,4 +31,5 @@ export const supportAbilityList:SupportAbilitySignUpItem[] = [
     recycleBinItem,
     timeLineSignUpItem,
     textStyleSignUpItem,
+    projectOverviewSignUpItem,
 ]

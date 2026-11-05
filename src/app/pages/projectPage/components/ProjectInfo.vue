@@ -38,7 +38,11 @@
         align-items: center;
         .name{
             flex-grow: 1;
+			min-width: 0;
             font-size: 1.4rem;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
         }
         .buttons{
             display: flex;

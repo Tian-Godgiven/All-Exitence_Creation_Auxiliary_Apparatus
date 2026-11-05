@@ -4,7 +4,7 @@
     (dragState.type=='dragging' ? 'dragging':'unDragging')
 ]">
     <slot></slot>
-    <indicatorVue v-if="
+    <indicatorVue v-if="showIndicator &&
         (dragState.type === 'be-dragging-over' || 
         dragState.type === 'be-dragging-edge')
         && dragState.edge!=null" :edge="dragState.edge"
@@ -22,12 +22,13 @@
 	import { DragState, getCombine } from '@/api/dragToSort';
     import indicatorVue from "@/components/other/indicator.vue";
     import type { ElementDragPayload } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
-    let {handler: handler,getData,canDrop,allowInto=false,level=0} = defineProps<{
+    let {handler: handler,getData,canDrop,allowInto=false,level=0,showIndicator=false} = defineProps<{
         handler?:HTMLElement|null,//手柄元素
         getData:()=>any,
         canDrop?:(source:ElementDragPayload)=>boolean,//判断是否允许放置的函数
         allowInto?:boolean,//是否允许拖拽进内部
-        level?:number//章节需要使用，该章节的层级
+        level?:number,//章节需要使用，该章节的层级
+        showIndicator?:boolean
     }>()
     //拖拽状态
     const idle:DragState = {type:"idle"}//初始拖拽状态

@@ -95,7 +95,8 @@
 <style scoped lang='scss'>
 .multiLineInput{
     font-size: inherit;
-    background-color: inherit;
+	background-color: $bgColor;
+	color: $textColor;
     text-align: inherit;
     position: relative;
     min-height: inherit;

@@ -14,6 +14,7 @@ export const iconList:Record<string,string>= {
     "upArrow":"arrowUp",
     "downArrow":"arrowDown",
     "handSave":"saveFile",//保存文件
+    "export":"export",//导出文件
     "showLeft":"showLeft",//显示左侧页面
     "showRight":"showRight",//显示右侧页面
     "rightUp":"rightUp",//右侧页面抬升

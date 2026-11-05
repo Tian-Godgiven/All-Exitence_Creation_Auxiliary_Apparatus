@@ -2,9 +2,6 @@
 <ObjectLine :id="`article_${article.__key}`" :level :buttonList :longTap :click :focusing :getData :canDrop class="article">
 	<div class="title">{{title}}</div>
 	<div class="preview" v-show="ifPreview" >{{preview}}</div>
-	<template #dragShadow>
-		<div class="chapterShadow">{{ article.title }}</div>
-	</template>
 </ObjectLine>
 </template>
 

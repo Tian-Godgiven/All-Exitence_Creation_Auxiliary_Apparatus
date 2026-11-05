@@ -1,5 +1,13 @@
+@use "./theme";
+
 html {
   box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--app-bg);
+  color: var(--app-text);
 }
 
 *,

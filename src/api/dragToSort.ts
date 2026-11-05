@@ -232,7 +232,7 @@ export function getMonitor({canMonitor,sourceIndex,targetIndex,list,returnNewLis
 		canMonitor({source}){
 			return canMonitor(source)
 		},
-		onDrop({source,location}){
+		onDrag({source,location}){
 			// 获得当前的放置目标元素
 			const target = location.current.dropTargets[0];
 			if (!target) {
@@ -254,7 +254,9 @@ export function getMonitor({canMonitor,sourceIndex,targetIndex,list,returnNewLis
 				closestEdgeOfTarget:edge, //边界
 				axis: "vertical", //排列方式
 			});
-            returnNewList(newList)
+			if(!newList.every((item,index)=>item === list[index])){
+				returnNewList(newList)
+			}
 		}	
     })
 }

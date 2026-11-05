@@ -25,6 +25,7 @@
 
 <script setup lang="ts">
 import { initApp, testInfo1 } from "./hooks/app/app";
+import { appSetting } from "./hooks/app/appSetting";
 import { initProject } from "./hooks/project/project";
 import { startAutoSave } from "./hooks/app/autoSave";
 import { touchEnd, mouseStart, mouseMove } from '@/hooks/app/appTouch'
@@ -35,6 +36,11 @@ import RightPage from "@/app/pages/rightPage/RightPage.vue";
 import PageMask from '@/app/pages/PageMask.vue';
 import FloatWindows from "@/app/stacks/FloatWindowsStacks.vue";
 import PopUpStacks from "@/app/stacks/popUp/PopUpStacks.vue";
+import { watchEffect } from "vue";
+
+watchEffect(() => {
+    document.body.classList.toggle("darkMode", appSetting.darkMode === true)
+})
 
 // 初始化应用程序
 initApp().then(()=>{
@@ -75,4 +81,17 @@ startAutoSave()
     }
   }
   
+</style>
+
+<style lang="scss">
+.quickInfo{
+  box-sizing: border-box;
+  padding: 9px 14px;
+  border: 1px solid $bgColor80;
+  border-radius: 5px;
+  background: $bgColor;
+  color: $textColor;
+  box-shadow: $menuShadow;
+  pointer-events: none;
+}
 </style>

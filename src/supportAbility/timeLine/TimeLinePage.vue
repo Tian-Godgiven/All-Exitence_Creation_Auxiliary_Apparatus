@@ -839,7 +839,7 @@ header .button {
 
 .connections .connectionHitArea {
     fill: none;
-    stroke: rgba($antiBgColor, 0);
+    stroke: $transparentColor;
     stroke-width: 16px;
     pointer-events: stroke;
     cursor: context-menu;

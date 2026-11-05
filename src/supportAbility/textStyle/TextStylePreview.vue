@@ -1,8 +1,12 @@
 <template>
-    <span class="textStylePreview" :class="{ textStyleShake: snapshot.effect === 'shake' && snapshot.value.synchronized, textStyleProgressiveBlur: snapshot.effect === 'blur' && snapshot.value.progressive }" :style="style">
+    <span class="textStylePreview" :class="{ textStyleShake: snapshot.effect === 'shake' && snapshot.value.synchronized, textStyleProgressiveBlur: snapshot.effect === 'blur' && snapshot.value.progressive, textStyleProgressiveOpacity: snapshot.effect === 'opacity' && snapshot.value.progressive, textStyleSpoiler: snapshot.effect === 'spoiler', textStyleSpoilerClick: snapshot.effect === 'spoiler' && snapshot.value.reveal === 'click', revealed }" :style="style" @click="revealSpoiler">
         <template v-if="snapshot.effect === 'blur' && snapshot.value.progressive">
             <span class="textStyleProgressiveBlurContent">{{ text }}</span>
             <span class="textStyleProgressiveBlurOverlay" aria-hidden="true">{{ text }}</span>
+        </template>
+        <template v-else-if="snapshot.effect === 'spoiler'">
+            {{ text }}
+            <span class="textStyleSpoilerCover" aria-hidden="true">{{ text }}</span>
         </template>
         <template v-else-if="snapshot.effect === 'shake' && !snapshot.value.synchronized"><span v-for="(character, index) in Array.from(text)" :key="index" class="textStylePreview textStyleShake" :style="characterStyle(index)">{{ character }}</span></template>
         <template v-else-if="snapshot.effect === 'offset'"><span v-for="(character, index) in Array.from(text)" :key="index" :style="offsetStyle(index)">{{ character }}</span></template>
@@ -15,8 +19,7 @@ import { computed, ref } from "vue"
 import { getTextStyleCss, textStyleDirections, type TextStyleSnapshot } from "@/hooks/expression/textAreaContent"
 
 const { snapshot, text = "文字效果预览文字效果预览文字效果预览文字效果预览" } = defineProps<{ snapshot: TextStyleSnapshot, text?: string }>()
-const offsetSeed = ref(0)
-defineExpose({ rerollOffset: () => { offsetSeed.value = Math.random() * 100000 } })
+const revealed = ref(false)
 const style = computed(()=>getTextStyleCss(snapshot))
 function characterStyle(index: number){
     if(snapshot.effect !== "shake")return {}
@@ -36,6 +39,8 @@ function pseudoRandom(seed:number){ const value = Math.sin(seed * 127.1 + 311.7)
 function offsetStyle(index:number){
     if(snapshot.effect !== "offset")return {}
     const amount = snapshot.value
-    return { display:"inline-block", transform:`translate(${(pseudoRandom(index * 2 + offsetSeed.value) * 2 - 1) * amount}px, ${(pseudoRandom(index * 2 + 1 + offsetSeed.value) * 2 - 1) * amount}px)` }
+    const seed = amount.seed
+    return { display:"inline-block", transform:`translate(${(pseudoRandom(index * 2 + seed) * 2 - 1) * amount.amount}px, ${(pseudoRandom(index * 2 + 1 + seed) * 2 - 1) * amount.amount}px)` }
 }
+function revealSpoiler(){ if(snapshot.effect === "spoiler" && snapshot.value.reveal === "click")revealed.value = true }
 </script>

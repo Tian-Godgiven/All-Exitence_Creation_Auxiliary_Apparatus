@@ -47,7 +47,7 @@
 	import showTypeOnMainVue from '@/app/pages/mainPage/components/showTypeOnMain.vue';
 	import showExitenceOnMainVue from '@/app/pages/mainPage/components/showExitenceOnMain.vue';
 	import { showOnMain } from '@/hooks/pages/mainPage/showOnMain';
-	import { computed, ref, watch } from 'vue';
+	import { computed, reactive, ref, shallowRef, watch } from 'vue';
 	import { nowProjectInfo } from '@/hooks/project/project';
 	import { saveAll } from '@/hooks/app/autoSave';
 	import Suggester from '@/supportAbility/inputSuggestion/suggester/Suggester.vue';
@@ -56,11 +56,18 @@ import { callSupportAbility } from '@/hooks/app/app';
 import ScrollBar from '@/components/global/ScrollBar.vue';
 import MainToolPage from './components/MainToolPage.vue';
 import { activeMainToolPage } from '@/hooks/pages/mainPage/toolPage';
+import { showPopUp } from '@/hooks/pages/popUp';
+import ProjectExportPopUp from '@/export/ProjectExportPopUp.vue';
+	import ProjectExportFormatSelector from '@/export/ProjectExportFormatSelector.vue';
 // 功能按键
 	const buttons = [{
 		name:"手动保存",
 		icon:"handSave",
 		click:()=>saveAll()
+	},{
+		name:"导出作品",
+		icon:"export",
+		click:()=>openProjectExport()
 	},{
 		name:"任务列表",
 		icon:"missionList",
@@ -70,6 +77,10 @@ import { activeMainToolPage } from '@/hooks/pages/mainPage/toolPage';
 		icon:"showRight",
 		click:()=>showPage("right")	
 	}]
+	function openProjectExport(){
+		const state = reactive({ format: "text" as const })
+		showPopUp({ name:"导出作品为", titleVue:shallowRef(ProjectExportFormatSelector), vue:shallowRef(ProjectExportPopUp), props:{ state }, mask:true, buttons:[], size:{ width:"760px", height:"auto" } })
+	}
 
 // 首页内容栏
 	//项目名称
@@ -102,6 +113,7 @@ import { activeMainToolPage } from '@/hooks/pages/mainPage/toolPage';
 		width: 100%;
 		height: 110px;
 		display: flex;
+		background-color: $bgColor;
 		box-shadow: $downShadow;
 		z-index: 1;
 		.leftPageShowButton{
@@ -146,6 +158,7 @@ import { activeMainToolPage } from '@/hooks/pages/mainPage/toolPage';
 		z-index: 0;
 		.content{
 			padding-top: 21px;
+			background-color: $bgColor;
 		}
 	}
 	
@@ -156,7 +169,7 @@ import { activeMainToolPage } from '@/hooks/pages/mainPage/toolPage';
 	.mainPage.mainPage{
 		.top{
 			height: 60px;
-			box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+			box-shadow: $sidebarToggleShadow;
 			.projectName{ padding-left: 24px; font-size: 1.25rem; }
 			.buttons{
 				width: auto;

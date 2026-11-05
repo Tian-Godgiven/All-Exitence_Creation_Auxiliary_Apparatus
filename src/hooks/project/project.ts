@@ -107,6 +107,7 @@ function featureName(featureKey: string): string {
     "tag-library": "标签库",
     timeline: "时间线",
     "timeline-trash": "时间线回收站",
+    "project-overview": "项目总览",
   };
   return names[featureKey] ?? featureKey;
 }

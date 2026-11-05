@@ -47,12 +47,13 @@
 .icon{
 	width: 24px;
 	height: 24px;
+	color: $textColor;
 	flex: 0 0 auto;
 	&.size-small{ width: 16px; height: 16px; }
 	&.size-big{ width: 28px; height: 28px; }
 	&.size-large{ width: 32px; height: 32px; }
     &.disabled{
-        fill:#8f8f8f
+		color: $previewText;
     }
     use{
         width: 100%;

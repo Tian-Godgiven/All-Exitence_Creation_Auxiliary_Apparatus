@@ -12,24 +12,19 @@
 	</template>
 	<template #inner>
 		<div class="inner">
-			<chapterVue v-for="childChapter in chapters" 
+			<chapterVue v-for="childChapter in chapters"
 				:key="childChapter.__key"
 				:level="level+1"
 				:from="chapter"
 				:chapter="childChapter">
 			</chapterVue>
-			
-			<articleVue 
-				v-for="(article) in articles"
+			<articleVue v-for="article in articles"
 				:level="level+1"
 				:key="article.__key"
 				:from="chapter" 
 				:article = "article">
 			</articleVue>
 		</div>
-	</template>
-	<template #dragShadow>
-		<div class="chapterShadow">{{ chapter.name }}</div>
 	</template>
 </ContainerLine>
 </template>
@@ -140,6 +135,7 @@
 	}
 }
 
+
 @media (min-width: 900px){
 	.chapter{
 		:deep(>.top){ height: 40px; }
@@ -147,10 +143,4 @@
 	}
 }
 
-.chapterShadow{
-	background-color: white;
-	width: 100px;
-	height: 50px;
-	border: 2px solid black;
-}
 </style>

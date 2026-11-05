@@ -21,6 +21,7 @@
 	</template>
     <template #inner>
         <DraggableList
+			class="statusList"
 			:dragHandle="true"
 			:showHandle="showDrag"
 			v-slot="{item:status}"
@@ -126,6 +127,14 @@ import { getFullStatusOfExitence, showCreateStatusPopUp } from '@/hooks/all-exit
         window.removeEventListener("getShowOnMainScrollTop",getScrollTop)
     })
 </script>
+
+<style scoped lang="scss">
+.statusList{
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+</style>
 
 <style lang="scss" scoped>
 .scrollSpace{

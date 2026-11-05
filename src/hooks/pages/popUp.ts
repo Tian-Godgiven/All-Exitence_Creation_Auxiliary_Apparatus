@@ -25,6 +25,7 @@ export type PopUpSet = {
 		y?:string
 	}
 	className?:string,
+	titleVue?: ShallowRef<any>, // 标题后方的附加组件
 }
 export type PopUp = PopUpSet &{
 	id?:string,//弹窗的唯一性id

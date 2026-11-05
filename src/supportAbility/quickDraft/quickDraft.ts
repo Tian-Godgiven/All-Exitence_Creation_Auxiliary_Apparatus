@@ -14,6 +14,8 @@ import QuickDraftFloat from "./QuickDraftFloat.vue"
 
 export type QuickDraftNote = {
     __key: string,
+    kind: "text" | "note",
+    text: string,
     inner: TextAreaContent[],
     colorKey: string | null,
     position: { x: number, y: number },
@@ -79,7 +81,14 @@ export function createQuickDraftNote(position = { x: 80, y: 80 }){
 
 export function createQuickDraftNoteOnBoard(board: QuickDraftBoard, inner: TextAreaContent[], position = { x: 80, y: 80 }, colorKey = nowQuickDraftColors[0]?.__key ?? null){
     const note: QuickDraftNote = {
-        __key: nanoid(), inner: cloneDeep(toRaw(inner)), colorKey, position, size: { width: 240, height: 150 }, updatedAt: Date.now(),
+        __key: nanoid(), kind: "note", text: "", inner: cloneDeep(toRaw(inner)), colorKey, position, size: { width: 240, height: 150 }, updatedAt: Date.now(),
+    }
+    board.notes.push(note)
+    return note
+}
+export function createQuickDraftTextOnBoard(board: QuickDraftBoard, position = { x: 80, y: 80 }){
+    const note: QuickDraftNote = {
+        __key: nanoid(), kind: "text", text: "", inner: [""], colorKey: null, position, size: { width: 0, height: 0 }, updatedAt: Date.now(),
     }
     board.notes.push(note)
     return note
@@ -138,6 +147,9 @@ function normalizeBoard(board: QuickDraftBoard | null | undefined): QuickDraftBo
             const { tags: _tags, color: oldColor, ...rest } = note
             return {
                 ...rest,
+                kind: note.kind === "text" ? "text" : "note",
+                text: typeof note.text === "string" ? note.text : "",
+                inner: Array.isArray(note.inner) ? note.inner : [""],
                 colorKey: typeof note.colorKey === "string" ? note.colorKey : typeof oldColor === "string" ? oldColor : null,
                 size: note.size ?? { width: 240, height: 150 },
             }

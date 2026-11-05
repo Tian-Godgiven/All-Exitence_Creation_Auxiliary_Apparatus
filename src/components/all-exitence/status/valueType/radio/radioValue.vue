@@ -1,7 +1,6 @@
 <template>
 	<div class="radioValue">
-		<radioVue class="radio" v-model="status.value"></radioVue>
-		<div class="text">{{text}}</div>
+		<radioVue class="radio" v-model="status.value" :text></radioVue>
 	</div>
 </template>
 

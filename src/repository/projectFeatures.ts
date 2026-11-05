@@ -2,11 +2,12 @@ import type { ProjectFeature } from "./projectFeature";
 
 // Feature modules also register UI abilities, so they must load after application modules finish initializing.
 export async function loadProjectFeatures(): Promise<ProjectFeature<unknown>[]> {
-  const [inputSuggestion, quickDraft, tagLibrary, timeLine] = await Promise.all([
+  const [inputSuggestion, quickDraft, tagLibrary, timeLine, projectOverview] = await Promise.all([
     import("@/supportAbility/inputSuggestion/main"),
     import("@/supportAbility/quickDraft/quickDraft"),
     import("@/supportAbility/tagLibrary/tagLibrary"),
     import("@/supportAbility/timeLine/timeLine"),
+    import("@/supportAbility/projectOverview/projectOverview"),
   ]);
 
   return [
@@ -15,5 +16,6 @@ export async function loadProjectFeatures(): Promise<ProjectFeature<unknown>[]> 
     tagLibrary.tagLibraryProjectFeature,
     timeLine.timeLineProjectFeature,
     timeLine.timeLineTrashProjectFeature,
+    projectOverview.projectOverviewProjectFeature,
   ];
 }

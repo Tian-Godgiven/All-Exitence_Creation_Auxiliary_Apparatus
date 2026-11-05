@@ -19,6 +19,8 @@ Use the existing shared form components before adding native inputs or new wrapp
 - `src/components/global/time.vue` (`Time`): formatted time display, not a time input.
 - `src/components/global/ListMenu.vue` (`ListMenu`): shared menu content for a list of actions. Pass `list` as `{ label, icon?, click, clickClose? }[]`; use `controlShow` when the parent menu needs to close after an action.
 - `src/hooks/controlPanel.ts` (`showControlPanel`): pointer-positioned control/context menu popup. Pass a `Control` with `option` entries shaped as `{ text, click }` and an optional `{ x, y }` screen position. It uses the shared `controlPanel` popup and closes a previously opened control panel before showing another.
+- `src/hooks/inputSupport/useFreeCanvas.ts` (`useFreeCanvas`): shared free-form canvas interaction base. Give it the canvas element ref and the feature's persisted viewport (`x`, `y`, `scale`) to obtain world-coordinate conversion, pointer-centered zoom, middle/right-button panning, drag suppression for the following context menu, and an empty-canvas double-click creation helper. Keep node rendering, selection, relations, menus, and creation callbacks in the owning feature.
+- `src/supportAbility/quickDraft/QuickDraftPage.vue`: free-form board implementation using `useFreeCanvas`. It has lightweight auto-sized text nodes and expandable rich-text note nodes; both use the same positions and connection graph. Keep the node-specific conversion, resizing, relation behavior, and `Alt + right-drag` cutting gesture in this feature.
 
 ## Visual Conventions
 

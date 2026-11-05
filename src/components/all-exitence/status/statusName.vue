@@ -50,11 +50,13 @@ import { computed, ref } from 'vue';
         display: flex;
         align-items: flex-start;
         align-self: start;
+		min-height: 40px;
         flex: 0 1 auto;
         width: fit-content;
         max-width: 100%;
         min-width: 0;
         .statusName{
+		align-self: center;
             min-width: 0;
             flex: 0 1 auto;
             width: fit-content;
@@ -66,6 +68,7 @@ import { computed, ref } from 'vue';
             }
         }
         .separator{
+		align-self: center;
             flex: 0 0 auto;
         }
     }

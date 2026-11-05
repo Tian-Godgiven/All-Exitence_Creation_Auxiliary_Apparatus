@@ -1,5 +1,5 @@
 <template>
-<Draggable :getData :handler :canDrop> 
+<Draggable :getData :handler :canDrop>
     <div class="dragItem">
         <div class="dragInner">
             <slot></slot>
