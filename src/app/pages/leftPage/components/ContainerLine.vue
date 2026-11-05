@@ -104,11 +104,17 @@
 		height: 100%;
 		display: flex;
         align-items: center;
-        >div{
-            width: 50px;
-            height: 100%;
-            padding: 0 10px;
-        }
+		gap: 4px;
+		padding-right: 4px;
+		:deep(>.button){
+			flex: 0 0 40px;
+			width: 40px;
+			height: 100%;
+		}
+		:deep(>.dragHandler){
+			flex: 0 0 40px;
+			width: 40px;
+		}
 	}
 }
 .inner{
@@ -122,7 +128,6 @@
     .top{
         height: 40px;
         .icon{ width: 28px; height: 28px; }
-        .buttons > div{ width: 28px; padding: 4px; }
     }
     .top.expending{
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);

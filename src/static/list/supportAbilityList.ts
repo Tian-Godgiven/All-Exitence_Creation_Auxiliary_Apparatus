@@ -18,6 +18,7 @@ export type SupportAbilitySignUpItem = {
     save?:(projectName:string|null)=>void|Promise<void>, //软件保存时触发的事件
     call?:()=>void //软件响应指定名称的辅助功能时触发的事件,
     recycleBinEntry?:{name:string,click:()=>void} //功能自行管理回收站时，在公共回收站提供的入口
+    projectEntry?:{name:string,icon:string,click:()=>void,isVisible:()=>boolean,setVisible:(visible:boolean)=>void} //文章列表顶部的项目级入口
 }
 
 export const supportAbilityList:SupportAbilitySignUpItem[] = [

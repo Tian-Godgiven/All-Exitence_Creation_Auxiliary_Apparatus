@@ -2,17 +2,15 @@
     <main class="quickDraftPage">
         <header class="toolbar">
             <div class="projectTabs"><button class="projectTab" :class="{ active: showingGlobal }" @click="showGlobalBoard">全部</button><button v-for="project in projectList" :key="project.__key" class="projectTab" :class="{ active: !showingGlobal && project.__key === activeProjectKey }" @click="switchProject(project.__key)">{{ project.name }}</button></div>
-            <Button icon="help" name="使用手册" @click="showManual" />
-            <Button icon="setting" name="便签颜色管理" @click="showColorManager" />
         </header>
         <div ref="canvasRef" class="canvas" @pointerdown.capture="startMiddleCanvasPan" @pointerdown="startCanvasPan" @dblclick="createNoteAt" @contextmenu.prevent="openCanvasMenu" @wheel.prevent="zoomCanvas">
             <p v-if="board.notes.length === 0" class="emptyHint">创建第一张便签，开始收集灵感</p>
             <div class="scene" :style="{ transform: `translate(${board.viewport.x}px, ${board.viewport.y}px) scale(${board.viewport.scale})` }">
-                <svg class="connections" viewBox="0 0 4000 2400" preserveAspectRatio="none"><line v-for="connection in board.connections" :key="connection.__key" :x1="connectionPoint(connection.from).x" :y1="connectionPoint(connection.from).y" :x2="connectionPoint(connection.to).x" :y2="connectionPoint(connection.to).y" @contextmenu.stop.prevent="openConnectionMenu($event, connection)" /><line v-if="relationDrag" class="connectionPreview" :x1="connectionPoint(relationDrag.from.__key).x" :y1="connectionPoint(relationDrag.from.__key).y" :x2="relationDrag.point.x" :y2="relationDrag.point.y" /><polyline v-if="cutTrail" class="cutTrail" :points="cutTrail.map(point => `${point.x},${point.y}`).join(' ')" /><rect v-if="selectionBox" class="selectionBox" :x="Math.min(selectionBox.start.x, selectionBox.end.x)" :y="Math.min(selectionBox.start.y, selectionBox.end.y)" :width="Math.abs(selectionBox.end.x - selectionBox.start.x)" :height="Math.abs(selectionBox.end.y - selectionBox.start.y)" /></svg>
-                <article v-for="note in board.notes" :key="note.__key" class="note" :class="{ textNode: note.kind === 'text', colored: note.kind === 'note' && noteColor(note), connecting: relationDrag?.from === note, editing: editingNoteKey === note.__key, selected: selectedNoteKeys.has(note.__key) }" :style="noteStyle(note)" :data-quick-draft-note-key="note.__key" @pointerdown.stop="handleNotePointerDown($event, note)" @dblclick.stop="startEditing(note)" @contextmenu.stop.prevent="openNoteMenu($event, note)">
+                <svg class="connections" viewBox="0 0 4000 2400" preserveAspectRatio="none"><line v-for="connection in board.connections" :key="connection.__key" :class="{ cutting: cutConnectionKeys.has(connection.__key) }" :x1="connectionPoint(connection.from).x" :y1="connectionPoint(connection.from).y" :x2="connectionPoint(connection.to).x" :y2="connectionPoint(connection.to).y" @contextmenu.stop.prevent="openConnectionMenu($event, connection)" /><line v-if="relationDrag" class="connectionPreview" :x1="connectionPoint(relationDrag.from.__key).x" :y1="connectionPoint(relationDrag.from.__key).y" :x2="relationDrag.point.x" :y2="relationDrag.point.y" /><line v-if="cutLine" class="cutTrail" :x1="cutLine.from.x" :y1="cutLine.from.y" :x2="cutLine.to.x" :y2="cutLine.to.y" /><rect v-if="selectionBox" class="selectionBox" :x="Math.min(selectionBox.start.x, selectionBox.end.x)" :y="Math.min(selectionBox.start.y, selectionBox.end.y)" :width="Math.abs(selectionBox.end.x - selectionBox.start.x)" :height="Math.abs(selectionBox.end.y - selectionBox.start.y)" /></svg>
+                <article v-for="note in board.notes" :key="note.__key" class="note" :class="{ textNode: note.kind === 'text', noteCard: note.kind === 'note', colored: note.kind === 'note' && noteColor(note), connecting: relationDrag?.from === note, cutting: cutNodeKeys.has(note.__key), editing: editingNoteKey === note.__key, selected: selectedNoteKeys.has(note.__key) }" :style="noteStyle(note)" :data-quick-draft-note-key="note.__key" @pointerdown.stop="handleNotePointerDown($event, note)" @dblclick.stop="startEditing(note)" @contextmenu.stop.prevent="openNoteMenu($event, note)">
                     <template v-if="note.kind === 'note'"><span v-if="noteColor(note)" class="noteColorMark" :style="{ background: noteColor(note) }"></span><TextArea v-if="editingNoteKey === note.__key" v-model="note.inner" class="noteContent" mode="all" input-suggestion-list="all" placeholder="记录一个灵感..." @wheel.stop @blur="note.updatedAt = Date.now()" /><TextArea v-else v-model="note.inner" class="noteContent" mode="disabled" placeholder="记录一个灵感..." @wheel.stop /><span class="resizeHandle" @pointerdown.stop="startNoteResize($event, note)"></span></template>
-                    <template v-else-if="editingNoteKey === note.__key"><span class="textNodeMeasure" aria-hidden="true"><template v-if="note.text">{{ note.text }}</template><template v-else>&nbsp;</template></span><input v-model="note.text" class="textNodeInput" placeholder="输入节点内容" @pointerdown.stop @input="refreshTextNodeSize" @blur="note.updatedAt = Date.now(); editingNoteKey = null" /></template>
-                    <span v-else class="textNodeLabel">{{ note.text || "未命名节点" }}</span>
+                    <template v-else-if="editingNoteKey === note.__key"><span class="textNodeMeasure" aria-hidden="true">{{ textNodeMeasureText(note.text) }}</span><textarea v-model="note.text" class="textNodeInput" placeholder="..." rows="1" @pointerdown.stop @input="refreshTextNodeSize" @blur="note.updatedAt = Date.now(); editingNoteKey = null"></textarea></template>
+                    <span v-else class="textNodeLabel">{{ textNodeMeasureText(note.text) }}</span>
                 </article>
             </div>
         </div>
@@ -21,19 +19,15 @@
 
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef } from "vue"
-import Button from "@/components/global/button.vue"
 import TextArea from "@/components/other/textArea/textArea.vue"
 import { showAlert } from "@/hooks/alert"
 import { showControlPanel } from "@/hooks/controlPanel"
 import { useFreeCanvas } from "@/hooks/inputSupport/useFreeCanvas"
-import { showPopUp } from "@/hooks/pages/popUp"
 import { nowProjectInfo, nowProjectList } from "@/hooks/project/project"
 import { translateToTextContent } from "@/hooks/expression/textAreaContent"
 import { createQuickDraftConnection, createQuickDraftNoteOnBoard, createQuickDraftTextOnBoard, loadQuickDraftProjectBoard, moveGlobalQuickDraftNote, nowGlobalQuickDraftBoard, nowQuickDraftBoard, nowQuickDraftColors } from "./quickDraft"
 import type { QuickDraftBoard, QuickDraftConnection, QuickDraftNote } from "./quickDraft"
-import ColorManager from "./ColorManager.vue"
 import NoteColorPicker from "./NoteColorPicker.vue"
-import QuickDraftManual from "./QuickDraftManual.vue"
 
 const showingGlobal = ref(!nowProjectInfo.__key)
 const activeProjectKey = ref(nowProjectInfo.__key)
@@ -46,9 +40,12 @@ const editingNoteKey = ref<string | null>(null)
 const selectedNoteKeys = ref(new Set<string>())
 const selectionBox = ref<{ start: { x: number, y: number }, end: { x: number, y: number } } | null>(null)
 const relationDrag = ref<{ from: QuickDraftNote, point: { x: number, y: number } } | null>(null)
-const cutTrail = ref<{ x: number, y: number }[] | null>(null)
+type Point = { x: number, y: number }
+const cutLine = ref<{ from: Point, to: Point } | null>(null)
 const textNodeSizeVersion = ref(0)
-let relationTimer: ReturnType<typeof setTimeout> | null = null
+const cutTargets = computed(() => cutLine.value ? getCutTargets(cutLine.value.from, cutLine.value.to) : { nodeKeys: new Set<string>(), connectionKeys: new Set<string>() })
+const cutNodeKeys = computed(() => cutTargets.value.nodeKeys)
+const cutConnectionKeys = computed(() => cutTargets.value.connectionKeys)
 let suppressRelationContextMenu = false
 let suppressRelationContextMenuTimer: ReturnType<typeof setTimeout> | null = null
 function addNote(target: QuickDraftBoard, position: { x: number, y: number }){
@@ -73,7 +70,7 @@ function openCanvasMenu(event: MouseEvent){
     const position = freeCanvas.canvasPoint(event)
     showControlPanel({ option: [{ text: "创建普通节点", click: () => { const note = addTextNode(board.value, position); void startEditing(note) } }, { text: "创建便签", click: () => addNote(board.value, position) }] }, { x: event.clientX, y: event.clientY })
 }
-function createNoteAt(event: MouseEvent){ freeCanvas.createOnDoubleClick(event, position => { const note = addTextNode(board.value, position); void startEditing(note) }) }
+function createNoteAt(event: MouseEvent){ freeCanvas.createOnDoubleClick(event, position => { void createTextNodeAt(position) }) }
 function openNoteMenu(event: MouseEvent, note: QuickDraftNote){
     if(freeCanvas.consumeContextMenuSuppression() || consumeRelationContextMenuSuppression()) return
     const options: { text: string, danger?: boolean, click: () => void }[] = []
@@ -83,8 +80,6 @@ function openNoteMenu(event: MouseEvent, note: QuickDraftNote){
     options.push({ text: "删除节点", danger: true, click: () => deleteNote(note) })
     showControlPanel({ option: options }, { x: event.clientX, y: event.clientY })
 }
-function showColorManager(){ showPopUp({ name: "颜色管理", vue: shallowRef(ColorManager), mask: true }) }
-function showManual(){ showPopUp({ name: "便签夹使用手册", vue: shallowRef(QuickDraftManual), mask: true, size: { width: "500px", height: "auto" } }) }
 function showNoteColorPicker(note: QuickDraftNote){ showPopUp({ name: "修改便签颜色", vue: shallowRef(NoteColorPicker), mask: true, props: { note } }) }
 function noteColor(note: QuickDraftNote){ return nowQuickDraftColors.find(color => color.__key === note.colorKey)?.value }
 function openConnectionMenu(event: MouseEvent, connection: QuickDraftConnection){
@@ -146,10 +141,7 @@ function startNoteDrag(event: PointerEvent, note: QuickDraftNote){
 function startNoteRelation(event: PointerEvent, note: QuickDraftNote){
     if(event.button !== 2 || !canvasRef.value) return
     const initialPoint = canvasPoint(event)
-    relationTimer = setTimeout(() => {
-        relationTimer = null
-        relationDrag.value = { from: note, point: initialPoint }
-    }, 250)
+    relationDrag.value = { from: note, point: initialPoint }
     const onMove = (moveEvent: PointerEvent) => {
         if(moveEvent.pointerId !== event.pointerId) return
         if(relationDrag.value) relationDrag.value.point = canvasPoint(moveEvent)
@@ -159,7 +151,6 @@ function startNoteRelation(event: PointerEvent, note: QuickDraftNote){
         document.removeEventListener("pointermove", onMove)
         document.removeEventListener("pointerup", onEnd)
         document.removeEventListener("pointercancel", onEnd)
-        if(relationTimer){ clearTimeout(relationTimer); relationTimer = null }
         const relation = relationDrag.value
         relationDrag.value = null
         if(!relation || endEvent.type === "pointercancel") return
@@ -168,8 +159,8 @@ function startNoteRelation(event: PointerEvent, note: QuickDraftNote){
         const targetNote = targetKey ? board.value.notes.find(item => item.__key === targetKey) : undefined
         if(targetNote && targetNote !== note) createQuickDraftConnection(board.value, note, targetNote)
         else if(!targetNote){
-            const created = createQuickDraftTextOnBoard(board.value, canvasPoint(endEvent))
-            createQuickDraftConnection(board.value, note, created)
+            const point = canvasPoint(endEvent)
+            void createTextNodeAt(point, note)
         }
         suppressRelationContextMenu = true
         if(suppressRelationContextMenuTimer) clearTimeout(suppressRelationContextMenuTimer)
@@ -212,35 +203,56 @@ function noteSize(note: QuickDraftNote){
 }
 function noteStyle(note: QuickDraftNote){ return note.kind === "note" ? { transform: `translate(${note.position.x}px, ${note.position.y}px)`, width: `${note.size.width}px`, height: `${note.size.height}px` } : { transform: `translate(${note.position.x}px, ${note.position.y}px)` } }
 async function refreshTextNodeSize(){ await nextTick(); textNodeSizeVersion.value += 1 }
+function textNodeMeasureText(text: string){ return text ? (text.endsWith("\n") ? `${text}\u200b` : text) : "..." }
+async function createTextNodeAt(point: Point, from?: QuickDraftNote){
+    // Use the empty-node estimate first so its initial frame is centered before DOM measurement refines it.
+    const created = createQuickDraftTextOnBoard(board.value, { x: point.x - 18, y: point.y - 20 })
+    if(from) createQuickDraftConnection(board.value, from, created)
+    selectedNoteKeys.value = new Set([created.__key])
+    await startEditing(created)
+    await refreshTextNodeSize()
+    await centerTextNodeAt(created, point)
+    await refreshTextNodeSize()
+}
+async function centerTextNodeAt(note: QuickDraftNote, point: Point){
+    await nextTick()
+    const size = noteSize(note)
+    note.position.x = snap(point.x - size.width / 2)
+    note.position.y = snap(point.y - size.height / 2)
+}
 function startCut(event: PointerEvent){
     event.preventDefault()
-    cutTrail.value = [canvasPoint(event)]
-    freeCanvas.startPointerDrag(event.pointerId, move => cutTrail.value?.push(canvasPoint(move)), () => {
-        const trail = cutTrail.value ?? []
-        cutTrail.value = null
-        if(trail.length > 1) cutByTrail(trail)
+    const from = canvasPoint(event)
+    cutLine.value = { from, to: from }
+    freeCanvas.startPointerDrag(event.pointerId, move => { if(cutLine.value) cutLine.value.to = canvasPoint(move) }, () => {
+        const line = cutLine.value
+        cutLine.value = null
+        if(line) cutByLine(line.from, line.to)
         freeCanvas.markContextMenuSuppressed()
     })
 }
-function cutByTrail(trail: { x: number, y: number }[]){
-    const removed = new Set(board.value.notes.filter(note => trailHitsRect(trail, note.position, noteSize(note))).map(note => note.__key))
-    const cutConnections = board.value.connections.filter(connection => {
-        if(removed.has(connection.from) || removed.has(connection.to)) return true
-        const from = connectionPoint(connection.from), to = connectionPoint(connection.to)
-        return trail.some((point, index) => index > 0 && segmentsIntersect(trail[index - 1], point, from, to))
-    })
-    if(removed.size) board.value.notes.splice(0, board.value.notes.length, ...board.value.notes.filter(note => !removed.has(note.__key)))
-    if(cutConnections.length) board.value.connections.splice(0, board.value.connections.length, ...board.value.connections.filter(connection => !cutConnections.includes(connection)))
+function getCutTargets(from: Point, to: Point){
+    // Notes are deliberately immune to cutting; only lightweight text nodes are removed this way.
+    const nodeKeys = new Set(board.value.notes.filter(note => note.kind === "text" && segmentHitsRect(from, to, note.position, noteSize(note))).map(note => note.__key))
+    const connectionKeys = new Set(board.value.connections.filter(connection => {
+        if(nodeKeys.has(connection.from) || nodeKeys.has(connection.to)) return true
+        const connectionFrom = connectionPoint(connection.from), connectionTo = connectionPoint(connection.to)
+        return segmentsIntersect(from, to, connectionFrom, connectionTo)
+    }).map(connection => connection.__key))
+    return { nodeKeys, connectionKeys }
 }
-function trailHitsRect(trail: { x: number, y: number }[], position: { x: number, y: number }, size: { width: number, height: number }){
-    return trail.some((point, index) => index > 0 && segmentHitsRect(trail[index - 1], point, position, size))
+function cutByLine(from: Point, to: Point){
+    const { nodeKeys, connectionKeys } = getCutTargets(from, to)
+    if(nodeKeys.size) board.value.notes.splice(0, board.value.notes.length, ...board.value.notes.filter(note => !nodeKeys.has(note.__key)))
+    if(connectionKeys.size) board.value.connections.splice(0, board.value.connections.length, ...board.value.connections.filter(connection => !connectionKeys.has(connection.__key)))
 }
-function segmentHitsRect(from: { x: number, y: number }, to: { x: number, y: number }, position: { x: number, y: number }, size: { width: number, height: number }){
-    if(from.x >= position.x && from.x <= position.x + size.width && from.y >= position.y && from.y <= position.y + size.height) return true
+function segmentHitsRect(from: Point, to: Point, position: Point, size: { width: number, height: number }){
+    if(pointInRect(from, position, size) || pointInRect(to, position, size)) return true
     const corners = [{ x: position.x, y: position.y }, { x: position.x + size.width, y: position.y }, { x: position.x + size.width, y: position.y + size.height }, { x: position.x, y: position.y + size.height }]
     return corners.some((corner, index) => segmentsIntersect(from, to, corner, corners[(index + 1) % corners.length]))
 }
-function segmentsIntersect(firstStart: { x: number, y: number }, firstEnd: { x: number, y: number }, secondStart: { x: number, y: number }, secondEnd: { x: number, y: number }){
+function pointInRect(point: Point, position: Point, size: { width: number, height: number }){ return point.x >= position.x && point.x <= position.x + size.width && point.y >= position.y && point.y <= position.y + size.height }
+function segmentsIntersect(firstStart: Point, firstEnd: Point, secondStart: Point, secondEnd: Point){
     const cross = (origin: typeof firstStart, target: typeof firstStart, point: typeof firstStart) => (target.x - origin.x) * (point.y - origin.y) - (target.y - origin.y) * (point.x - origin.x)
     const first = cross(firstStart, firstEnd, secondStart), second = cross(firstStart, firstEnd, secondEnd), third = cross(secondStart, secondEnd, firstStart), fourth = cross(secondStart, secondEnd, firstEnd)
     return (first === 0 || second === 0 || Math.sign(first) !== Math.sign(second)) && (third === 0 || fourth === 0 || Math.sign(third) !== Math.sign(fourth))
@@ -289,7 +301,7 @@ function startDragging(pointerId: number, move: (event: PointerEvent) => void, a
     freeCanvas.startPointerDrag(pointerId, move, afterDrag)
 }
 onMounted(() => { document.addEventListener("pointerdown", closeEditingOnOutsidePointerDown, true); void refreshTextNodeSize() })
-onBeforeUnmount(() => { freeCanvas.dispose(); if(relationTimer) clearTimeout(relationTimer); if(suppressRelationContextMenuTimer) clearTimeout(suppressRelationContextMenuTimer); document.removeEventListener("pointerdown", closeEditingOnOutsidePointerDown, true) })
+onBeforeUnmount(() => { freeCanvas.dispose(); if(suppressRelationContextMenuTimer) clearTimeout(suppressRelationContextMenuTimer); document.removeEventListener("pointerdown", closeEditingOnOutsidePointerDown, true) })
 </script>
 
 <style scoped lang="scss">
@@ -301,12 +313,13 @@ onBeforeUnmount(() => { freeCanvas.dispose(); if(relationTimer) clearTimeout(rel
 .toolbar .button { width: 32px; height: 32px; padding: 7px; }
 .canvas { position: relative; flex: 1; overflow: hidden; background: $paperCanvasColor; touch-action: none; }
 .scene { position: absolute; width: 4000px; height: 2400px; transform-origin: 0 0; }
-.connections { position: absolute; inset: 0; width: 4000px; height: 2400px; overflow: visible; pointer-events: none; }.connections line { stroke: $canvasConnectionColor; stroke-width: 1.5px; pointer-events: stroke; cursor: context-menu; vector-effect: non-scaling-stroke; }.connections .connectionPreview { stroke: $connectionPreviewColor; stroke-dasharray: 5 4; pointer-events: none; }.connections .cutTrail { fill: none; stroke: $dangerColor; stroke-width: 3px; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; vector-effect: non-scaling-stroke; }.connections .selectionBox { fill: $selectionBoxFillColor; stroke: $antiBgColor; stroke-width: 1px; stroke-dasharray: 4 3; pointer-events: none; }
-.note { position: absolute; display: flex; flex-direction: column; box-sizing: border-box; border: 1px solid transparent; border-radius: 3px; background: $paperNoteColor; box-shadow: 3px 5px 14px $raisedSurfaceShadow; }
-.note.textNode { display: block; min-height: 40px; padding: 9px 12px; border-color: $bgColor70; border-radius: 8px; background: $bgColor90; box-shadow: 1px 2px 5px $subtleSurfaceShadow; }.textNodeLabel,.textNodeMeasure { display: block; text-align: left; white-space: pre; }.textNodeMeasure { visibility: hidden; }.textNodeInput { position: absolute; inset: 9px 12px; width: auto; padding: 0; border: 0; outline: 0; background: transparent; color: inherit; font: inherit; text-align: left; }
-.noteColorMark { position: absolute; z-index: 1; top: 0; right: 0; left: 0; height: 5px; pointer-events: none; }
+.connections { position: absolute; inset: 0; width: 4000px; height: 2400px; overflow: visible; pointer-events: none; }.connections line { stroke: color-mix(in srgb, $bgColor70 78%, $antiBgColor); stroke-width: 1.5px; pointer-events: stroke; cursor: context-menu; vector-effect: non-scaling-stroke; }.connections line.cutting { stroke: color-mix(in srgb, $dangerColor 68%, transparent); stroke-width: 1.8px; filter: drop-shadow(0 0 3px color-mix(in srgb, $dangerColor 58%, transparent)); }.connections .connectionPreview { stroke: $connectionPreviewColor; stroke-dasharray: 5 4; pointer-events: none; }.connections .cutTrail { fill: none; stroke: $dangerColor; stroke-width: 1.8px; stroke-linecap: round; filter: drop-shadow(0 0 3px color-mix(in srgb, $dangerColor 65%, transparent)); pointer-events: none; vector-effect: non-scaling-stroke; }.connections .selectionBox { fill: $selectionBoxFillColor; stroke: $antiBgColor; stroke-width: 1px; stroke-dasharray: 5 4; pointer-events: none; }
+.note { position: absolute; display: flex; flex-direction: column; box-sizing: border-box; border: 1px solid transparent; border-radius: 3px; background: $paperNoteColor; box-shadow: 3px 5px 14px $raisedSurfaceShadow; }.note.noteCard { border-color: transparent; background: $paperNoteColor; }
+.note.textNode { display: block; min-height: 40px; padding: 9px 12px; border-color: $bgColor70; border-radius: 8px; background: $bgColor90; box-shadow: 1px 2px 5px $subtleSurfaceShadow; }.textNodeLabel,.textNodeMeasure { display: block; text-align: left; white-space: pre-wrap; }.textNodeMeasure { visibility: hidden; }.textNodeInput { position: absolute; inset: 9px 12px; width: auto; height: auto; padding: 0; border: 0; outline: 0; resize: none; overflow: hidden; background: transparent; color: inherit; font: inherit; text-align: left; }
+.noteColorMark { position: absolute; z-index: 3; top: 0; right: 0; left: 0; height: 5px; border-radius: 2px 2px 0 0; pointer-events: none; }
 .note.connecting { outline: 2px solid $antiBgColor; outline-offset: -2px; }
 .note.selected { outline: 0; border-color: $antiBgColor; }
+.note.cutting { outline: 2px solid color-mix(in srgb, $dangerColor 55%, transparent); outline-offset: 2px; }
 .note.editing { box-shadow: 0 0 0 2px $antiBgColor, 3px 5px 14px $raisedSurfaceShadow; }
 .noteContent { min-height: 0; flex: 1; padding: 8px 10px; box-sizing: border-box; overflow: auto; white-space: pre-wrap; cursor: grab; scrollbar-width: thin; scrollbar-color: $scrollbarColor transparent; }.note.editing .noteContent { cursor: text; }
 .noteContent::-webkit-scrollbar, .noteContent :deep(::-webkit-scrollbar) { width: 3px; height: 3px; }.noteContent::-webkit-scrollbar-track, .noteContent :deep(::-webkit-scrollbar-track) { background: transparent; }.noteContent::-webkit-scrollbar-thumb, .noteContent :deep(::-webkit-scrollbar-thumb) { border-radius: 999px; background: $scrollbarColor; }

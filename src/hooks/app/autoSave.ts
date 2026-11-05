@@ -2,7 +2,7 @@ import { showAlert } from "../alert";
 import { saveProject } from "../project/project";
 import { saveApp } from "./app";
 
-export async function saveAll(){
+export async function saveAll():Promise<boolean>{
     //保存项目
     const tmp = await saveProject()
     //保存App
@@ -10,6 +10,7 @@ export async function saveAll(){
     if(tmp){
         console.log("已完成保存")
     }
+    return tmp
 }
 
 //每隔10秒保存一次当前项目

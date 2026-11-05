@@ -30,13 +30,14 @@ export const projectOverviewProjectFeature: ProjectFeature<ProjectOverview> = {
 
 export const projectOverviewSignUpItem: SupportAbilitySignUpItem = {
     name: "projectOverview",
-    init: () => addToRightPage({ key: "project-overview", name: "项目总览", icon: "article", click: showProjectOverviewPage }),
+    init: () => addToRightPage({ key: "project-overview", name: "项目大纲", icon: "article", click: showProjectOverviewPage }),
+    projectEntry: { name: "项目大纲", icon: "article", click: showProjectOverviewPage, isVisible: () => nowProjectOverview.showInLeft, setVisible: visible => { nowProjectOverview.showInLeft = visible } },
 }
 
-export function showProjectOverviewPage(){ openMainToolPage({ name: "项目总览", component: ProjectOverviewPage, actions: [{ name: "设置", icon: "setting", click: showProjectOverviewSettings }] }) }
+export function showProjectOverviewPage(){ openMainToolPage({ name: "项目大纲", component: ProjectOverviewPage, actions: [{ name: "设置", icon: "setting", click: showProjectOverviewSettings }] }) }
 export async function showProjectOverviewSettings(){
     const { showPopUp } = await import("@/hooks/pages/popUp")
-    showPopUp({ name: "项目总览设置", vue: shallowRef(ProjectOverviewSettings), mask: true, size: { height: "auto" } })
+    showPopUp({ name: "项目大纲设置", vue: shallowRef(ProjectOverviewSettings), mask: true, size: { height: "auto" } })
 }
 export function showProjectOverviewInLeft(){ nowProjectOverview.showInLeft = true }
 export function hideProjectOverviewInLeft(){ nowProjectOverview.showInLeft = false }

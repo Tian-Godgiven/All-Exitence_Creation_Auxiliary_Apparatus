@@ -5,11 +5,19 @@
 		<Button class="leftPageShowButton" @click="showLeft()" name="显示左侧" icon="showLeft"></Button>
 		<Button class="projectName" @click="switchProjectPage" :name="projectName"/>
 		<div class="buttons">
-			<Button v-for="(button) in buttons" 
-				@click="button.click"
-				:name="button.name"
-				:icon="button.icon"
-				:class="{ rightPageToggle: button.name === '辅助功能' }"/>
+			<template v-for="button in buttons" :key="button.name">
+				<div v-if="button.name === '手动保存'" class="saveAction">
+					<Button @click="manualSave" :name="button.name" :icon="button.icon" :disabled="saving"/>
+					<Transition name="save-message">
+						<span v-if="saveMessage" class="saveMessage" :class="saveMessage.type">{{ saveMessage.text }}</span>
+					</Transition>
+				</div>
+				<Button v-else
+					@click="button.click"
+					:name="button.name"
+					:icon="button.icon"
+					:class="{ rightPageToggle: button.name === '辅助功能' }"/>
+			</template>
 		</div>
 	</div>
 	
@@ -47,12 +55,11 @@
 	import showTypeOnMainVue from '@/app/pages/mainPage/components/showTypeOnMain.vue';
 	import showExitenceOnMainVue from '@/app/pages/mainPage/components/showExitenceOnMain.vue';
 	import { showOnMain } from '@/hooks/pages/mainPage/showOnMain';
-	import { computed, reactive, ref, shallowRef, watch } from 'vue';
+	import { computed, onBeforeUnmount, onMounted, reactive, ref, shallowRef, watch } from 'vue';
 	import { nowProjectInfo } from '@/hooks/project/project';
 	import { saveAll } from '@/hooks/app/autoSave';
 	import Suggester from '@/supportAbility/inputSuggestion/suggester/Suggester.vue';
 	import QuickButton from '@/app/pages/mainPage/components/quickButton.vue/QuickButton.vue';
-import { callSupportAbility } from '@/hooks/app/app';
 import ScrollBar from '@/components/global/ScrollBar.vue';
 import MainToolPage from './components/MainToolPage.vue';
 import { activeMainToolPage } from '@/hooks/pages/mainPage/toolPage';
@@ -63,15 +70,11 @@ import ProjectExportPopUp from '@/export/ProjectExportPopUp.vue';
 	const buttons = [{
 		name:"手动保存",
 		icon:"handSave",
-		click:()=>saveAll()
+		click:manualSave
 	},{
 		name:"导出作品",
 		icon:"export",
 		click:()=>openProjectExport()
-	},{
-		name:"任务列表",
-		icon:"missionList",
-		click:()=>{callSupportAbility("missionList")}
 	},{
 		name:"辅助功能",
 		icon:"showRight",
@@ -81,6 +84,39 @@ import ProjectExportPopUp from '@/export/ProjectExportPopUp.vue';
 		const state = reactive({ format: "text" as const })
 		showPopUp({ name:"导出作品为", titleVue:shallowRef(ProjectExportFormatSelector), vue:shallowRef(ProjectExportPopUp), props:{ state }, mask:true, buttons:[], size:{ width:"760px", height:"auto" } })
 	}
+
+	const saving = ref(false)
+	const saveMessage = ref<{ text:string, type:"success"|"failure" }|null>(null)
+	let saveMessageTimer: ReturnType<typeof setTimeout> | undefined
+	async function manualSave(){
+		if(saving.value)return
+		saving.value = true
+		let succeeded = false
+		try{
+			succeeded = await saveAll()
+		}
+		catch(error){
+			console.error(error)
+		}
+		finally{
+			saving.value = false
+		}
+		saveMessage.value = succeeded
+			? { text:"保存成功", type:"success" }
+			: { text:"保存失败", type:"failure" }
+		if(saveMessageTimer) clearTimeout(saveMessageTimer)
+		saveMessageTimer = setTimeout(()=>saveMessage.value = null, 2200)
+	}
+	function handleSaveShortcut(event: KeyboardEvent){
+		if(event.isComposing || event.repeat || !(event.ctrlKey || event.metaKey) || event.key.toLowerCase() !== "s")return
+		event.preventDefault()
+		void manualSave()
+	}
+	onMounted(()=>document.addEventListener("keydown", handleSaveShortcut))
+	onBeforeUnmount(()=>{
+		document.removeEventListener("keydown", handleSaveShortcut)
+		if(saveMessageTimer) clearTimeout(saveMessageTimer)
+	})
 
 // 首页内容栏
 	//项目名称
@@ -115,7 +151,8 @@ import ProjectExportPopUp from '@/export/ProjectExportPopUp.vue';
 		display: flex;
 		background-color: $bgColor;
 		box-shadow: $downShadow;
-		z-index: 1;
+		overflow: visible;
+		z-index: 2;
 		.leftPageShowButton{
 			width: 90px;
 		}
@@ -133,12 +170,27 @@ import ProjectExportPopUp from '@/export/ProjectExportPopUp.vue';
 			width: 250px;
 			display: flex;
 			align-items: center;
+			.saveAction{
+				position: relative;
+				height: 100%;
+			}
 			.button{
 				box-sizing: border-box;
 				height: 100%;
 				padding: 15px;
 				display: flex;
 				align-items: center;
+			}
+			.saveMessage{
+				position: absolute;
+				top: calc(100% + 4px);
+				left: 50%;
+				z-index: 3;
+				transform: translateX(-50%);
+				white-space: nowrap;
+				font-size: $smallFontSize;
+				color: $textColor;
+				&.failure{ color: $dangerColor; }
 			}
 		}
 	}
@@ -165,6 +217,13 @@ import ProjectExportPopUp from '@/export/ProjectExportPopUp.vue';
 	
 }
 
+:global(.save-message-enter-active),
+:global(.save-message-leave-active){
+	transition: opacity 0.16s ease;
+}
+:global(.save-message-enter-from),
+:global(.save-message-leave-to){ opacity: 0; }
+
 @media (min-width: 900px){
 	.mainPage.mainPage{
 		.top{
@@ -179,6 +238,7 @@ import ProjectExportPopUp from '@/export/ProjectExportPopUp.vue';
 					height: 48px;
 					padding: 12px;
 				}
+				.saveAction{ height: 48px; }
 			}
 		}
 		.mainContentArea{ height: calc(100% - 60px); }

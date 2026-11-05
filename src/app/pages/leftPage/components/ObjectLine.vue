@@ -76,15 +76,20 @@
         } 
         .buttons{
             height: 3em;
-            position: relative;
-            left:20px;
             display: flex;
             align-items: center;
-            >div{
-                width: 50px;
-                height: 100%;
-                padding: 0 10px;
-            }
+			margin-right: -20px;
+			gap: 4px;
+			padding-right: 4px;
+			:deep(>.button){
+				flex: 0 0 40px;
+				width: 40px;
+				height: 100%;
+			}
+			:deep(>.dragHandler){
+				flex: 0 0 40px;
+				width: 40px;
+			}
         }
     }
 }

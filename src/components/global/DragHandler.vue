@@ -19,9 +19,10 @@ import Button from './button.vue';
     >.handler{
         flex-shrink: 0;
         margin: auto;
-        width: 40px;
+        width: 100%;
         height: 60px;
         max-height: 70%;
+		box-sizing: border-box;
         background-color: $bgColor;
         border: 2px solid $bgColor70;
         border-radius: 10px;
@@ -33,6 +34,9 @@ import Button from './button.vue';
         >.button{
             height: 100%;
             width: 100%;
+			&:not(.disabled):not(.loading):hover{
+				background-color: transparent;
+			}
         }
     }
     

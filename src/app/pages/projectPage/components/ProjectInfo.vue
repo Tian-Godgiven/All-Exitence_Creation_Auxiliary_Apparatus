@@ -30,11 +30,13 @@
 .projectInfo{
     box-sizing: border-box;
     width: 100%;
-    padding: 0 20px;
-    padding-bottom: 20px;
+    padding: 10px 20px;
+    flex-direction: column;
+    align-items: unset;
     .top{
         height: 2rem;
         display: flex;
+        justify-content: space-between;
         align-items: center;
         .name{
             flex-grow: 1;
@@ -47,10 +49,9 @@
         .buttons{
             display: flex;
             height: 100%;
+            gap:10px;
             >.button{
-                width: 45px;
                 height: 100%;
-                margin: 0 10px;
             }
         }
     }

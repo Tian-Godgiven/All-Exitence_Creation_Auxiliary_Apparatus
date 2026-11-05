@@ -16,13 +16,22 @@
     import { disableChangePage, enableChangePage, hideMask, ifShowProject, showMask} from '@/hooks/pages/pageChange';
     import { createNewProject, nowProjectList } from '@/hooks/project/project';
     import ProjectInfo from './components/ProjectInfo.vue';
-import { computed, useTemplateRef, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, useTemplateRef, watch } from 'vue';
     import gsap from 'gsap';
     import Button from '@/components/global/button.vue';
 import BottomPanel from './components/BottomPanel.vue';
 import { isDesktopLayout } from '@/hooks/pages/pageChange';
 
     const projectRef = useTemplateRef("projectRef")
+    function closeOnOutsidePointerDown(event: PointerEvent){
+        if(!ifShowProject.value)return
+        const target = event.target
+        if(!(target instanceof Element))return
+        if(projectRef.value?.contains(target))return
+        ifShowProject.value = false
+    }
+    onMounted(()=>document.addEventListener("pointerdown", closeOnOutsidePointerDown, true))
+    onBeforeUnmount(()=>document.removeEventListener("pointerdown", closeOnOutsidePointerDown, true))
     //显示与隐藏该页面的动画
     watch(ifShowProject,()=>{
         if(!projectRef.value)return;

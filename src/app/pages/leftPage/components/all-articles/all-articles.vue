@@ -1,6 +1,6 @@
 <template>
 <div class="all-articles" id="leftPage-allArticles" ref="treeRef">
-	<ProjectOverviewEntry v-if="nowProjectOverview.showInLeft" />
+	<ProjectToolEntries />
 	<chapterVue v-for="chapter in chapters" :key="chapter.__key" :level="0" :from="displayedTree" :chapter="chapter"/>
 	<articleVue v-for="article in articles" :key="article.__key" :level="0" :from="displayedTree" :article="article"/>
 	<Teleport to="body">
@@ -25,8 +25,7 @@
 	import { type Chapter } from '@/class/Chapter';
 	import { type Article } from '@/class/Article';
 	import Icon from '@/components/global/Icon.vue';
-	import ProjectOverviewEntry from './ProjectOverviewEntry.vue';
-	import { nowProjectOverview } from '@/supportAbility/projectOverview/projectOverview';
+	import ProjectToolEntries from './ProjectToolEntries.vue';
 
 	const dragPreview = ref<typeof nowAllArticles|null>(null)
 	const dragOverlay = ref<{label:string,x:number,y:number}|null>(null)

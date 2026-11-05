@@ -1,6 +1,6 @@
 <template>
 <div class="settings">
-    <label><input v-model="showInLeft" type="checkbox">显示项目总览到左侧文章列表</label>
+    <label><input v-model="showInLeft" type="checkbox">显示项目大纲到左侧文章列表</label>
     <label><input v-model="showByDefault" type="checkbox">新项目默认显示到左侧</label>
 </div>
 </template>

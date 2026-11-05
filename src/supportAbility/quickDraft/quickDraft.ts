@@ -1,4 +1,4 @@
-import { reactive, toRaw, watch } from "vue"
+import { reactive, shallowRef, toRaw, watch } from "vue"
 import { cloneDeep } from "lodash"
 import { nanoid } from "nanoid"
 import { addToRightPage } from "@/hooks/pages/rightPage"
@@ -11,6 +11,8 @@ import { tauriFeatureRepository } from "@/repository/tauriFeatureRepository"
 import { nowProjectPath } from "@/hooks/project/project"
 import QuickDraftPage from "./QuickDraftPage.vue"
 import QuickDraftFloat from "./QuickDraftFloat.vue"
+import QuickDraftSettings from "./QuickDraftSettings.vue"
+import QuickDraftManual from "./QuickDraftManual.vue"
 
 export type QuickDraftNote = {
     __key: string,
@@ -28,12 +30,13 @@ export type QuickDraftColor = { __key: string, name: string, value: string }
 export type QuickDraftConnection = { __key: string, from: string, to: string }
 
 export type QuickDraftBoard = {
+    showInLeft: boolean,
     notes: QuickDraftNote[],
     connections: QuickDraftConnection[],
     viewport: { x: number, y: number, scale: number },
 }
 
-const defaultBoard: QuickDraftBoard = { notes: [], connections: [], viewport: { x: 0, y: 0, scale: 1 } }
+const defaultBoard: QuickDraftBoard = { showInLeft: true, notes: [], connections: [], viewport: { x: 0, y: 0, scale: 1 } }
 const defaultColors: QuickDraftColor[] = [
     { __key: "yellow", name: "黄色", value: "#d5a928" },
     { __key: "blue", name: "蓝色", value: "#5289b9" },
@@ -71,9 +74,18 @@ export const quickDraftItem: SupportAbilitySignUpItem = {
         addToRightPage({ key: "quick-draft", name: "便签夹", icon: "quickDraft", click: showQuickDraftPage })
         if(!quickDraftFloatWindowKey) quickDraftFloatWindowKey = addFloatWindow(QuickDraftFloat)
     },
+    projectEntry: { name: "项目便签", icon: "quickDraft", click: showQuickDraftPage, isVisible: () => nowQuickDraftBoard.showInLeft, setVisible: visible => { nowQuickDraftBoard.showInLeft = visible } },
 }
 
-export function showQuickDraftPage(){ openMainToolPage({ name: "便签夹", component: QuickDraftPage }) }
+export function showQuickDraftPage(){ openMainToolPage({ name: "便签夹", component: QuickDraftPage, actions: [{ name: "操作提示", icon: "help", click: showQuickDraftManual }, { name: "设置", icon: "setting", click: showQuickDraftSettings }] }) }
+export async function showQuickDraftSettings(){
+    const { showPopUp } = await import("@/hooks/pages/popUp")
+    showPopUp({ name: "项目便签设置", vue: shallowRef(QuickDraftSettings), mask: true, size: { height: "auto" } })
+}
+export async function showQuickDraftManual(){
+    const { showPopUp } = await import("@/hooks/pages/popUp")
+    showPopUp({ name: "便签夹使用手册", vue: shallowRef(QuickDraftManual), mask: true, size: { width: "500px", height: "auto" } })
+}
 
 export function createQuickDraftNote(position = { x: 80, y: 80 }){
     return createQuickDraftNoteOnBoard(nowQuickDraftBoard, [""], position)
@@ -143,6 +155,7 @@ export async function loadQuickDraftProjectBoard(projectKey: string){
 function normalizeBoard(board: QuickDraftBoard | null | undefined): QuickDraftBoard{
     const raw = board as any
     return {
+        showInLeft: raw?.showInLeft !== false,
         notes: (raw?.notes ?? []).map((note: any) => {
             const { tags: _tags, color: oldColor, ...rest } = note
             return {
