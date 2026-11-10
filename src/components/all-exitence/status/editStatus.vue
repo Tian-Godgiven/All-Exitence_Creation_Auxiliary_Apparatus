@@ -35,7 +35,7 @@
 	<StatusBonus :status :fullStatus :target></StatusBonus>
 	<!-- 属性设置栏 -->
 	<settingBoxVue ref="settingBox" 
-		:target="status"
+		:target="settingTarget"
 		:select-target="fullStatus"
 		:defaultSetting="fullStatus.setting"
 		:optionList="setOptionList"
@@ -95,6 +95,7 @@ import { Type } from '@/class/Type';
 
 	//以这个新的对象为例构建一个新的fullStatus
 	const fullStatus = getFullStatus(status,oldFullStatus)
+	const settingTarget = status as unknown as Status
     
 	// 选择属性类型
 	let valueTypeList = statusValueTypeList

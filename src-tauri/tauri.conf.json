@@ -13,9 +13,11 @@
     "windows": [
       {
         "title": "all-exitence_creation_auxiliary_apparatus",
-        "width": 350,
-        "height": 700,
-        "resizable": false,
+        "width": 1280,
+        "height": 820,
+        "minWidth": 960,
+        "minHeight": 640,
+        "resizable": true,
         "fullscreen": false,
         "dragDropEnabled": false
       }

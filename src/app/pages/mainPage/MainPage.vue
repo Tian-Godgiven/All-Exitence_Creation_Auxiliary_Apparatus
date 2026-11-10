@@ -23,7 +23,7 @@
 	
 	<!-- 首页内容 -->
 	<div class="mainContentArea">
-		<ScrollBar class="inner">
+		<ScrollBar ref="mainScrollRef" class="inner">
 			<div class="content" :key="refreshKey">
 				<showInfoOnMainVue :target="showOnMain.target" v-if="showOnMain.type=='info'"/>
 				<showArticleOnMainVue :article="showOnMain.target" v-else-if="showOnMain.type == 'article'"/>
@@ -55,7 +55,7 @@
 	import showTypeOnMainVue from '@/app/pages/mainPage/components/showTypeOnMain.vue';
 	import showExitenceOnMainVue from '@/app/pages/mainPage/components/showExitenceOnMain.vue';
 	import { showOnMain } from '@/hooks/pages/mainPage/showOnMain';
-	import { computed, onBeforeUnmount, onMounted, reactive, ref, shallowRef, watch } from 'vue';
+	import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, shallowRef, watch } from 'vue';
 	import { nowProjectInfo } from '@/hooks/project/project';
 	import { saveAll } from '@/hooks/app/autoSave';
 	import Suggester from '@/supportAbility/inputSuggestion/suggester/Suggester.vue';
@@ -125,9 +125,24 @@ import ProjectExportPopUp from '@/export/ProjectExportPopUp.vue';
 	})
 	//刷新内容
 	let refreshKey = ref(0)
+	const mainScrollRef = ref<InstanceType<typeof ScrollBar>>()
+	function saveMainScrollTop(){
+		showOnMain.scrollTop = mainScrollRef.value?.getScrollTop() ?? 0
+	}
+	async function restoreMainScrollTop(){
+		await nextTick()
+		const target = showOnMain.target
+		const scrollTop = target && typeof target !== "string" && "lastScrollTop" in target
+			? target.lastScrollTop ?? 0
+			: 0
+		mainScrollRef.value?.setScrollTop(scrollTop)
+	}
 	watch(()=>showOnMain.target,()=>{
 		refreshKey.value+=1
+		void restoreMainScrollTop()
 	})
+	onMounted(()=>window.addEventListener("getShowOnMainScrollTop", saveMainScrollTop))
+	onBeforeUnmount(()=>window.removeEventListener("getShowOnMainScrollTop", saveMainScrollTop))
 	
 
 </script>
@@ -152,7 +167,7 @@ import ProjectExportPopUp from '@/export/ProjectExportPopUp.vue';
 		background-color: $bgColor;
 		box-shadow: $downShadow;
 		overflow: visible;
-		z-index: 2;
+		z-index: 3;
 		.leftPageShowButton{
 			width: 90px;
 		}

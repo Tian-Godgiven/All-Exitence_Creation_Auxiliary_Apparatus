@@ -270,11 +270,11 @@
         const startParagraph = resolveParagraph(anchor,true)
         const endParagraph = resolveParagraph(focus,false)
         if(!startParagraph || !endParagraph)return null
-        const root = textArea.value
+        const root = textArea.value!
         const getRootChild = (node:Node)=>{
             let current:Node = node
             while(current.parentNode && current.parentNode !== root)current = current.parentNode
-            return current
+            return current as ChildNode
         }
         const start = getRootChild(startParagraph)
         const end = getRootChild(endParagraph)
@@ -370,7 +370,7 @@
         let afterParagraphEffect = false
         const appendParagraph = ()=>{
             const dom = createArticleParagraph()
-            translateToFrontEndContent(paragraph).forEach(node=>dom.appendChild(node))
+            ;(translateToFrontEndContent(paragraph) ?? []).forEach(node=>dom.appendChild(node))
             textArea.value!.appendChild(dom)
             paragraph = []
         }
@@ -387,7 +387,7 @@
             if(part && typeof part === "object" && part.type === "textStyle" && part.scope === "paragraph"){
                 if(paragraph.length)appendParagraph()
                 const doms = translateToFrontEndContent([part])
-                doms.forEach(dom=>textArea.value!.appendChild(dom))
+                ;(doms ?? []).forEach(dom=>textArea.value!.appendChild(dom))
                 afterParagraphEffect = true
                 return
             }
@@ -431,9 +431,9 @@
         return flattenArticleParagraphs(blocks)
     }
 
-    function getArticleParagraphContents(nodes:Node[]):TextAreaContent[][]{
-        const paragraphs:Node[][] = []
-        let current:Node[] = []
+    function getArticleParagraphContents(nodes:ChildNode[]):TextAreaContent[][]{
+        const paragraphs:ChildNode[][] = []
+        let current:ChildNode[] = []
         const pushCurrent = ()=>{ paragraphs.push(current); current = [] }
         nodes.forEach(node=>{
             if(node.nodeName === "BR"){
@@ -443,7 +443,7 @@
             // 浏览器在 Enter 后生成的 div 也视为独立逻辑段落。
             if(node instanceof HTMLElement && node.nodeName === "DIV" && !isTextStyleDom(node)){
                 if(current.length)pushCurrent()
-                paragraphs.push(Array.from(node.childNodes))
+                paragraphs.push(Array.from((node as HTMLElement).childNodes) as ChildNode[])
                 return
             }
             current.push(node)
@@ -513,7 +513,7 @@
             const content = document.createDocumentFragment()
             paragraphs.forEach((paragraph,index)=>{
                 if(index)content.appendChild(document.createElement("br"))
-                translateToFrontEndContent(paragraph).forEach(node=>content.appendChild(node))
+                ;(translateToFrontEndContent(paragraph) ?? []).forEach(node=>content.appendChild(node))
             })
             range.insertNode(content)
             return
@@ -531,17 +531,17 @@
         const endIndex = directParagraphs.indexOf(end)
         const replacements = (paragraphs.length ? paragraphs : [[]]).map(content=>{
             const paragraph = createArticleParagraph()
-            translateToFrontEndContent(content).forEach(node=>paragraph.appendChild(node))
+            ;(translateToFrontEndContent(content) ?? []).forEach(node=>paragraph.appendChild(node))
             return paragraph
         })
-        replacements[0].prepend(prefix)
-        replacements[replacements.length - 1].append(suffix)
+        replacements[0]!.prepend(prefix)
+        replacements[replacements.length - 1]!.append(suffix)
         const insertion = document.createDocumentFragment()
         replacements.forEach(paragraph=>insertion.appendChild(paragraph))
         root.insertBefore(insertion,start)
         directParagraphs.slice(startIndex,endIndex + 1).forEach(paragraph=>paragraph.remove())
         const caret = document.createRange()
-        caret.selectNodeContents(replacements[replacements.length - 1])
+        caret.selectNodeContents(replacements[replacements.length - 1]!)
         caret.collapse(false)
         window.getSelection()?.removeAllRanges()
         window.getSelection()?.addRange(caret)
@@ -570,20 +570,21 @@
         nextTick(updateParagraphEffectReaders)
     }
 
-    function beforeArticleInput(event: InputEvent){
+    function beforeArticleInput(event: Event){
         if(!textStyleEnabled)return
+        const inputEvent = event as InputEvent
         const range = getCurrentRange()
         if(!range)return
-        if(event.inputType === "insertParagraph"){
+        if(inputEvent.inputType === "insertParagraph"){
             event.preventDefault()
             splitArticleParagraph(range)
             syncContent()
             return
         }
-        if(!range.collapsed || !["deleteContentBackward","deleteContentForward"].includes(event.inputType))return
+        if(!range.collapsed || !["deleteContentBackward","deleteContentForward"].includes(inputEvent.inputType))return
         const paragraph = getArticleParagraph(range.startContainer)
         if(!paragraph)return
-        const backward = event.inputType === "deleteContentBackward"
+        const backward = inputEvent.inputType === "deleteContentBackward"
         if(backward ? !isRangeAtParagraphStart(range,paragraph) : !isRangeAtParagraphEnd(range,paragraph))return
         const adjacent = getAdjacentArticleParagraph(paragraph,backward ? -1 : 1)
         if(!adjacent || getParagraphEffectDom(adjacent) === getParagraphEffectDom(paragraph))return
@@ -609,7 +610,7 @@
         const effect = getParagraphEffectDom(paragraph)
         const contentRoot = effect ? getTextStyleContentRoot(effect) : textArea.value
         if(!contentRoot)return null
-        const siblings = Array.from(contentRoot.children).filter(node=>node.classList.contains("articleParagraph"))
+        const siblings = Array.from(contentRoot.children).filter((node):node is HTMLElement=>node instanceof HTMLElement && node.classList.contains("articleParagraph"))
         const index = siblings.indexOf(paragraph)
         const inner = siblings[index + direction]
         if(inner)return inner

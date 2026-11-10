@@ -69,7 +69,7 @@ export function createTextStyleDom(data: TextStyleData): HTMLElement{
     dom.className = textStyleClassName
     setTextStyleDomData(dom,data)
     const nodes = data.scope === "paragraph" ? translateParagraphStyleContent(data.content) : translateToFrontEndContent(data.content)
-    nodes.forEach(node=>dom.appendChild(node))
+    ;(nodes ?? []).forEach(node=>dom.appendChild(node))
     decorateTextStyleCharacters(dom,data.snapshot)
     ensureSpoilerCover(dom)
     return dom
@@ -174,7 +174,7 @@ export function decorateTextStyleCharacters(dom: HTMLElement,snapshot: TextStyle
             span.textContent = character
             span.style.display = "inline-block"
             if(snapshot.effect === "offset"){
-                const offset = typeof snapshot.value === "number" ? { amount:snapshot.value, seed:0 } : snapshot.value
+                const offset = snapshot.value
                 const x = (textStylePseudoRandom(offset.seed + characterIndex * 2) * 2 - 1) * offset.amount
                 const y = (textStylePseudoRandom(offset.seed + characterIndex * 2 + 1) * 2 - 1) * offset.amount
                 span.style.transform = `translate(${x}px, ${y}px)`
@@ -290,7 +290,7 @@ function translateParagraphStyleContent(content:TextAreaContent[]){
     return paragraphs.map(parts=>{
         const paragraph = document.createElement("div")
         paragraph.className = "articleParagraph"
-        translateToFrontEndContent(parts).forEach(node=>paragraph.appendChild(node))
+        ;(translateToFrontEndContent(parts) ?? []).forEach(node=>paragraph.appendChild(node))
         return paragraph
     })
 }

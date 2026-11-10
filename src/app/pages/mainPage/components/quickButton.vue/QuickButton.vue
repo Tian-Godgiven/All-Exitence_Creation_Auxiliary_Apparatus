@@ -98,17 +98,6 @@ import { quickPanelList } from '@/hooks/pages/mainPage/quickButton';
     }
 }
 @media (min-width: 900px){
-    .quickButton{
-        right: 24px;
-        top: auto;
-        bottom: 24px;
-        .button{
-            width: 100px;
-            height: 100px;
-            padding: 10px;
-            box-sizing: border-box;
-            margin: 0;
-        }
-    }
+    .quickButton{ display:none; }
 }
 </style>

@@ -3,7 +3,7 @@
         <template v-if="styles.length">
             <div class="menuColumn">
                 <div class="menuTitle">已有的效果</div>
-                <button v-for="style in styles" :key="style.element" class="menuItem" :class="{ active: activeStyle === style }" @mouseenter="activeStyle = style">{{ style.data.snapshot.name }} · {{ style.data.scope === 'paragraph' ? '段落' : '文字' }}</button>
+                <button v-for="style in styles" :key="style.element.dataset.textStyle ?? style.data.materialKey" class="menuItem" :class="{ active: activeStyle === style }" @mouseenter="activeStyle = style">{{ style.data.snapshot.name }} · {{ style.data.scope === 'paragraph' ? '段落' : '文字' }}</button>
                 <button class="menuItem" :class="{ active: activeStyle === null }" @mouseenter="activeStyle = null">添加效果</button>
             </div>
             <div class="menuColumn secondary">

@@ -1,4 +1,3 @@
-import { showAlert } from "../alert";
 import { saveProject } from "../project/project";
 import { saveApp } from "./app";
 

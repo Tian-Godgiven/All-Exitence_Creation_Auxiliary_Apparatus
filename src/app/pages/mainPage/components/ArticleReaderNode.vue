@@ -24,7 +24,7 @@ const classes = computed(()=>({
     progressiveOpacity:node.snapshot.effect === "opacity" && node.snapshot.value.progressive,
     spoiler:node.snapshot.effect === "spoiler",
 }))
-const style = computed<Record<string,string|number>>(()=>{
+const style = computed(()=>{
     const snapshot = node.snapshot
     if(snapshot.effect === "fontWeight")return { fontWeight:snapshot.value }
     if(snapshot.effect === "italic")return { fontStyle:"italic" }

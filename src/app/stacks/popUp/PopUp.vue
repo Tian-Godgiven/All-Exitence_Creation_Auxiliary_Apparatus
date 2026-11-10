@@ -72,8 +72,8 @@ import gsap from 'gsap';
 	function keepPositionInViewport(){
 		if(!popUp.position || !popUpRef.value)return
 		const margin = 8
-		const requestedX = Number.parseFloat(popUp.position.x)
-		const requestedY = Number.parseFloat(popUp.position.y)
+		const requestedX = Number.parseFloat(popUp.position.x ?? "0")
+		const requestedY = Number.parseFloat(popUp.position.y ?? "0")
 		const x = Math.min(Math.max(requestedX, margin), window.innerWidth - popUpRef.value.offsetWidth - margin)
 		const y = Math.min(Math.max(requestedY, margin), window.innerHeight - popUpRef.value.offsetHeight - margin)
 		popUp.position.x = `${x}px`

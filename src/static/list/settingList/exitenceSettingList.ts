@@ -67,7 +67,7 @@ export let exitenceSettingList:SettingOption<Exitence>[] = [{
         })
         return tmpList
     },
-    change:(oldValue,newValue,exitence)=>{
+    change:(oldValue:any,newValue:any,exitence:Exitence)=>{
         //将旧的属性的setting去除
         const oldStatus = getExitenceStatusByKey(oldValue,exitence.status)
         if(oldStatus && oldStatus.setting){

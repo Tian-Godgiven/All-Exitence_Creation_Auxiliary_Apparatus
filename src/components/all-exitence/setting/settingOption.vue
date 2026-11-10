@@ -60,7 +60,7 @@ import DownLineInput from '@/components/other/input/downLineInput.vue';
 
 	let beginValue:any
 	//绑定到组件上的动态值
-	let setValue = ref<(typeof setOption.value)|null>()
+	let setValue = ref<any>()
 	//设置其初始值，优先顺序为：
 	//给出的setting中该设置项的值 → 设置项的默认值 → null
 	//由于切换属性类型时，并不会重新创建设置项，因此需要监听设置项的变化从而重置绑定值

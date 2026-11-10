@@ -130,7 +130,7 @@ export function changeNowAllArticles(newAllArticles:any){
         try{
             const moved = await moveObjectToTrash({
                 kind:"article",
-                parent:"__key" in from ? {kind:"chapter",__key:from.__key} : {kind:"root",__key:null},
+		parent:"__key" in from ? {kind:"chapter",__key:String(from.__key)} : {kind:"root",__key:null},
                 index,
                 label:article.title || "未命名文本",
                 snapshot:cloneDeep(article),
@@ -330,7 +330,7 @@ export function changeNowAllArticles(newAllArticles:any){
         try{
             const moved = await moveObjectToTrash({
                 kind:"chapter",
-                parent:"__key" in from ? {kind:"chapter",__key:from.__key} : {kind:"root",__key:null},
+                parent:"__key" in from ? {kind:"chapter",__key:String(from.__key)} : {kind:"root",__key:null},
                 index,
                 label:chapter.name || "未命名章节",
                 snapshot:cloneDeep(chapter),

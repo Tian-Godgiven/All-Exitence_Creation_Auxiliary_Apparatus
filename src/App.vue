@@ -24,7 +24,7 @@
 </template>
 
 <script setup lang="ts">
-import { initApp, testInfo1 } from "./hooks/app/app";
+import { initApp } from "./hooks/app/app";
 import { appSetting } from "./hooks/app/appSetting";
 import { initProject } from "./hooks/project/project";
 import { startAutoSave } from "./hooks/app/autoSave";

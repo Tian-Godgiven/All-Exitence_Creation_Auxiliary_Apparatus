@@ -38,14 +38,13 @@
 </template>
 
 <script setup lang="ts" name="">
-	import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
+	import { ref, useTemplateRef } from 'vue';
 	import textAreaVue from '@/components/other/textArea/textArea.vue';
 	import ExitenceStatusVue from '@/components/all-exitence/exitence/exitenceStatus.vue';
 	import { changeExitenceName, getTypeOfExitence, showSetExitencePopUp} from '@/hooks/all-exitence/allExitence';
 	import DraggableList from '@/components/other/DraggableList.vue';
 	import Status from '@/interfaces/Status';
 	import TargetContainer from './TargetContainer.vue';
-	import { showOnMain } from '@/hooks/pages/mainPage/showOnMain';
 	import { Exitence, ExitenceStatus } from '@/class/Exitence';
 	import Menu from '@/components/global/Menu.vue';
 	import ListMenu from '@/components/global/ListMenu.vue';
@@ -104,28 +103,6 @@ import { getFullStatusOfExitence, showCreateStatusPopUp } from '@/hooks/all-exit
 		containerRef.value?.setScrollTop("last")
 	}
 
-    // 记录文档滑动位置
-    function getScrollTop(){
-        //当前滑动位置
-        if(containerRef.value){
-            const scrollTop = containerRef.value.getScrollTop()
-            if(scrollTop){
-                showOnMain.scrollTop = scrollTop
-                return;
-            }
-        }
-        showOnMain.scrollTop = 0
-        return 0
-    }
-    onMounted(()=>{
-        //设定当前的滑动高度
-        if(!containerRef.value)return;
-		containerRef.value.setScrollTop(exitence.lastScrollTop)
-        window.addEventListener("getShowOnMainScrollTop",getScrollTop)
-    })
-    onUnmounted(()=>{
-        window.removeEventListener("getShowOnMainScrollTop",getScrollTop)
-    })
 </script>
 
 <style scoped lang="scss">

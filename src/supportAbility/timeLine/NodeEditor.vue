@@ -7,7 +7,7 @@
         <label>开始时间<DownLineInput v-model.number="form.start" type="number" /></label>
         <label class="rangeToggle"><input v-model="form.hasEnd" type="checkbox">创建时间范围</label>
         <label v-if="form.hasEnd">结束时间<DownLineInput v-model.number="form.end" type="number" /></label>
-        <div class="actions"><Button icon="check" :name="props.node ? '保存节点' : '创建节点'" @click="save" /></div>
+        <div class="actions"><Button icon="check" :name="props.props.node ? '保存节点' : '创建节点'" @click="save" /></div>
     </div>
 </template>
 

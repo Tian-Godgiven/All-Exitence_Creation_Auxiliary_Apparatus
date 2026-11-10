@@ -1,5 +1,5 @@
 <template>
-<TargetContainer textAligh="center" ref="containerRef">
+<TargetContainer textAligh="center">
     <template #title class="title">
         <textAreaVue
             mode="string"
@@ -32,12 +32,11 @@
 </template>
 
 <script setup lang='ts'>
-    import { computed, onMounted, onUnmounted, useTemplateRef } from 'vue';
+    import { computed } from 'vue';
     import textAreaVue from '@/components/other/textArea/textArea.vue';
     import { translateToTextContent } from '@/hooks/expression/textAreaContent';
 import TargetContainer from './TargetContainer.vue';
 import { Article } from '@/class/Article';
-import { showOnMain } from '@/hooks/pages/mainPage/showOnMain';
 import { formatTimeLineDate, getTimeLineDate, nowStoryTimeLines, showTimeLinePage } from '@/supportAbility/timeLine/timeLine';
 import type { TimeLineNode, TimeLineSegment } from '@/supportAbility/timeLine/timeLine';
 import ProjectOverviewTasks from '@/supportAbility/projectOverview/ProjectOverviewTasks.vue';
@@ -72,31 +71,6 @@ import { getEditorFontFamily, normalizeEditorFontSize } from '@/supportAbility/a
         return `${prefix}${start}${unit}~${end}${unit}`
     }
 
-    let containerRef = useTemplateRef("containerRef")
-    // 记录文档滑动位置
-    function getScrollTop(){
-        //当前滑动位置
-        if(containerRef.value){
-            const scrollTop = containerRef.value.getScrollTop()
-            if(scrollTop){
-                showOnMain.scrollTop = scrollTop
-                return;
-            }
-        }
-        showOnMain.scrollTop = 0
-        return 0
-    }
-    onMounted(()=>{
-        //设定当前的滑动高度
-        if(containerRef.value){
-            containerRef.value.setScrollTop(article.lastScrollTop)
-        }
-        window.addEventListener("getShowOnMainScrollTop",getScrollTop)
-    })
-    onUnmounted(()=>{
-        window.removeEventListener("getShowOnMainScrollTop",getScrollTop)
-    })
-    
 </script>
 
 <style scoped lang='scss'>

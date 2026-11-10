@@ -36,7 +36,7 @@
 	function findActualParent(path:string[]):From|null{
 		let parent:From = nowAllArticles
 		for(const key of path){
-			const chapter = parent.chapters.find(item=>item.__key === key)
+			const chapter:Chapter|undefined = parent.chapters.find(item=>item.__key === key)
 			if(!chapter)return null
 			parent = chapter
 		}

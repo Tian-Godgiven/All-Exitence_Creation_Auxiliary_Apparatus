@@ -1,6 +1,6 @@
 <template>
     <section class="ao3Preview">
-        <iframe class="ao3RenderPreview" :srcdoc="props.document" sandbox title="AO3 发布效果预览"></iframe>
+        <iframe class="ao3RenderPreview" :srcdoc="props.document" sandbox="" title="AO3 发布效果预览"></iframe>
         <textarea readonly :value="props.code"></textarea>
         <FinalButtons :buttons="[{ name: '复制 HTML + CSS', click: copy }, { name: '返回', click: () => closePopUp(popUp) }]" />
     </section>

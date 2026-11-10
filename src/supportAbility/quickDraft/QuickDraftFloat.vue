@@ -37,7 +37,7 @@ function save(){
     if(!expanded.value) return
     if(translateToTextContent(content.value).trim()){
         const board = nowProjectPath.value ? nowQuickDraftBoard : nowGlobalQuickDraftBoard
-        createQuickDraftNoteOnBoard(board, content.value, { x: 80 + board.notes.length * 20, y: 80 + board.notes.length * 20 }, selectedColorKey.value)
+        createQuickDraftNoteOnBoard(board, content.value, { x: 80 + board.notes.length * 20, y: 80 + board.notes.length * 20 }, selectedColorKey.value ?? undefined)
         showQuickInfo("已记录到便签夹中")
     }
     content.value = [""]

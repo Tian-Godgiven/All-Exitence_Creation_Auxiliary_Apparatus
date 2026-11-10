@@ -9,19 +9,19 @@ export type SettingProps<T extends SettingTarget,S> = {
 	//设置作用的对象，所有的设置值都会修改到该对象上
 	target:T,
 	//设置对象所用的设置项列表，要求每一项都满足如下所示的设置项要求
-	optionList:SettingOption<T|S>[],
+	optionList:SettingOption<T,any>[],
 	//设置目标的设置项内的初始值，若为空则会使用target.setting的值
 	defaultSetting?:Record<string,any>,
 	//参与筛选函数的对象，必须是composed类型的值
 	//若为空则会设置为composed(()=>target)，用于执行select函数的目标
 	//执行过程只会传入其.value（这也是为什么必须要composed的原因
-	selectTarget?:S,
+	selectTarget?:any,
 	//参与选项生成函数的对象，传入choice函数的辅助值，见下方的choose类型的相关函数
 	chooseTarget?:any[]
 }
 
 // 设置项的类型,T为设置目标的类型
-export type SettingOption<T,S> = {
+export type SettingOption<T,S = any> = {
 	name:string, //设置项名称/关键字
 	text:string, //设置项文本
 	select?:(target:T|S)=>boolean, //设置项筛选条件

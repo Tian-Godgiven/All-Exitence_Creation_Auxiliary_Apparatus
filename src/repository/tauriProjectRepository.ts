@@ -330,7 +330,7 @@ async function restoreInputSuggestions(projectKey: string, type: Type, exitences
     const item: { text: string; target: string; info: string; nickName?: unknown } = {
       text: exitence.name, target: type.__key, info: "创建的事物",
     };
-    const setting = { ...type.setting, ...exitence.setting };
+    const setting: Record<string, unknown> = { ...type.setting, ...exitence.setting };
     if (setting.nickName != null) {
       const status = exitence.status.find((entry) => entry.__key === setting.nickName);
       if (status) item.nickName = status.value;

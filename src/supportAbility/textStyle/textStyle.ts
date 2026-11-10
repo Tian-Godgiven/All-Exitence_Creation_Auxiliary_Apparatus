@@ -182,6 +182,6 @@ function normalizeSpoilerValue(value: TextStyleSpoilerValue | undefined): TextSt
 }
 
 function normalizeOffsetValue(value: TextStyleOffsetValue | number): TextStyleOffsetValue{
-    const raw = typeof value === "number" ? { amount:value } : value ?? { amount:0 }
+	const raw:Partial<TextStyleOffsetValue> = typeof value === "number" ? { amount:value } : value ?? { amount:0 }
     return { amount:Math.min(12,Math.max(0,Number(raw.amount) || 0)), seed:typeof raw.seed === "number" ? raw.seed : Math.random() * 100000 }
 }

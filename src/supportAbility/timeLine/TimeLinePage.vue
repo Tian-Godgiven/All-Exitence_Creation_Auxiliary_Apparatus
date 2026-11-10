@@ -10,7 +10,7 @@
             </template>
 
         </aside>
-        <Button class="sidebarToggle" :icon="isSidebarCollapsed ? 'rightArrow' : 'leftArrow'" :icon-size="14" :name="isSidebarCollapsed ? '展开时间线列表' : '收起时间线列表'" @click="isSidebarCollapsed = !isSidebarCollapsed" />
+        <Button class="sidebarToggle" :icon="isSidebarCollapsed ? 'rightArrow' : 'leftArrow'" icon-size="small" :name="isSidebarCollapsed ? '展开时间线列表' : '收起时间线列表'" @click="isSidebarCollapsed = !isSidebarCollapsed" />
 
         <main v-if="selected" class="workspace">
             <div class="workArea">
@@ -220,7 +220,7 @@ function editNode(segment: TimeLineSegment, node: TimeLineNode){
 }
 function openNodeMenu(event: MouseEvent, segment: TimeLineSegment, node: TimeLineNode){
     selectNode(segment, node)
-    const options = [{ text: "编辑节点", click: () => editNode(segment, node) }]
+    const options: { text:string, danger?:boolean, click:()=>void }[] = [{ text: "编辑节点", click: () => editNode(segment, node) }]
     const article = node.target?.type === "article" ? findArticle(node.target.key) : undefined
     if(article){
         options.push({ text: "跳转到文章", click: () => openNodeArticle(node) })

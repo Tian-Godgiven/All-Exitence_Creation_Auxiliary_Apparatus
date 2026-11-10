@@ -30,7 +30,7 @@ import { nowProjectInfo } from "@/hooks/project/project"
 import { nowAllArticles } from "@/hooks/all-articles/allArticles"
 import { showQuickInfo } from "@/api/showQuickInfo"
 import FinalButtons from "@/app/stacks/popUp/FinalButtons.vue"
-import { ao3Css, createAo3Export, createTextExport, downloadTextFile, exportEpub, exportTextFolder, listExportTree, listProjectArticles, textExportName, type ExportBookInfo, type ExportFormat, type ExportTreeItem } from "./projectExport"
+import { createAo3Export, createTextExport, downloadTextFile, exportEpub, exportTextFolder, listExportTree, listProjectArticles, textExportName, type ExportBookInfo, type ExportFormat, type ExportTreeItem } from "./projectExport"
 import ProjectAo3PreviewPopUp from "./ProjectAo3PreviewPopUp.vue"
 
 const { popUp, props } = defineProps<{ popUp: any, props: { state: { format: ExportFormat } } }>()
@@ -50,7 +50,7 @@ const actions = computed(() => [{ name: format.value === "ao3" ? "下一步" : f
 
 function selectAll(){ selectedKeys.value = allSelected.value ? [] : articles.value.map(item => item.article.__key) }
 function isItemSelected(item: ExportTreeItem){ return item.articleKeys.length > 0 && item.articleKeys.every(key => selectedKeys.value.includes(key)) }
-function setCheckboxElement(element: Element | null, item: ExportTreeItem){
+function setCheckboxElement(element: unknown, item: ExportTreeItem){
     if(!(element instanceof HTMLInputElement)) return
     const count = item.articleKeys.filter(key => selectedKeys.value.includes(key)).length
     element.indeterminate = count > 0 && count < item.articleKeys.length

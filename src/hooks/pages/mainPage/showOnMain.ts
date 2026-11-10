@@ -163,8 +163,8 @@ function saveLastTargetOnMain(){
     const scrollTop = showOnMain.scrollTop
     const target = showOnMain.target
     //保存在这个对象中
-    if(target && typeof target != "string" && showOnMain.type != "type"){
-        target.lastScrollTop = scrollTop
+	if(target && typeof target != "string" && showOnMain.type === "article"){
+        ;(target as Article).lastScrollTop = scrollTop
     }
 }
 

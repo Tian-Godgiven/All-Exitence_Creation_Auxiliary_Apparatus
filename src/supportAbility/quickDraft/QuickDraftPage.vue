@@ -22,6 +22,7 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef } from 
 import TextArea from "@/components/other/textArea/textArea.vue"
 import { showAlert } from "@/hooks/alert"
 import { showControlPanel } from "@/hooks/controlPanel"
+import { showPopUp } from "@/hooks/pages/popUp"
 import { useFreeCanvas } from "@/hooks/inputSupport/useFreeCanvas"
 import { nowProjectInfo, nowProjectList } from "@/hooks/project/project"
 import { translateToTextContent } from "@/hooks/expression/textAreaContent"
@@ -125,7 +126,7 @@ function closeEditingOnOutsidePointerDown(event: PointerEvent){
     if(event.target.closest(`[data-quick-draft-note-key="${editingNoteKey.value}"]`)) return
     editingNoteKey.value = null
 }
-function startNoteDrag(event: PointerEvent, note: QuickDraftNote){
+function startNoteDrag(event: PointerEvent, _note: QuickDraftNote){
     if(event.button !== 0) return
     const movingNotes = board.value.notes.filter(item => selectedNoteKeys.value.has(item.__key))
     const start = { x: event.clientX, y: event.clientY, positions: new Map(movingNotes.map(item => [item.__key, { ...item.position }])) }
